@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 using System.Threading;
 
@@ -24,6 +25,8 @@ public class LevelEditor : MonoBehaviour
 
 	private async UniTaskVoid Start()
 	{
+		Mouse mouse = Mouse.current;
+
 		m_presenter = new(this, m_cellSize, m_cellCount);
 		m_palette = new Palette(m_cellSize);
 
@@ -59,7 +62,8 @@ public class LevelEditor : MonoBehaviour
 				return;
 			}
 
-			Vector2 inputPosition = m_boardView.transform.InverseTransformPoint(Input.mousePosition);
+
+			Vector2 inputPosition = m_boardView.transform.InverseTransformPoint(mouse.position.ReadValue());
 			m_presenter.SetBrushPosition(inputPosition);
 		}
 	}
