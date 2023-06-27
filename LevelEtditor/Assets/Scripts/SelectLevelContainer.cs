@@ -6,22 +6,22 @@ using TMPro;
 public class SelectLevelContainer : MonoBehaviour
 {
 	[SerializeField]
-	private Button m_prevButton;
+	private LevelEditorButton m_prevButton;
 
 	[SerializeField]
 	private TMP_InputField m_inputField;
 
 	[SerializeField]
-	private Button m_nextButton;
+	private LevelEditorButton m_nextButton;
 
 	[SerializeField]
-	private Button m_loadButton;
+	private LevelEditorButton m_createButton;
 
 	[SerializeField]
-	private Button m_saveButton;
+	private LevelEditorButton m_saveButton;
 
 	[SerializeField]
-	private Button m_playButton;
+	private LevelEditorButton m_playButton;
 
 	public void OnSetup()
 	{

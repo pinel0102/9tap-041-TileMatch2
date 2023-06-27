@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+
 using Cysharp.Threading.Tasks;
-using UnityEngine;
+using Cysharp.Threading.Tasks.Linq;
 
 public class Palette : IDisposable
 {
@@ -13,26 +12,30 @@ public class Palette : IDisposable
 		ERASER
 	}
 
-	private AsyncReactiveProperty<ToolType> m_tool;
-	private AsyncReactiveProperty<int> m_tileSize;
-	private AsyncReactiveProperty<SnapType> m_snapping;
+	private readonly int m_tileSize;
 
-	public IReadOnlyAsyncReactiveProperty<int> TileSize => m_tileSize;
+	private readonly AsyncReactiveProperty<ToolType> m_tool;
+	private readonly AsyncReactiveProperty<SnapType> m_snapping;
+	private readonly AsyncMessageBroker<float> m_messageBroker;
+
 	public IAsyncReactiveProperty<ToolType> Tool => m_tool;
 	public IAsyncReactiveProperty<SnapType> Snapping => m_snapping;
 
-	public float SnappingAmount => m_snapping.Value.GetSnappingAmount(m_tileSize.Value);
+	public IUniTaskAsyncEnumerable<float> Subscriber => m_messageBroker.Subscribe();
 
-	public Palette()
+	public Palette(int tileSize)
 	{
-		m_tileSize = new(80);
+		m_tileSize = tileSize;
 		m_tool = new(ToolType.PENCIL);
 		m_snapping = new(SnapType.FULL);
+		m_messageBroker = new();
+
+		m_snapping.Subscribe(snapping => m_messageBroker.Publish(snapping.GetSnappingAmount(tileSize)));
+		m_messageBroker.Publish(tileSize);
 	}
 
     public void Dispose()
     {
-        m_tileSize.Dispose();
 		m_tool.Dispose();
 		m_snapping.Dispose();
     }

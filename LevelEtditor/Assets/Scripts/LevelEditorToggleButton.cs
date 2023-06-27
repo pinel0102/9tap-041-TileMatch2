@@ -18,7 +18,7 @@ public class LevelEditorToggleButton : MonoBehaviour
 		m_textField.text = text;
 
 		m_toggle.onValueChanged.AddListener(isOn => onToggle?.Invoke(isOn));
-		m_toggle.SetIsOnWithoutNotify(awakeOn);
+		m_toggle.isOn = awakeOn;
 	}
 
 }

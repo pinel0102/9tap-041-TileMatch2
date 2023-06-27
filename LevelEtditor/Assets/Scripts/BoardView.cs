@@ -9,15 +9,15 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 
+public class BoardParameter
+{
+	public int TileSize;
+	public int CellCount;
+	public Action OnPointerClick;
+}
 
 public class BoardView : MonoBehaviour
 {
-	[SerializeField]
-	private int m_tileSize = 80;
-
-	[SerializeField]
-	private int m_cellCount = 7;
-
 	[SerializeField]
 	private RectTransform m_board;
 
@@ -30,68 +30,59 @@ public class BoardView : MonoBehaviour
 	[SerializeField]
 	private Transform m_tileParent;
 
-	
-	private RectTransform m_rectTransform;
-	
-	private List<Bounds> m_placedTileBounds = new();
+	public Queue<GameObject> m_tileObjectPool = new();
 
-	private void Awake()
+	public void OnSetup(BoardParameter parameter)
 	{
-		m_rectTransform = transform as RectTransform;
-	}
-
-	public void OnSetup(Action<Vector2> onClick)
-    {
 		CancellationToken token = this.GetCancellationTokenOnDestroy();
-		Bounds boardBounds = m_board.GetBounds(m_rectTransform);
 
-		m_wireFrame.pixelsPerUnitMultiplier = 100 / (float)m_tileSize;
+		int tileSize = parameter.TileSize;
+		int cellCount = parameter.CellCount;
 
-		m_board.SetSize(m_tileSize * m_cellCount);
-		m_brush.OnSetup(
-			m_tileSize,
-			onClick: pos => {
-				onClick?.Invoke(pos);
-				GameObject go = new GameObject("Tile");
-				go.transform.SetParent(m_tileParent);
-				go.transform.localPosition = pos;
-				go.transform.localRotation = Quaternion.identity;
-				go.transform.localScale = Vector3.one;
+		m_board.SetSize(tileSize * cellCount);
+		m_brush.OnSetup(tileSize, onClick: parameter.OnPointerClick);
+		m_wireFrame.pixelsPerUnitMultiplier = 100 / (float)tileSize;
 
-				Image image = go.AddComponent<Image>();
-				image.color = Color.green;
-				image.rectTransform.SetSize(m_tileSize);
-
-				m_placedTileBounds.Add(image.rectTransform.GetBounds(m_board, 0.99f));
-			}
-		);
-
-		m_brush.Bounds.Subscribe(
-			bounds =>
-			{
-				m_brush.SetBrushState(
-					interactable: boardBounds.Intersects(bounds), 
-					drawable: m_placedTileBounds.All(placed => !placed.Intersects(bounds))
-				);
-			}
-		);
 	}
 
-	public void MoveBrush(float snapping, Vector3 inputPosition)
+	public void OnUpdateBrushWidget(Vector2 localPosition, bool interactable, bool drawable)
 	{
-		var (x, y, _) = m_board.InverseTransformPoint(inputPosition);
+		m_brush.transform.localPosition = localPosition;
+		m_brush.UpdateUI(interactable, drawable);
+	}
 
-		m_board.GetBounds(m_rectTransform);
+	public void OnDraw(Vector2 position)
+	{
+		GameObject go = m_tileObjectPool.Count > 0? m_tileObjectPool.Dequeue() : new GameObject("Tile");
+		go.SetActive(true);
+		go.transform.SetParent(m_tileParent);
+		go.transform.localRotation = Quaternion.identity;
+		go.transform.localScale = Vector3.one;
+		
+		if (!go.TryGetComponent<Image>(out Image image))
+		{
+			image = go.AddComponent<Image>();
+		}
+		image.color = Color.green;
 
-		m_brush.SetLocalPositionAndBounds(
-			localPosition: new Vector2(Mathf.RoundToInt(x / snapping) * snapping, Mathf.RoundToInt(y / snapping) * snapping),
-			viewPort: m_rectTransform
-		);
+		RectTransform rectTransform = go.transform as RectTransform;
+		rectTransform.localPosition = position;
+		rectTransform.SetSize(m_brush.RectTransform.sizeDelta);
+	}
+
+	public void ClearTiles()
+	{
+		var children = m_tileParent.GetComponentsInChildren<Transform>(false);
+		var enumerable = children.Where(child => !ReferenceEquals(child, m_tileParent)).Select(child => child.gameObject);
+		foreach (GameObject child in enumerable)
+		{
+			child.SetActive(false);
+			m_tileObjectPool.Enqueue(child);
+		}
 	}
 
 	public void VisibleWireFrame(bool enabled)
 	{
 		m_wireFrame.gameObject.SetActive(enabled);
 	}
-
 }

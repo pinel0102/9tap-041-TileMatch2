@@ -22,8 +22,8 @@ public class LayerContainer : MonoBehaviour
     [SerializeField]
     private LevelEditorButton m_clearTilesButton;
 
-    public void OnSetup()
+    public void OnSetup(Action onClear)
     {
-       
+       m_clearTilesButton.OnSetup("Clear Tiles in Layer", () => onClear?.Invoke());
     }
 }

@@ -61,7 +61,7 @@ public class LevelDataManager
 		}
 	}
 
-	public void AddTileData(Vector2 position, int type = 0)
+	public void AddTileData(Vector2 position)
 	{
 		if (m_levelDataDic.TryGetValue(m_current.Level, out LevelData levelData))
 		{
@@ -69,7 +69,7 @@ public class LevelDataManager
 
 			if (layerData != null)
 			{
-				layerData.Tiles.Add(new Tile(type, position));
+				layerData.Tiles.Add(new Tile(0, position));
 			}
 		}
 	}
@@ -82,7 +82,7 @@ public class LevelDataManager
 		// }
 	}
 
-	public void ClearTileAll()
+	public void ClearTileDatasInLayer()
 	{
 		if (m_levelDataDic.TryGetValue(m_current.Level, out LevelData levelData))
 		{

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using System;
+using System.Threading;
 
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
@@ -16,35 +17,24 @@ public class TileBrush : MonoBehaviour
 
 	public RectTransform RectTransform => transform as RectTransform;
 
-	private AsyncReactiveProperty<Bounds> m_bounds = new(new());
-	public IReadOnlyAsyncReactiveProperty<Bounds> Bounds => m_bounds;
-
-	private void OnDestroy()
+	public void OnSetup(int size, Action onClick)
 	{
-		m_bounds.Dispose();
+		CancellationToken token = this.GetCancellationTokenOnDestroy();
+
+		RectTransform.SetSize(size);
+		if (onClick != null)
+		{
+			m_button.onClick.AddListener(onClick.Invoke);
+		}
 	}
 
-	public void OnSetup(int size, Action<Vector2> onClick)
-	{
-		m_image.rectTransform.SetSize(size);
-		m_button.onClick.AddListener(
-			() => {
-				onClick?.Invoke(transform.localPosition);
-			}
-		);
-	}
-
-	public void SetBrushState(bool interactable, bool drawable)
+	public void UpdateUI(bool interactable, bool drawable)
 	{
 		m_button.interactable = interactable && drawable;
 		m_image.enabled = interactable;
-		m_image.color = drawable ? Color.green : Color.red;
+		m_image.color = drawable switch {
+			true => Color.green,
+			_ => Color.red
+		};
 	}
-
-	public void SetLocalPositionAndBounds(Vector2 localPosition, RectTransform viewPort)
-	{
-		transform.localPosition = localPosition;
-		m_bounds.Value = m_image?.rectTransform?.GetBounds(viewPort) ?? new();
-	}
-
 }

@@ -7,10 +7,15 @@ using TMPro;
 public class LevelEditorButton : MonoBehaviour
 {
 	[SerializeField]
-	private Button m_button;
+	private Button m_button = null!;
 
 	[SerializeField]
-	private TMP_Text m_textField;
+	private TMP_Text m_textField = null!;
+
+	public void OnSetup(Action onClick)
+	{
+		m_button.onClick.AddListener(() => onClick?.Invoke());
+	}
 
 	public void OnSetup(string text, Action onClick)
 	{
