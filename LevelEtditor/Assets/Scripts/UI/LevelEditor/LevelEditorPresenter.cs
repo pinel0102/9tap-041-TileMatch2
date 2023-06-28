@@ -34,6 +34,12 @@ public record BrushWidgetInfo
 	Vector2 LocalPosition
 );
 
+public record LevelInfo
+(
+	int Level,
+	List<(Vector2 position, float size)> Tiles
+);
+
 public class LevelEditorPresenter : IDisposable
 {
 	private readonly LevelDataManager m_dataManager;
@@ -41,9 +47,11 @@ public class LevelEditorPresenter : IDisposable
 	private readonly Bounds m_boardBounds;
 	private readonly List<Bounds> m_placedTileBounds;
 	private readonly AsyncReactiveProperty<BrushInfo> m_brushInfo;
-	private readonly AsyncMessageBroker<BrushWidgetInfo> m_messageBroker = new();
+	private readonly AsyncMessageBroker<BrushWidgetInfo> m_brushMessageBroker;
+	private readonly AsyncMessageBroker<LevelInfo> m_levelMessageBroker;
 	
-	public IUniTaskAsyncEnumerable<BrushWidgetInfo> BrushBroker => m_messageBroker.Subscribe();
+	public IUniTaskAsyncEnumerable<BrushWidgetInfo> BrushMessageBroker => m_brushMessageBroker.Subscribe();
+	public IUniTaskAsyncEnumerable<LevelInfo> LevelMessageBroker => m_levelMessageBroker.Subscribe();
 
 	public LevelEditorPresenter(LevelEditor view, float cellSize, float cellCount)
 	{
@@ -51,12 +59,14 @@ public class LevelEditorPresenter : IDisposable
 		m_view = view;
 		m_boardBounds = new Bounds(Vector2.zero, Vector2.one * cellSize * cellCount);
 		m_brushInfo = new(new BrushInfo(cellSize, cellSize, Position: Vector2.zero));
+		m_brushMessageBroker = new();
+		m_levelMessageBroker = new();
 		m_placedTileBounds = new();
 
 		m_brushInfo.Subscribe(
 			info =>
 			{
-				m_messageBroker.Publish(
+				m_brushMessageBroker.Publish(
 					new BrushWidgetInfo(
 						Interactable: info.Overlap(m_boardBounds),
 						Drawable: m_placedTileBounds.All(
@@ -100,6 +110,41 @@ public class LevelEditorPresenter : IDisposable
 		#endif
 	}
 
+	public void LoadLevelBy(int amount)
+	{
+		LevelData data = m_dataManager.LoadLevelDataBy(amount);
+		LoadLevelInternal(data);
+	}
+
+	private void LoadLevelInternal(LevelData levelData)
+	{
+		if (levelData == null)
+		{
+			return;
+		}
+
+		(float size, _, _) = m_brushInfo.Value;
+		Layer layer = levelData.GetLayer(0, 0);
+
+		List<(Vector2, float)> drawList = new();
+
+		m_placedTileBounds.Clear();
+
+		layer.Tiles.ForEach(
+			tile => {
+				m_placedTileBounds.Add(new Bounds(tile.Position, Vector2.one * size));
+				drawList.Add((tile.Position, size));
+			}
+		);
+
+		m_levelMessageBroker.Publish(new LevelInfo(Level: levelData.Level, Tiles: drawList));
+	}
+
+	public void SaveLevel()
+	{
+		m_dataManager.SaveLevelData();
+	}
+
 	public void SetBrushPosition(Vector2 inputPosition)
 	{
 		var (x, y) = inputPosition;
@@ -124,9 +169,22 @@ public class LevelEditorPresenter : IDisposable
 	{
 		(float size, _, Vector2 position) = m_brushInfo.Value;
 
-		m_placedTileBounds.Add(new Bounds(position, Vector2.one * size));
-		m_dataManager.AddTileData(position);
-		m_view.OnDrawCell(position);
+		if (m_dataManager.TryAddTileData(position))
+		{
+			m_placedTileBounds.Add(new Bounds(position, Vector2.one * size));
+			m_view.OnDrawCell(position, size);
+		}
+	}
+
+	public void RemoveTileInLayer()
+	{
+		(float size, _, Vector2 position) = m_brushInfo.Value;
+
+		if (m_dataManager.TryRemoveTileData(position))
+		{
+			m_placedTileBounds.RemoveAll(tile => Vector2.Distance(position, tile.center) == 0);
+			m_view.OnEraseCell(position);
+		}
 	}
 
 	public void AllClearTiles()
@@ -139,7 +197,8 @@ public class LevelEditorPresenter : IDisposable
 	public void Dispose()
 	{
 		m_brushInfo.Dispose();
-		m_messageBroker.Dispose();
+		m_brushMessageBroker.Dispose();
+		m_levelMessageBroker.Dispose();
 		m_placedTileBounds.Clear();
 	}
 }

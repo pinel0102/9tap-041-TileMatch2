@@ -1,16 +1,16 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 using System;
 using System.Threading;
 
 using Cysharp.Threading.Tasks;
-using Cysharp.Threading.Tasks.Linq;
 
 public class TileBrush : MonoBehaviour
 {
 	[SerializeField]
-	private Button m_button;
+	private EventTrigger m_button;
 
 	[SerializeField]
 	private Image m_image;
@@ -22,15 +22,22 @@ public class TileBrush : MonoBehaviour
 		CancellationToken token = this.GetCancellationTokenOnDestroy();
 
 		RectTransform.SetSize(size);
-		if (onClick != null)
-		{
-			m_button.onClick.AddListener(onClick.Invoke);
-		}
+		EventTrigger.Entry entry = new EventTrigger.Entry{
+			eventID = EventTriggerType.PointerClick,
+			callback = new EventTrigger.TriggerEvent()
+		};
+
+		entry.callback.AddListener(
+			eventData => {
+				onClick?.Invoke();
+			}
+		);
+		m_button.triggers.Add(entry);
 	}
 
 	public void UpdateUI(bool interactable, bool drawable)
 	{
-		m_button.interactable = interactable && drawable;
+		m_button.enabled = interactable;
 		m_image.enabled = interactable;
 		m_image.color = drawable switch {
 			true => Color.green,

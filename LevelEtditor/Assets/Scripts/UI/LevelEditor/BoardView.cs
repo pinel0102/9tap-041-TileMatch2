@@ -2,12 +2,10 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using System;
-using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
 
 using Cysharp.Threading.Tasks;
-using Cysharp.Threading.Tasks.Linq;
 
 public class BoardParameter
 {
@@ -30,7 +28,9 @@ public class BoardView : MonoBehaviour
 	[SerializeField]
 	private Transform m_tileParent;
 
-	public Queue<GameObject> m_tileObjectPool = new();
+	private List<GameObject> m_placedTileObjects = new();
+	
+	private Queue<GameObject> m_tileObjectPool = new();
 
 	public void OnSetup(BoardParameter parameter)
 	{
@@ -51,7 +51,7 @@ public class BoardView : MonoBehaviour
 		m_brush.UpdateUI(interactable, drawable);
 	}
 
-	public void OnDraw(Vector2 position)
+	public void OnDraw(Vector2 position, float size)
 	{
 		GameObject go = m_tileObjectPool.Count > 0? m_tileObjectPool.Dequeue() : new GameObject("Tile");
 		go.SetActive(true);
@@ -67,18 +67,43 @@ public class BoardView : MonoBehaviour
 
 		RectTransform rectTransform = go.transform as RectTransform;
 		rectTransform.localPosition = position;
-		rectTransform.SetSize(m_brush.RectTransform.sizeDelta);
+		rectTransform.SetSize(size);
+
+		m_placedTileObjects.Add(go);
+	}
+
+	public void OnRemoveTile(Vector2 position)
+	{
+		if (m_placedTileObjects.Count > 0)
+		{
+			GameObject minObject = m_placedTileObjects[0];
+			float minDistance = Vector2.Distance(minObject.transform.localPosition, position);
+
+			m_placedTileObjects.ForEach(tile => {
+					float distance = Vector2.Distance(tile.transform.localPosition, position);
+					if (minDistance > distance)
+					{
+						minObject = tile;
+						minDistance = distance;
+					}
+				}
+			);
+
+			minObject.SetActive(false);
+			m_tileObjectPool.Enqueue(minObject);
+			m_placedTileObjects.RemoveAll(tile => ReferenceEquals(minObject, tile));
+		}
 	}
 
 	public void ClearTiles()
 	{
-		var children = m_tileParent.GetComponentsInChildren<Transform>(false);
-		var enumerable = children.Where(child => !ReferenceEquals(child, m_tileParent)).Select(child => child.gameObject);
-		foreach (GameObject child in enumerable)
+		foreach (GameObject tile in m_placedTileObjects)
 		{
-			child.SetActive(false);
-			m_tileObjectPool.Enqueue(child);
+			tile.SetActive(false);
+			m_tileObjectPool.Enqueue(tile);
 		}
+
+		m_placedTileObjects.Clear();
 	}
 
 	public void VisibleWireFrame(bool enabled)

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 using System.Threading;
+using System.Linq;
 
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
@@ -34,24 +35,46 @@ public class LevelEditor : MonoBehaviour
 			new BoardParameter {
 				TileSize = m_cellSize,
 				CellCount = m_cellCount,
-				OnPointerClick = m_presenter.AddTileInLayer
+				OnPointerClick = () => {
+					switch (InputController.Instance.WasState)
+					{
+						case InputController.State.LEFT_BUTTON_PRESSED:
+							m_presenter.AddTileInLayer();
+							break;
+						case InputController.State.RIGHT_BUTTON_PRESSED:
+							m_presenter.RemoveTileInLayer();
+							break;
+					}
+				}
 			}
 		);
 
 		m_menuView.OnSetup(
 			new MenuViewParameter {
+				OnMoveLevel = m_presenter.LoadLevelBy,
+				OnSaveLevel = m_presenter.SaveLevel,
 				OnChangedSnapping = (snap) => { m_palette.Snapping.Value = snap; },
 				OnVisibleGuide = m_boardView.VisibleWireFrame,
 				OnClearTiles = m_boardView.ClearTiles
 			}
 		);
 
-		m_presenter.BrushBroker.Subscribe(info => {
+		m_presenter.LevelMessageBroker.Subscribe(
+			info => {
+				m_boardView.ClearTiles();
+				m_menuView.UpdateLevelUI(info.Level);
+				info.Tiles.ForEach(tile => OnDrawCell(tile.position, tile.size));
+			}
+		);
+
+		m_presenter.BrushMessageBroker.Subscribe(info => {
 			var (interactable, drawable, position) = info;
 			m_boardView.OnUpdateBrushWidget(position, interactable, drawable);
 		});
 
 		m_palette.Subscriber.Subscribe(m_presenter.ChangeSnapping);
+
+		m_presenter.LoadLevelBy(0);
 
 		CancellationToken token = this.GetCancellationTokenOnDestroy();
 
@@ -62,15 +85,19 @@ public class LevelEditor : MonoBehaviour
 				return;
 			}
 
-
-			Vector2 inputPosition = m_boardView.transform.InverseTransformPoint(mouse.position.ReadValue());
+			Vector2 inputPosition = InputController.Instance.ToLocalPosition(m_boardView.transform);
 			m_presenter.SetBrushPosition(inputPosition);
 		}
 	}
 
-	public void OnDrawCell(Vector2 localPosition)
+	public void OnDrawCell(Vector2 localPosition, float size)
 	{
-		m_boardView.OnDraw(localPosition);
+		m_boardView.OnDraw(localPosition, size);
+	}
+
+	public void OnEraseCell(Vector2 localPosition)
+	{
+		m_boardView.OnRemoveTile(localPosition);
 	}
 
 	public void ClearTilesInLayer()
