@@ -1,8 +1,21 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 
 [Serializable]
 public record Board(
-    int Index,
-    List<Layer> Layers
-);
+	List<Layer> Layers
+)
+{
+	public Layer? this[int index] 
+	{
+		get
+		{
+			return Layers.HasIndex(index) switch {
+				true => Layers[index],
+				_ => default(Layer)
+			};
+		}
+	}
+}

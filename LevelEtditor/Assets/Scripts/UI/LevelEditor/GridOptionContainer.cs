@@ -3,8 +3,13 @@ using UnityEngine.UI;
 
 using System;
 
-using Cysharp.Threading.Tasks.Linq;
 using Cysharp.Threading.Tasks;
+
+public class GridOptionContainerParameter
+{
+	public Action<SnapType> OnChangedSnapping;
+	public Action<bool> OnVisibleGuide;
+}
 
 public class GridOptionContainer : MonoBehaviour
 {
@@ -31,8 +36,10 @@ public class GridOptionContainer : MonoBehaviour
 		m_snapping.Dispose();
 	}
 
-	public void OnSetup(Action<SnapType> onChangedSnapping, Action<bool> onVisibleGuide)
+	public void OnSetup(GridOptionContainerParameter parameter)
 	{
+		var onChangedSnapping = parameter.OnChangedSnapping;
+
 		m_fullToggleButton.OnSetup(
 			"Full", 
 			isOn => {
@@ -68,6 +75,6 @@ public class GridOptionContainer : MonoBehaviour
 			group: m_toggleGroup
 		);
 
-		m_guideLineButton.OnSetup("GUIDE", onVisibleGuide);
+		m_guideLineButton.OnSetup("GUIDE", isOn => parameter?.OnVisibleGuide?.Invoke(isOn));
 	}
 }

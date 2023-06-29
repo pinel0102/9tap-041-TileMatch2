@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 using System.Threading;
-using System.Linq;
 
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
@@ -41,34 +40,55 @@ public partial class LevelEditor : MonoBehaviour
 
 		m_menuView.OnSetup(
 			new MenuViewParameter {
-				OnMoveLevel = m_presenter.LoadLevelBy,
-				OnSaveLevel = m_presenter.SaveLevel,
-				OnJumpLevel = null, //todo..
-				OnControlTileTypes = m_presenter.SetNumberOfTileTypes,
-				OnInputTileTypes = m_presenter.SetNumberOfTileTypesManually,
-				OnChangedSnapping = (snap) => { m_palette.Snapping.Value = snap; },
-				OnVisibleGuide = m_boardView.VisibleWireFrame,
-				OnClearTiles = m_boardView.ClearTiles
+				SelectLevelContainerParameter = new SelectLevelContainerParameter {
+					OnTakeStep = m_presenter.LoadLevelByStep,
+					OnNavigate = m_presenter.LoadLevel,
+					OnSave = m_presenter.SaveLevel
+				},
+				NumberOfContainerParameter = new NumberOfTileTypesContainerParameter {
+					OnTakeStep = m_presenter.IncrementNumberOfTileTypes,
+					OnNavigate = m_presenter.SetNumberOfTileTypes
+				},
+				GridOptionContainerParameter = new GridOptionContainerParameter {
+					OnChangedSnapping = (snap) => { m_palette.Snapping.Value = snap; },
+					OnVisibleGuide = m_boardView.VisibleWireFrame
+				},
+				LayerContainerParameter = new LayerContainerParameter {
+					OnCreate = m_presenter.AddLayer,
+					OnRemove = m_presenter.RemoveLayer,
+					OnClear = m_presenter.ClearTilesInLayer
+				}
 			}
 		);
 
-		m_presenter.UpdateInfo.Subscribe(
-			info => {
+		CancellationToken token = this.GetCancellationTokenOnDestroy();
+
+		// 편집 이벤트가 발생해 에디터 state가 변경되어 case에 따라 ui 업데이트를 하도록 함.
+		m_presenter.UpdateState.WithoutCurrent().SubscribeAwait(
+			onNext: async info => {
+				await UniTask.Yield(
+					timing: PlayerLoopTiming.LastPostLateUpdate,
+					cancellationToken: token
+				);
+
 				switch (info)
 				{
-					case CurrentState.AllUpdated all:
-						m_boardView.ClearTiles();
-						m_menuView.UpdateLevelUI(all.Level);
-						foreach (var (position, size) in all.Tiles)
-						{
-							m_boardView.OnDraw(position, size);
-						}
+					case CurrentState.AllUpdated all: // 레벨 변경시 모든 ui가 변경되어야 함
+						m_boardView.OnUpdateLayerView(all.Layers);
+						m_menuView.UpdateLevelUI(all.LastLevel, all.CurrentLevel);
+						m_menuView.UpdateNumberOfTileTypesUI(all.NumberOfTileTypes);
+						m_menuView.UpdateLayerUI(all.Layers.Count);
 						break;
-					case CurrentState.NumberOfTileTypesUpdated numberOfTileTypes:
+					case CurrentState.NumberOfTileTypesUpdated numberOfTileTypes: // 타일 종류 개수
 						m_menuView.UpdateNumberOfTileTypesUI(numberOfTileTypes.NumberOfTileTypes);
 						break;
+					case CurrentState.LayerUpdated layer: // 레이어
+						m_boardView.OnUpdateLayerView(layer.Layers);
+						m_menuView.UpdateLayerUI(layer.Layers.Count);
+						break;
 				}
-			}
+			},
+			cancellationToken: token 
 		);
 
 		m_presenter.BrushMessageBroker.Subscribe(info => {
@@ -78,9 +98,8 @@ public partial class LevelEditor : MonoBehaviour
 
 		m_palette.Subscriber.Subscribe(m_presenter.ChangeSnapping);
 
-		m_presenter.LoadLevelBy(0);
+		m_presenter.LoadLevelByStep(0);
 
-		CancellationToken token = this.GetCancellationTokenOnDestroy();
 
 		await foreach (var _ in UniTaskAsyncEnumerable.EveryUpdate(PlayerLoopTiming.LastPostLateUpdate))
 		{
@@ -94,18 +113,18 @@ public partial class LevelEditor : MonoBehaviour
 		}
 	}
 
-	public void OnDrawCell(Vector2 localPosition, float size)
+	public void OnDrawCell(int layerIndex, Vector2 localPosition, float size)
 	{
-		m_boardView.OnDraw(localPosition, size);
+		m_boardView.OnDrawTile(layerIndex, localPosition, size);
 	}
 
-	public void OnEraseCell(Vector2 localPosition)
+	public void OnEraseCell(int layerIndex, Vector2 localPosition)
 	{
-		m_boardView.OnRemoveTile(localPosition);
+		m_boardView.OnEraseTile(layerIndex, localPosition);
 	}
 
-	public void ClearTilesInLayer()
+	public void ClearTilesInLayer(int layerIndex)
 	{
-		m_boardView.ClearTiles();
+		m_boardView.ClearTilesInLayer(layerIndex);
 	}
 }

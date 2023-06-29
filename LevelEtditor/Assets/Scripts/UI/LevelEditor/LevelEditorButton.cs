@@ -22,4 +22,14 @@ public class LevelEditorButton : MonoBehaviour
 		m_textField.text = text;
 		m_button.onClick.AddListener(() => onClick?.Invoke());
 	}
+
+	public void SetInteractable(bool interactable)
+	{
+		m_button.interactable = interactable;
+	}
+
+	public void UpdateUI(string text)
+	{
+		m_textField.text = text;
+	}
 }

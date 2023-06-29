@@ -14,9 +14,9 @@ using Newtonsoft.Json.UnityConverters.Math;
 public class LevelDataManager
 {
 	[Serializable]
-	public record GameConfig(int LastLevel)
+	public record GameConfig(int LastLevel, int RequiredMultiples)
 	{
-		public static GameConfig Init = new(LastLevel: 1);
+		public static GameConfig Init = new(LastLevel: 1, RequiredMultiples: 3);
 	}
 
 	private readonly JsonSerializerSettings m_serializerSettings;
@@ -26,6 +26,7 @@ public class LevelDataManager
 	private LevelData? m_currentData;
 
 	public LevelData? CurrentLevelData => m_currentData;
+	public GameConfig Config => m_gameConfig;
 
 	public LevelDataManager()
 	{
@@ -40,14 +41,30 @@ public class LevelDataManager
 		};
 	}
 
-	public LevelData CreateLevelData()
+	public LevelData? CreateLevelData()
 	{
 		int nextLevel = m_gameConfig.LastLevel + 1;
 		m_gameConfig = m_gameConfig with { LastLevel = nextLevel };
-		return LoadLevelData(nextLevel);
+		return LoadLevelDataInternal(nextLevel);
 	}
 
-	public LevelData LoadLevelData(int level)
+	public LevelData? LoadLevelData(int level)
+	{
+		if (level < 0 || level >= m_gameConfig.LastLevel)
+		{
+			return m_currentData;
+		}
+
+		return LoadLevelDataInternal(level);
+	}
+
+	public LevelData? LoadLevelDataByStep(int amount)
+	{
+		int selectLevel = Mathf.Max((m_currentData?.Level + amount) ?? 1, 1);
+		return selectLevel > m_gameConfig.LastLevel? CreateLevelData() : LoadLevelDataInternal(selectLevel);
+	}
+
+	private LevelData? LoadLevelDataInternal(int level)
 	{
 		string path = GetLevelDataPath(level);
 
@@ -68,12 +85,6 @@ public class LevelDataManager
 		m_currentData = data;
 
 		return data;
-	}
-
-	public LevelData? LoadLevelDataBy(int amount)
-	{
-		int selectLevel = Mathf.Max((m_currentData?.Level + amount) ?? 1, 1);
-		return selectLevel > m_gameConfig.LastLevel? CreateLevelData() : LoadLevelData(selectLevel);
 	}
 
 	public GameConfig LoadConfig()
@@ -122,16 +133,43 @@ public class LevelDataManager
 
 		int clamp = Mathf.Max(number, 1);
 
-		var data = m_currentData with {
+		m_currentData = m_currentData with {
 			NumberOfTileTypes = clamp
 		};
 
 		return clamp;
 	}
 
-	public bool TryAddTileData(Vector2 position)
+	// index뒤에 추가
+	public bool TryAddLayerData(int boardIndex, int prevIndex)
 	{
-		Layer? layerData = m_currentData?.GetLayer(0, 0); //need to add arguments (boardIndex, LayerIndex)
+		Board? board = m_currentData?[boardIndex];
+
+		if (board?.Layers.HasIndex(prevIndex) ?? false)
+		{
+			board.Layers.Insert(prevIndex + 1, Layer.Init);
+			return true;
+		}
+
+		return false;
+	}
+
+	public bool TryRemoveLayerData(int boardIndex, int index)
+	{
+		Board? board = m_currentData?[boardIndex];
+
+		if (board?.Layers.HasIndex(index) ?? false)
+		{
+			board.Layers.RemoveAt(index);
+			return true;
+		}
+
+		return false;
+	}
+
+	public bool TryAddTileData(int boardIndex, int layerIndex, Vector2 position)
+	{
+		Layer? layerData = m_currentData?.GetLayer(boardIndex, layerIndex);
 
 		if (layerData?.Tiles?.All(tile => !position.Equals(tile.Position)) ?? false)
 		{
@@ -142,9 +180,9 @@ public class LevelDataManager
 		return false;
 	}
 
-	public bool TryRemoveTileData(Vector2 position)
+	public bool TryRemoveTileData(int boardIndex, int layerIndex, Vector2 position)
 	{
-		Layer? layerData = m_currentData?.GetLayer(0, 0); //need to add arguments (boardIndex, LayerIndex)
+		Layer? layerData = m_currentData?.GetLayer(boardIndex, layerIndex);
 
 		if (layerData?.Tiles is var tiles and not null)
 		{
@@ -154,9 +192,9 @@ public class LevelDataManager
 		return false;
 	}
 
-	public void ClearTileDatasInLayer()
+	public void ClearTileDatasInLayer(int boardIndex, int layerIndex)
 	{
-		Layer? layerData = m_currentData?.GetLayer(0, 0); //need to add arguments (boardIndex, LayerIndex)
+		Layer? layerData = m_currentData?[boardIndex]?[layerIndex];
 
 		if (layerData != null)
 		{

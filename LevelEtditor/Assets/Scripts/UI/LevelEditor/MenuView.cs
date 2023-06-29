@@ -4,14 +4,10 @@ using System;
 
 public class MenuViewParameter
 {
-	public Action<int> OnMoveLevel;
-	public Action<int> OnJumpLevel;
-	public Action OnSaveLevel;
-	public Action<int> OnControlTileTypes;
-	public Action<int> OnInputTileTypes;
-	public Action<SnapType> OnChangedSnapping;
-	public Action<bool> OnVisibleGuide;
-	public Action OnClearTiles;
+	public SelectLevelContainerParameter SelectLevelContainerParameter;
+	public NumberOfTileTypesContainerParameter NumberOfContainerParameter;
+	public GridOptionContainerParameter GridOptionContainerParameter;
+	public LayerContainerParameter LayerContainerParameter;
 }
 
 public class MenuView : MonoBehaviour
@@ -30,19 +26,24 @@ public class MenuView : MonoBehaviour
 
 	public void OnSetup(MenuViewParameter parameter)
 	{
-		m_levelContainer.OnSetup(parameter.OnMoveLevel, parameter.OnJumpLevel, parameter.OnSaveLevel);
-		m_tileTypeContainer.OnSetup(parameter.OnControlTileTypes, parameter.OnInputTileTypes);
-		m_gridOptionContainer.OnSetup(parameter.OnChangedSnapping, parameter.OnVisibleGuide);
-		m_layerContainer.OnSetup(parameter.OnClearTiles);
+		m_levelContainer.OnSetup(parameter.SelectLevelContainerParameter);
+		m_tileTypeContainer.OnSetup(parameter.NumberOfContainerParameter);
+		m_gridOptionContainer.OnSetup(parameter.GridOptionContainerParameter);
+		m_layerContainer.OnSetup(parameter.LayerContainerParameter);
 	}
 
-	public void UpdateLevelUI(int level)
+	public void UpdateLevelUI(int lastLevel, int selectedLevel)
 	{
-		m_levelContainer.UpdateUI(level);
+		m_levelContainer.UpdateUI(lastLevel, selectedLevel);
 	}
 
-    public void UpdateNumberOfTileTypesUI(int number)
+	public void UpdateNumberOfTileTypesUI(int number)
+	{
+	   m_tileTypeContainer.UpdateUI(number);
+	}
+
+    public void UpdateLayerUI(int count)
     {
-       m_tileTypeContainer.UpdateUI(number);
+		m_layerContainer.UpdateUI(count);
     }
 }

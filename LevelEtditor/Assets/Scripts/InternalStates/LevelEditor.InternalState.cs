@@ -6,6 +6,8 @@ using System.Linq;
 
 partial class LevelEditor
 {
+	public record TileInfo(Vector2 Position, float Size);
+
 	public enum UpdateType
 	{
 		NONE,
@@ -15,12 +17,16 @@ partial class LevelEditor
 		BOARD, // 편집할 보드 변경
 	}
 
+	/// <summary>
+	/// 레벨 에디터에서 편집하는 데이터들을 이곳에 보관
+	/// </summary>
 	public record InternalState
 	(
 		UpdateType UpdateType,
-		int Level,
+		int LastLevel,
+		int CurrentLevel,
 		int NumberOfTileTypes,
-		IReadOnlyList<(Vector2 position, float size)> Tiles,
+		List<IReadOnlyList<TileInfo>> Layers,
 		int BoardIndex = 0,
 		int LayerIndex = 0,
 		int TileCountInLayer = 0, // Todo
@@ -30,22 +36,34 @@ partial class LevelEditor
 
 		public static InternalState Empty = new InternalState(
 			UpdateType: UpdateType.NONE,
-			Level: 1,
+			LastLevel: 1,
+			CurrentLevel: 1,
 			NumberOfTileTypes: 1,
 			BoardIndex: 0,
 			LayerIndex: 0,
 			TileCountInLayer: 0,
 			TileCountAll: 0,
-			Tiles: Array.Empty<(Vector2, float)>()
+			Layers: new()
 		);
 
-		public static InternalState ToInternalInfo(LevelData data, float size)
+		public static InternalState ToInternalInfo(LevelData data, int lastLevel, float size)
 		{
 			return new InternalState(
 				UpdateType: UpdateType.ALL,
-				Level: data.Level,
+				LastLevel: lastLevel,
+				CurrentLevel: data.Level,
 				NumberOfTileTypes: data.NumberOfTileTypes,
-				Tiles: data.GetLayer(0, 0).Tiles.Select(tile => (tile.Position, size)).ToArray()
+				Layers: data[0]
+					.Layers
+					.Select(
+						layer => {
+							return layer?
+							.Tiles?
+							.Select(
+								tile => new TileInfo(tile.Position, size)
+							).AsReadOnlyList() ?? Array.Empty<TileInfo>();
+						}
+					).ToList()
 			);
 		}
 
@@ -53,16 +71,23 @@ partial class LevelEditor
 		{
 			return UpdateType switch {
 				UpdateType.ALL => new CurrentState.AllUpdated(
-					Level: Level,
+					LastLevel: LastLevel,
+					CurrentLevel: CurrentLevel,
 					NumberOfTileTypes: NumberOfTileTypes,
 					BoardIndex: BoardIndex,
 					LayerIndex: LayerIndex,
 					TileCountInLayer: TileCountInLayer,
 					TileCountAll: TileCountAll,
-					Tiles: Tiles
+					Layers: Layers
 				),
 				UpdateType.NUMBER_OF_TILE_TYPES => new CurrentState.NumberOfTileTypesUpdated(
 					NumberOfTileTypes: NumberOfTileTypes
+				),
+				UpdateType.LAYER => new CurrentState.LayerUpdated(
+					LayerIndex: LayerIndex,
+					TileCountInLayer: TileCountInLayer,
+					TileCountAll: TileCountAll,
+					Layers: Layers
 				),
 				_=> new CurrentState.NotUpdated()
 			};
@@ -73,14 +98,21 @@ partial class LevelEditor
 	{
 		public record NotUpdated : CurrentState;
 		public record AllUpdated(
-			int Level,
+			int CurrentLevel,
+			int LastLevel,
 			int NumberOfTileTypes,
 			int BoardIndex,
 			int LayerIndex,
 			int TileCountInLayer,
 			int TileCountAll,
-			IReadOnlyList<(Vector2 position, float size)> Tiles
+			List<IReadOnlyList<TileInfo>> Layers
 		): CurrentState;
 		public record NumberOfTileTypesUpdated(int NumberOfTileTypes): CurrentState;
+		public record LayerUpdated(
+			int LayerIndex,
+			int TileCountInLayer,
+			int TileCountAll,
+			List<IReadOnlyList<TileInfo>> Layers
+		): CurrentState;
 	}
 }

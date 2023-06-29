@@ -46,11 +46,13 @@ public class LevelEditorPresenter : IDisposable
 	private readonly List<Bounds> m_placedTileBounds;
 	private readonly AsyncReactiveProperty<BrushInfo> m_brushInfo;
 	private readonly AsyncMessageBroker<BrushWidgetInfo> m_brushMessageBroker;
-	private readonly IAsyncReactiveProperty<InternalState> m_internalInfo;
+	private readonly IAsyncReactiveProperty<InternalState> m_internalState;
 	private readonly CancellationTokenSource m_cancellationTokenSource;
 	
-	public IReadOnlyAsyncReactiveProperty<CurrentState> UpdateInfo { get; }
+	public IReadOnlyAsyncReactiveProperty<CurrentState> UpdateState { get; }
 	public IUniTaskAsyncEnumerable<BrushWidgetInfo> BrushMessageBroker => m_brushMessageBroker.Subscribe();
+
+	private InternalState State => m_internalState.Value;
 
 	public LevelEditorPresenter(LevelEditor view, float cellSize, float cellCount)
 	{
@@ -59,12 +61,12 @@ public class LevelEditorPresenter : IDisposable
 		m_cancellationTokenSource = new();
 		m_boardBounds = new Bounds(Vector2.zero, Vector2.one * cellSize * cellCount);
 		m_brushInfo = new(new BrushInfo(cellSize, cellSize, Position: Vector2.zero));
-		m_internalInfo = new AsyncReactiveProperty<InternalState>(InternalState.Empty).WithDispatcher();
+		m_internalState = new AsyncReactiveProperty<InternalState>(InternalState.Empty).WithDispatcher();
 
 		m_brushMessageBroker = new();
 		m_placedTileBounds = new();
 
-		UpdateInfo = m_internalInfo
+		UpdateState = m_internalState
 			.Select(info => info.ToCurrentState())
 			.ToReadOnlyAsyncReactiveProperty(m_cancellationTokenSource.Token);
 
@@ -115,9 +117,25 @@ public class LevelEditorPresenter : IDisposable
 		#endif
 	}
 
-	public void LoadLevelBy(int amount)
+	#region IDisposable Interface
+	public void Dispose()
 	{
-		LevelData data = m_dataManager.LoadLevelDataBy(amount);
+		m_brushInfo.Dispose();
+		m_brushMessageBroker.Dispose();
+		m_placedTileBounds.Clear();
+	}
+	#endregion
+
+	#region Level
+	public void LoadLevel(int level)
+	{
+		LevelData data = m_dataManager.LoadLevelData(level);
+		LoadLevelInternal(data);
+	}
+
+	public void LoadLevelByStep(int direction)
+	{
+		LevelData data = m_dataManager.LoadLevelDataByStep(direction);
 		LoadLevelInternal(data);
 	}
 
@@ -142,14 +160,18 @@ public class LevelEditorPresenter : IDisposable
 			}
 		);
 
-		m_internalInfo.Update(info => InternalState.ToInternalInfo(levelData, size));
+		m_internalState.Update(info => 
+			InternalState.ToInternalInfo(levelData, m_dataManager.Config.LastLevel, size)
+		);
 	}
 
 	public void SaveLevel()
 	{
 		m_dataManager.SaveLevelData();
 	}
+	#endregion
 
+	#region Brush
 	public void SetBrushPosition(Vector2 inputPosition)
 	{
 		var (x, y) = inputPosition;
@@ -169,65 +191,112 @@ public class LevelEditorPresenter : IDisposable
 		BrushInfo info = m_brushInfo.Value;
 		m_brushInfo.Value = info with { Snapping = snapping };
 	}
-
+	#endregion
+	
+	#region Tile
 	public void SetTileInLayer(InputController.State state)
 	{
 		(float size, _, Vector2 position) = m_brushInfo.Value;
+
+		int boardIndex = State.BoardIndex;
+		int layerIndex = State.LayerIndex;
 
 		switch (state)
 		{
 			case LEFT_BUTTON_PRESSED:
 			case LEFT_BUTTON_RELEASED:
-				if (m_dataManager.TryAddTileData(position))
+				if (m_dataManager.TryAddTileData(boardIndex, layerIndex, position))
 				{
 					m_placedTileBounds.Add(new Bounds(position, Vector2.one * size));
-					m_view.OnDrawCell(position, size);
+					m_view.OnDrawCell(layerIndex, position, size);
 				}
 				break;
 			case RIGHT_BUTTON_PRESSED:
 			case RIGHT_BUTTON_RELEASED:
-				if (m_dataManager.TryRemoveTileData(position))
+				if (m_dataManager.TryRemoveTileData(boardIndex, layerIndex, position))
 				{
 					m_placedTileBounds.RemoveAll(tile => Vector2.Distance(position, tile.center) == 0);
-					m_view.OnEraseCell(position);
+					m_view.OnEraseCell(layerIndex, position);
 				}
 				break;
 		}
 	}
 
-	public void AllClearTiles()
+	public void ClearTilesInLayer()
 	{
 		m_placedTileBounds.Clear();
-		m_dataManager.ClearTileDatasInLayer();
-		m_view.ClearTilesInLayer();
+		m_dataManager.ClearTileDatasInLayer(State.BoardIndex, State.LayerIndex);
+		m_view.ClearTilesInLayer(State.LayerIndex);
 	}
 
-	public void Dispose()
+	public void IncrementNumberOfTileTypes(int increment)
 	{
-		m_brushInfo.Dispose();
-		m_brushMessageBroker.Dispose();
-		m_placedTileBounds.Clear();
-	}
-
-    public void SetNumberOfTileTypes(int amount)
-    {
-        if (m_dataManager.CurrentLevelData is var data and not null)
+		if (m_dataManager.CurrentLevelData is var data and not null)
 		{
-			var number = m_dataManager.UpdateNumberOfTypes(data.NumberOfTileTypes + amount);
+			var number = m_dataManager.UpdateNumberOfTypes(data.NumberOfTileTypes + increment);
 
 			if (number.HasValue)
 			{
-				m_internalInfo.Update(info => info with {
+				m_internalState.Update(info => info with {
 						UpdateType = UpdateType.NUMBER_OF_TILE_TYPES,
 						NumberOfTileTypes = number.Value
 					}
 				);
 			}
 		}
-    }
+	}
 
-    public void SetNumberOfTileTypesManually(int number)
-    {
-       //Todo..
-    }
+	public void SetNumberOfTileTypes(int value)
+	{
+		if (m_dataManager.CurrentLevelData is var data and not null)
+		{
+			var number = m_dataManager.UpdateNumberOfTypes(value);
+
+			if (number.HasValue)
+			{
+				m_internalState.Update(info => info with {
+						UpdateType = UpdateType.NUMBER_OF_TILE_TYPES,
+						NumberOfTileTypes = number.Value
+					}
+				);
+			}
+		}
+	}
+	#endregion
+
+	#region Layer
+	public void AddLayer()
+	{
+		(float size, _, _) = m_brushInfo.Value;
+
+		if (m_internalState.Value is var state)
+		{
+			if (m_dataManager.TryAddLayerData(state.BoardIndex, state.LayerIndex))
+			{
+				var layers = m_dataManager
+					.CurrentLevelData[state.BoardIndex]
+					.Layers
+					.Select(
+						layer => layer
+							.Tiles
+							.Select(tile => new TileInfo(tile.Position, size))
+							.AsReadOnlyList()
+					);
+
+				m_internalState.Update(state => state with {
+						UpdateType = UpdateType.LAYER,
+						LayerIndex = state.LayerIndex + 1,
+						TileCountInLayer = 0,
+						TileCountAll = layers.Select(layer => layer.Count()).Count(),
+						Layers = layers.ToList()
+					}
+				);
+			}
+		}
+	}
+
+	public void RemoveLayer()
+	{
+	}
+	#endregion
 }

@@ -34,9 +34,9 @@ public class Palette : IDisposable
 		m_messageBroker.Publish(tileSize);
 	}
 
-    public void Dispose()
-    {
+	public void Dispose()
+	{
 		m_tool.Dispose();
 		m_snapping.Dispose();
-    }
+	}
 }

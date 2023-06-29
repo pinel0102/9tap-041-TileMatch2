@@ -16,10 +16,22 @@ public record LevelData(
 	{
 		List<Board> boards = new();
 		List<Layer> layers = new();
-		layers.Add(new Layer(0, new()));
-		boards.Add(new Board(0, layers));
+		layers.Add(Layer.Init);
+		boards.Add(new Board(layers));
 
 		return new LevelData(level, boards, 0, 1);
 	}
-	public Layer? GetLayer(int boardIndex, int layerIndex) => Boards?.ElementAtOrDefault(boardIndex)?.Layers?.ElementAtOrDefault(layerIndex);
+
+	public Board? this[int index] 
+	{
+		get
+		{
+			return Boards.HasIndex(index) switch {
+				true => Boards[index],
+				_ => default(Board)
+			};
+		}
+	}
+
+	public Layer? GetLayer(int boardIndex, int layerIndex) => this[boardIndex]?[layerIndex];
 }

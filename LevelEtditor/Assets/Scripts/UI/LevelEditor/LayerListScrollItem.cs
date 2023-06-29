@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-using System;
-
 using Gpm.Ui;
 using TMPro;
 
@@ -19,6 +17,13 @@ public class LayerListScrollItem : InfiniteScrollItem
         base.UpdateData(scrollData);
 
 		LayerListScrollItemData itemData = scrollData as LayerListScrollItemData;
-		m_text.text = $"Layer {scrollData}";
+		m_text.text = $"Layer {itemData.Index}";
+
+		m_toggle.onValueChanged.AddListener(OnVisible);
     }
+
+	private void OnVisible(bool isOn)
+	{
+
+	}
 }

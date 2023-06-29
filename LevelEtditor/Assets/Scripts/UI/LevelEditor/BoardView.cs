@@ -2,10 +2,13 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using System;
+using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
 
 using Cysharp.Threading.Tasks;
+
+using static LevelEditor;
 
 public class BoardParameter
 {
@@ -26,11 +29,9 @@ public class BoardView : MonoBehaviour
 	private Image m_wireFrame;
 
 	[SerializeField]
-	private Transform m_tileParent;
-
-	private List<GameObject> m_placedTileObjects = new();
+	private Transform m_layerContainer;
 	
-	private Queue<GameObject> m_tileObjectPool = new();
+	private readonly List<LayerView> m_placedLayerObjects = new();
 
 	public void OnSetup(BoardParameter parameter)
 	{
@@ -51,59 +52,47 @@ public class BoardView : MonoBehaviour
 		m_brush.UpdateUI(interactable, drawable);
 	}
 
-	public void OnDraw(Vector2 position, float size)
+	public void OnDrawTile(int layerIndex, Vector2 position, float size)
 	{
-		GameObject go = m_tileObjectPool.Count > 0? m_tileObjectPool.Dequeue() : new GameObject("Tile");
-		go.SetActive(true);
-		go.transform.SetParent(m_tileParent);
-		go.transform.localRotation = Quaternion.identity;
-		go.transform.localScale = Vector3.one;
-		
-		if (!go.TryGetComponent<Image>(out Image image))
+		if (m_placedLayerObjects.TryGetValue(layerIndex, out var layerView))
 		{
-			image = go.AddComponent<Image>();
-		}
-		image.color = Color.green;
-
-		RectTransform rectTransform = go.transform as RectTransform;
-		rectTransform.localPosition = position;
-		rectTransform.SetSize(size);
-
-		m_placedTileObjects.Add(go);
-	}
-
-	public void OnRemoveTile(Vector2 position)
-	{
-		if (m_placedTileObjects.Count > 0)
-		{
-			GameObject minObject = m_placedTileObjects[0];
-			float minDistance = Vector2.Distance(minObject.transform.localPosition, position);
-
-			m_placedTileObjects.ForEach(tile => {
-					float distance = Vector2.Distance(tile.transform.localPosition, position);
-					if (minDistance > distance)
-					{
-						minObject = tile;
-						minDistance = distance;
-					}
-				}
-			);
-
-			minObject.SetActive(false);
-			m_tileObjectPool.Enqueue(minObject);
-			m_placedTileObjects.RemoveAll(tile => ReferenceEquals(minObject, tile));
+			layerView.Draw(position, size);
 		}
 	}
 
-	public void ClearTiles()
+	public void OnEraseTile(int layerIndex, Vector2 position)
 	{
-		foreach (GameObject tile in m_placedTileObjects)
+		if (m_placedLayerObjects.TryGetValue(layerIndex, out var layerView))
 		{
-			tile.SetActive(false);
-			m_tileObjectPool.Enqueue(tile);
+			layerView.Erase(position);
 		}
+	}
 
-		m_placedTileObjects.Clear();
+	public void OnUpdateLayerView(List<IReadOnlyList<TileInfo>> layers)
+	{
+		var enumerable = layers
+			.Select((layer, index) => (index, layer))
+			.OrderBy(x => x.index);
+
+		foreach (var (index, layer) in enumerable)
+		{
+			if (!m_placedLayerObjects.TryGetValue(index, out var layerView))
+			{
+				layerView = LayerView.CreateLayerView(m_layerContainer);
+				m_placedLayerObjects.Add(layerView);
+			}
+
+			layerView.Clear();
+			layerView.Draw(layer.Select(tile => (tile.Position, tile.Size)));
+		}
+	}
+
+	public void ClearTilesInLayer(int index)
+	{
+		if (m_placedLayerObjects.TryGetValue(index, out var layerView))
+		{
+			layerView.Clear();
+		}
 	}
 
 	public void VisibleWireFrame(bool enabled)
