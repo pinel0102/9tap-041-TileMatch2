@@ -3,10 +3,14 @@ using UnityEngine;
 
 using System;
 using System.Linq;
+using System.Threading;
 using System.Collections.Generic;
 
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
+
+using static InputController.State;
+using static LevelEditor;
 
 public record BrushInfo
 (
@@ -34,12 +38,6 @@ public record BrushWidgetInfo
 	Vector2 LocalPosition
 );
 
-public record LevelInfo
-(
-	int Level,
-	List<(Vector2 position, float size)> Tiles
-);
-
 public class LevelEditorPresenter : IDisposable
 {
 	private readonly LevelDataManager m_dataManager;
@@ -48,20 +46,27 @@ public class LevelEditorPresenter : IDisposable
 	private readonly List<Bounds> m_placedTileBounds;
 	private readonly AsyncReactiveProperty<BrushInfo> m_brushInfo;
 	private readonly AsyncMessageBroker<BrushWidgetInfo> m_brushMessageBroker;
-	private readonly AsyncMessageBroker<LevelInfo> m_levelMessageBroker;
+	private readonly IAsyncReactiveProperty<InternalState> m_internalInfo;
+	private readonly CancellationTokenSource m_cancellationTokenSource;
 	
+	public IReadOnlyAsyncReactiveProperty<CurrentState> UpdateInfo { get; }
 	public IUniTaskAsyncEnumerable<BrushWidgetInfo> BrushMessageBroker => m_brushMessageBroker.Subscribe();
-	public IUniTaskAsyncEnumerable<LevelInfo> LevelMessageBroker => m_levelMessageBroker.Subscribe();
 
 	public LevelEditorPresenter(LevelEditor view, float cellSize, float cellCount)
 	{
-		m_dataManager = new LevelDataManager();
 		m_view = view;
+		m_dataManager = new LevelDataManager();
+		m_cancellationTokenSource = new();
 		m_boardBounds = new Bounds(Vector2.zero, Vector2.one * cellSize * cellCount);
 		m_brushInfo = new(new BrushInfo(cellSize, cellSize, Position: Vector2.zero));
+		m_internalInfo = new AsyncReactiveProperty<InternalState>(InternalState.Empty).WithDispatcher();
+
 		m_brushMessageBroker = new();
-		m_levelMessageBroker = new();
 		m_placedTileBounds = new();
+
+		UpdateInfo = m_internalInfo
+			.Select(info => info.ToCurrentState())
+			.ToReadOnlyAsyncReactiveProperty(m_cancellationTokenSource.Token);
 
 		m_brushInfo.Subscribe(
 			info =>
@@ -137,7 +142,7 @@ public class LevelEditorPresenter : IDisposable
 			}
 		);
 
-		m_levelMessageBroker.Publish(new LevelInfo(Level: levelData.Level, Tiles: drawList));
+		m_internalInfo.Update(info => InternalState.ToInternalInfo(levelData, size));
 	}
 
 	public void SaveLevel()
@@ -165,25 +170,28 @@ public class LevelEditorPresenter : IDisposable
 		m_brushInfo.Value = info with { Snapping = snapping };
 	}
 
-	public void AddTileInLayer()
+	public void SetTileInLayer(InputController.State state)
 	{
 		(float size, _, Vector2 position) = m_brushInfo.Value;
 
-		if (m_dataManager.TryAddTileData(position))
+		switch (state)
 		{
-			m_placedTileBounds.Add(new Bounds(position, Vector2.one * size));
-			m_view.OnDrawCell(position, size);
-		}
-	}
-
-	public void RemoveTileInLayer()
-	{
-		(float size, _, Vector2 position) = m_brushInfo.Value;
-
-		if (m_dataManager.TryRemoveTileData(position))
-		{
-			m_placedTileBounds.RemoveAll(tile => Vector2.Distance(position, tile.center) == 0);
-			m_view.OnEraseCell(position);
+			case LEFT_BUTTON_PRESSED:
+			case LEFT_BUTTON_RELEASED:
+				if (m_dataManager.TryAddTileData(position))
+				{
+					m_placedTileBounds.Add(new Bounds(position, Vector2.one * size));
+					m_view.OnDrawCell(position, size);
+				}
+				break;
+			case RIGHT_BUTTON_PRESSED:
+			case RIGHT_BUTTON_RELEASED:
+				if (m_dataManager.TryRemoveTileData(position))
+				{
+					m_placedTileBounds.RemoveAll(tile => Vector2.Distance(position, tile.center) == 0);
+					m_view.OnEraseCell(position);
+				}
+				break;
 		}
 	}
 
@@ -198,7 +206,28 @@ public class LevelEditorPresenter : IDisposable
 	{
 		m_brushInfo.Dispose();
 		m_brushMessageBroker.Dispose();
-		m_levelMessageBroker.Dispose();
 		m_placedTileBounds.Clear();
 	}
+
+    public void SetNumberOfTileTypes(int amount)
+    {
+        if (m_dataManager.CurrentLevelData is var data and not null)
+		{
+			var number = m_dataManager.UpdateNumberOfTypes(data.NumberOfTileTypes + amount);
+
+			if (number.HasValue)
+			{
+				m_internalInfo.Update(info => info with {
+						UpdateType = UpdateType.NUMBER_OF_TILE_TYPES,
+						NumberOfTileTypes = number.Value
+					}
+				);
+			}
+		}
+    }
+
+    public void SetNumberOfTileTypesManually(int number)
+    {
+       //Todo..
+    }
 }

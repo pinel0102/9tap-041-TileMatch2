@@ -7,7 +7,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 
-public class LevelEditor : MonoBehaviour
+public partial class LevelEditor : MonoBehaviour
 {
 	[SerializeField]
 	private int m_cellSize = 80;
@@ -35,17 +35,7 @@ public class LevelEditor : MonoBehaviour
 			new BoardParameter {
 				TileSize = m_cellSize,
 				CellCount = m_cellCount,
-				OnPointerClick = () => {
-					switch (InputController.Instance.WasState)
-					{
-						case InputController.State.LEFT_BUTTON_PRESSED:
-							m_presenter.AddTileInLayer();
-							break;
-						case InputController.State.RIGHT_BUTTON_PRESSED:
-							m_presenter.RemoveTileInLayer();
-							break;
-					}
-				}
+				OnPointerClick = () => m_presenter.SetTileInLayer(InputController.Instance.WasState)
 			}
 		);
 
@@ -53,17 +43,31 @@ public class LevelEditor : MonoBehaviour
 			new MenuViewParameter {
 				OnMoveLevel = m_presenter.LoadLevelBy,
 				OnSaveLevel = m_presenter.SaveLevel,
+				OnJumpLevel = null, //todo..
+				OnControlTileTypes = m_presenter.SetNumberOfTileTypes,
+				OnInputTileTypes = m_presenter.SetNumberOfTileTypesManually,
 				OnChangedSnapping = (snap) => { m_palette.Snapping.Value = snap; },
 				OnVisibleGuide = m_boardView.VisibleWireFrame,
 				OnClearTiles = m_boardView.ClearTiles
 			}
 		);
 
-		m_presenter.LevelMessageBroker.Subscribe(
+		m_presenter.UpdateInfo.Subscribe(
 			info => {
-				m_boardView.ClearTiles();
-				m_menuView.UpdateLevelUI(info.Level);
-				info.Tiles.ForEach(tile => OnDrawCell(tile.position, tile.size));
+				switch (info)
+				{
+					case CurrentState.AllUpdated all:
+						m_boardView.ClearTiles();
+						m_menuView.UpdateLevelUI(all.Level);
+						foreach (var (position, size) in all.Tiles)
+						{
+							m_boardView.OnDraw(position, size);
+						}
+						break;
+					case CurrentState.NumberOfTileTypesUpdated numberOfTileTypes:
+						m_menuView.UpdateNumberOfTileTypesUI(numberOfTileTypes.NumberOfTileTypes);
+						break;
+				}
 			}
 		);
 

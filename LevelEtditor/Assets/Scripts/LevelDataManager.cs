@@ -19,34 +19,17 @@ public class LevelDataManager
 		public static GameConfig Init = new(LastLevel: 1);
 	}
 
-	public record Current
-	(
-		LevelData? Data,
-		int BoardIndex,
-		int LayerIndex,
-		int TileCountInLayer,
-		int TileCountAll
-	)
-	{
-		public static Current Init = new(
-			Data: null,
-			BoardIndex: 0,
-			LayerIndex: 0,
-			TileCountInLayer: 0,
-			TileCountAll: 0
-		);
-	}
-
 	private readonly JsonSerializerSettings m_serializerSettings;
 	private readonly Dictionary<int, LevelData> m_savedLevelDataDic;
 
 	private GameConfig m_gameConfig;
-	private Current m_current;
+	private LevelData? m_currentData;
+
+	public LevelData? CurrentLevelData => m_currentData;
 
 	public LevelDataManager()
 	{
 		m_gameConfig = LoadConfig();
-		m_current = Current.Init;
 		m_savedLevelDataDic = new();
 		m_serializerSettings = new JsonSerializerSettings {
 			Converters = new [] {
@@ -82,14 +65,14 @@ public class LevelDataManager
 			m_savedLevelDataDic.Add(level, data);
 		}
 
-		m_current = Current.Init with { Data = data };
+		m_currentData = data;
 
 		return data;
 	}
 
 	public LevelData? LoadLevelDataBy(int amount)
 	{
-		int selectLevel = Mathf.Max((m_current.Data?.Level + amount) ?? 1, 1);
+		int selectLevel = Mathf.Max((m_currentData?.Level + amount) ?? 1, 1);
 		return selectLevel > m_gameConfig.LastLevel? CreateLevelData() : LoadLevelData(selectLevel);
 	}
 
@@ -109,30 +92,46 @@ public class LevelDataManager
 
 	public void SaveLevelData()
 	{
-		if (m_current.Data == null)
+		if (m_currentData == null)
 		{
 			return;
 		}
 
-		int level = m_current.Data.Level;
+		int level = m_currentData.Level;
 		string path = GetLevelDataPath(level);
 
 		SaveInternal(GetGameConfigPath(), m_gameConfig);
-		SaveInternal(path, m_current.Data);
+		SaveInternal(path, m_currentData);
 
 		if (!m_savedLevelDataDic.ContainsKey(level))
 		{
-			m_savedLevelDataDic.Add(level, m_current.Data);
+			m_savedLevelDataDic.Add(level, m_currentData);
 		}
 		else
 		{
-			m_savedLevelDataDic[level] = m_current.Data;
+			m_savedLevelDataDic[level] = m_currentData;
 		}
+	}
+
+	public int? UpdateNumberOfTypes(int number)
+	{
+		if (m_currentData == null)
+		{
+			return default;
+		}
+
+		int clamp = Mathf.Max(number, 1);
+
+		var data = m_currentData with {
+			NumberOfTileTypes = clamp
+		};
+
+		return clamp;
 	}
 
 	public bool TryAddTileData(Vector2 position)
 	{
-		Layer? layerData = m_current.Data?.GetLayer(m_current.BoardIndex, m_current.LayerIndex);
+		Layer? layerData = m_currentData?.GetLayer(0, 0); //need to add arguments (boardIndex, LayerIndex)
 
 		if (layerData?.Tiles?.All(tile => !position.Equals(tile.Position)) ?? false)
 		{
@@ -145,7 +144,7 @@ public class LevelDataManager
 
 	public bool TryRemoveTileData(Vector2 position)
 	{
-		Layer? layerData = m_current.Data?.GetLayer(m_current.BoardIndex, m_current.LayerIndex);
+		Layer? layerData = m_currentData?.GetLayer(0, 0); //need to add arguments (boardIndex, LayerIndex)
 
 		if (layerData?.Tiles is var tiles and not null)
 		{
@@ -157,7 +156,7 @@ public class LevelDataManager
 
 	public void ClearTileDatasInLayer()
 	{
-		Layer? layerData = m_current.Data?.GetLayer(m_current.BoardIndex, m_current.LayerIndex);
+		Layer? layerData = m_currentData?.GetLayer(0, 0); //need to add arguments (boardIndex, LayerIndex)
 
 		if (layerData != null)
 		{

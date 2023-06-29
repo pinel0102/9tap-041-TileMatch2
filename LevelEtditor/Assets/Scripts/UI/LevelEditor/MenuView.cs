@@ -7,6 +7,8 @@ public class MenuViewParameter
 	public Action<int> OnMoveLevel;
 	public Action<int> OnJumpLevel;
 	public Action OnSaveLevel;
+	public Action<int> OnControlTileTypes;
+	public Action<int> OnInputTileTypes;
 	public Action<SnapType> OnChangedSnapping;
 	public Action<bool> OnVisibleGuide;
 	public Action OnClearTiles;
@@ -29,7 +31,7 @@ public class MenuView : MonoBehaviour
 	public void OnSetup(MenuViewParameter parameter)
 	{
 		m_levelContainer.OnSetup(parameter.OnMoveLevel, parameter.OnJumpLevel, parameter.OnSaveLevel);
-		m_tileTypeContainer.OnSetup();
+		m_tileTypeContainer.OnSetup(parameter.OnControlTileTypes, parameter.OnInputTileTypes);
 		m_gridOptionContainer.OnSetup(parameter.OnChangedSnapping, parameter.OnVisibleGuide);
 		m_layerContainer.OnSetup(parameter.OnClearTiles);
 	}
@@ -38,4 +40,9 @@ public class MenuView : MonoBehaviour
 	{
 		m_levelContainer.UpdateUI(level);
 	}
+
+    public void UpdateNumberOfTileTypesUI(int number)
+    {
+       m_tileTypeContainer.UpdateUI(number);
+    }
 }
