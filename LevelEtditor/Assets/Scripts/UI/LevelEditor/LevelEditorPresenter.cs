@@ -17,7 +17,8 @@ public record BrushInfo
 	Color Color,
 	float Size,
 	float Snapping,
-	Vector2 Position
+	Vector2 Position,
+	IReadOnlyList<Bounds> PlacedTiles
 )
 {
 	public Bounds GetBounds() => new Bounds(Position, Vector2.one * Size);
@@ -44,7 +45,6 @@ public class LevelEditorPresenter : IDisposable
 	private readonly LevelDataManager m_dataManager;
 	private readonly LevelEditor m_view;
 	private readonly Bounds m_boardBounds;
-	private readonly List<Bounds> m_placedTileBounds;
 	private readonly AsyncReactiveProperty<BrushInfo> m_brushInfo;
 	private readonly AsyncMessageBroker<BrushWidgetInfo> m_brushMessageBroker;
 	private readonly IAsyncReactiveProperty<InternalState> m_internalState;
@@ -61,11 +61,11 @@ public class LevelEditorPresenter : IDisposable
 		m_dataManager = new LevelDataManager();
 		m_cancellationTokenSource = new();
 		m_boardBounds = new Bounds(Vector2.zero, Vector2.one * cellSize * cellCount);
-		m_brushInfo = new(new BrushInfo(Color.white, cellSize, cellSize, Position: Vector2.zero));
+		m_brushInfo = new(new BrushInfo(Color.white, cellSize, cellSize, Position: Vector2.zero, PlacedTiles: Array.Empty<Bounds>()));
 		m_internalState = new AsyncReactiveProperty<InternalState>(InternalState.Empty).WithDispatcher();
 
 		m_brushMessageBroker = new();
-		m_placedTileBounds = new();
+		//m_placedTileBounds = new();
 
 		UpdateState = m_internalState
 			.Select(info => info.ToCurrentState())
@@ -77,7 +77,7 @@ public class LevelEditorPresenter : IDisposable
 				m_brushMessageBroker.Publish(
 					new BrushWidgetInfo(
 						Interactable: info.Overlap(m_boardBounds),
-						Drawable: m_placedTileBounds.All(
+						Drawable: info.PlacedTiles.All(
 							placed => placed.SqrDistance(info.Position) >= Mathf.Pow(info.Size * 0.5f, 2f)
 						),
 						LocalPosition: info.Position
@@ -123,7 +123,6 @@ public class LevelEditorPresenter : IDisposable
 	{
 		m_brushInfo.Dispose();
 		m_brushMessageBroker.Dispose();
-		m_placedTileBounds.Clear();
 	}
 	#endregion
 
@@ -147,7 +146,7 @@ public class LevelEditorPresenter : IDisposable
 			return;
 		}
 
-		(_, float size, _, _) = m_brushInfo.Value;
+		(_, float size, _, _, _) = m_brushInfo.Value;
 
 		var layer = levelData[0]
 			.Layers?
@@ -163,17 +162,22 @@ public class LevelEditorPresenter : IDisposable
 			)?
 			.FirstOrDefault();
 
-		m_placedTileBounds.Clear();
+		List<Bounds> bounds = new();
 
 		if (layer?.Tiles != null)
 		{
 			foreach (TileInfo tile in layer.Tiles)
 			{
-				m_placedTileBounds.Add(
+				bounds.Add(
 					new Bounds(tile.Position, Vector2.one * tile.Size)
 				);
 			}
 		}
+
+		m_brushInfo.Value = m_brushInfo.Value with { 
+			Color = layer.Color,
+			PlacedTiles = bounds
+		};
 
 		m_internalState.Update(info => 
 			InternalState.ToInternalInfo(levelData, m_dataManager.Config.LastLevel, size)
@@ -199,7 +203,7 @@ public class LevelEditorPresenter : IDisposable
 			m_dataManager.AddBoardData(out boardCount);
 		}
 
-		(_, float size, _, _) = m_brushInfo.Value;
+		(_, float size, _, _, _) = m_brushInfo.Value;
 
 		var layers = GetLayerInfos(index, size);
 
@@ -218,7 +222,7 @@ public class LevelEditorPresenter : IDisposable
 	{
 		int boardCount = State.BoardCount;
 
-		(_, float size, _, _) = m_brushInfo.Value;
+		(_, float size, _, _, _) = m_brushInfo.Value;
 
 		var layers = GetLayerInfos(boardIndex, size);
 
@@ -241,7 +245,7 @@ public class LevelEditorPresenter : IDisposable
 		{
 			int index = removeIndex < boardCount? removeIndex : removeIndex - 1;
 
-			(_, float size, _, _) = m_brushInfo.Value;
+			(_, float size, _, _, _) = m_brushInfo.Value;
 			var layers = GetLayerInfos(index, size);
 
 			m_internalState.Update(state =>
@@ -282,10 +286,12 @@ public class LevelEditorPresenter : IDisposable
 	#region Tile
 	public void SetTileInLayer(InputController.State state)
 	{
-		(Color color, float size, _, Vector2 position) = m_brushInfo.Value;
+		(Color color, float size, _, Vector2 position, var placedTiles) = m_brushInfo.Value;
 
 		int boardIndex = State.BoardIndex;
 		int layerIndex = State.LayerIndex;
+
+		List<Bounds> bounds = new(placedTiles);
 
 		switch (state)
 		{
@@ -293,7 +299,7 @@ public class LevelEditorPresenter : IDisposable
 			case LEFT_BUTTON_RELEASED:
 				if (m_dataManager.TryAddTileData(boardIndex, layerIndex, position))
 				{
-					m_placedTileBounds.Add(new Bounds(position, Vector2.one * size));
+					bounds.Add(new Bounds(position, Vector2.one * size));
 					m_view.OnDrawTile(layerIndex, position, size, color);
 				}
 				break;
@@ -301,16 +307,22 @@ public class LevelEditorPresenter : IDisposable
 			case RIGHT_BUTTON_RELEASED:
 				if (m_dataManager.TryRemoveTileData(boardIndex, layerIndex, position))
 				{
-					m_placedTileBounds.RemoveAll(tile => Vector2.Distance(position, tile.center) == 0);
+					bounds.RemoveAll(tile => Vector2.Distance(position, tile.center) == 0);
 					m_view.OnEraseTile(layerIndex, position);
 				}
 				break;
 		}
+
+		m_brushInfo.Value = m_brushInfo.Value with {
+			PlacedTiles = bounds
+		};
 	}
 
 	public void ClearTilesInLayer()
 	{
-		m_placedTileBounds.Clear();
+		m_brushInfo.Value = m_brushInfo.Value with {
+			PlacedTiles = Array.Empty<Bounds>()
+		};
 		m_dataManager.ClearTileDatasInLayer(State.BoardIndex, State.LayerIndex);
 		m_view.ClearTilesInLayer(State.LayerIndex);
 	}
@@ -351,43 +363,42 @@ public class LevelEditorPresenter : IDisposable
 
 	private void ResetPlacedTilesInLayer(int layerIndex)
 	{
-		m_placedTileBounds.Clear();
+		(Color c, float size, _, _, _) = m_brushInfo.Value;
+		
+		List<Bounds> bounds = new();
 
 		if (State.Layers.TryGetValue(layerIndex, out var layer))
 		{
 			foreach (TileInfo tile in layer.Tiles)
 			{
-				m_placedTileBounds.Add(
+				bounds.Add(
 					new Bounds(tile.Position, Vector2.one * tile.Size)
 				);
 			}
 		}
+		m_brushInfo.Value = m_brushInfo.Value with { Color = layer.Color, PlacedTiles = bounds };
 	}
 	#endregion
 
 	#region Layer
 	public void AddLayer()
 	{
-		(_, float size, _, _) = m_brushInfo.Value;
+		(_, float size, _, _, _) = m_brushInfo.Value;
 
-		if (m_dataManager.TryAddLayerData(State.BoardIndex, State.LayerIndex))
+		if (m_dataManager.TryAddLayerData(State.BoardIndex, State.LayerIndex, out int index))
 		{
-			m_placedTileBounds.Clear();
-
 			var layers = GetLayerInfos(State.BoardIndex, size);
-			
-			int replaceIndex = State.LayerIndex + 1;
-			
-			m_brushInfo.Value = m_brushInfo.Value with { Color = layers?.ElementAt(replaceIndex)?.Color ?? Color.white };
 
 			m_internalState.Update(state => state with {
 					UpdateType = UpdateType.LAYER,
-					LayerIndex = replaceIndex,
+					LayerIndex = index,
 					TileCountInLayer = 0,
 					TileCountAll = layers.Select(layer => layer.Tiles.Count()).Count(),
 					Layers = layers.ToList()
 				}
 			);
+
+			ResetPlacedTilesInLayer(index);
 		}
 	}
 
@@ -403,13 +414,9 @@ public class LevelEditorPresenter : IDisposable
 
 		int replaceIndex = Mathf.Max(0, State.LayerIndex - 1);
 
-		ResetPlacedTilesInLayer(replaceIndex);
-
-		(_, float size, _, _) = m_brushInfo.Value;
+		(_, float size, _, _, _) = m_brushInfo.Value;
 
 		var layers = GetLayerInfos(State.BoardIndex, size);
-
-		m_brushInfo.Value = m_brushInfo.Value with { Color = layers?.ElementAt(replaceIndex)?.Color ?? Color.white };
 
 		m_internalState.Update( 
 			state => state with {
@@ -419,18 +426,24 @@ public class LevelEditorPresenter : IDisposable
 			}
 		);
 
+		ResetPlacedTilesInLayer(replaceIndex);
 	}
 
     public void SelectLayer(int layerIndex)
     {
-		ResetPlacedTilesInLayer(layerIndex);
+		(_, float size, _, _, _) = m_brushInfo.Value;
+		var layers = GetLayerInfos(State.BoardIndex, size);
 
 		m_internalState.Update( 
 			state => state with {
 				UpdateType = UpdateType.LAYER,
-				LayerIndex = State.Layers.HasIndex(layerIndex)? layerIndex : State.LayerIndex
+				LayerIndex = State.Layers.HasIndex(layerIndex)? layerIndex : State.LayerIndex,
+				Layers = layers.ToList()
 			}
 		);
+
+		ResetPlacedTilesInLayer(layerIndex);
+		
     }
     #endregion
 

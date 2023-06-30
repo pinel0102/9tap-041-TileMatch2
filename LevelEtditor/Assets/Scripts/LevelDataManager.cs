@@ -153,16 +153,18 @@ public class LevelDataManager
 	}
 
 	// index뒤에 추가
-	public bool TryAddLayerData(int boardIndex, int prevIndex)
+	public bool TryAddLayerData(int boardIndex, int prevIndex, out int addIndex)
 	{
 		Board? board = m_currentData?[boardIndex];
 
 		if (board?.Layers.HasIndex(prevIndex) ?? false)
 		{
-			board.Layers.Insert(prevIndex + 1, new Layer());
+			addIndex = prevIndex + 1;
+			board.Layers.Insert(addIndex, new Layer());
 			return true;
 		}
 
+		addIndex = prevIndex;
 		return false;
 	}
 
