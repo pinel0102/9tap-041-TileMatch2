@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using System.Collections.Generic;
+using static LevelEditor;
 
 public class LayerView : MonoBehaviour
 {
@@ -11,20 +12,20 @@ public class LayerView : MonoBehaviour
 	private List<GameObject> m_placedTiles = new();
 	private Queue<GameObject> m_pools = new();
 
-	public void Draw(IEnumerable<(Vector2 position, float size)> tiles)
+	public void Draw(LayerInfo layer)
 	{
-		if (tiles == null)
+		if (layer?.Tiles == null)
 		{
 			return;
 		}
 
-		foreach (var (position, size) in tiles)
+		foreach (var (position, size) in layer.Tiles)
 		{
-			Draw(position, size);
+			Draw(position, size, layer.Color);
 		}
 	}
 
-	public void Draw(Vector2 position, float size)
+	public void Draw(Vector2 position, float size, Color color)
 	{
 		GameObject go = m_pools.Count > 0? m_pools.Dequeue() : new GameObject("Tile");
 		go.SetActive(true);
@@ -36,7 +37,7 @@ public class LayerView : MonoBehaviour
 		{
 			image = go.AddComponent<Image>();
 		}
-		image.color = Color.green;
+		image.color = color;
 
 		RectTransform rectTransform = go.transform as RectTransform;
 		rectTransform.localPosition = position;

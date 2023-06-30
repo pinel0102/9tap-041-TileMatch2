@@ -124,20 +124,32 @@ public class LevelDataManager
 		}
 	}
 
-	public int? UpdateNumberOfTypes(int number)
+	public void AddBoardData(out int count)
 	{
-		if (m_currentData == null)
+		if (m_currentData?.Boards == null)
 		{
-			return default;
+			count = m_currentData?.Boards?.Count ?? 0;
+			return;
 		}
+		List<Layer> layers = new();
+		layers.Add(new Layer());
 
-		int clamp = Mathf.Max(number, 1);
+		m_currentData.Boards.Add(new Board(layers));
 
-		m_currentData = m_currentData with {
-			NumberOfTileTypes = clamp
-		};
+		count = m_currentData.Boards.Count;
+	}
 
-		return clamp;
+	public bool TryRemoveBoardData(int boardIndex, out int boardCount)
+	{
+		if (!m_currentData?.Boards?.HasIndex(boardIndex) ?? false)
+		{
+			boardCount = m_currentData?.Boards?.Count ?? 0;
+			return false;
+		}
+		
+		m_currentData?.Boards.RemoveAt(boardIndex);
+		boardCount = m_currentData?.Boards?.Count ?? 0;
+		return true;
 	}
 
 	// index뒤에 추가
@@ -175,6 +187,22 @@ public class LevelDataManager
 		}
 
 		return false;
+	}
+
+	public int? UpdateNumberOfTypes(int number)
+	{
+		if (m_currentData == null)
+		{
+			return default;
+		}
+
+		int clamp = Mathf.Max(number, 1);
+
+		m_currentData = m_currentData with {
+			NumberOfTileTypes = clamp
+		};
+
+		return clamp;
 	}
 
 	public bool TryRemoveTileData(int boardIndex, int layerIndex, Vector2 position)

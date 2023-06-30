@@ -34,7 +34,9 @@ public partial class LevelEditor : MonoBehaviour
 			new BoardParameter {
 				TileSize = m_cellSize,
 				CellCount = m_cellCount,
-				OnPointerClick = () => m_presenter.SetTileInLayer(InputController.Instance.WasState)
+				OnPointerClick = () => m_presenter.SetTileInLayer(InputController.Instance.WasState),
+				OnTakeStep = m_presenter.LoadBoardByStep,
+				OnRemove = m_presenter.RemoveBoard
 			}
 		);
 
@@ -76,17 +78,23 @@ public partial class LevelEditor : MonoBehaviour
 				switch (info)
 				{
 					case CurrentState.AllUpdated all: // 레벨 변경시 모든 ui가 변경되어야 함
-						m_boardView.OnUpdateLayerView(all.Layers);
+						m_boardView.OnUpdateBoardView(all.BoardCount, all.BoardIndex);
+						m_boardView.OnUpdateLayerView(all.Layers, all.LayerIndex);
 						m_menuView.UpdateLevelUI(all.LastLevel, all.CurrentLevel);
 						m_menuView.UpdateNumberOfTileTypesUI(all.NumberOfTileTypes);
-						m_menuView.UpdateLayerUI(all.Layers.Count, all.LayerIndex);
+						m_menuView.UpdateLayerUI(all.LayerColors, all.LayerIndex);
+						break;
+					case CurrentState.BoardUpdated board: //맵
+						m_boardView.OnUpdateBoardView(board.BoardCount, board.BoardIndex);
+						m_boardView.OnUpdateLayerView(board.Layers, board.LayerIndex);
+						m_menuView.UpdateLayerUI(board.LayerColors, board.LayerIndex);
 						break;
 					case CurrentState.NumberOfTileTypesUpdated numberOfTileTypes: // 타일 종류 개수
 						m_menuView.UpdateNumberOfTileTypesUI(numberOfTileTypes.NumberOfTileTypes);
 						break;
 					case CurrentState.LayerUpdated layer: // 레이어
-						m_boardView.OnUpdateLayerView(layer.Layers);
-						m_menuView.UpdateLayerUI(layer.Layers.Count, layer.LayerIndex);
+						m_boardView.OnUpdateLayerView(layer.Layers, layer.LayerIndex);
+						m_menuView.UpdateLayerUI(layer.LayerColors, layer.LayerIndex);
 						break;
 				}
 			},
@@ -115,9 +123,9 @@ public partial class LevelEditor : MonoBehaviour
 		}
 	}
 
-	public void OnDrawTile(int layerIndex, Vector2 localPosition, float size)
+	public void OnDrawTile(int layerIndex, Vector2 localPosition, float size, Color color)
 	{
-		m_boardView.OnDrawTile(layerIndex, localPosition, size);
+		m_boardView.OnDrawTile(layerIndex, localPosition, size, color);
 	}
 
 	public void OnEraseTile(int layerIndex, Vector2 localPosition)

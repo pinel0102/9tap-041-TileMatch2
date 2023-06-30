@@ -8,6 +8,8 @@ using System.Collections.Generic;
 
 using Cysharp.Threading.Tasks;
 
+using TMPro;
+
 using static LevelEditor;
 
 public class BoardParameter
@@ -15,12 +17,20 @@ public class BoardParameter
 	public int TileSize;
 	public int CellCount;
 	public Action OnPointerClick;
+	public Action<int> OnTakeStep;
+	public Action OnRemove;
 }
 
 public class BoardView : MonoBehaviour
 {
 	[SerializeField]
 	private GameObject m_layerViewPrefab;
+
+	[SerializeField]
+	private Graphic m_frame;
+
+	[SerializeField]
+	private TMP_Text m_boardIndexText;
 
 	[SerializeField]
 	private RectTransform m_board;
@@ -33,6 +43,15 @@ public class BoardView : MonoBehaviour
 
 	[SerializeField]
 	private Transform m_layerContainer;
+
+	[SerializeField]
+	private LevelEditorButton m_prevButton;
+
+	[SerializeField]
+	private LevelEditorButton m_nextButton;
+
+	[SerializeField]
+	private LevelEditorButton m_removeButton;
 	
 	private List<LayerView> m_placedLayerObjects = new();
 
@@ -47,6 +66,9 @@ public class BoardView : MonoBehaviour
 		m_brush.OnSetup(tileSize, onClick: parameter.OnPointerClick);
 		m_wireFrame.pixelsPerUnitMultiplier = 100 / (float)tileSize;
 
+		m_prevButton.OnSetup(() => parameter?.OnTakeStep?.Invoke(-1));
+		m_nextButton.OnSetup(() => parameter?.OnTakeStep?.Invoke(1));
+		m_removeButton.OnSetup("Remove", () => parameter?.OnRemove?.Invoke());
 	}
 
 	public void OnUpdateBrushWidget(Vector2 localPosition, bool interactable, bool drawable)
@@ -55,11 +77,11 @@ public class BoardView : MonoBehaviour
 		m_brush.UpdateUI(interactable, drawable);
 	}
 
-	public void OnDrawTile(int layerIndex, Vector2 position, float size)
+	public void OnDrawTile(int layerIndex, Vector2 position, float size, Color color)
 	{
 		if (m_placedLayerObjects.TryGetValue(layerIndex, out var layerView))
 		{
-			layerView.Draw(position, size);
+			layerView.Draw(position, size, color);
 		}
 	}
 
@@ -71,18 +93,35 @@ public class BoardView : MonoBehaviour
 		}
 	}
 
-	public void OnUpdateLayerView(List<IReadOnlyList<TileInfo>> layers)
+	public void OnUpdateBoardView(int boardCount, int boardIndex)
 	{
+		m_boardIndexText.text = $"Current Board[{boardIndex}]";
+		m_removeButton.SetInteractable(boardCount > 1);
+		m_prevButton.SetInteractable(boardIndex > 0);
+		m_nextButton.UpdateUI(boardIndex + 1 >= boardCount? "+": ">>");
+	}
+
+	public void OnUpdateLayerView(List<LayerInfo> layers, int selectedIndex)
+	{
+		m_frame.color = layers[selectedIndex].Color;
+
+		m_placedLayerObjects.ForEach(
+			each => {
+				each.Clear();
+				each.gameObject.SetActive(false);
+			}
+		);
+
 		for (int index = 0, count = layers.Count; index < count; index++)
 		{
-			IReadOnlyList<TileInfo> layer = layers[index];
+			LayerInfo layer = layers[index];
 			LayerView layerView = m_placedLayerObjects.HasIndex(index) switch {
 				true => m_placedLayerObjects[index],
 				false => CreateView(index)
 			};
 
-			layerView.Clear();
-			layerView.Draw(layer.Select(tile => (tile.Position, tile.Size)));
+			layerView.gameObject.SetActive(true);
+			layerView.Draw(layer);
 		}
 
 		LayerView CreateView(int index)

@@ -46,7 +46,7 @@ public class LayerContainer : MonoBehaviour
 		m_selectLayerDropdown.onValueChanged.AddListener(index => parameter?.OnSelect?.Invoke(index));
 	}
 
-	public void UpdateUI(int layerCount, int layerIndex)
+	public void UpdateUI(Color[] layers, int layerIndex)
 	{
 		m_scrollView.ClearData(true);
 		m_selectLayerDropdown.ClearOptions();
@@ -54,14 +54,18 @@ public class LayerContainer : MonoBehaviour
 		List<LayerListScrollItemData> items = new();
 		List<OptionData> options = new();
 
-		for (int layer = 0; layer < layerCount; layer++)
+		int layerCount = layers.Length;
+
+		for (int index = 0; index < layerCount; index++)
 		{
+			Color color = layers[index];
 			items.Add(new LayerListScrollItemData { 
-					Index = layer,
+					Index = index,
+					Color = color,
 					OnToggle = (index, isOn) => m_onVisible?.Invoke(index, isOn)
 				}
 			);
-			options.Add(new OptionData($"Layer {layer}"));
+			options.Add(new OptionData($"Layer {index}"));
 		}
 
 		m_scrollView.InsertData(items.ToArray(), true);

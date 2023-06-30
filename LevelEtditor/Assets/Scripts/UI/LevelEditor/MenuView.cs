@@ -1,6 +1,6 @@
 using UnityEngine;
 
-using System;
+using System.Collections.Generic;
 
 public class MenuViewParameter
 {
@@ -42,8 +42,8 @@ public class MenuView : MonoBehaviour
 	   m_tileTypeContainer.UpdateUI(number);
 	}
 
-    public void UpdateLayerUI(int count, int layerIndex)
+    public void UpdateLayerUI(Color[] layers, int layerIndex)
     {
-		m_layerContainer.UpdateUI(count, layerIndex);
+		m_layerContainer.UpdateUI(layers, layerIndex);
     }
 }

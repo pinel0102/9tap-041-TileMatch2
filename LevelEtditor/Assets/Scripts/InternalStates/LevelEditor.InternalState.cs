@@ -6,6 +6,14 @@ using System.Linq;
 
 partial class LevelEditor
 {
+	public record LayerInfo(Color Color, IReadOnlyList<TileInfo> Tiles)
+	{
+		public LayerInfo(IEnumerable<TileInfo> tiles) 
+			: this(Color: UnityEngine.Random.ColorHSV(), Tiles: tiles?.ToArray() ?? Array.Empty<TileInfo>())
+		{
+
+		}
+	}
 	public record TileInfo(Vector2 Position, float Size);
 
 	public enum UpdateType
@@ -26,8 +34,9 @@ partial class LevelEditor
 		int LastLevel,
 		int CurrentLevel,
 		int NumberOfTileTypes,
-		List<IReadOnlyList<TileInfo>> Layers,
+		List<LayerInfo> Layers,
 		int BoardIndex = 0,
+		int BoardCount = 0,
 		int LayerIndex = 0,
 		int TileCountInLayer = 0, // Todo
 		int TileCountAll = 0 // Todo
@@ -40,6 +49,7 @@ partial class LevelEditor
 			CurrentLevel: 1,
 			NumberOfTileTypes: 1,
 			BoardIndex: 0,
+			BoardCount: 1,
 			LayerIndex: 0,
 			TileCountInLayer: 0,
 			TileCountAll: 0,
@@ -51,17 +61,21 @@ partial class LevelEditor
 			return new InternalState(
 				UpdateType: UpdateType.ALL,
 				LastLevel: lastLevel,
+				BoardCount: data.Boards.Count,
+				BoardIndex: 0,
 				CurrentLevel: data.Level,
 				NumberOfTileTypes: data.NumberOfTileTypes,
 				Layers: data[0]
 					.Layers
 					.Select(
 						layer => {
-							return layer?
-							.Tiles?
-							.Select(
-								tile => new TileInfo(tile.Position, size)
-							).AsReadOnlyList() ?? Array.Empty<TileInfo>();
+							return new LayerInfo(
+								layer?
+								.Tiles?
+								.Select(
+									tile => new TileInfo(tile.Position, size)
+								)
+							);
 						}
 					).ToList()
 			);
@@ -74,6 +88,15 @@ partial class LevelEditor
 					LastLevel: LastLevel,
 					CurrentLevel: CurrentLevel,
 					NumberOfTileTypes: NumberOfTileTypes,
+					BoardCount: BoardCount,
+					BoardIndex: BoardIndex,
+					LayerIndex: LayerIndex,
+					TileCountInLayer: TileCountInLayer,
+					TileCountAll: TileCountAll,
+					Layers: Layers
+				),
+				UpdateType.BOARD => new CurrentState.BoardUpdated(
+					BoardCount: BoardCount,
 					BoardIndex: BoardIndex,
 					LayerIndex: LayerIndex,
 					TileCountInLayer: TileCountInLayer,
@@ -97,22 +120,47 @@ partial class LevelEditor
 	public abstract record CurrentState
 	{
 		public record NotUpdated : CurrentState;
+
 		public record AllUpdated(
 			int CurrentLevel,
 			int LastLevel,
 			int NumberOfTileTypes,
 			int BoardIndex,
+			int BoardCount,
 			int LayerIndex,
 			int TileCountInLayer,
 			int TileCountAll,
-			List<IReadOnlyList<TileInfo>> Layers
-		): CurrentState;
-		public record NumberOfTileTypesUpdated(int NumberOfTileTypes): CurrentState;
+			List<LayerInfo> Layers
+		): LayerUpdated(LayerIndex, TileCountInLayer, TileCountAll, Layers);
+
+		public record BoardUpdated(
+			int BoardCount,
+			int BoardIndex,
+			int LayerIndex,
+			int TileCountInLayer,
+			int TileCountAll,
+			List<LayerInfo> Layers
+		) : LayerUpdated(LayerIndex, TileCountInLayer, TileCountAll, Layers);
+
 		public record LayerUpdated(
 			int LayerIndex,
 			int TileCountInLayer,
 			int TileCountAll,
-			List<IReadOnlyList<TileInfo>> Layers
-		): CurrentState;
+			List<LayerInfo> Layers
+		): CurrentState
+		{
+			public Color[] LayerColors = Layers.Select(layer => layer.Color)?.ToArray() ?? Array.Empty<Color>();
+			public IReadOnlyList<TileInfo> GetTileInfos(int index)
+			{
+				if (Layers.TryGetValue(index, out var layer))
+				{
+					return layer.Tiles;
+				}
+
+				return Array.Empty<TileInfo>();
+			}
+		}
+
+		public record NumberOfTileTypesUpdated(int NumberOfTileTypes): CurrentState;
 	}
 }
