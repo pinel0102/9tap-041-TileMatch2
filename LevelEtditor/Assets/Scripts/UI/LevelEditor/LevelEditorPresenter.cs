@@ -149,16 +149,7 @@ public class LevelEditorPresenter : IDisposable
 		(float size, _, _) = m_brushInfo.Value;
 		Layer layer = levelData.GetLayer(0, 0);
 
-		List<(Vector2, float)> drawList = new();
-
-		m_placedTileBounds.Clear();
-
-		layer.Tiles.ForEach(
-			tile => {
-				m_placedTileBounds.Add(new Bounds(tile.Position, Vector2.one * size));
-				drawList.Add((tile.Position, size));
-			}
-		);
+		ResetPlacedTilesInLayer(layer.Tiles.Select(tile => new TileInfo(tile.Position, size)));
 
 		m_internalState.Update(info => 
 			InternalState.ToInternalInfo(levelData, m_dataManager.Config.LastLevel, size)
@@ -208,7 +199,7 @@ public class LevelEditorPresenter : IDisposable
 				if (m_dataManager.TryAddTileData(boardIndex, layerIndex, position))
 				{
 					m_placedTileBounds.Add(new Bounds(position, Vector2.one * size));
-					m_view.OnDrawCell(layerIndex, position, size);
+					m_view.OnDrawTile(layerIndex, position, size);
 				}
 				break;
 			case RIGHT_BUTTON_PRESSED:
@@ -216,7 +207,7 @@ public class LevelEditorPresenter : IDisposable
 				if (m_dataManager.TryRemoveTileData(boardIndex, layerIndex, position))
 				{
 					m_placedTileBounds.RemoveAll(tile => Vector2.Distance(position, tile.center) == 0);
-					m_view.OnEraseCell(layerIndex, position);
+					m_view.OnEraseTile(layerIndex, position);
 				}
 				break;
 		}
@@ -262,6 +253,18 @@ public class LevelEditorPresenter : IDisposable
 			}
 		}
 	}
+
+	private void ResetPlacedTilesInLayer(IEnumerable<TileInfo> tiles)
+	{
+		m_placedTileBounds.Clear();
+
+		foreach (TileInfo tile in tiles)
+		{
+			m_placedTileBounds.Add(
+				new Bounds(tile.Position, Vector2.one * tile.Size)
+			);
+		}
+	}
 	#endregion
 
 	#region Layer
@@ -269,18 +272,20 @@ public class LevelEditorPresenter : IDisposable
 	{
 		(float size, _, _) = m_brushInfo.Value;
 
-		if (m_internalState.Value is var state)
-		{
-			if (m_dataManager.TryAddLayerData(state.BoardIndex, state.LayerIndex))
+		if (m_dataManager.TryAddLayerData(State.BoardIndex, State.LayerIndex))
 			{
+				m_placedTileBounds.Clear();
+
 				var layers = m_dataManager
-					.CurrentLevelData[state.BoardIndex]
+					.CurrentLevelData[State.BoardIndex]
 					.Layers
 					.Select(
-						layer => layer
-							.Tiles
-							.Select(tile => new TileInfo(tile.Position, size))
-							.AsReadOnlyList()
+						(layer, index) => {
+							return layer
+								.Tiles
+								.Select(tile => new TileInfo(tile.Position, size))
+								.AsReadOnlyList();
+						}
 					);
 
 				m_internalState.Update(state => state with {
@@ -292,11 +297,62 @@ public class LevelEditorPresenter : IDisposable
 					}
 				);
 			}
-		}
 	}
 
 	public void RemoveLayer()
 	{
+		if (State.Layers.Count <= 1)
+		{
+			//레이어가 최소 하나는 있어야함.
+			return;
+		}
+
+		m_dataManager.RemoveLayerData(State.BoardIndex, State.LayerIndex);
+
+		int replaceIndex = Mathf.Max(0, State.LayerIndex - 1);
+
+		if (State.Layers.TryGetValue(replaceIndex, out var tiles))
+		{
+			ResetPlacedTilesInLayer(tiles);
+		}
+
+		(float size, _, _) = m_brushInfo.Value;
+
+		var layers = m_dataManager
+			.CurrentLevelData[State.BoardIndex]
+			.Layers
+			.Select(
+				(layer, index) => {
+					return layer
+						.Tiles
+						.Select(tile => new TileInfo(tile.Position, size))
+						.AsReadOnlyList();
+				}
+			);
+
+		m_internalState.Update( 
+			state => state with {
+				UpdateType = UpdateType.LAYER,
+				LayerIndex = replaceIndex,
+				Layers = layers.ToList()
+			}
+		);
+
 	}
-	#endregion
+
+    public void SelectLayer(int layerIndex)
+    {
+		if (State.Layers.TryGetValue(layerIndex, out var tiles))
+		{
+			ResetPlacedTilesInLayer(tiles);
+		}
+
+		m_internalState.Update( 
+			state => state with {
+				UpdateType = UpdateType.LAYER,
+				LayerIndex = State.Layers.HasIndex(layerIndex)? layerIndex : State.LayerIndex
+			}
+		);
+    }
+    #endregion
 }

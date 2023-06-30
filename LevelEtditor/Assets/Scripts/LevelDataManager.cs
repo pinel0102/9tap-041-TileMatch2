@@ -147,24 +147,21 @@ public class LevelDataManager
 
 		if (board?.Layers.HasIndex(prevIndex) ?? false)
 		{
-			board.Layers.Insert(prevIndex + 1, Layer.Init);
+			board.Layers.Insert(prevIndex + 1, new Layer());
 			return true;
 		}
 
 		return false;
 	}
 
-	public bool TryRemoveLayerData(int boardIndex, int index)
+	public void RemoveLayerData(int boardIndex, int index)
 	{
 		Board? board = m_currentData?[boardIndex];
 
 		if (board?.Layers.HasIndex(index) ?? false)
 		{
 			board.Layers.RemoveAt(index);
-			return true;
 		}
-
-		return false;
 	}
 
 	public bool TryAddTileData(int boardIndex, int layerIndex, Vector2 position)

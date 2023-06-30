@@ -16,7 +16,7 @@ public record LevelData(
 	{
 		List<Board> boards = new();
 		List<Layer> layers = new();
-		layers.Add(Layer.Init);
+		layers.Add(new Layer());
 		boards.Add(new Board(layers));
 
 		return new LevelData(level, boards, 0, 1);

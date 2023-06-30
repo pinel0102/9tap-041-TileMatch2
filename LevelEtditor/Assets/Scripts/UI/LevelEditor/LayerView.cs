@@ -5,21 +5,11 @@ using System.Collections.Generic;
 
 public class LayerView : MonoBehaviour
 {
-	private readonly List<GameObject> m_placedTiles = new();
-	private readonly Queue<GameObject> m_pools = new();
+	[SerializeField]
+	private CanvasGroup m_canvasGroup;
 
-	public static LayerView CreateLayerView(Transform parent)
-	{
-		GameObject go = new GameObject("Layer");
-		RectTransform rectTransform = go.AddComponent<RectTransform>();
-		rectTransform.SetParent(parent, false);
-		rectTransform.anchoredPosition = Vector2.zero;
-		rectTransform.localRotation = Quaternion.identity;
-		rectTransform.localScale = Vector3.one;
-
-		LayerView result = go.AddComponent<LayerView>();
-		return result;
-	}
+	private List<GameObject> m_placedTiles = new();
+	private Queue<GameObject> m_pools = new();
 
 	public void Draw(IEnumerable<(Vector2 position, float size)> tiles)
 	{
@@ -80,14 +70,13 @@ public class LayerView : MonoBehaviour
 
 	public void Clear()
 	{
-		m_placedTiles.ForEach(
-			tile => {
-				tile.SetActive(false);
-				m_pools.Enqueue(tile);
-			}
-		);
-
+		m_placedTiles.ForEach(tile => tile.SetActive(false));
+		m_pools = new Queue<GameObject>(m_placedTiles.ToArray());
 		m_placedTiles.Clear();
 	}
 
+	public void OnVisible(bool visible)
+	{
+		m_canvasGroup.alpha = visible? 1f : 0f;
+	}
 }

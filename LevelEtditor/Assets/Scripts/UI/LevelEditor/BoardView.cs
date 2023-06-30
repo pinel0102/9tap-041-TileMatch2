@@ -20,6 +20,9 @@ public class BoardParameter
 public class BoardView : MonoBehaviour
 {
 	[SerializeField]
+	private GameObject m_layerViewPrefab;
+
+	[SerializeField]
 	private RectTransform m_board;
 
 	[SerializeField]
@@ -31,7 +34,7 @@ public class BoardView : MonoBehaviour
 	[SerializeField]
 	private Transform m_layerContainer;
 	
-	private readonly List<LayerView> m_placedLayerObjects = new();
+	private List<LayerView> m_placedLayerObjects = new();
 
 	public void OnSetup(BoardParameter parameter)
 	{
@@ -70,20 +73,24 @@ public class BoardView : MonoBehaviour
 
 	public void OnUpdateLayerView(List<IReadOnlyList<TileInfo>> layers)
 	{
-		var enumerable = layers
-			.Select((layer, index) => (index, layer))
-			.OrderBy(x => x.index);
-
-		foreach (var (index, layer) in enumerable)
+		for (int index = 0, count = layers.Count; index < count; index++)
 		{
-			if (!m_placedLayerObjects.TryGetValue(index, out var layerView))
-			{
-				layerView = LayerView.CreateLayerView(m_layerContainer);
-				m_placedLayerObjects.Add(layerView);
-			}
+			IReadOnlyList<TileInfo> layer = layers[index];
+			LayerView layerView = m_placedLayerObjects.HasIndex(index) switch {
+				true => m_placedLayerObjects[index],
+				false => CreateView(index)
+			};
 
 			layerView.Clear();
 			layerView.Draw(layer.Select(tile => (tile.Position, tile.Size)));
+		}
+
+		LayerView CreateView(int index)
+		{
+			GameObject item = Instantiate<GameObject>(m_layerViewPrefab, m_layerContainer, false);
+			var view = item.GetComponent<LayerView>();
+			m_placedLayerObjects.Add(view);
+			return view;
 		}
 	}
 
@@ -95,8 +102,16 @@ public class BoardView : MonoBehaviour
 		}
 	}
 
-	public void VisibleWireFrame(bool enabled)
+	public void OnVisibleWireFrame(bool enabled)
 	{
 		m_wireFrame.gameObject.SetActive(enabled);
 	}
+
+    public void OnVisibleLayer(int layerIndex, bool isOn)
+    {
+        if (m_placedLayerObjects.TryGetValue(layerIndex, out var layerView))
+		{
+			layerView.OnVisible(isOn);
+		}
+    }
 }

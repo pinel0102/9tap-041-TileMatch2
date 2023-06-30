@@ -19,11 +19,10 @@ public class LayerListScrollItem : InfiniteScrollItem
 		LayerListScrollItemData itemData = scrollData as LayerListScrollItemData;
 		m_text.text = $"Layer {itemData.Index}";
 
-		m_toggle.onValueChanged.AddListener(OnVisible);
+		m_toggle.onValueChanged.AddListener(isOn => {
+				itemData.OnToggle?.Invoke(itemData.Index, isOn);
+			}
+		);
+		m_toggle.isOn = true;
     }
-
-	private void OnVisible(bool isOn)
-	{
-
-	}
 }

@@ -51,12 +51,14 @@ public partial class LevelEditor : MonoBehaviour
 				},
 				GridOptionContainerParameter = new GridOptionContainerParameter {
 					OnChangedSnapping = (snap) => { m_palette.Snapping.Value = snap; },
-					OnVisibleGuide = m_boardView.VisibleWireFrame
+					OnVisibleGuide = m_boardView.OnVisibleWireFrame
 				},
 				LayerContainerParameter = new LayerContainerParameter {
 					OnCreate = m_presenter.AddLayer,
 					OnRemove = m_presenter.RemoveLayer,
-					OnClear = m_presenter.ClearTilesInLayer
+					OnClear = m_presenter.ClearTilesInLayer,
+					OnSelect = m_presenter.SelectLayer,
+					OnVisible = m_boardView.OnVisibleLayer
 				}
 			}
 		);
@@ -77,14 +79,14 @@ public partial class LevelEditor : MonoBehaviour
 						m_boardView.OnUpdateLayerView(all.Layers);
 						m_menuView.UpdateLevelUI(all.LastLevel, all.CurrentLevel);
 						m_menuView.UpdateNumberOfTileTypesUI(all.NumberOfTileTypes);
-						m_menuView.UpdateLayerUI(all.Layers.Count);
+						m_menuView.UpdateLayerUI(all.Layers.Count, all.LayerIndex);
 						break;
 					case CurrentState.NumberOfTileTypesUpdated numberOfTileTypes: // 타일 종류 개수
 						m_menuView.UpdateNumberOfTileTypesUI(numberOfTileTypes.NumberOfTileTypes);
 						break;
 					case CurrentState.LayerUpdated layer: // 레이어
 						m_boardView.OnUpdateLayerView(layer.Layers);
-						m_menuView.UpdateLayerUI(layer.Layers.Count);
+						m_menuView.UpdateLayerUI(layer.Layers.Count, layer.LayerIndex);
 						break;
 				}
 			},
@@ -113,12 +115,12 @@ public partial class LevelEditor : MonoBehaviour
 		}
 	}
 
-	public void OnDrawCell(int layerIndex, Vector2 localPosition, float size)
+	public void OnDrawTile(int layerIndex, Vector2 localPosition, float size)
 	{
 		m_boardView.OnDrawTile(layerIndex, localPosition, size);
 	}
 
-	public void OnEraseCell(int layerIndex, Vector2 localPosition)
+	public void OnEraseTile(int layerIndex, Vector2 localPosition)
 	{
 		m_boardView.OnEraseTile(layerIndex, localPosition);
 	}

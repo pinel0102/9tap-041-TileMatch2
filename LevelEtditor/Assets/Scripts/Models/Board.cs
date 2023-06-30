@@ -4,10 +4,15 @@ using System;
 using System.Collections.Generic;
 
 [Serializable]
-public record Board(
-	List<Layer> Layers
-)
+public class Board
 {
+	public List<Layer> Layers;
+	
+	public Board(IEnumerable<Layer> layers)
+	{
+		Layers = new(layers);
+	}
+
 	public Layer? this[int index] 
 	{
 		get
