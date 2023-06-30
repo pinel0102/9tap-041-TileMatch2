@@ -1,7 +1,5 @@
 using UnityEngine;
 
-using System.Collections.Generic;
-
 public class MenuViewParameter
 {
 	public SelectLevelContainerParameter SelectLevelContainerParameter;
@@ -24,6 +22,9 @@ public class MenuView : MonoBehaviour
 	[SerializeField]
 	private LayerContainer m_layerContainer;
 
+	[SerializeField]
+	private LevelInfoContainer m_levelInfoContainer;
+
 	public void OnSetup(MenuViewParameter parameter)
 	{
 		m_levelContainer.OnSetup(parameter.SelectLevelContainerParameter);
@@ -34,16 +35,24 @@ public class MenuView : MonoBehaviour
 
 	public void UpdateLevelUI(int lastLevel, int selectedLevel)
 	{
-		m_levelContainer.UpdateUI(lastLevel, selectedLevel);
+		m_levelContainer.OnUpdateUI(lastLevel, selectedLevel);
 	}
 
 	public void UpdateNumberOfTileTypesUI(int number)
 	{
-	   m_tileTypeContainer.UpdateUI(number);
+	   m_tileTypeContainer.OnUpdateUI(number);
 	}
 
     public void UpdateLayerUI(Color[] layers, int layerIndex)
     {
-		m_layerContainer.UpdateUI(layers, layerIndex);
+		m_layerContainer.OnUpdateUI(layers, layerIndex);
     }
+
+	public void UpdateLevelInfoUI(int tileCountInBoard, int allTileCount)
+	{
+		m_levelInfoContainer.OnUpdateUI(
+			(LevelInfoContainer.TILE_COUNT_IN_BOARD, tileCountInBoard), 
+			(LevelInfoContainer.TILE_COUNT_IN_LEVEL, allTileCount)
+		);
+	}
 }

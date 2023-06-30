@@ -23,6 +23,11 @@ public partial class LevelEditor : MonoBehaviour
 	private LevelEditorPresenter m_presenter;
 	private Palette m_palette;
 
+	private void OnDestroy()
+	{
+		m_presenter.Dispose();
+	}
+
 	private async UniTaskVoid Start()
 	{
 		Mouse mouse = Mouse.current;
@@ -45,7 +50,8 @@ public partial class LevelEditor : MonoBehaviour
 				SelectLevelContainerParameter = new SelectLevelContainerParameter {
 					OnTakeStep = m_presenter.LoadLevelByStep,
 					OnNavigate = m_presenter.LoadLevel,
-					OnSave = m_presenter.SaveLevel
+					OnSave = m_presenter.SaveLevel,
+					SaveButtonBinder = m_presenter.Savable
 				},
 				NumberOfContainerParameter = new NumberOfTileTypesContainerParameter {
 					OnTakeStep = m_presenter.IncrementNumberOfTileTypes,
@@ -83,11 +89,13 @@ public partial class LevelEditor : MonoBehaviour
 						m_menuView.UpdateLevelUI(all.LastLevel, all.CurrentLevel);
 						m_menuView.UpdateNumberOfTileTypesUI(all.NumberOfTileTypes);
 						m_menuView.UpdateLayerUI(all.LayerColors, all.LayerIndex);
+						m_menuView.UpdateLevelInfoUI(all.TileCountInBoard, all.TileCountAll);
 						break;
 					case CurrentState.BoardUpdated board: //맵
 						m_boardView.OnUpdateBoardView(board.BoardCount, board.BoardIndex);
 						m_boardView.OnUpdateLayerView(board.Layers, board.LayerIndex);
 						m_menuView.UpdateLayerUI(board.LayerColors, board.LayerIndex);
+						m_menuView.UpdateLevelInfoUI(board.TileCountInBoard, board.TileCountAll);
 						break;
 					case CurrentState.NumberOfTileTypesUpdated numberOfTileTypes: // 타일 종류 개수
 						m_menuView.UpdateNumberOfTileTypesUI(numberOfTileTypes.NumberOfTileTypes);
@@ -95,6 +103,10 @@ public partial class LevelEditor : MonoBehaviour
 					case CurrentState.LayerUpdated layer: // 레이어
 						m_boardView.OnUpdateLayerView(layer.Layers, layer.LayerIndex);
 						m_menuView.UpdateLayerUI(layer.LayerColors, layer.LayerIndex);
+						m_menuView.UpdateLevelInfoUI(layer.TileCountInBoard, layer.TileCountAll);
+						break;
+					case CurrentState.TileUpdated tile: //타일
+						m_menuView.UpdateLevelInfoUI(tile.TileCountInBoard, tile.TileCountAll);
 						break;
 				}
 			},

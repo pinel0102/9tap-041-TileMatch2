@@ -37,7 +37,7 @@ public class NumberOfTileTypesContainer : MonoBehaviour
 		);
 	}
 
-	public void UpdateUI(int number)
+	public void OnUpdateUI(int number)
 	{
 		m_inputField.SetTextWithoutNotify(number.ToString());
 		m_subtractButton.interactable = number > 1;

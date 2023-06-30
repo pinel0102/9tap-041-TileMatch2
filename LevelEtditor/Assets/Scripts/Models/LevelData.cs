@@ -34,4 +34,6 @@ public record LevelData(
 	}
 
 	public Layer? GetLayer(int boardIndex, int layerIndex) => this[boardIndex]?[layerIndex];
+
+	public int TileCountAll => Boards.Sum(board => board.Layers.Sum(Layer => Layer.Tiles.Count()));
 }

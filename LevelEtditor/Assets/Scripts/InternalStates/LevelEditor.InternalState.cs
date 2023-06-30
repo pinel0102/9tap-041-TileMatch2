@@ -20,9 +20,10 @@ partial class LevelEditor
 	{
 		NONE,
 		ALL, // 편집할 레벨 변경 시 모든 데이터를 바꾼다.
-		NUMBER_OF_TILE_TYPES, // 타일 종류 개수 변경
-		LAYER, // 편집할 레이어 변경
 		BOARD, // 편집할 보드 변경
+		LAYER, // 편집할 레이어 변경
+		TILE, // 타일 변경
+		NUMBER_OF_TILE_TYPES, // 타일 종류 개수 변경
 	}
 
 	/// <summary>
@@ -38,8 +39,8 @@ partial class LevelEditor
 		int BoardIndex = 0,
 		int BoardCount = 0,
 		int LayerIndex = 0,
-		int TileCountInLayer = 0, // Todo
-		int TileCountAll = 0 // Todo
+		int TileCountInBoard = 0,
+		int TileCountAll = 0
 	)
 	{
 
@@ -51,7 +52,7 @@ partial class LevelEditor
 			BoardIndex: 0,
 			BoardCount: 1,
 			LayerIndex: 0,
-			TileCountInLayer: 0,
+			TileCountInBoard: 0,
 			TileCountAll: 0,
 			Layers: new()
 		);
@@ -61,10 +62,13 @@ partial class LevelEditor
 			return new InternalState(
 				UpdateType: UpdateType.ALL,
 				LastLevel: lastLevel,
-				BoardCount: data.Boards.Count,
-				BoardIndex: 0,
 				CurrentLevel: data.Level,
 				NumberOfTileTypes: data.NumberOfTileTypes,
+				BoardIndex: 0,
+				LayerIndex: 0,
+				BoardCount: data.Boards.Count,
+				TileCountInBoard: data[0].Layers.Sum(layer => layer.Tiles.Count()),
+				TileCountAll: data.TileCountAll,
 				Layers: data[0]
 					.Layers
 					.Select(
@@ -91,7 +95,7 @@ partial class LevelEditor
 					BoardCount: BoardCount,
 					BoardIndex: BoardIndex,
 					LayerIndex: LayerIndex,
-					TileCountInLayer: TileCountInLayer,
+					TileCountInBoard: TileCountInBoard,
 					TileCountAll: TileCountAll,
 					Layers: Layers
 				),
@@ -99,7 +103,7 @@ partial class LevelEditor
 					BoardCount: BoardCount,
 					BoardIndex: BoardIndex,
 					LayerIndex: LayerIndex,
-					TileCountInLayer: TileCountInLayer,
+					TileCountInBoard: TileCountInBoard,
 					TileCountAll: TileCountAll,
 					Layers: Layers
 				),
@@ -108,16 +112,20 @@ partial class LevelEditor
 				),
 				UpdateType.LAYER => new CurrentState.LayerUpdated(
 					LayerIndex: LayerIndex,
-					TileCountInLayer: TileCountInLayer,
+					TileCountInBoard: TileCountInBoard,
 					TileCountAll: TileCountAll,
 					Layers: Layers
+				),
+				UpdateType.TILE => new CurrentState.TileUpdated(
+					TileCountInBoard: TileCountInBoard,
+					TileCountAll: TileCountAll
 				),
 				_=> new CurrentState.NotUpdated()
 			};
 		}
 	}
 
-	public abstract record CurrentState
+	public record CurrentState
 	{
 		public record NotUpdated : CurrentState;
 
@@ -128,23 +136,23 @@ partial class LevelEditor
 			int BoardIndex,
 			int BoardCount,
 			int LayerIndex,
-			int TileCountInLayer,
+			int TileCountInBoard,
 			int TileCountAll,
 			List<LayerInfo> Layers
-		): LayerUpdated(LayerIndex, TileCountInLayer, TileCountAll, Layers);
+		): LayerUpdated(LayerIndex, TileCountInBoard, TileCountAll, Layers);
 
 		public record BoardUpdated(
 			int BoardCount,
 			int BoardIndex,
 			int LayerIndex,
-			int TileCountInLayer,
+			int TileCountInBoard,
 			int TileCountAll,
 			List<LayerInfo> Layers
-		) : LayerUpdated(LayerIndex, TileCountInLayer, TileCountAll, Layers);
+		) : LayerUpdated(LayerIndex, TileCountInBoard, TileCountAll, Layers);
 
 		public record LayerUpdated(
 			int LayerIndex,
-			int TileCountInLayer,
+			int TileCountInBoard,
 			int TileCountAll,
 			List<LayerInfo> Layers
 		): CurrentState
@@ -160,6 +168,11 @@ partial class LevelEditor
 				return Array.Empty<TileInfo>();
 			}
 		}
+
+		public record TileUpdated(
+			int TileCountInBoard,
+			int TileCountAll
+		) : CurrentState;
 
 		public record NumberOfTileTypesUpdated(int NumberOfTileTypes): CurrentState;
 	}

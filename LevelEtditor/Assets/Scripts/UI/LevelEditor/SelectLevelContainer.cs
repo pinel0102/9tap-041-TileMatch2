@@ -3,12 +3,14 @@ using UnityEngine.UI;
 
 using TMPro;
 using System;
+using Cysharp.Threading.Tasks;
 
 public class SelectLevelContainerParameter
 {
 	public Action<int> OnTakeStep; 
 	public Action<int> OnNavigate; 
 	public Action OnSave;
+	public IUniTaskAsyncEnumerable<bool> SaveButtonBinder;
 }
 
 public class SelectLevelContainer : MonoBehaviour
@@ -34,6 +36,8 @@ public class SelectLevelContainer : MonoBehaviour
 		m_nextButton.OnSetup(() => parameter?.OnTakeStep?.Invoke(1));
 		m_saveButton.OnSetup("Save Level", () => parameter?.OnSave?.Invoke());
 
+		parameter?.SaveButtonBinder?.BindTo(m_saveButton, (button, interactable) => button.SetInteractable(interactable));
+
 		m_inputField.onEndEdit.AddListener(
 			text => {
 				parameter?.OnNavigate?.Invoke(
@@ -46,10 +50,11 @@ public class SelectLevelContainer : MonoBehaviour
 		);
 	}
 
-	public void UpdateUI(int maxLevel, int level)
+	public void OnUpdateUI(int maxLevel, int level)
 	{
 		m_prevButton.SetInteractable(level > 1);
 		m_nextButton.UpdateUI(level < maxLevel? ">>" : "+");
 		m_inputField.SetTextWithoutNotify($"Lv.{level}");
 	}
+
 }

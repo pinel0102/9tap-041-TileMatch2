@@ -46,7 +46,7 @@ public class LayerContainer : MonoBehaviour
 		m_selectLayerDropdown.onValueChanged.AddListener(index => parameter?.OnSelect?.Invoke(index));
 	}
 
-	public void UpdateUI(Color[] layers, int layerIndex)
+	public void OnUpdateUI(Color[] layers, int layerIndex)
 	{
 		m_scrollView.ClearData(true);
 		m_selectLayerDropdown.ClearOptions();
