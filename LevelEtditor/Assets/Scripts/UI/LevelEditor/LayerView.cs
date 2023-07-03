@@ -37,6 +37,14 @@ public class LayerView : MonoBehaviour
 		{
 			image = go.AddComponent<Image>();
 		}
+
+		if (!go.TryGetComponent<Outline>(out Outline outline))
+		{
+			outline = go.AddComponent<Outline>();
+		}
+
+		outline.effectColor = color * 0.5f;
+		outline.effectDistance = new Vector2(2f, -2f);
 		image.color = color;
 
 		RectTransform rectTransform = go.transform as RectTransform;

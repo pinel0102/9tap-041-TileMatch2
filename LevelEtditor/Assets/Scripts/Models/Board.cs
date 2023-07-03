@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 [Serializable]
 public class Board
@@ -13,14 +14,5 @@ public class Board
 		Layers = new(layers);
 	}
 
-	public Layer? this[int index] 
-	{
-		get
-		{
-			return Layers.HasIndex(index) switch {
-				true => Layers[index],
-				_ => default(Layer)
-			};
-		}
-	}
+	public Layer? this[int index] => Layers.ElementAtOrDefault(index);
 }

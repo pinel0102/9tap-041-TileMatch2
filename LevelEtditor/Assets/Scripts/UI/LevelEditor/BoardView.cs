@@ -101,7 +101,7 @@ public class BoardView : MonoBehaviour
 		m_nextButton.UpdateUI(boardIndex + 1 >= boardCount? "+": ">>");
 	}
 
-	public void OnUpdateLayerView(List<LayerInfo> layers, int selectedIndex)
+	public void OnUpdateLayerView(IReadOnlyList<LayerInfo> layers, int selectedIndex)
 	{
 		m_frame.color = layers[selectedIndex].Color;
 
@@ -115,7 +115,7 @@ public class BoardView : MonoBehaviour
 		for (int index = 0, count = layers.Count; index < count; index++)
 		{
 			LayerInfo layer = layers[index];
-			LayerView layerView = m_placedLayerObjects.HasIndex(index) switch {
+            LayerView layerView = m_placedLayerObjects.HasIndex(index) switch {
 				true => m_placedLayerObjects[index],
 				false => CreateView(index)
 			};

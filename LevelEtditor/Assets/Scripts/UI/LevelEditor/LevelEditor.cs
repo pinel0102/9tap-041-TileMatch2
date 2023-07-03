@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+using System.Linq;
 using System.Threading;
 
 using Cysharp.Threading.Tasks;
@@ -85,16 +86,16 @@ public partial class LevelEditor : MonoBehaviour
 				{
 					case CurrentState.AllUpdated all: // 레벨 변경시 모든 ui가 변경되어야 함
 						m_boardView.OnUpdateBoardView(all.BoardCount, all.BoardIndex);
-						m_boardView.OnUpdateLayerView(all.Layers, all.LayerIndex);
+						m_boardView.OnUpdateLayerView(all.CurrentBoard, all.LayerIndex);
 						m_menuView.UpdateLevelUI(all.LastLevel, all.CurrentLevel);
 						m_menuView.UpdateNumberOfTileTypesUI(all.NumberOfTileTypes);
-						m_menuView.UpdateLayerUI(all.LayerColors, all.LayerIndex);
+						m_menuView.UpdateLayerUI(all.CurrentLayerColors, all.LayerIndex);
 						m_menuView.UpdateLevelInfoUI(all.TileCountInBoard, all.TileCountAll);
 						break;
 					case CurrentState.BoardUpdated board: //맵
 						m_boardView.OnUpdateBoardView(board.BoardCount, board.BoardIndex);
-						m_boardView.OnUpdateLayerView(board.Layers, board.LayerIndex);
-						m_menuView.UpdateLayerUI(board.LayerColors, board.LayerIndex);
+						m_boardView.OnUpdateLayerView(board.CurrentBoard, board.LayerIndex);
+						m_menuView.UpdateLayerUI(board.CurrentLayerColors, board.LayerIndex);
 						m_menuView.UpdateLevelInfoUI(board.TileCountInBoard, board.TileCountAll);
 						break;
 					case CurrentState.NumberOfTileTypesUpdated numberOfTileTypes: // 타일 종류 개수
@@ -102,7 +103,7 @@ public partial class LevelEditor : MonoBehaviour
 						break;
 					case CurrentState.LayerUpdated layer: // 레이어
 						m_boardView.OnUpdateLayerView(layer.Layers, layer.LayerIndex);
-						m_menuView.UpdateLayerUI(layer.LayerColors, layer.LayerIndex);
+						m_menuView.UpdateLayerUI(layer.CurrentColors, layer.LayerIndex);
 						m_menuView.UpdateLevelInfoUI(layer.TileCountInBoard, layer.TileCountAll);
 						break;
 					case CurrentState.TileUpdated tile: //타일

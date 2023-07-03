@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class MenuViewParameter
@@ -43,7 +44,7 @@ public class MenuView : MonoBehaviour
 	   m_tileTypeContainer.OnUpdateUI(number);
 	}
 
-    public void UpdateLayerUI(Color[] layers, int layerIndex)
+    public void UpdateLayerUI(IReadOnlyList<Color> layers, int layerIndex)
     {
 		m_layerContainer.OnUpdateUI(layers, layerIndex);
     }

@@ -6,13 +6,34 @@ using System.Linq;
 
 partial class LevelEditor
 {
+	public record BoardInfo(IReadOnlyList<LayerInfo> Layers)
+	{
+		public static IReadOnlyList<BoardInfo> Create(LevelData data, float size)
+		{
+			return data.Boards.Select(
+				board => {
+					return new BoardInfo(
+						Layers: board.Layers.Select(
+							layer => {
+								return new LayerInfo(Color: ColorTableUtility.Dequeue(), layer?.Tiles.Select(tile => new TileInfo(tile.Position, size)));
+							}
+						).ToArray()
+					);
+				}
+			).ToArray();
+		}
+
+		public int TileCountAll => Layers.Sum(layer => layer.TileCount);
+	}
 	public record LayerInfo(Color Color, IReadOnlyList<TileInfo> Tiles)
 	{
-		public LayerInfo(IEnumerable<TileInfo> tiles) 
-			: this(Color: UnityEngine.Random.ColorHSV(), Tiles: tiles?.ToArray() ?? Array.Empty<TileInfo>())
+		public LayerInfo(Color Color, IEnumerable<TileInfo> tiles) 
+		: this(Color, Tiles: tiles?.ToArray() ?? Array.Empty<TileInfo>())
 		{
 
 		}
+
+		public int TileCount => Tiles.Count();
 	}
 	public record TileInfo(Vector2 Position, float Size);
 
@@ -35,7 +56,7 @@ partial class LevelEditor
 		int LastLevel,
 		int CurrentLevel,
 		int NumberOfTileTypes,
-		List<LayerInfo> Layers,
+		IReadOnlyList<BoardInfo> Boards,
 		int BoardIndex = 0,
 		int BoardCount = 0,
 		int LayerIndex = 0,
@@ -54,7 +75,7 @@ partial class LevelEditor
 			LayerIndex: 0,
 			TileCountInBoard: 0,
 			TileCountAll: 0,
-			Layers: new()
+			Boards: Array.Empty<BoardInfo>()
 		);
 
 		public static InternalState ToInternalInfo(LevelData data, int lastLevel, float size)
@@ -69,21 +90,11 @@ partial class LevelEditor
 				BoardCount: data.Boards.Count,
 				TileCountInBoard: data[0].Layers.Sum(layer => layer.Tiles.Count()),
 				TileCountAll: data.TileCountAll,
-				Layers: data[0]
-					.Layers
-					.Select(
-						layer => {
-							return new LayerInfo(
-								layer?
-								.Tiles?
-								.Select(
-									tile => new TileInfo(tile.Position, size)
-								)
-							);
-						}
-					).ToList()
+				Boards: BoardInfo.Create(data, size)			
 			);
 		}
+
+		public IReadOnlyList<LayerInfo> CurrentBoard => Boards?.ElementAtOrDefault(BoardIndex)?.Layers ?? Array.Empty<LayerInfo>();
 
 		public CurrentState ToCurrentState()
 		{
@@ -97,7 +108,7 @@ partial class LevelEditor
 					LayerIndex: LayerIndex,
 					TileCountInBoard: TileCountInBoard,
 					TileCountAll: TileCountAll,
-					Layers: Layers
+					Boards: Boards
 				),
 				UpdateType.BOARD => new CurrentState.BoardUpdated(
 					BoardCount: BoardCount,
@@ -105,16 +116,17 @@ partial class LevelEditor
 					LayerIndex: LayerIndex,
 					TileCountInBoard: TileCountInBoard,
 					TileCountAll: TileCountAll,
-					Layers: Layers
+					Boards: Boards
 				),
 				UpdateType.NUMBER_OF_TILE_TYPES => new CurrentState.NumberOfTileTypesUpdated(
 					NumberOfTileTypes: NumberOfTileTypes
 				),
 				UpdateType.LAYER => new CurrentState.LayerUpdated(
+					BoardIndex: BoardIndex,
 					LayerIndex: LayerIndex,
 					TileCountInBoard: TileCountInBoard,
 					TileCountAll: TileCountAll,
-					Layers: Layers
+					Layers: Boards?.ElementAtOrDefault(BoardIndex)?.Layers ?? Array.Empty<LayerInfo>()
 				),
 				UpdateType.TILE => new CurrentState.TileUpdated(
 					TileCountInBoard: TileCountInBoard,
@@ -138,8 +150,11 @@ partial class LevelEditor
 			int LayerIndex,
 			int TileCountInBoard,
 			int TileCountAll,
-			List<LayerInfo> Layers
-		): LayerUpdated(LayerIndex, TileCountInBoard, TileCountAll, Layers);
+			IReadOnlyList<BoardInfo> Boards
+		): BoardUpdated(BoardCount, BoardIndex, LayerIndex, TileCountInBoard, TileCountAll, Boards)
+		{
+			
+		}
 
 		public record BoardUpdated(
 			int BoardCount,
@@ -147,17 +162,23 @@ partial class LevelEditor
 			int LayerIndex,
 			int TileCountInBoard,
 			int TileCountAll,
-			List<LayerInfo> Layers
-		) : LayerUpdated(LayerIndex, TileCountInBoard, TileCountAll, Layers);
+			IReadOnlyList<BoardInfo> Boards
+		) : CurrentState
+		{
+			public IReadOnlyList<LayerInfo> CurrentBoard => Boards?.ElementAtOrDefault(BoardIndex)?.Layers ?? Array.Empty<LayerInfo>();
+			public IReadOnlyList<Color> CurrentLayerColors => CurrentBoard?.Select(layer => layer.Color)?.ToArray() ?? Array.Empty<Color>();
+		}
 
 		public record LayerUpdated(
+			int BoardIndex,
 			int LayerIndex,
 			int TileCountInBoard,
 			int TileCountAll,
-			List<LayerInfo> Layers
+			IReadOnlyList<LayerInfo> Layers
 		): CurrentState
 		{
-			public Color[] LayerColors = Layers.Select(layer => layer.Color)?.ToArray() ?? Array.Empty<Color>();
+			public IReadOnlyList<Color> CurrentColors => Layers?.Select(layer => layer.Color)?.ToArray() ?? Array.Empty<Color>();
+
 			public IReadOnlyList<TileInfo> GetTileInfos(int index)
 			{
 				if (Layers.TryGetValue(index, out var layer))

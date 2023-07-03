@@ -22,18 +22,7 @@ public record LevelData(
 		return new LevelData(level, boards, 0, 1);
 	}
 
-	public Board? this[int index] 
-	{
-		get
-		{
-			return Boards.HasIndex(index) switch {
-				true => Boards[index],
-				_ => default(Board)
-			};
-		}
-	}
-
+	public Board? this[int index] => Boards.ElementAtOrDefault(index);
 	public Layer? GetLayer(int boardIndex, int layerIndex) => this[boardIndex]?[layerIndex];
-
 	public int TileCountAll => Boards.Sum(board => board.Layers.Sum(Layer => Layer.Tiles.Count()));
 }
