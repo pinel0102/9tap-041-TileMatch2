@@ -1,14 +1,20 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-using System.Linq;
 using System.Threading;
 
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 
+using SimpleFileBrowser;
+using System.Linq;
+
 public partial class LevelEditor : MonoBehaviour
 {
+	private const string DATA_PATH = "data_path";
+	[SerializeField]
+	private CanvasGroup m_prevDim;
+
 	[SerializeField]
 	private int m_cellSize = 80;
 
@@ -24,16 +30,53 @@ public partial class LevelEditor : MonoBehaviour
 	private LevelEditorPresenter m_presenter;
 	private Palette m_palette;
 
+	private void Awake()
+	{
+		m_prevDim.alpha = 1f;
+	}
+
 	private void OnDestroy()
 	{
-		m_presenter.Dispose();
+		m_presenter?.Dispose();
+	}
+
+	private void OnApplicationQuit()
+	{
+		Debug.Log("QUIT");
 	}
 
 	private async UniTaskVoid Start()
-	{
+	{	
+		string path = string.Empty;
+
+		if (PlayerPrefs.HasKey(DATA_PATH))
+		{
+			path = PlayerPrefs.GetString(DATA_PATH);
+		}
+		else
+		{
+			FileBrowser.ShowLoadDialog(
+				onSuccess: paths => {
+					path = paths.FirstOrDefault();
+					if (string.IsNullOrWhiteSpace(path))
+					{
+						Application.Quit();
+						return;
+					}
+					PlayerPrefs.SetString(DATA_PATH, path);
+				}, 
+				onCancel: Application.Quit, 
+				pickMode: FileBrowser.PickMode.Folders, 
+				allowMultiSelection: false, 
+				title: "Select Data Folder"
+			);
+		}
+
+		await UniTask.WaitUntil(() => !string.IsNullOrWhiteSpace(path));
+
 		Mouse mouse = Mouse.current;
 
-		m_presenter = new(this, m_cellSize, m_cellCount);
+		m_presenter = new(this, path, m_cellSize, m_cellCount);
 		m_palette = new Palette(m_cellSize);
 
 		m_boardView.OnSetup(
@@ -110,6 +153,9 @@ public partial class LevelEditor : MonoBehaviour
 						m_menuView.UpdateLevelInfoUI(tile.TileCountInBoard, tile.TileCountAll);
 						break;
 				}
+
+				m_prevDim.alpha = 0f;
+				m_prevDim.gameObject.SetActive(false);
 			},
 			cancellationToken: token 
 		);

@@ -21,6 +21,10 @@ public class LevelDataManager
 
 	private readonly JsonSerializerSettings m_serializerSettings;
 	private readonly Dictionary<int, LevelData> m_savedLevelDataDic;
+	private readonly string m_dataPath;
+
+	private string GetLevelDataPath(int level) => Path.Combine(m_dataPath, $"LevelData_{level}.dat");
+	private string GetGameConfigPath() => Path.Combine(m_dataPath, "GameConfig.dat");
 
 	private GameConfig m_gameConfig;
 	private LevelData? m_currentData;
@@ -28,8 +32,9 @@ public class LevelDataManager
 	public LevelData? CurrentLevelData => m_currentData;
 	public GameConfig Config => m_gameConfig;
 
-	public LevelDataManager()
+	public LevelDataManager(string dataPath)
 	{
+		m_dataPath = dataPath;
 		m_gameConfig = LoadConfig();
 		m_savedLevelDataDic = new();
 		m_serializerSettings = new JsonSerializerSettings {
@@ -263,7 +268,4 @@ public class LevelDataManager
 			}
 		}
 	}
-
-	private string GetLevelDataPath(int level) => Path.Combine(Application.dataPath, $"LevelData_{level}.dat");
-	private string GetGameConfigPath() => Path.Combine(Application.dataPath, "GameConfig.dat");
 }
