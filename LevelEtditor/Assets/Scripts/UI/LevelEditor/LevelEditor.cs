@@ -1,17 +1,20 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+using System.Linq;
+using System.IO;
 using System.Threading;
 
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 
 using SimpleFileBrowser;
-using System.Linq;
 
 public partial class LevelEditor : MonoBehaviour
 {
-	private const string DATA_PATH = "data_path";
+	[SerializeField]
+	private GameObject m_loading;
+
 	[SerializeField]
 	private CanvasGroup m_prevDim;
 
@@ -32,6 +35,7 @@ public partial class LevelEditor : MonoBehaviour
 
 	private void Awake()
 	{
+		m_loading.SetActive(false);
 		m_prevDim.alpha = 1f;
 	}
 
@@ -40,43 +44,11 @@ public partial class LevelEditor : MonoBehaviour
 		m_presenter?.Dispose();
 	}
 
-	private void OnApplicationQuit()
-	{
-		Debug.Log("QUIT");
-	}
-
 	private async UniTaskVoid Start()
 	{	
-		string path = string.Empty;
-
-		if (PlayerPrefs.HasKey(DATA_PATH))
-		{
-			path = PlayerPrefs.GetString(DATA_PATH);
-		}
-		else
-		{
-			FileBrowser.ShowLoadDialog(
-				onSuccess: paths => {
-					path = paths.FirstOrDefault();
-					if (string.IsNullOrWhiteSpace(path))
-					{
-						Application.Quit();
-						return;
-					}
-					PlayerPrefs.SetString(DATA_PATH, path);
-				}, 
-				onCancel: Application.Quit, 
-				pickMode: FileBrowser.PickMode.Folders, 
-				allowMultiSelection: false, 
-				title: "Select Data Folder"
-			);
-		}
-
-		await UniTask.WaitUntil(() => !string.IsNullOrWhiteSpace(path));
-
 		Mouse mouse = Mouse.current;
 
-		m_presenter = new(this, path, m_cellSize, m_cellCount);
+		m_presenter = new(this, "Datas", m_cellSize, m_cellCount);
 		m_palette = new Palette(m_cellSize);
 
 		m_boardView.OnSetup(
@@ -92,9 +64,18 @@ public partial class LevelEditor : MonoBehaviour
 		m_menuView.OnSetup(
 			new MenuViewParameter {
 				SelectLevelContainerParameter = new SelectLevelContainerParameter {
-					OnTakeStep = m_presenter.LoadLevelByStep,
-					OnNavigate = m_presenter.LoadLevel,
-					OnSave = m_presenter.SaveLevel,
+					OnTakeStep = async direction => {
+						m_loading.SetActive(true);
+						await m_presenter.LoadLevelByStep(direction);
+					},
+					OnNavigate = async level => {
+						m_loading.SetActive(true);
+						await m_presenter.LoadLevel(level);
+					},
+					OnSave = async () => {
+						m_loading.SetActive(true);
+						await m_presenter.SaveLevel();
+					},
 					SaveButtonBinder = m_presenter.Savable
 				},
 				NumberOfContainerParameter = new NumberOfTileTypesContainerParameter {
@@ -115,10 +96,12 @@ public partial class LevelEditor : MonoBehaviour
 			}
 		);
 
+		await m_presenter.Initialize();
+
 		CancellationToken token = this.GetCancellationTokenOnDestroy();
 
 		// 편집 이벤트가 발생해 에디터 state가 변경되어 case에 따라 ui 업데이트를 하도록 함.
-		m_presenter.UpdateState.WithoutCurrent().SubscribeAwait(
+		m_presenter.UpdateState.SubscribeAwait(
 			onNext: async info => {
 				await UniTask.Yield(
 					timing: PlayerLoopTiming.LastPostLateUpdate,
@@ -156,6 +139,7 @@ public partial class LevelEditor : MonoBehaviour
 
 				m_prevDim.alpha = 0f;
 				m_prevDim.gameObject.SetActive(false);
+				m_loading.SetActive(false);
 			},
 			cancellationToken: token 
 		);
@@ -166,9 +150,6 @@ public partial class LevelEditor : MonoBehaviour
 		});
 
 		m_palette.Subscriber.Subscribe(m_presenter.ChangeSnapping);
-
-		m_presenter.LoadLevelByStep(0);
-
 
 		await foreach (var _ in UniTaskAsyncEnumerable.EveryUpdate(PlayerLoopTiming.LastPostLateUpdate))
 		{

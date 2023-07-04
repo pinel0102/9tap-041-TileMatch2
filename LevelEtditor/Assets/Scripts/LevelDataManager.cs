@@ -4,14 +4,21 @@ using UnityEngine;
 
 using System;
 using System.IO;
+using System.Text;
 using System.Linq;
+using System.Threading;
 using System.Collections.Generic;
+
+using Cysharp.Threading.Tasks;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.UnityConverters;
 using Newtonsoft.Json.UnityConverters.Math;
 
-public class LevelDataManager
+using Dropbox.Api;
+using Dropbox.Api.Files;
+
+public class LevelDataManager : IDisposable
 {
 	[Serializable]
 	public record GameConfig(int LastLevel, int RequiredMultiples)
@@ -19,14 +26,20 @@ public class LevelDataManager
 		public static GameConfig Init = new(LastLevel: 1, RequiredMultiples: 3);
 	}
 
+	private const string DROPBOX_ACCESS_TOKEN = "sl.BhiD1e5jrus5Wq1DGGVKTdzXSqd-6YQ2tCABXN13kZuv9oqL78XbNR58Hw5bR-eY_thoPfGgBu_xv2A-0VY_PW2esJsZtBg0eEljubrvXQaFnvVyFVK8s_eFw7cKixPvFnZTEuNBM9eO";
+
 	private readonly JsonSerializerSettings m_serializerSettings;
 	private readonly Dictionary<int, LevelData> m_savedLevelDataDic;
 	private readonly string m_dataPath;
+	private readonly CancellationTokenSource m_cancellationTokenSource;
+	private readonly DropboxClient m_dropBox;
 
-	private string GetLevelDataPath(int level) => Path.Combine(m_dataPath, $"LevelData_{level}.dat");
-	private string GetGameConfigPath() => Path.Combine(m_dataPath, "GameConfig.dat");
+	private string GetLevelDataFileName(int level) => $"LevelData_{level}.dat";
+	private string GetGameConfigFileName() => "GameConfig.dat";
 
-	private GameConfig m_gameConfig;
+	private string GetUrl(string fileName) => $"/{m_dataPath}/{fileName}";
+
+	private GameConfig m_gameConfig = new(1, 3);
 	private LevelData? m_currentData;
 
 	public LevelData? CurrentLevelData => m_currentData;
@@ -34,8 +47,9 @@ public class LevelDataManager
 
 	public LevelDataManager(string dataPath)
 	{
+		m_dropBox = new DropboxClient(DROPBOX_ACCESS_TOKEN);
+		m_cancellationTokenSource = new();
 		m_dataPath = dataPath;
-		m_gameConfig = LoadConfig();
 		m_savedLevelDataDic = new();
 		m_serializerSettings = new JsonSerializerSettings {
 			Converters = new [] {
@@ -46,45 +60,67 @@ public class LevelDataManager
 		};
 	}
 
-	public LevelData? CreateLevelData()
+	public void Dispose()
+	{
+		m_dropBox?.Dispose();
+		m_cancellationTokenSource?.Dispose();
+	}
+
+	public async UniTask<LevelData?> LoadConfig()
+	{
+		var list = await m_dropBox.Files.ListFolderAsync(string.Empty);
+		string fileName = GetGameConfigFileName();
+		GameConfig newConfig = GameConfig.Init;
+		
+		m_gameConfig = await LoadInternal<GameConfig>(fileName, () => GameConfig.Init) ?? GameConfig.Init;
+		await SaveInternal(fileName, newConfig);
+		return await LoadLevelDataInternal(1);
+	}
+
+	public async UniTask<LevelData?> CreateLevelData()
 	{
 		int nextLevel = m_gameConfig.LastLevel + 1;
 		m_gameConfig = m_gameConfig with { LastLevel = nextLevel };
-		return LoadLevelDataInternal(nextLevel);
+		return await LoadLevelDataInternal(nextLevel);
 	}
 
-	public LevelData? LoadLevelData(int level)
+	public async UniTask<LevelData?> LoadLevelData(int level)
 	{
 		if (level < 0 || level >= m_gameConfig.LastLevel)
 		{
 			return m_currentData;
 		}
 
-		return LoadLevelDataInternal(level);
+		return await LoadLevelDataInternal(level);
 	}
 
-	public LevelData? LoadLevelDataByStep(int amount)
+	public UniTask<LevelData?> LoadLevelDataByStep(int direction)
 	{
-		int selectLevel = Mathf.Max((m_currentData?.Level + amount) ?? 1, 1);
-		return selectLevel > m_gameConfig.LastLevel? CreateLevelData() : LoadLevelDataInternal(selectLevel);
+		int selectLevel = Mathf.Max((m_currentData?.Level + direction) ?? 1, 1);
+		return LoadLevelDataInternal(selectLevel);
 	}
 
-	private LevelData? LoadLevelDataInternal(int level)
+	private async UniTask<LevelData?> LoadLevelDataInternal(int level)
 	{
-		string path = GetLevelDataPath(level);
+		string fileName = GetLevelDataFileName(level);
 
 		var data = m_savedLevelDataDic.ContainsKey(level)? 
 			m_savedLevelDataDic[level] :
-			File.Exists(path) switch {
-				true => LoadInternal<LevelData>(path),
-				_ => LevelData.CreateData(level)
-			};
-
-		data ??= LevelData.CreateData(level);
+			await LoadInternal<LevelData>(fileName, () => LevelData.CreateData(level));
+		
+		if (data == null)
+		{
+			Debug.LogException(new NullReferenceException(nameof(data)));
+			return default;
+		}
 
 		if (!m_savedLevelDataDic.ContainsKey(level))
 		{
 			m_savedLevelDataDic.Add(level, data);
+		}
+		else
+		{
+			m_savedLevelDataDic[level] = data;
 		}
 
 		m_currentData = data;
@@ -92,41 +128,32 @@ public class LevelDataManager
 		return data;
 	}
 
-	public GameConfig LoadConfig()
-	{
-		string path = GetGameConfigPath();
-		GameConfig newConfig = GameConfig.Init;
-
-		if (!File.Exists(path))
-		{
-			SaveInternal(path, newConfig);
-			return newConfig;
-		}
-		
-		return LoadInternal<GameConfig>(path) ?? GameConfig.Init;
-	}
-
-	public void SaveLevelData()
+	public UniTask SaveLevelData()
 	{
 		if (m_currentData == null)
 		{
-			return;
+			return UniTask.CompletedTask;
 		}
 
 		int level = m_currentData.Level;
-		string path = GetLevelDataPath(level);
+		string path = GetLevelDataFileName(level);
 
-		SaveInternal(GetGameConfigPath(), m_gameConfig);
-		SaveInternal(path, m_currentData);
-
-		if (!m_savedLevelDataDic.ContainsKey(level))
-		{
-			m_savedLevelDataDic.Add(level, m_currentData);
-		}
-		else
-		{
-			m_savedLevelDataDic[level] = m_currentData;
-		}
+		return UniTask.WhenAll(
+			SaveInternal(GetGameConfigFileName(), m_gameConfig),
+			UniTask.Create(
+				async () => {
+					await SaveInternal(GetLevelDataFileName(level), m_currentData);
+					if (!m_savedLevelDataDic.ContainsKey(level))
+					{
+						m_savedLevelDataDic.Add(level, m_currentData);
+					}
+					else
+					{
+						m_savedLevelDataDic[level] = m_currentData;
+					}
+				}
+			)
+		);
 	}
 
 	public void AddBoardData(out int count)
@@ -234,38 +261,42 @@ public class LevelDataManager
 		}
 	}
 
-	private T? LoadInternal<T>(string path)
+	private async UniTask<T?> LoadInternal<T>(string fileName, Func<T> onCreateNew)
 	{
-		using (StreamReader sr = new StreamReader(path))
+		var list = await m_dropBox.Files
+			.ListFolderAsync(new ListFolderArg($"/{m_dataPath}"))
+			.AsUniTask()
+			.AttachExternalCancellation(m_cancellationTokenSource.Token);
+		
+		if (list.Entries.All(entry => !entry.IsFile || entry.Name != fileName))
 		{
-			using (JsonReader reader = new JsonTextReader(sr))
-			{
-				string? json = reader.ReadAsString();
-
-				if (string.IsNullOrEmpty(json))
-				{
-					return default(T);
-				}
-
-				return JsonConvert.DeserializeObject<T>(json, m_serializerSettings);
-			}
+			await SaveInternal(fileName, onCreateNew.Invoke());
 		}
+
+		var res = await m_dropBox.Files
+			.DownloadAsync(new DownloadArg(GetUrl(fileName)))
+			.AsUniTask()
+			.AttachExternalCancellation(m_cancellationTokenSource.Token);
+
+		string json = await res.GetContentAsStringAsync();
+		return JsonConvert.DeserializeObject<T>(json, m_serializerSettings);
 	}
 
-	private void SaveInternal<T>(string path, T data)
+	private async UniTask SaveInternal<T>(string fileName, T data)
 	{
 		if (data == null)
 		{
 			return;
 		}
 
-		using (StreamWriter sw = new StreamWriter(path))
+		string json = JsonConvert.SerializeObject(data, m_serializerSettings);
+		
+		using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(json)))
 		{
-			using (JsonWriter writer = new JsonTextWriter(sw))
-			{
-				string json = JsonConvert.SerializeObject(data, m_serializerSettings);
-				writer.WriteValue(json);
-			}
+			await m_dropBox.Files
+				.UploadAsync(GetUrl(fileName), WriteMode.Overwrite.Instance, body: ms)
+				.AsUniTask()
+				.AttachExternalCancellation(m_cancellationTokenSource.Token);
 		}
 	}
 }

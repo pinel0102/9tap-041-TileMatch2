@@ -123,15 +123,21 @@ public class LevelEditorPresenter : IDisposable
 	#endregion
 
 	#region Level
-	public void LoadLevel(int level)
+	public async UniTask Initialize()
 	{
-		LevelData data = m_dataManager.LoadLevelData(level);
+		LevelData data = await m_dataManager.LoadConfig();
 		LoadLevelInternal(data);
 	}
 
-	public void LoadLevelByStep(int direction)
+	public async UniTask LoadLevel(int level)
 	{
-		LevelData data = m_dataManager.LoadLevelDataByStep(direction);
+		LevelData data = await m_dataManager.LoadLevelData(level);
+		LoadLevelInternal(data);
+	}
+
+	public async UniTask LoadLevelByStep(int direction)
+	{
+		LevelData data = await m_dataManager.LoadLevelDataByStep(direction);
 		LoadLevelInternal(data);
 	}
 
@@ -151,9 +157,10 @@ public class LevelEditorPresenter : IDisposable
 		ResetPlacedTilesInLayer(0);
 	}
 
-	public void SaveLevel()
+	public async UniTask SaveLevel()
 	{
-		m_dataManager.SaveLevelData();
+		await m_dataManager.SaveLevelData();
+		m_internalState.Update(state => state with { UpdateType = UpdateType.NONE });
 	}
 	#endregion
 
