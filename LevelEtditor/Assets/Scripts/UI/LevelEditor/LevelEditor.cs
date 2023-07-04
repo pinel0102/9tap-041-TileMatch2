@@ -9,6 +9,7 @@ using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 
 using SimpleFileBrowser;
+using System.Runtime.InteropServices;
 
 public partial class LevelEditor : MonoBehaviour
 {
@@ -45,9 +46,13 @@ public partial class LevelEditor : MonoBehaviour
 	}
 
 	private async UniTaskVoid Start()
-	{	
-		Mouse mouse = Mouse.current;
+	{
+		if (!Directory.Exists(Application.streamingAssetsPath))
+		{
+			Directory.CreateDirectory(Application.streamingAssetsPath);
+		}
 
+		Mouse mouse = Mouse.current;
 		m_presenter = new(this, "Datas", m_cellSize, m_cellCount);
 		m_palette = new Palette(m_cellSize);
 
