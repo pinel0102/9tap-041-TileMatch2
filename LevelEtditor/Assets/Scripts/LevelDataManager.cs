@@ -15,49 +15,39 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.UnityConverters;
 using Newtonsoft.Json.UnityConverters.Math;
 
-using Dropbox.Api;
-using Dropbox.Api.Files;
-using System.Net;
-using System.Net.Http;
-using System.Diagnostics;
-using UnityEngine.Networking;
+using Google.Apis.Drive.v3;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Util.Store;
+using Google.Apis.Services;
+using Google.Apis.Download;
+using Google.Apis.Upload;
+using Google.Apis.Drive.v3.Data;
+
+using Data = Google.Apis.Drive.v3.Data;
+using static Google.Apis.Drive.v3.FilesResource;
 
 public class LevelDataManager : IDisposable
 {
+	private const string DRIVE_FOLDER_ID = "1I6kpVvTneQxZUlsINeAZ_6t9By56ziis";
+	private const string CONTENT_TYPE = "application/json";
+
 	[Serializable]
 	public record GameConfig(int LastLevel, int RequiredMultiples)
 	{
 		public static GameConfig Init = new(LastLevel: 1, RequiredMultiples: 3);
 	}
 
-	private const string DROPBOX_APP_KEY = "vn9mofdzn1ccx7c";
-	private const string DROPBOX_APP_SECRET = "hkyyyna1ty0tedy";
-
-	//// This loopback host is for demo purpose. If this port is not
-	//// available on your machine you need to update this URL with an unused port.
-	//private const string LoopbackHost = "http://localhost/";
-
-	//// URL to receive OAuth 2 redirect from Dropbox server.
-	//// You also need to register this redirect URL on https://www.dropbox.com/developers/apps.
-	//private readonly Uri m_redirectUri = new Uri(LoopbackHost + "authorize");
-
-	//// URL to receive access token from JS.
-	//private readonly Uri m_jsRedirectUri = new Uri(LoopbackHost + "token");
-
-	private const string DROPBOX_ACCESS_TOKEN = "sl.BiB1cwq_mPr0MGBsnZ4E5I0fUgHCR4u1fjjx9j1LR9p2RRClucMcrD0b57DrELO55KJB6Hgmvf7qNAYVvRIKugUkyS0Og7vQzufRfwJILCCSw_FZWho5KStzrEvkxxpDCB_NLv9msJhy";
-
 	private readonly JsonSerializerSettings m_serializerSettings;
 	private readonly Dictionary<int, LevelData> m_savedLevelDataDic;
 	private readonly string m_dataPath;
 	private readonly CancellationTokenSource m_cancellationTokenSource;
-	private DropboxClient m_dropBox = null!;
-	//private readonly AsyncReactiveProperty<bool> m_initialized = new(false);
 
-	private string GetLevelDataFileName(int level) => $"LevelData_{level}.dat";
-	private string GetGameConfigFileName() => "GameConfig.dat";
+	private string GetLevelDataFileName(int level) => $"LevelData_{level}.json";
+	private string GetGameConfigFileName() => "GameConfig.json";
 
 	private string GetUrl(string fileName) => $"/{m_dataPath}/{fileName}";
 
+	private DriveService? m_driveService;
 	private GameConfig m_gameConfig = new(1, 3);
 	private LevelData? m_currentData;
 
@@ -76,37 +66,33 @@ public class LevelDataManager : IDisposable
 			Formatting = Formatting.Indented,
 			ContractResolver = new UnityTypeContractResolver()
 		};
-
-
-		m_dropBox = new DropboxClient(DROPBOX_ACCESS_TOKEN);
-		//UniTask.Void(
-		//	async token => {
-		//		DropboxCertHelper.InitializeCertPinning();
-		//		string[] scopeList = new string[] { 
-		//			"files.metadata.read", 
-		//			"files.metadata.write", 
-		//			"files.content.read", 
-		//			"files.content.write"
-		//		};
-				
-		//		string accessToken = await GetAccessToken();
-
-		//		m_initialized.Value = true;
-		//	},
-		//	m_cancellationTokenSource.Token
-		//);
 	}
 
 	public void Dispose()
 	{
-		m_dropBox?.Dispose();
 		m_cancellationTokenSource?.Dispose();
-		//m_initialized?.Dispose();
 	}
 
 	public async UniTask<LevelData?> LoadConfig()
 	{
-		//await UniTask.WaitUntil(() => m_initialized.Value);
+		UserCredential credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+			new ClientSecrets
+			{
+				ClientId = "350287200496-onh5jtj9e5bbc8a61qasgugrrm32cfph.apps.googleusercontent.com",
+				ClientSecret = "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"
+			},
+			new[] { DriveService.Scope.Drive },
+			"user",
+			m_cancellationTokenSource.Token,
+			new FileDataStore("Drive.TileMatch2Data")
+		);
+		
+		m_driveService = new DriveService(
+			new BaseClientService.Initializer(){
+				HttpClientInitializer = credential,
+				ApplicationName = "editor_webgl"
+			}
+		);
 
 		string fileName = GetGameConfigFileName();
 		GameConfig newConfig = GameConfig.Init;
@@ -149,7 +135,7 @@ public class LevelDataManager : IDisposable
 		
 		if (data == null)
 		{
-			UnityEngine.Debug.LogException(new NullReferenceException(nameof(data)));
+			Debug.LogException(new NullReferenceException(nameof(data)));
 			return default;
 		}
 
@@ -302,29 +288,44 @@ public class LevelDataManager : IDisposable
 
 	private async UniTask<T?> LoadInternal<T>(string fileName, Func<T> onCreateNew)
 	{
-		var list = await m_dropBox.Files
-			.ListFolderAsync(
-				new ListFolderArg(
-					path: $"/{m_dataPath}",
-					recursive: true,
-					includeMediaInfo: true
-				)
-			)
-			.AsUniTask()
-			.AttachExternalCancellation(m_cancellationTokenSource.Token);
-		
-		if (list.Entries.All(entry => !entry.IsFile || entry.Name != fileName))
+		if (m_driveService == null)
 		{
-			await SaveInternal(fileName, onCreateNew.Invoke());
+			return default(T);
 		}
 
-		var res = await m_dropBox.Files
-			.DownloadAsync(new DownloadArg(GetUrl(fileName)))
-			.AsUniTask()
-			.AttachExternalCancellation(m_cancellationTokenSource.Token);
+		Data.File? file = await GetFileInDrive(fileName);
 
-		string json = await res.GetContentAsStringAsync();
-		return JsonConvert.DeserializeObject<T>(json, m_serializerSettings);
+		if (file == null)
+		{
+			T newItem = onCreateNew.Invoke();
+			await SaveInternal(fileName, newItem);
+			return newItem;
+		}
+
+		var request = m_driveService.Files.Get(file.Id);
+
+		string path = Path.Combine(Application.dataPath, fileName);
+		IDownloadProgress result;
+
+		using (FileStream fileStream = new FileStream(path: path, mode: FileMode.OpenOrCreate, access: FileAccess.ReadWrite))
+		{
+			UniTaskCompletionSource<IDownloadProgress> downloadProgress = new();
+
+			downloadProgress.TrySetResult(
+				await request.DownloadAsync(fileStream, m_cancellationTokenSource.Token)
+				.AsUniTask()
+			);
+
+			result = await downloadProgress.Task;
+		}
+
+		if (result.Status == DownloadStatus.Completed)
+		{
+			string json = System.IO.File.ReadAllText(path);
+			return JsonConvert.DeserializeObject<T>(json, m_serializerSettings);
+		}
+		
+		return default(T);
 	}
 
 	private async UniTask SaveInternal<T>(string fileName, T data)
@@ -335,95 +336,72 @@ public class LevelDataManager : IDisposable
 		}
 
 		string json = JsonConvert.SerializeObject(data, m_serializerSettings);
+
+		if (m_driveService == null)
+		{
+			return;
+		}
+
+		var metadata = new Data.File { Name = fileName };
 		
 		using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(json)))
 		{
-			await m_dropBox.Files
-				.UploadAsync(GetUrl(fileName), WriteMode.Overwrite.Instance, body: ms)
+            ResumableUpload<Data.File, Data.File> request = await MakeRequest();
+
+			UniTaskCompletionSource<IUploadProgress> uploadProgress = new();
+			uploadProgress.TrySetResult(
+				await request
+				.UploadAsync(m_cancellationTokenSource.Token)
 				.AsUniTask()
-				.AttachExternalCancellation(m_cancellationTokenSource.Token);
+			);
+
+			var result = await uploadProgress.Task;
+
+			if (result.Status == UploadStatus.Failed)
+			{
+				Debug.LogError(result.Exception);
+			}
+
+			async UniTask<ResumableUpload<Data.File, Data.File>> MakeRequest()
+			{
+				var file = await GetFileInDrive(fileName);
+
+				if (file != null)
+				{
+					UpdateMediaUpload update = m_driveService.Files.Update(metadata, file.Id, ms, CONTENT_TYPE);
+					update.AddParents = DRIVE_FOLDER_ID;
+				
+					return update;
+				}
+				else
+				{
+					metadata.Parents = new List<string> { DRIVE_FOLDER_ID };
+					CreateMediaUpload create = m_driveService.Files.Create(metadata, ms, CONTENT_TYPE);
+					create.UploadType = "resumable";
+					
+					return create;
+				}
+			}
 		}
 	}
 
-	//private async UniTask<string> GetAccessToken()
-	//{
-	//	Console.WriteLine("Waiting for credentials.");
-	//	var state = Guid.NewGuid().ToString("N");
-	//	var authorizeUri = DropboxOAuth2Helper.GetAuthorizeUri(OAuthResponseType.Token, DROPBOX_APP_KEY, redirectUri: m_redirectUri, state: state, tokenAccessType: TokenAccessType.Offline);
-	//	var http = new HttpListener();
-	//	http.Prefixes.Add(LoopbackHost);
+	private async UniTask<Data.File?> GetFileInDrive(string fileName)
+	{
+		if (m_driveService == null)
+		{
+			return default;
+		}
 
-	//	http.Start();
+		var fileListRequest = m_driveService.Files.List();
+		fileListRequest.Q = $"name = '{fileName}' and trashed = false";
 
-	//	System.Diagnostics.Process.Start(authorizeUri.ToString());
+		var list = await fileListRequest.ExecuteAsync(m_cancellationTokenSource.Token).AsUniTask();
 
-	//	// Handle OAuth redirect and send URL fragment to local server using JS.
-	//	await HandleOAuth2Redirect(http);
+		foreach (var file in list.Files)
+		{
+			Debug.Log($"{file.Name}");
+		}
 
-	//	// Handle redirect from JS and process OAuth response.
-	//	var result = await HandleJSRedirect(http);
-
-	//	if (result.State != state)
-	//	{
-	//		// The state in the response doesn't match the state in the request.
-	//		return string.Empty;
-	//	}
-
-	//	Console.WriteLine("and back...");
-
-	//	return result.AccessToken;
-
-	//	/// <summary>
-	//	/// Handles the redirect from Dropbox server. Because we are using token flow, the local
-	//	/// http server cannot directly receive the URL fragment. We need to return a HTML page with
-	//	/// inline JS which can send URL fragment to local server as URL parameter.
-	//	/// </summary>
-	//	/// <param name="http">The http listener.</param>
-	//	/// <returns>The <see cref="Task"/></returns>
-	//	async UniTask HandleOAuth2Redirect(HttpListener http)
-	//	{
-	//		var context = await http.GetContextAsync();
-
-	//		// We only care about request to RedirectUri endpoint.
-	//		while (context.Request.Url.AbsolutePath != m_redirectUri.AbsolutePath)
-	//		{
-	//			context = await http.GetContextAsync();
-	//		}
-
-	//		context.Response.ContentType = "text/html";
-
-	//		// Respond with a page which runs JS and sends URL fragment as query string
-	//		// to TokenRedirectUri.
-	//		using (var file = File.OpenRead(Path.Combine(Application.dataPath, "index.html")))
-	//		{
-	//			file.CopyTo(context.Response.OutputStream);
-	//		}
-
-	//		context.Response.OutputStream.Close();
-	//	}
-
-	//	/// <summary>
-	//	/// Handle the redirect from JS and process raw redirect URI with fragment to
-	//	/// complete the authorization flow.
-	//	/// </summary>
-	//	/// <param name="http">The http listener.</param>
-	//	/// <returns>The <see cref="OAuth2Response"/></returns>
-	//	async UniTask<OAuth2Response> HandleJSRedirect(HttpListener http)
-	//	{
-	//		var context = await http.GetContextAsync();
-
-	//		// We only care about request to TokenRedirectUri endpoint.
-	//		while (context.Request.Url.AbsolutePath != m_jsRedirectUri.AbsolutePath)
-	//		{
-	//			context = await http.GetContextAsync();
-	//		}
-
-	//		var redirectUri = new Uri(context.Request.QueryString["url_with_fragment"]);
-
-	//		var result = DropboxOAuth2Helper.ParseTokenFragment(redirectUri);
-
-	//		return result;
-	//	}
-
-	//}
+		return list.Files.FirstOrDefault();
+	}
 }
