@@ -29,10 +29,10 @@ public class LevelEditorPresenter : IDisposable
 	public IUniTaskAsyncEnumerable<BrushWidgetInfo> BrushMessageBroker => m_brushMessageBroker.Subscribe();
 	public IReadOnlyAsyncReactiveProperty<bool> Savable => m_savable;
 
-	public LevelEditorPresenter(LevelEditor view, float cellSize, float cellCount)
+	public LevelEditorPresenter(LevelEditor view, string path, float cellSize, float cellCount)
 	{
 		m_view = view;
-		m_dataManager = new LevelDataManager();
+		m_dataManager = new LevelDataManager(path);
 		m_cancellationTokenSource = new();
 		m_boardBounds = new Bounds(Vector2.zero, Vector2.one * cellSize * cellCount);
 		m_brushInfo = new AsyncReactiveProperty<BrushInfo>(

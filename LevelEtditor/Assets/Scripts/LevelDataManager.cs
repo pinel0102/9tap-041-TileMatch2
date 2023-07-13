@@ -3,10 +3,10 @@
 //#define USING_GOOGLE_DRIVE
 
 using UnityEngine;
+using UnityEngine.Assertions;
 
 using System;
 using System.IO;
-using System.Text;
 using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
@@ -31,8 +31,11 @@ using static Google.Apis.Drive.v3.FilesResource;
 
 public class LevelDataManager : IDisposable
 {
+
+#if USING_GOOGLE_DRIVE
 	private const string DRIVE_FOLDER_ID = "1I6kpVvTneQxZUlsINeAZ_6t9By56ziis";
 	private const string CONTENT_TYPE = "application/json";
+#endif
 
 	[Serializable]
 	public record GameConfig(int LastLevel, int RequiredMultiples)
@@ -44,6 +47,7 @@ public class LevelDataManager : IDisposable
 	private readonly Dictionary<int, LevelData> m_savedLevelDataDic;
 	private readonly CancellationTokenSource m_cancellationTokenSource;
 
+	private readonly string m_folderPath;
 	private string GetLevelDataFileName(int level) => $"LevelData_{level}.json";
 	private string GetGameConfigFileName() => "GameConfig.json";
 
@@ -56,8 +60,11 @@ public class LevelDataManager : IDisposable
 	public LevelData? CurrentLevelData => m_currentData;
 	public GameConfig Config => m_gameConfig;
 
-	public LevelDataManager()
+	public LevelDataManager(string path)
 	{
+		Assert.IsFalse(string.IsNullOrWhiteSpace(path));
+
+		m_folderPath = path;
 		m_cancellationTokenSource = new();
 		m_savedLevelDataDic = new();
 		m_serializerSettings = new JsonSerializerSettings {
@@ -285,7 +292,7 @@ public class LevelDataManager : IDisposable
 
 	private async UniTask<T?> LoadInternal<T>(string fileName, Func<T> onCreateNew)
 	{
-		string path = Path.Combine(Application.persistentDataPath, fileName);
+		string path = Path.Combine(m_folderPath, fileName);
 
 #if USING_GOOGLE_DRIVE
 		if (m_driveService == null)
@@ -400,7 +407,7 @@ public class LevelDataManager : IDisposable
 			}
 		}
 #else
-		string path = Path.Combine(Application.persistentDataPath, fileName);
+		string path = Path.Combine(m_folderPath, fileName);
 		using (FileStream fileStream = new FileStream(path: path, access: FileAccess.Write, mode: FileMode.OpenOrCreate))
 		{
 			using (StreamWriter writer = new StreamWriter(fileStream))

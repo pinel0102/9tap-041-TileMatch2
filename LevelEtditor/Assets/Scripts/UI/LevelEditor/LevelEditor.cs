@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-using System.Linq;
-using System.IO;
 using System.Threading;
 
 using Cysharp.Threading.Tasks;
@@ -12,6 +10,8 @@ using SimpleFileBrowser;
 
 public partial class LevelEditor : MonoBehaviour
 {
+	private const string PLAYER_PREPS_KEY = "path";
+
 	[SerializeField]
 	private GameObject m_loading;
 
@@ -48,7 +48,28 @@ public partial class LevelEditor : MonoBehaviour
 	{	
 		Mouse mouse = Mouse.current;
 
-		m_presenter = new(this, m_cellSize, m_cellCount);
+		//if (PlayerPrefs.HasKey(PLAYER_PREPS_KEY))
+		//{
+		//	await OnSetup(PlayerPrefs.GetString(PLAYER_PREPS_KEY));
+		//	return;
+		//}
+
+		FileBrowser.ShowLoadDialog(
+			onSuccess: async paths => {
+				string path = paths[0];
+				//PlayerPrefs.SetString(PLAYER_PREPS_KEY, path);
+				await OnSetup(path);
+			},
+			() => Application.Quit(),
+			pickMode: FileBrowser.PickMode.Folders,
+			title: "데이터를 저장 할 폴더 선택",
+			loadButtonText: "선택"
+		);
+	}
+
+	private async UniTask OnSetup(string path)
+	{
+		m_presenter = new(this, path, m_cellSize, m_cellCount);
 		m_palette = new Palette(m_cellSize);
 
 		m_boardView.OnSetup(
@@ -76,7 +97,8 @@ public partial class LevelEditor : MonoBehaviour
 						m_loading.SetActive(true);
 						await m_presenter.SaveLevel();
 					},
-					SaveButtonBinder = m_presenter.Savable
+					SaveButtonBinder = m_presenter.Savable,
+					FolderPath = path
 				},
 				NumberOfContainerParameter = new NumberOfTileTypesContainerParameter {
 					OnTakeStep = m_presenter.IncrementNumberOfTileTypes,
