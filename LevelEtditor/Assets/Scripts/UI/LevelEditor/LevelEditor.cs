@@ -48,7 +48,7 @@ public partial class LevelEditor : MonoBehaviour
 	{	
 		Mouse mouse = Mouse.current;
 
-		m_presenter = new(this, "Datas", m_cellSize, m_cellCount);
+		m_presenter = new(this, m_cellSize, m_cellCount);
 		m_palette = new Palette(m_cellSize);
 
 		m_boardView.OnSetup(

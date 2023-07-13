@@ -1,5 +1,7 @@
 #nullable enable
 
+//#define USING_GOOGLE_DRIVE
+
 using UnityEngine;
 
 using System;
@@ -15,16 +17,17 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.UnityConverters;
 using Newtonsoft.Json.UnityConverters.Math;
 
+#if USING_GOOGLE_DRIVE
 using Google.Apis.Drive.v3;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Util.Store;
 using Google.Apis.Services;
 using Google.Apis.Download;
 using Google.Apis.Upload;
-using Google.Apis.Drive.v3.Data;
 
 using Data = Google.Apis.Drive.v3.Data;
 using static Google.Apis.Drive.v3.FilesResource;
+#endif
 
 public class LevelDataManager : IDisposable
 {
@@ -39,25 +42,23 @@ public class LevelDataManager : IDisposable
 
 	private readonly JsonSerializerSettings m_serializerSettings;
 	private readonly Dictionary<int, LevelData> m_savedLevelDataDic;
-	private readonly string m_dataPath;
 	private readonly CancellationTokenSource m_cancellationTokenSource;
 
 	private string GetLevelDataFileName(int level) => $"LevelData_{level}.json";
 	private string GetGameConfigFileName() => "GameConfig.json";
 
-	private string GetUrl(string fileName) => $"/{m_dataPath}/{fileName}";
-
+#if USING_GOOGLE_DRIVE
 	private DriveService? m_driveService;
+#endif
 	private GameConfig m_gameConfig = new(1, 3);
 	private LevelData? m_currentData;
 
 	public LevelData? CurrentLevelData => m_currentData;
 	public GameConfig Config => m_gameConfig;
 
-	public LevelDataManager(string dataPath)
+	public LevelDataManager()
 	{
 		m_cancellationTokenSource = new();
-		m_dataPath = dataPath;
 		m_savedLevelDataDic = new();
 		m_serializerSettings = new JsonSerializerSettings {
 			Converters = new [] {
@@ -75,6 +76,7 @@ public class LevelDataManager : IDisposable
 
 	public async UniTask<LevelData?> LoadConfig()
 	{
+#if USING_GOOGLE_DRIVE
 		UserCredential credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
 			new ClientSecrets
 			{
@@ -90,9 +92,10 @@ public class LevelDataManager : IDisposable
 		m_driveService = new DriveService(
 			new BaseClientService.Initializer(){
 				HttpClientInitializer = credential,
-				ApplicationName = "editor_webgl"
+				ApplicationName = "Level_Editor"
 			}
 		);
+#endif
 
 		string fileName = GetGameConfigFileName();
 		GameConfig newConfig = GameConfig.Init;
@@ -100,13 +103,6 @@ public class LevelDataManager : IDisposable
 		m_gameConfig = await LoadInternal<GameConfig>(fileName, () => GameConfig.Init) ?? GameConfig.Init;
 		await SaveInternal(fileName, newConfig);
 		return await LoadLevelDataInternal(1);
-	}
-
-	public async UniTask<LevelData?> CreateLevelData()
-	{
-		int nextLevel = m_gameConfig.LastLevel + 1;
-		m_gameConfig = m_gameConfig with { LastLevel = nextLevel };
-		return await LoadLevelDataInternal(nextLevel);
 	}
 
 	public async UniTask<LevelData?> LoadLevelData(int level)
@@ -121,7 +117,7 @@ public class LevelDataManager : IDisposable
 
 	public UniTask<LevelData?> LoadLevelDataByStep(int direction)
 	{
-		int selectLevel = Mathf.Max((m_currentData?.Level + direction) ?? 1, 1);
+		int selectLevel = Mathf.Max((m_currentData?.Key + direction) ?? 1, 1);
 		return LoadLevelDataInternal(selectLevel);
 	}
 
@@ -153,32 +149,33 @@ public class LevelDataManager : IDisposable
 		return data;
 	}
 
-	public UniTask SaveLevelData()
+	public async UniTask SaveLevelData()
 	{
 		if (m_currentData == null)
 		{
-			return UniTask.CompletedTask;
+			return;
 		}
 
-		int level = m_currentData.Level;
+		int level = m_currentData.Key;
 		string path = GetLevelDataFileName(level);
 
-		return UniTask.WhenAll(
-			SaveInternal(GetGameConfigFileName(), m_gameConfig),
-			UniTask.Create(
-				async () => {
-					await SaveInternal(GetLevelDataFileName(level), m_currentData);
-					if (!m_savedLevelDataDic.ContainsKey(level))
-					{
-						m_savedLevelDataDic.Add(level, m_currentData);
-					}
-					else
-					{
-						m_savedLevelDataDic[level] = m_currentData;
-					}
+		await UniTask.Create(
+			async () => {
+				await SaveInternal(GetLevelDataFileName(level), m_currentData);
+				if (!m_savedLevelDataDic.ContainsKey(level))
+				{
+					m_savedLevelDataDic.Add(level, m_currentData);
 				}
-			)
+				else
+				{
+					m_savedLevelDataDic[level] = m_currentData;
+				}
+			}
 		);
+
+		m_gameConfig = m_gameConfig with { LastLevel = Mathf.Max(m_gameConfig.LastLevel, level) };
+
+		await SaveInternal(GetGameConfigFileName(), m_gameConfig);
 	}
 
 	public void AddBoardData(out int count)
@@ -288,6 +285,9 @@ public class LevelDataManager : IDisposable
 
 	private async UniTask<T?> LoadInternal<T>(string fileName, Func<T> onCreateNew)
 	{
+		string path = Path.Combine(Application.persistentDataPath, fileName);
+
+#if USING_GOOGLE_DRIVE
 		if (m_driveService == null)
 		{
 			return default(T);
@@ -297,14 +297,10 @@ public class LevelDataManager : IDisposable
 
 		if (file == null)
 		{
-			T newItem = onCreateNew.Invoke();
-			await SaveInternal(fileName, newItem);
-			return newItem;
+			return onCreateNew.Invoke();
 		}
 
 		var request = m_driveService.Files.Get(file.Id);
-
-		string path = Path.Combine(Application.dataPath, fileName);
 		IDownloadProgress result;
 
 		using (FileStream fileStream = new FileStream(path: path, mode: FileMode.OpenOrCreate, access: FileAccess.ReadWrite))
@@ -326,6 +322,25 @@ public class LevelDataManager : IDisposable
 		}
 		
 		return default(T);
+#else
+		if (!File.Exists(path))
+		{
+			return onCreateNew.Invoke();
+		}
+
+		using (FileStream fileStream = new FileStream(path: path, mode: FileMode.Open, access: FileAccess.Read))
+		{
+			using (StreamReader reader = new StreamReader(fileStream))
+			{
+				UniTaskCompletionSource<string> source = new();
+				source.TrySetResult(await reader.ReadToEndAsync());
+
+				string json = await source.Task;
+
+				return JsonConvert.DeserializeObject<T>(json, m_serializerSettings);
+			}
+		}
+#endif
 	}
 
 	private async UniTask SaveInternal<T>(string fileName, T data)
@@ -337,6 +352,7 @@ public class LevelDataManager : IDisposable
 
 		string json = JsonConvert.SerializeObject(data, m_serializerSettings);
 
+#if USING_GOOGLE_DRIVE
 		if (m_driveService == null)
 		{
 			return;
@@ -383,8 +399,19 @@ public class LevelDataManager : IDisposable
 				}
 			}
 		}
+#else
+		string path = Path.Combine(Application.persistentDataPath, fileName);
+		using (FileStream fileStream = new FileStream(path: path, access: FileAccess.Write, mode: FileMode.OpenOrCreate))
+		{
+			using (StreamWriter writer = new StreamWriter(fileStream))
+			{
+				await writer.WriteAsync(json).AsUniTask().AttachExternalCancellation(m_cancellationTokenSource.Token);
+			}
+		}
+#endif
 	}
 
+#if USING_GOOGLE_DRIVE
 	private async UniTask<Data.File?> GetFileInDrive(string fileName)
 	{
 		if (m_driveService == null)
@@ -393,15 +420,13 @@ public class LevelDataManager : IDisposable
 		}
 
 		var fileListRequest = m_driveService.Files.List();
-		fileListRequest.Q = $"name = '{fileName}' and trashed = false";
+
+		//fileListRequest.Q = $"name = '{fileName}' and trashed = false";
+		//fileListRequest.IncludeItemsFromAllDrives = true;
 
 		var list = await fileListRequest.ExecuteAsync(m_cancellationTokenSource.Token).AsUniTask();
 
-		foreach (var file in list.Files)
-		{
-			Debug.Log($"{file.Name}");
-		}
-
-		return list.Files.FirstOrDefault();
+		return list.Files.FirstOrDefault(file => file.Name == fileName);
 	}
+#endif
 }

@@ -83,7 +83,7 @@ partial class LevelEditor
 			return new InternalState(
 				UpdateType: UpdateType.ALL,
 				LastLevel: lastLevel,
-				CurrentLevel: data.Level,
+				CurrentLevel: data.Key,
 				NumberOfTileTypes: data.NumberOfTileTypes,
 				BoardIndex: 0,
 				LayerIndex: 0,

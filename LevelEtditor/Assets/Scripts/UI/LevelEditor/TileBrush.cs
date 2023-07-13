@@ -37,7 +37,7 @@ public class TileBrush : MonoBehaviour
 
 	public void UpdateUI(bool interactable, bool drawable)
 	{
-		m_button.enabled = interactable;
+		m_button.enabled = interactable & drawable;
 		m_image.enabled = interactable;
 		m_image.color = drawable switch {
 			true => Color.green,

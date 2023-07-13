@@ -3,15 +3,24 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 [Serializable]
 public record LevelData(
-	int Level,
+	Guid Guid,
+	int Key,
 	List<Board> Boards,
 	int TileCount,
 	int NumberOfTileTypes
 )
 {
+	[JsonConstructor]
+	public LevelData(int key, List<Board> boards, int tileCount, int numberOfTileTypes)
+		: this (Guid.NewGuid(), key, boards, tileCount, numberOfTileTypes)
+	{
+		
+	}
+
 	public static LevelData CreateData(int level)
 	{
 		List<Board> boards = new();
