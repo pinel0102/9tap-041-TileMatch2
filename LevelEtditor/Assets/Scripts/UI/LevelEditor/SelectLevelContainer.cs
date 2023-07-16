@@ -2,11 +2,13 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using System;
+using System.Diagnostics;
 
 using TMPro;
 
 using Cysharp.Threading.Tasks;
-using SimpleFileBrowser;
+using System.Collections;
+using System.IO;
 
 public class SelectLevelContainerParameter
 {
@@ -15,6 +17,7 @@ public class SelectLevelContainerParameter
 	public Action OnSave;
 	public IUniTaskAsyncEnumerable<bool> SaveButtonBinder;
 	public string FolderPath;
+	public Action<bool, string> OnVisibleDim;
 }
 
 public class SelectLevelContainer : MonoBehaviour
@@ -44,29 +47,32 @@ public class SelectLevelContainer : MonoBehaviour
 		m_saveButton.OnSetup("Save Level", () => parameter?.OnSave?.Invoke());
 		m_playButton.OnSetup(
 			() => {
-#if UNITY_EDITOR
-				string applicationType = NativeFilePicker.ConvertExtensionToFileType("exe");
+				string path = Environment.GetEnvironmentVariable(
+						"tile_match_2_client", 
+						EnvironmentVariableTarget.User
+					);
+				// string path = Registry.CurrentUser
+				// 	.CreateSubKey("Software")
+				// 	.OpenSubKey("DefaultCompany")
+				// 	.OpenSubKey("Client")
+				// 	.GetValue("application_path")
+				// 	.ToString();
+				
+				UnityEngine.Debug.Log(path);
 
-				NativeFilePicker.PickFile(
-					path => {
-						Application.OpenURL($"file:///{path}");
-					},
-					new string[] { applicationType }
-				);
-#else
-				FileBrowser.ShowLoadDialog(
-					onSuccess: paths => {
-						string path = paths[0];
-						Application.OpenURL($"file:///{path}");
-					},
-					() => {},
-					pickMode: FileBrowser.PickMode.Folders,
-					title: "실행할 어플리케이션 선택",
-					loadButtonText: "선택"
-				);
-#endif
+				parameter.OnVisibleDim.Invoke(true, "게임 실행 중...");
+				
+				//await UniTask.Delay(500,  cancellationToken: token);
+
+				using (var process = Process.Start(path))
+				{
+					process.WaitForExit();
+				}
+
+				parameter.OnVisibleDim.Invoke(false, string.Empty);
 			}
 		);
+
 		m_browserButton.OnSetup(() => Application.OpenURL($"file:///{parameter.FolderPath}"));
 
 		parameter?.SaveButtonBinder?.BindTo(m_saveButton, (button, interactable) => button.SetInteractable(interactable));

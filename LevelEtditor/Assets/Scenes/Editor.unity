@@ -3176,8 +3176,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1860369213}
   m_HandleRect: {fileID: 1860369212}
   m_Direction: 0
-  m_Value: 0
-  m_Size: 1
+  m_Value: 1
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -5806,6 +5806,8 @@ MonoBehaviour:
   m_cellCount: 7
   m_boardView: {fileID: 1744477811}
   m_menuView: {fileID: 771038995}
+  m_dimText: {fileID: 508667519}
+  m_loadingText: {fileID: 63777963}
 --- !u!1 &1456623123
 GameObject:
   m_ObjectHideFlags: 0

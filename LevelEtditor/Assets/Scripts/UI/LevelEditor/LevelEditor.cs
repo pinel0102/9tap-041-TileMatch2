@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
 using System.Threading;
@@ -30,6 +31,12 @@ public partial class LevelEditor : MonoBehaviour
 	[SerializeField]
 	private MenuView m_menuView;
 
+	[SerializeField]
+	private Text m_dimText;
+
+	[SerializeField]
+	private Text m_loadingText;
+
 	private LevelEditorPresenter m_presenter;
 	private Palette m_palette;
 
@@ -44,20 +51,15 @@ public partial class LevelEditor : MonoBehaviour
 		m_presenter?.Dispose();
 	}
 
-	private async UniTaskVoid Start()
+	private void Start()
 	{	
 		Mouse mouse = Mouse.current;
 
-		//if (PlayerPrefs.HasKey(PLAYER_PREPS_KEY))
-		//{
-		//	await OnSetup(PlayerPrefs.GetString(PLAYER_PREPS_KEY));
-		//	return;
-		//}
+		m_dimText.text = "데이터 Path 찾는 중...";
 
 		FileBrowser.ShowLoadDialog(
 			onSuccess: async paths => {
 				string path = paths[0];
-				//PlayerPrefs.SetString(PLAYER_PREPS_KEY, path);
 				await OnSetup(path);
 			},
 			() => Application.Quit(),
@@ -69,6 +71,7 @@ public partial class LevelEditor : MonoBehaviour
 
 	private async UniTask OnSetup(string path)
 	{
+		m_dimText.text = "데이터 로드 중...";
 		m_presenter = new(this, path, m_cellSize, m_cellCount);
 		m_palette = new Palette(m_cellSize);
 
@@ -98,7 +101,11 @@ public partial class LevelEditor : MonoBehaviour
 						await m_presenter.SaveLevel();
 					},
 					SaveButtonBinder = m_presenter.Savable,
-					FolderPath = path
+					FolderPath = path,
+					OnVisibleDim = (visible, text) => {
+						m_loading.SetActive(visible);
+						m_loadingText.text = text;
+					}
 				},
 				NumberOfContainerParameter = new NumberOfTileTypesContainerParameter {
 					OnTakeStep = m_presenter.IncrementNumberOfTileTypes,
