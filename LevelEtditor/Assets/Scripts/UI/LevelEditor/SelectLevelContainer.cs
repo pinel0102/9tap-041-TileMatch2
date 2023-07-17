@@ -138,29 +138,53 @@ public class SelectLevelContainer : MonoBehaviour
 				Directory.CreateDirectory(levelDataDir);
 			}
 
-			foreach (var (key, value) in parameter.DataManager.CachedLevelDataDic)
+			var data = parameter.DataManager.CurrentLevelData;
+
+			string json = JsonConvert.SerializeObject(
+				data, 
+				new JsonSerializerSettings {
+					Converters = new [] {
+						new Vector3Converter()
+					},
+					Formatting = Formatting.Indented,
+					ContractResolver = new UnityTypeContractResolver()
+				}
+			);
+
+			string fileName = Path.Combine(levelDataDir, $"LevelData_{m_currentLevel}.json");
+
+			using (var fileStream = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite))
 			{
-				string json = JsonConvert.SerializeObject(
-					value, 
-					new JsonSerializerSettings {
-						Converters = new [] {
-							new Vector3Converter()
-						},
-						Formatting = Formatting.Indented,
-						ContractResolver = new UnityTypeContractResolver()
-					}
-				);
-
-				string fileName = Path.Combine(levelDataDir, $"LevelData_{key}.json");
-
-				using (var fileStream = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+				using (StreamWriter writer = new StreamWriter(fileStream))
 				{
-					using (StreamWriter writer = new StreamWriter(fileStream))
-					{
-						await writer.WriteAsync(json);
-					}
+					await writer.WriteAsync(json);
 				}
 			}
+
+
+			//foreach (var (key, value) in parameter.DataManager.CachedLevelDataDic)
+			//{
+			//	string json = JsonConvert.SerializeObject(
+			//		value, 
+			//		new JsonSerializerSettings {
+			//			Converters = new [] {
+			//				new Vector3Converter()
+			//			},
+			//			Formatting = Formatting.Indented,
+			//			ContractResolver = new UnityTypeContractResolver()
+			//		}
+			//	);
+
+			//	string fileName = Path.Combine(levelDataDir, $"LevelData_{key}.json");
+
+			//	using (var fileStream = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+			//	{
+			//		using (StreamWriter writer = new StreamWriter(fileStream))
+			//		{
+			//			await writer.WriteAsync(json);
+			//		}
+			//	}
+			//}
 
 			string temp = Path.Combine(appDir, "mockup");
 
@@ -169,7 +193,7 @@ public class SelectLevelContainer : MonoBehaviour
 				Directory.CreateDirectory(temp);
 			}
 
-			string mockupConfig = Path.Combine(temp, "mockup.text");
+			string mockupConfig = Path.Combine(temp, "mockup.txt");
 
 			using (var fileStream = new FileStream(mockupConfig, FileMode.OpenOrCreate, FileAccess.ReadWrite))
 			{
