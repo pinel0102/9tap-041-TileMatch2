@@ -123,8 +123,11 @@ public class SelectLevelContainer : MonoBehaviour
 			process.StartInfo.FileName = path;
 			process.Exited += Exited;
 
+			#if UNITY_STANDALONE_OSX
 			string appDir = Directory.GetParent(path).Parent.Parent.Parent.FullName;
-			UnityEngine.Debug.LogWarning(appDir);
+			#else
+			string appDir = Directory.GetCurrentDirectory();
+			#endif
 
 			UnityEngine.Debug.Log(Directory.GetParent(path));
 
@@ -159,14 +162,14 @@ public class SelectLevelContainer : MonoBehaviour
 				}
 			}
 
-			string temp = Path.Combine(appDir, "temp");
+			string temp = Path.Combine(appDir, "mockup");
 
 			if (!Directory.Exists(temp))
 			{
 				Directory.CreateDirectory(temp);
 			}
 
-			string mockupConfig = Path.Combine(temp, "Mockup.text");
+			string mockupConfig = Path.Combine(temp, "mockup.text");
 
 			using (var fileStream = new FileStream(mockupConfig, FileMode.OpenOrCreate, FileAccess.ReadWrite))
 			{
