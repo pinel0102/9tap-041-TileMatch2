@@ -123,7 +123,10 @@ public class SelectLevelContainer : MonoBehaviour
 			process.StartInfo.FileName = path;
 			process.Exited += Exited;
 
-			string appDir = Directory.GetCurrentDirectory();
+			string appDir = Directory.GetParent(path).Parent.Parent.Parent.FullName;
+			UnityEngine.Debug.LogWarning(appDir);
+
+			UnityEngine.Debug.Log(Directory.GetParent(path));
 
 			string levelDataDir = Path.Combine(appDir, "LevelDatas");
 
@@ -155,7 +158,25 @@ public class SelectLevelContainer : MonoBehaviour
 					}
 				}
 			}
-			
+
+			string temp = Path.Combine(appDir, "temp");
+
+			if (!Directory.Exists(temp))
+			{
+				Directory.CreateDirectory(temp);
+			}
+
+			string mockupConfig = Path.Combine(temp, "Mockup.text");
+
+			using (var fileStream = new FileStream(mockupConfig, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+			{
+				using (StreamWriter writer = new StreamWriter(fileStream))
+				{
+					await writer.WriteAsync($"{m_currentLevel}");
+				}
+			}
+
+
 			parameter.OnVisibleDim.Invoke(true, "게임 실행 중...");
 			
 			await UniTask.Delay(500,  cancellationToken: token);

@@ -64,9 +64,10 @@ public class LevelDataManager : IDisposable
 	{
 		get
 		{
-			var dic = m_savedLevelDataDic
+			var enumerable = m_savedLevelDataDic
 			.Select(
-				pair => {
+				pair =>
+				{
 					if (m_currentData != null && m_savedLevelDataDic.ContainsKey(m_currentData.Key))
 					{
 						return new KeyValuePair<int, LevelData>(m_currentData.Key, m_currentData);
@@ -74,7 +75,13 @@ public class LevelDataManager : IDisposable
 
 					return pair;
 				}
-			).ToDictionary(keySelector: pair => pair.Key, elementSelector: pair => pair.Value);
+			);
+
+			var dic = new Dictionary<int, LevelData>();
+			foreach(var (key, value) in enumerable)
+            {
+				dic.TryAdd(key, value);
+            }
 
 			if (m_currentData != null && !dic.ContainsKey(m_currentData.Key))
 			{
