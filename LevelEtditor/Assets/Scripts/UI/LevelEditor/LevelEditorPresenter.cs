@@ -29,6 +29,8 @@ public class LevelEditorPresenter : IDisposable
 	public IUniTaskAsyncEnumerable<BrushWidgetInfo> BrushMessageBroker => m_brushMessageBroker.Subscribe();
 	public IReadOnlyAsyncReactiveProperty<bool> Savable => m_savable;
 
+	public LevelDataManager DataManager => m_dataManager;
+
 	public LevelEditorPresenter(LevelEditor view, string path, float cellSize, float cellCount)
 	{
 		m_view = view;

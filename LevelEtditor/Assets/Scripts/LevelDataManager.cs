@@ -60,6 +60,31 @@ public class LevelDataManager : IDisposable
 	public LevelData? CurrentLevelData => m_currentData;
 	public GameConfig Config => m_gameConfig;
 
+	public Dictionary<int, LevelData> CachedLevelDataDic
+	{
+		get
+		{
+			var dic = m_savedLevelDataDic
+			.Select(
+				pair => {
+					if (m_currentData != null && m_savedLevelDataDic.ContainsKey(m_currentData.Key))
+					{
+						return new KeyValuePair<int, LevelData>(m_currentData.Key, m_currentData);
+					}
+
+					return pair;
+				}
+			).ToDictionary(keySelector: pair => pair.Key, elementSelector: pair => pair.Value);
+
+			if (m_currentData != null && !dic.ContainsKey(m_currentData.Key))
+			{
+				dic.TryAdd(m_currentData.Key, m_currentData);
+			}
+
+			return dic;
+		}
+	}
+
 	public LevelDataManager(string path)
 	{
 		Assert.IsFalse(string.IsNullOrWhiteSpace(path));

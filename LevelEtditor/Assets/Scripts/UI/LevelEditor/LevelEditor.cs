@@ -101,11 +101,12 @@ public partial class LevelEditor : MonoBehaviour
 						await m_presenter.SaveLevel();
 					},
 					SaveButtonBinder = m_presenter.Savable,
-					FolderPath = path,
+					DataPath = path,
 					OnVisibleDim = (visible, text) => {
 						m_loading.SetActive(visible);
 						m_loadingText.text = text;
-					}
+					},
+					DataManager = m_presenter.DataManager
 				},
 				NumberOfContainerParameter = new NumberOfTileTypesContainerParameter {
 					OnTakeStep = m_presenter.IncrementNumberOfTileTypes,
