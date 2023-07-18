@@ -16,7 +16,7 @@ public class BoardParameter
 {
 	public int TileSize;
 	public int CellCount;
-	public Action OnPointerClick;
+	public Action<InputController.State> OnPointerClick;
 	public Action<int> OnTakeStep;
 	public Action OnRemove;
 }

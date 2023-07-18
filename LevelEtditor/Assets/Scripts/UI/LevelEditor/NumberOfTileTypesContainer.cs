@@ -13,6 +13,9 @@ public class NumberOfTileTypesContainerParameter
 public class NumberOfTileTypesContainer : MonoBehaviour
 {
 	[SerializeField]
+	private TMP_Text m_titleText;
+
+	[SerializeField]
 	private Button m_subtractButton;
 
 	[SerializeField]
@@ -37,8 +40,9 @@ public class NumberOfTileTypesContainer : MonoBehaviour
 		);
 	}
 
-	public void OnUpdateUI(int number)
+	public void OnUpdateUI(int boardIndex, int number)
 	{
+		m_titleText.text = $"Number of tile types on (Index: [{boardIndex}]) board :";
 		m_inputField.SetTextWithoutNotify(number.ToString());
 		m_subtractButton.interactable = number > 1;
 	}

@@ -6,6 +6,7 @@ using System;
 using System.Threading;
 
 using Cysharp.Threading.Tasks;
+using State = InputController.State;
 
 public class TileBrush : MonoBehaviour
 {
@@ -17,8 +18,13 @@ public class TileBrush : MonoBehaviour
 
 	public RectTransform RectTransform => transform as RectTransform;
 
-	public void OnSetup(int size, Action onClick)
+	private IAsyncReactiveProperty<InputController.State> m_clickBinder;
+
+	public void OnSetup(int size, Action<InputController.State> onClick)
 	{
+		m_clickBinder = new AsyncReactiveProperty<InputController.State>(State.NONE).WithDispatcher();
+		InputController input = InputController.Instance;
+
 		CancellationToken token = this.GetCancellationTokenOnDestroy();
 
 		RectTransform.SetSize(size);
@@ -29,7 +35,13 @@ public class TileBrush : MonoBehaviour
 
 		entry.callback.AddListener(
 			eventData => {
-				onClick?.Invoke();
+				onClick?.Invoke( 
+					(m_clickBinder.Value, input.WasState) switch {
+						(State.LEFT_BUTTON_PRESSED, State.LEFT_BUTTON_PRESSED or State.LEFT_BUTTON_RELEASED) => State.LEFT_BUTTON_PRESSED,
+						(State.RIGHT_BUTTON_PRESSED, State.RIGHT_BUTTON_PRESSED or State.RIGHT_BUTTON_RELEASED) => State.RIGHT_BUTTON_PRESSED,
+						_=> State.NONE
+					}
+				);
 			}
 		);
 		m_button.triggers.Add(entry);
@@ -37,7 +49,15 @@ public class TileBrush : MonoBehaviour
 
 	public void UpdateUI(bool interactable, bool drawable)
 	{
-		m_button.enabled = interactable & drawable;
+		m_clickBinder.Update(binder => 
+			binder = (interactable, drawable) switch { 
+				(true, true) => State.LEFT_BUTTON_PRESSED,
+				(true, false) => State.RIGHT_BUTTON_PRESSED,
+				_ => State.NONE
+			}
+		);
+
+		m_button.enabled = interactable;
 		m_image.enabled = interactable;
 		m_image.color = drawable switch {
 			true => Color.green,

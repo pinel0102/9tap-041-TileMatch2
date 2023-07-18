@@ -1,17 +1,16 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 using System;
+using System.IO;
+using System.Threading;
 using System.Diagnostics;
 
 using TMPro;
 
 using Cysharp.Threading.Tasks;
-using System.Collections;
-using System.IO;
-using System.IO.MemoryMappedFiles;
+
 using SimpleFileBrowser;
-using System.Threading;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.UnityConverters.Math;
 using Newtonsoft.Json.UnityConverters;
@@ -25,6 +24,8 @@ public class SelectLevelContainerParameter
 	public string DataPath;
 	public Action<bool, string> OnVisibleDim;
 	public LevelDataManager DataManager;
+
+	public Action<int> OnControlDifficult;
 }
 
 public class SelectLevelContainer : MonoBehaviour
@@ -39,6 +40,15 @@ public class SelectLevelContainer : MonoBehaviour
 	private LevelEditorButton m_nextButton;
 
 	[SerializeField]
+	private LevelEditorButton m_downDifficultButton;
+
+	[SerializeField]
+	private TMP_Text m_difficultText;
+
+	[SerializeField]
+	private LevelEditorButton m_upDifficultButton;
+
+	[SerializeField]
 	private LevelEditorButton m_saveButton;
 
 	[SerializeField]
@@ -47,20 +57,18 @@ public class SelectLevelContainer : MonoBehaviour
 	[SerializeField]
 	private LevelEditorButton m_browserButton;
 
-	private int m_currentLevel = 0;
-
 	public void OnSetup(SelectLevelContainerParameter parameter)
 	{
 		m_prevButton.OnSetup(() => parameter?.OnTakeStep?.Invoke(-1));
 		m_nextButton.OnSetup(() => parameter?.OnTakeStep?.Invoke(1));
+		m_downDifficultButton.OnSetup(() => parameter?.OnControlDifficult?.Invoke(-1));
+		m_upDifficultButton.OnSetup(() => parameter?.OnControlDifficult?.Invoke(1));
 		m_saveButton.OnSetup("Save Level", () => parameter?.OnSave?.Invoke());
 		m_playButton.OnSetup(
 			() => {
 				UniTask.Void
 				(
 					async token => {		
-						//string path = Environment.GetEnvironmentVariable("tile_match_2_client", EnvironmentVariableTarget.User);
-
 						if (!PlayerPrefs.HasKey("play_app_path"))
 						{
 							FileBrowser.SetFilters(true, new string[] {"exe", "app"});
@@ -81,20 +89,6 @@ public class SelectLevelContainer : MonoBehaviour
 						string appPath = PlayerPrefs.GetString("play_app_path");
 
 						await StartProcess(appPath, token);
-
-						//using (var mmf = MemoryMappedFile.CreateFromFile(fileName, FileMode.OpenOrCreate, $"LevelData"))
-						//{
-						//	parameter.OnVisibleDim.Invoke(true, "게임 실행 중...");
-							
-						//	await UniTask.Delay(500,  cancellationToken: token);
-
-						//	process.Start();
-						//	UnityEngine.Debug.Log(process.Id);
-
-						//	process.WaitForExit();
-
-						//	Exited();
-						//}
 					},
 					this.GetCancellationTokenOnDestroy()
 				);
@@ -123,15 +117,14 @@ public class SelectLevelContainer : MonoBehaviour
 			process.StartInfo.FileName = path;
 			process.Exited += Exited;
 
-			#if UNITY_STANDALONE_OSX
+			#if !UNITY_EDITOR && UNITY_STANDALONE_OSX
 			string appDir = Directory.GetParent(path).Parent.Parent.Parent.FullName;
 			#else
-			string appDir = Directory.GetCurrentDirectory();
+			string appDir = Directory.GetCurrentDirectory(); //Directory.GetParent(path).FullName;
 			#endif
 
-			UnityEngine.Debug.Log(Directory.GetParent(path));
-
 			string levelDataDir = Path.Combine(appDir, "LevelDatas");
+			UnityEngine.Debug.Log(levelDataDir);
 
 			if (!Directory.Exists(levelDataDir))
 			{
@@ -151,7 +144,9 @@ public class SelectLevelContainer : MonoBehaviour
 				}
 			);
 
-			string fileName = Path.Combine(levelDataDir, $"LevelData_{m_currentLevel}.json");
+			int level = parameter.DataManager.CurrentLevelData.Key;
+
+			string fileName = Path.Combine(levelDataDir, $"LevelData_{level}.json");
 
 			using (var fileStream = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite))
 			{
@@ -161,31 +156,6 @@ public class SelectLevelContainer : MonoBehaviour
 				}
 			}
 
-
-			//foreach (var (key, value) in parameter.DataManager.CachedLevelDataDic)
-			//{
-			//	string json = JsonConvert.SerializeObject(
-			//		value, 
-			//		new JsonSerializerSettings {
-			//			Converters = new [] {
-			//				new Vector3Converter()
-			//			},
-			//			Formatting = Formatting.Indented,
-			//			ContractResolver = new UnityTypeContractResolver()
-			//		}
-			//	);
-
-			//	string fileName = Path.Combine(levelDataDir, $"LevelData_{key}.json");
-
-			//	using (var fileStream = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite))
-			//	{
-			//		using (StreamWriter writer = new StreamWriter(fileStream))
-			//		{
-			//			await writer.WriteAsync(json);
-			//		}
-			//	}
-			//}
-
 			string temp = Path.Combine(appDir, "mockup");
 
 			if (!Directory.Exists(temp))
@@ -194,12 +164,16 @@ public class SelectLevelContainer : MonoBehaviour
 			}
 
 			string mockupConfig = Path.Combine(temp, "mockup.txt");
+			if (File.Exists(mockupConfig))
+			{
+				File.Delete(mockupConfig);
+			}
 
 			using (var fileStream = new FileStream(mockupConfig, FileMode.OpenOrCreate, FileAccess.ReadWrite))
 			{
 				using (StreamWriter writer = new StreamWriter(fileStream))
 				{
-					await writer.WriteAsync($"{m_currentLevel}");
+					await writer.WriteAsync($"{level}");
 				}
 			}
 
@@ -224,10 +198,14 @@ public class SelectLevelContainer : MonoBehaviour
 
 	public void OnUpdateUI(int maxLevel, int level)
 	{
-		m_currentLevel = level;
 		m_prevButton.SetInteractable(level > 1);
 		m_nextButton.UpdateUI(level < maxLevel? ">>" : "+");
 		m_inputField.SetTextWithoutNotify($"Lv.{level}");
+	}
+
+	public void OnUpdateDifficult(DifficultType difficult)
+	{
+		m_difficultText.text = difficult.ToString();
 	}
 
 }

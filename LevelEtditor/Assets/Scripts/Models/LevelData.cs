@@ -11,12 +11,12 @@ public record LevelData(
 	int Key,
 	List<Board> Boards,
 	int TileCount,
-	int NumberOfTileTypes
+	int Difficult = (int)DifficultType.NORMAL
 )
 {
 	[JsonConstructor]
-	public LevelData(int key, List<Board> boards, int tileCount, int numberOfTileTypes)
-		: this (Guid.NewGuid(), key, boards, tileCount, numberOfTileTypes)
+	public LevelData(int key, List<Board> boards, int tileCount, int difficult)
+		: this (Guid.NewGuid(), key, boards, tileCount, difficult)
 	{
 		
 	}
@@ -28,7 +28,7 @@ public record LevelData(
 		layers.Add(new Layer());
 		boards.Add(new Board(layers));
 
-		return new LevelData(level, boards, 0, 1);
+		return new LevelData(level, boards, tileCount: 0, difficult: (int)DifficultType.NORMAL);
 	}
 
 	public Board? this[int index] => Boards.ElementAtOrDefault(index);

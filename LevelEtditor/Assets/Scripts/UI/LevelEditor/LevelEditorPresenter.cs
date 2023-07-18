@@ -70,14 +70,6 @@ public class LevelEditorPresenter : IDisposable
 		{
 			int requiredMultiples = m_dataManager.Config.RequiredMultiples;
 
-			//foreach(var boards in state.Boards)
-			//{
-			//	foreach (var layer in boards.Layers)
-			//	{
-			//		Debug.LogWarning(layer.TileCount);
-			//	}
-			//}
-
 			m_savable.Value = state.Boards.All(
 				board => board.Layers.All(layer => layer.TileCount > 0) && board.TileCountAll % requiredMultiples == 0
 			);
@@ -298,14 +290,24 @@ public class LevelEditorPresenter : IDisposable
 	{
 		if (m_dataManager.CurrentLevelData is var data and not null)
 		{
-			var number = m_dataManager.UpdateNumberOfTypes(data.NumberOfTileTypes + increment);
+			int numbers = data?[State.BoardIndex]?.NumberOfTileTypes ?? 0;
+			var number = m_dataManager.UpdateNumberOfTypes(State.BoardIndex, numbers + increment);
 
 			if (number.HasValue)
 			{
-				m_internalState.Update(info => info with {
+				m_internalState.Update(info => 
+					info with { 
 						UpdateType = UpdateType.NUMBER_OF_TILE_TYPES,
-						NumberOfTileTypes = number.Value
-					}
+						Boards = State.Boards.Select(
+							(board, index) => {
+								if (State.BoardIndex == index)
+								{
+									return new BoardInfo(number.Value, board.Layers);
+								}
+								return board;
+							}
+						).ToArray()
+					} 
 				);
 			}
 		}
@@ -316,14 +318,23 @@ public class LevelEditorPresenter : IDisposable
 	{
 		if (m_dataManager.CurrentLevelData is var data and not null)
 		{
-			var number = m_dataManager.UpdateNumberOfTypes(value);
+			var number = m_dataManager.UpdateNumberOfTypes(State.BoardIndex, value);
 
 			if (number.HasValue)
 			{
-				m_internalState.Update(info => info with {
+				m_internalState.Update(info => 
+					info with { 
 						UpdateType = UpdateType.NUMBER_OF_TILE_TYPES,
-						NumberOfTileTypes = number.Value
-					}
+						Boards = State.Boards.Select(
+							(board, index) => {
+								if (State.BoardIndex == index)
+								{
+									return new BoardInfo(number.Value, board.Layers);
+								}
+								return board;
+							}
+						).ToArray()
+					} 
 				);
 			}
 		}
@@ -388,6 +399,21 @@ public class LevelEditorPresenter : IDisposable
 		);
 
 		ResetPlacedTilesInLayer(layerIndex);
+	}
+
+	public void SetDifficult(int increment)
+	{
+		int currentDifficult = m_dataManager.CurrentLevelData.Difficult;
+		int difficult = m_dataManager.SetDifficult(
+			Mathf.Clamp(currentDifficult + increment, 0, (int)DifficultType.HARD)
+		) ?? (int)DifficultType.NORMAL;
+
+		m_internalState.Update( 
+			state => state with {
+				UpdateType = UpdateType.DIFFICULT,
+				Difficult = (DifficultType)difficult
+			}
+		);
 	}
 	#endregion
 }

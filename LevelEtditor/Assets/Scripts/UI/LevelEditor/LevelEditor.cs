@@ -53,8 +53,6 @@ public partial class LevelEditor : MonoBehaviour
 
 	private void Start()
 	{	
-		Mouse mouse = Mouse.current;
-
 		m_dimText.text = "데이터 Path 찾는 중...";
 
 		FileBrowser.ShowLoadDialog(
@@ -79,7 +77,7 @@ public partial class LevelEditor : MonoBehaviour
 			new BoardParameter {
 				TileSize = m_cellSize,
 				CellCount = m_cellCount,
-				OnPointerClick = () => m_presenter.SetTileInLayer(InputController.Instance.WasState),
+				OnPointerClick = m_presenter.SetTileInLayer,
 				OnTakeStep = m_presenter.LoadBoardByStep,
 				OnRemove = m_presenter.RemoveBoard
 			}
@@ -106,7 +104,8 @@ public partial class LevelEditor : MonoBehaviour
 						m_loading.SetActive(visible);
 						m_loadingText.text = text;
 					},
-					DataManager = m_presenter.DataManager
+					DataManager = m_presenter.DataManager,
+					OnControlDifficult = m_presenter.SetDifficult
 				},
 				NumberOfContainerParameter = new NumberOfTileTypesContainerParameter {
 					OnTakeStep = m_presenter.IncrementNumberOfTileTypes,
@@ -144,7 +143,8 @@ public partial class LevelEditor : MonoBehaviour
 						m_boardView.OnUpdateBoardView(all.BoardCount, all.BoardIndex);
 						m_boardView.OnUpdateLayerView(all.CurrentBoard, all.LayerIndex);
 						m_menuView.UpdateLevelUI(all.LastLevel, all.CurrentLevel);
-						m_menuView.UpdateNumberOfTileTypesUI(all.NumberOfTileTypes);
+						m_menuView.UpdateDifficult(all.Difficult);
+						m_menuView.UpdateNumberOfTileTypesUI(all.BoardIndex, all.NumberOfTileTypesCurrent);
 						m_menuView.UpdateLayerUI(all.CurrentLayerColors, all.LayerIndex);
 						m_menuView.UpdateLevelInfoUI(all.TileCountInBoard, all.TileCountAll);
 						break;
@@ -153,9 +153,10 @@ public partial class LevelEditor : MonoBehaviour
 						m_boardView.OnUpdateLayerView(board.CurrentBoard, board.LayerIndex);
 						m_menuView.UpdateLayerUI(board.CurrentLayerColors, board.LayerIndex);
 						m_menuView.UpdateLevelInfoUI(board.TileCountInBoard, board.TileCountAll);
+						m_menuView.UpdateNumberOfTileTypesUI(board.BoardIndex, board.NumberOfTileTypesCurrent);
 						break;
 					case CurrentState.NumberOfTileTypesUpdated numberOfTileTypes: // 타일 종류 개수
-						m_menuView.UpdateNumberOfTileTypesUI(numberOfTileTypes.NumberOfTileTypes);
+						m_menuView.UpdateNumberOfTileTypesUI(numberOfTileTypes.BoardIndex, numberOfTileTypes.NumberOfTileTypesCurrent);
 						break;
 					case CurrentState.LayerUpdated layer: // 레이어
 						m_boardView.OnUpdateLayerView(layer.Layers, layer.LayerIndex);
@@ -164,6 +165,9 @@ public partial class LevelEditor : MonoBehaviour
 						break;
 					case CurrentState.TileUpdated tile: //타일
 						m_menuView.UpdateLevelInfoUI(tile.TileCountInBoard, tile.TileCountAll);
+						break;
+					case CurrentState.DifficultUpdated { difficult : var difficult }:
+						m_menuView.UpdateDifficult(difficult);
 						break;
 				}
 

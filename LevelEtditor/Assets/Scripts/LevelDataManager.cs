@@ -284,18 +284,21 @@ public class LevelDataManager : IDisposable
 		return false;
 	}
 
-	public int? UpdateNumberOfTypes(int number)
+	public int? UpdateNumberOfTypes(int boardIndex, int number)
 	{
 		if (m_currentData == null)
 		{
 			return default;
 		}
 
+		if (m_currentData?.Boards?.Count <= 0)
+		{
+			return default;
+		}
+
 		int clamp = Mathf.Max(number, 1);
 
-		m_currentData = m_currentData with {
-			NumberOfTileTypes = clamp
-		};
+		m_currentData![boardIndex]!.NumberOfTileTypes = clamp;
 
 		return clamp;
 	}
@@ -320,6 +323,20 @@ public class LevelDataManager : IDisposable
 		{
 			layerData.Tiles.Clear();
 		}
+	}
+
+	public int? SetDifficult(int difficult)
+	{
+		if (m_currentData == null)
+		{
+			return default;
+		}
+
+		m_currentData = m_currentData with {
+			Difficult = difficult
+		};
+
+		return difficult;
 	}
 
 	private async UniTask<T?> LoadInternal<T>(string fileName, Func<T> onCreateNew)

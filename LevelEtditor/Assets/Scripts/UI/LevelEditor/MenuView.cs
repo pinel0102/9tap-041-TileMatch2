@@ -39,9 +39,14 @@ public class MenuView : MonoBehaviour
 		m_levelContainer.OnUpdateUI(lastLevel, selectedLevel);
 	}
 
-	public void UpdateNumberOfTileTypesUI(int number)
+	public void UpdateDifficult(DifficultType difficultType)
 	{
-	   m_tileTypeContainer.OnUpdateUI(number);
+		m_levelContainer.OnUpdateDifficult(difficultType);
+	}
+
+	public void UpdateNumberOfTileTypesUI(int boardIndex, int number)
+	{
+	   m_tileTypeContainer.OnUpdateUI(boardIndex, number);
 	}
 
     public void UpdateLayerUI(IReadOnlyList<Color> layers, int layerIndex)
