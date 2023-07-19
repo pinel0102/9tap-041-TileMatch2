@@ -57,6 +57,8 @@ public class SelectLevelContainer : MonoBehaviour
 	[SerializeField]
 	private LevelEditorButton m_browserButton;
 
+	private Process m_clientProcess = null;
+
 	public void OnSetup(SelectLevelContainerParameter parameter)
 	{
 		m_prevButton.OnSetup(() => parameter?.OnTakeStep?.Invoke(-1));
@@ -71,7 +73,7 @@ public class SelectLevelContainer : MonoBehaviour
 					async token => {		
 						if (!PlayerPrefs.HasKey("client_path"))
 						{
-							FileBrowser.SetFilters(true, new string[] {"exe", "app"});
+							//FileBrowser.SetFilters(true, new string[] {"exe", "app"});
 							FileBrowser.ShowLoadDialog(
 								onSuccess: async paths => {
 									string path = paths[0];
@@ -79,14 +81,14 @@ public class SelectLevelContainer : MonoBehaviour
 									await StartProcess(path, token);
 								},
 								() => Application.Quit(),
-								pickMode: FileBrowser.PickMode.Files,
+								pickMode: FileBrowser.PickMode.Folders,
 								title: "플레이할 앱 선택",
 								loadButtonText: "선택"
 							);
 							return;
 						}
 
-						string appPath = PlayerPrefs.GetString("play_app_path");
+						string appPath = PlayerPrefs.GetString("client_path");
 
 						await StartProcess(appPath, token);
 					},
@@ -113,12 +115,16 @@ public class SelectLevelContainer : MonoBehaviour
 
 		async UniTask StartProcess(string path, CancellationToken token)
 		{
-			Process process = new Process();
-			process.StartInfo.FileName = path;
-			process.Exited += Exited;
+			if (m_clientProcess != null)
+            {
+				m_clientProcess.Kill();
+            }
+			m_clientProcess = new Process();
+			m_clientProcess.StartInfo.FileName = path;
+			m_clientProcess.Exited += Exited;
 
 			#if UNITY_STANDALONE_OSX
-			string appDir = Directory.GetParent(path).Parent.Parent.Parent.FullName;
+			string appDir = Directory.GetParent(path).FullName;
 			#else
 			string appDir = Directory.GetCurrentDirectory(); //Directory.GetParent(path).FullName;
 			#endif
@@ -182,9 +188,9 @@ public class SelectLevelContainer : MonoBehaviour
 			
 			await UniTask.Delay(500,  cancellationToken: token);
 
-			process.Start();
+			m_clientProcess.Start();
 
-			process.WaitForExit();
+			m_clientProcess.WaitForExit();
 
 			Exited();
 		}
@@ -207,5 +213,10 @@ public class SelectLevelContainer : MonoBehaviour
 	{
 		m_difficultText.text = difficult.ToString();
 	}
+
+    private void OnDestroy()
+    {
+		m_clientProcess?.Kill();
+    }
 
 }
