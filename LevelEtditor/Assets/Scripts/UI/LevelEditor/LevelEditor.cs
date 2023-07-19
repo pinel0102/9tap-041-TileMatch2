@@ -8,10 +8,12 @@ using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 
 using SimpleFileBrowser;
+using System;
 
 public partial class LevelEditor : MonoBehaviour
 {
-	private const string PLAYER_PREPS_KEY = "path";
+	public const string CLIENT_PATH_KEY = "client_path";
+	public const string DATA_PATH_KEY = "data_path";
 
 	[SerializeField]
 	private GameObject m_loading;
@@ -51,13 +53,26 @@ public partial class LevelEditor : MonoBehaviour
 		m_presenter?.Dispose();
 	}
 
-	private void Start()
+	private async UniTaskVoid Start()
 	{	
 		m_dimText.text = "데이터 Path 찾는 중...";
 
+		if (!PlayerPrefs.HasKey(DATA_PATH_KEY))
+		{
+			LoadDataPath();
+			return;
+		}
+
+		string path = PlayerPrefs.GetString(DATA_PATH_KEY);
+		await OnSetup(path);
+	}
+
+	private void LoadDataPath()
+	{
 		FileBrowser.ShowLoadDialog(
 			onSuccess: async paths => {
 				string path = paths[0];
+				PlayerPrefs.SetString(DATA_PATH_KEY, path);
 				await OnSetup(path);
 			},
 			() => Application.Quit(),
@@ -105,7 +120,8 @@ public partial class LevelEditor : MonoBehaviour
 						m_loadingText.text = text;
 					},
 					DataManager = m_presenter.DataManager,
-					OnControlDifficult = m_presenter.SetDifficult
+					OnControlDifficult = m_presenter.SetDifficult,
+					OnGetPlayerPath = output => LoadPlayerPath(output)
 				},
 				NumberOfContainerParameter = new NumberOfTileTypesContainerParameter {
 					OnTakeStep = m_presenter.IncrementNumberOfTileTypes,
@@ -113,7 +129,15 @@ public partial class LevelEditor : MonoBehaviour
 				},
 				GridOptionContainerParameter = new GridOptionContainerParameter {
 					OnChangedSnapping = (snap) => { m_palette.Snapping.Value = snap; },
-					OnVisibleGuide = m_boardView.OnVisibleWireFrame
+					OnVisibleGuide = m_boardView.OnVisibleWireFrame,
+					OnClearClientPath = () => {
+						PlayerPrefs.DeleteKey(CLIENT_PATH_KEY);
+						LoadPlayerPath();
+					},
+					OnReLoadData = () => {
+						PlayerPrefs.DeleteKey(DATA_PATH_KEY);
+						LoadDataPath();
+					}
 				},
 				LayerContainerParameter = new LayerContainerParameter {
 					OnCreate = m_presenter.AddLayer,
@@ -130,13 +154,8 @@ public partial class LevelEditor : MonoBehaviour
 		CancellationToken token = this.GetCancellationTokenOnDestroy();
 
 		// 편집 이벤트가 발생해 에디터 state가 변경되어 case에 따라 ui 업데이트를 하도록 함.
-		m_presenter.UpdateState.SubscribeAwait(
-			onNext: async info => {
-				await UniTask.Yield(
-					timing: PlayerLoopTiming.LastPostLateUpdate,
-					cancellationToken: token
-				);
-
+		m_presenter.UpdateState.Subscribe(
+			action: info => {
 				switch (info)
 				{
 					case CurrentState.AllUpdated all: // 레벨 변경시 모든 ui가 변경되어야 함
@@ -174,8 +193,7 @@ public partial class LevelEditor : MonoBehaviour
 				m_prevDim.alpha = 0f;
 				m_prevDim.gameObject.SetActive(false);
 				m_loading.SetActive(false);
-			},
-			cancellationToken: token 
+			}
 		);
 
 		m_presenter.BrushMessageBroker.Subscribe(info => {
@@ -195,6 +213,48 @@ public partial class LevelEditor : MonoBehaviour
 			Vector2 inputPosition = InputController.Instance.ToLocalPosition(m_boardView.transform);
 			m_presenter.SetBrushPosition(inputPosition);
 		}
+
+		#region Local Functions
+		void LoadPlayerPath(Action<string> output = null)
+		{
+			if (!PlayerPrefs.HasKey(CLIENT_PATH_KEY))
+			{
+				if (Application.platform is RuntimePlatform.OSXPlayer or RuntimePlatform.OSXEditor)
+				{
+					FileBrowser.ShowLoadDialog(
+						onSuccess: paths => {
+							string path = paths[0];
+							PlayerPrefs.SetString("client_path", path);
+							output?.Invoke(path);
+						},
+						() => Application.Quit(),
+						pickMode: FileBrowser.PickMode.Folders,
+						title: "플레이할 앱 선택",
+						loadButtonText: "선택"
+					);
+				}
+				else
+				{
+					FileBrowser.SetFilters(false, new string[] {"exe"});
+					FileBrowser.ShowLoadDialog(
+						onSuccess: paths => {
+							string path = paths[0];
+							PlayerPrefs.SetString("client_path", path);
+							output?.Invoke(path);
+						},
+						() => Application.Quit(),
+						pickMode: FileBrowser.PickMode.Files,
+						title: "플레이할 앱 선택",
+						loadButtonText: "선택"
+					);
+				}
+
+				return;
+			}
+
+			output?.Invoke(PlayerPrefs.GetString(CLIENT_PATH_KEY));
+		}
+		#endregion
 	}
 
 	public void OnDrawTile(int layerIndex, Vector2 localPosition, float size, Color color)

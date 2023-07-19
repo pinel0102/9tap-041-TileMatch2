@@ -26,6 +26,8 @@ public class SelectLevelContainerParameter
 	public LevelDataManager DataManager;
 
 	public Action<int> OnControlDifficult;
+
+	public Action<Action<string>> OnGetPlayerPath;
 }
 
 public class SelectLevelContainer : MonoBehaviour
@@ -67,51 +69,16 @@ public class SelectLevelContainer : MonoBehaviour
 		m_upDifficultButton.OnSetup(() => parameter?.OnControlDifficult?.Invoke(1));
 		m_saveButton.OnSetup("Save Level", () => parameter?.OnSave?.Invoke());
 		m_playButton.OnSetup(
-			() => {
-				UniTask.Void
-				(
-					async token => {		
-						if (!PlayerPrefs.HasKey("client_path"))
-						{
-							if (Application.platform is RuntimePlatform.OSXPlayer or RuntimePlatform.OSXEditor)
-							{
-								FileBrowser.ShowLoadDialog(
-									onSuccess: async paths => {
-										string path = paths[0];
-										PlayerPrefs.SetString("client_path", path);
-										await StartProcess(path, token);
-									},
-									() => Application.Quit(),
-									pickMode: FileBrowser.PickMode.Folders,
-									title: "플레이할 앱 선택",
-									loadButtonText: "선택"
-								);
-							}
-							else
-							{
-								FileBrowser.SetFilters(false, new string[] {"exe"});
-								FileBrowser.ShowLoadDialog(
-									onSuccess: async paths => {
-										string path = paths[0];
-										PlayerPrefs.SetString("client_path", path);
-										await StartProcess(path, token);
-									},
-									() => Application.Quit(),
-									pickMode: FileBrowser.PickMode.Files,
-									title: "플레이할 앱 선택",
-									loadButtonText: "선택"
-								);
-							}
-							return;
-						}
-
-						string appPath = PlayerPrefs.GetString("client_path");
-
-						await StartProcess(appPath, token);
-					},
-					this.GetCancellationTokenOnDestroy()
-				);
-			}
+			() => parameter?.OnGetPlayerPath.Invoke(
+				async path => {
+					if (string.IsNullOrWhiteSpace(path))
+					{
+						UnityEngine.Debug.Log("string.IsNullOrWhiteSpace(path)");
+						return;
+					}		
+					await StartProcess(path, this.GetCancellationTokenOnDestroy());
+				}
+			)
 		);
 
 		m_browserButton.OnSetup(() => Application.OpenURL($"file:///{parameter.DataPath}"));

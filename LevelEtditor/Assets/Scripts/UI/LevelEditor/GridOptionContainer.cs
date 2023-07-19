@@ -9,6 +9,9 @@ public class GridOptionContainerParameter
 {
 	public Action<SnapType> OnChangedSnapping;
 	public Action<bool> OnVisibleGuide;
+
+	public Action OnReLoadData;
+	public Action OnClearClientPath;
 }
 
 public class GridOptionContainer : MonoBehaviour
@@ -27,6 +30,12 @@ public class GridOptionContainer : MonoBehaviour
 
 	[SerializeField]
 	private LevelEditorToggleButton m_guideLineButton;
+
+	[SerializeField]
+	private LevelEditorButton m_clearDataPathButton;
+
+	[SerializeField]
+	private LevelEditorButton m_clearClientPathButton;
 
 	private AsyncReactiveProperty<SnapType> m_snapping = new(SnapType.FULL);
 	public IReadOnlyAsyncReactiveProperty<SnapType> Snapping => m_snapping;
@@ -76,5 +85,8 @@ public class GridOptionContainer : MonoBehaviour
 		);
 
 		m_guideLineButton.OnSetup("GUIDE", isOn => parameter?.OnVisibleGuide?.Invoke(isOn));
+
+		m_clearDataPathButton.OnSetup(parameter.OnReLoadData);
+		m_clearClientPathButton.OnSetup(parameter.OnClearClientPath);
 	}
 }
