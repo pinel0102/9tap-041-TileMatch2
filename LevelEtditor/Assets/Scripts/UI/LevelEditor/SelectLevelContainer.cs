@@ -69,13 +69,13 @@ public class SelectLevelContainer : MonoBehaviour
 				UniTask.Void
 				(
 					async token => {		
-						if (!PlayerPrefs.HasKey("play_app_path"))
+						if (!PlayerPrefs.HasKey("client_path"))
 						{
 							FileBrowser.SetFilters(true, new string[] {"exe", "app"});
 							FileBrowser.ShowLoadDialog(
 								onSuccess: async paths => {
 									string path = paths[0];
-									PlayerPrefs.SetString("play_app_path", path);
+									PlayerPrefs.SetString("client_path", path);
 									await StartProcess(path, token);
 								},
 								() => Application.Quit(),
@@ -117,8 +117,8 @@ public class SelectLevelContainer : MonoBehaviour
 			process.StartInfo.FileName = path;
 			process.Exited += Exited;
 
-			#if !UNITY_EDITOR && UNITY_STANDALONE_OSX
-			string appDir = Directory.GetParent(path).FullName;
+			#if UNITY_STANDALONE_OSX
+			string appDir = Directory.GetParent(path).Parent.Parent.Parent.FullName;
 			#else
 			string appDir = Directory.GetCurrentDirectory(); //Directory.GetParent(path).FullName;
 			#endif
@@ -148,11 +148,11 @@ public class SelectLevelContainer : MonoBehaviour
 
 			string fileName = Path.Combine(levelDataDir, $"LevelData_{level}.json");
 
-			using (var fileStream = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+			using (var fileStream = new FileStream(fileName, FileMode.OpenOrCreate, FileAccess.Write))
 			{
 				using (StreamWriter writer = new StreamWriter(fileStream))
 				{
-					await writer.WriteAsync(json);
+					writer.Write(json);
 				}
 			}
 
@@ -169,11 +169,11 @@ public class SelectLevelContainer : MonoBehaviour
 				File.Delete(mockupConfig);
 			}
 
-			using (var fileStream = new FileStream(mockupConfig, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+			using (var fileStream = new FileStream(mockupConfig, FileMode.OpenOrCreate, FileAccess.Write))
 			{
 				using (StreamWriter writer = new StreamWriter(fileStream))
 				{
-					await writer.WriteAsync($"{level}");
+					writer.Write($"{level}");
 				}
 			}
 
