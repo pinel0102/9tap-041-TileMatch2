@@ -9,8 +9,7 @@ partial class LevelEditor
 		Color Color,
 		float Size,
 		float Snapping,
-		Vector2 Position,
-		IReadOnlyList<Bounds> PlacedTiles
+		Vector2 Position
 	)
 	{
 		public Bounds GetBounds() => new Bounds(Position, Vector2.one * Size);
@@ -28,7 +27,6 @@ partial class LevelEditor
 	public record BrushWidgetInfo
 	(
 		bool Interactable,
-		bool Drawable,
 		Vector2 LocalPosition
 	);
 }

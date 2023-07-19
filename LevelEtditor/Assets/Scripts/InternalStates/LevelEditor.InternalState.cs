@@ -46,7 +46,6 @@ partial class LevelEditor
 		NONE,
 		ALL, // 편집할 레벨 변경 시 모든 데이터를 바꾼다.
 		BOARD, // 편집할 보드 변경
-		LAYER, // 편집할 레이어 변경
 		TILE, // 타일 변경
 		NUMBER_OF_TILE_TYPES, // 타일 종류 개수 변경
 		DIFFICULT, // 난이도 변경
@@ -64,7 +63,6 @@ partial class LevelEditor
 		DifficultType Difficult = DifficultType.NORMAL,
 		int BoardIndex = 0,
 		int BoardCount = 0,
-		int LayerIndex = 0,
 		int TileCountInBoard = 0,
 		int TileCountAll = 0
 	)
@@ -76,7 +74,6 @@ partial class LevelEditor
 			CurrentLevel: 1,
 			BoardIndex: 0,
 			BoardCount: 1,
-			LayerIndex: 0,
 			TileCountInBoard: 0,
 			TileCountAll: 0,
 			Boards: Array.Empty<BoardInfo>()
@@ -89,7 +86,6 @@ partial class LevelEditor
 				LastLevel: lastLevel,
 				CurrentLevel: data.Key,
 				BoardIndex: 0,
-				LayerIndex: 0,
 				BoardCount: data.Boards.Count,
 				TileCountInBoard: data[0].Layers.Sum(layer => layer.Tiles.Count()),
 				TileCountAll: data.TileCountAll,
@@ -108,7 +104,6 @@ partial class LevelEditor
 					CurrentLevel: CurrentLevel,
 					BoardCount: BoardCount,
 					BoardIndex: BoardIndex,
-					LayerIndex: LayerIndex,
 					TileCountInBoard: TileCountInBoard,
 					TileCountAll: TileCountAll,
 					Boards: Boards,
@@ -117,22 +112,16 @@ partial class LevelEditor
 				UpdateType.BOARD => new CurrentState.BoardUpdated(
 					BoardCount: BoardCount,
 					BoardIndex: BoardIndex,
-					LayerIndex: LayerIndex,
 					TileCountInBoard: TileCountInBoard,
 					TileCountAll: TileCountAll,
 					Boards: Boards
 				),
 				UpdateType.NUMBER_OF_TILE_TYPES => new CurrentState.NumberOfTileTypesUpdated(Boards: Boards, BoardIndex: BoardIndex),
-				UpdateType.LAYER => new CurrentState.LayerUpdated(
+				UpdateType.TILE => new CurrentState.TileUpdated(
 					BoardIndex: BoardIndex,
-					LayerIndex: LayerIndex,
 					TileCountInBoard: TileCountInBoard,
 					TileCountAll: TileCountAll,
 					Layers: Boards?.ElementAtOrDefault(BoardIndex)?.Layers ?? Array.Empty<LayerInfo>()
-				),
-				UpdateType.TILE => new CurrentState.TileUpdated(
-					TileCountInBoard: TileCountInBoard,
-					TileCountAll: TileCountAll
 				),
 				UpdateType.DIFFICULT => new CurrentState.DifficultUpdated( difficult: Difficult ),
 				_=> new CurrentState.NotUpdated()
@@ -151,12 +140,11 @@ partial class LevelEditor
 			int LastLevel,
 			int BoardIndex,
 			int BoardCount,
-			int LayerIndex,
 			int TileCountInBoard,
 			int TileCountAll,
 			IReadOnlyList<BoardInfo> Boards,
 			DifficultType Difficult
-		): BoardUpdated(BoardCount, BoardIndex, LayerIndex, TileCountInBoard, TileCountAll, Boards)
+		): BoardUpdated(BoardCount, BoardIndex, TileCountInBoard, TileCountAll, Boards)
 		{
 			
 		}
@@ -164,7 +152,6 @@ partial class LevelEditor
 		public record BoardUpdated(
 			int BoardCount,
 			int BoardIndex,
-			int LayerIndex,
 			int TileCountInBoard,
 			int TileCountAll,
 			IReadOnlyList<BoardInfo> Boards
@@ -175,13 +162,12 @@ partial class LevelEditor
 			
 		}
 
-		public record LayerUpdated(
+		public record TileUpdated(
 			int BoardIndex,
-			int LayerIndex,
 			int TileCountInBoard,
 			int TileCountAll,
 			IReadOnlyList<LayerInfo> Layers
-		): CurrentState
+		) : CurrentState
 		{
 			public IReadOnlyList<Color> CurrentColors => Layers?.Select(layer => layer.Color)?.ToArray() ?? Array.Empty<Color>();
 
@@ -195,11 +181,6 @@ partial class LevelEditor
 				return Array.Empty<TileInfo>();
 			}
 		}
-
-		public record TileUpdated(
-			int TileCountInBoard,
-			int TileCountAll
-		) : CurrentState;
 
 		public record DifficultUpdated(
 			DifficultType difficult

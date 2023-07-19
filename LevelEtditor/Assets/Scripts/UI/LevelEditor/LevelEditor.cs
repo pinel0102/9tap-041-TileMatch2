@@ -140,10 +140,10 @@ public partial class LevelEditor : MonoBehaviour
 					}
 				},
 				LayerContainerParameter = new LayerContainerParameter {
-					OnCreate = m_presenter.AddLayer,
+					// OnCreate = m_presenter.AddLayer,
 					OnRemove = m_presenter.RemoveLayer,
-					OnClear = m_presenter.ClearTilesInLayer,
-					OnSelect = m_presenter.SelectLayer,
+					// OnClear = m_presenter.ClearTilesInLayer,
+					// OnSelect = m_presenter.SelectLayer,
 					OnVisible = m_boardView.OnVisibleLayer
 				}
 			}
@@ -160,29 +160,26 @@ public partial class LevelEditor : MonoBehaviour
 				{
 					case CurrentState.AllUpdated all: // 레벨 변경시 모든 ui가 변경되어야 함
 						m_boardView.OnUpdateBoardView(all.BoardCount, all.BoardIndex);
-						m_boardView.OnUpdateLayerView(all.CurrentBoard, all.LayerIndex);
+						m_boardView.OnUpdateLayerView(all.CurrentBoard);
 						m_menuView.UpdateLevelUI(all.LastLevel, all.CurrentLevel);
 						m_menuView.UpdateDifficult(all.Difficult);
 						m_menuView.UpdateNumberOfTileTypesUI(all.BoardIndex, all.NumberOfTileTypesCurrent);
-						m_menuView.UpdateLayerUI(all.CurrentLayerColors, all.LayerIndex);
+						m_menuView.UpdateLayerUI(all.CurrentLayerColors);
 						m_menuView.UpdateLevelInfoUI(all.TileCountInBoard, all.TileCountAll);
 						break;
 					case CurrentState.BoardUpdated board: //맵
 						m_boardView.OnUpdateBoardView(board.BoardCount, board.BoardIndex);
-						m_boardView.OnUpdateLayerView(board.CurrentBoard, board.LayerIndex);
-						m_menuView.UpdateLayerUI(board.CurrentLayerColors, board.LayerIndex);
+						m_boardView.OnUpdateLayerView(board.CurrentBoard);
+						m_menuView.UpdateLayerUI(board.CurrentLayerColors);
 						m_menuView.UpdateLevelInfoUI(board.TileCountInBoard, board.TileCountAll);
 						m_menuView.UpdateNumberOfTileTypesUI(board.BoardIndex, board.NumberOfTileTypesCurrent);
 						break;
 					case CurrentState.NumberOfTileTypesUpdated numberOfTileTypes: // 타일 종류 개수
 						m_menuView.UpdateNumberOfTileTypesUI(numberOfTileTypes.BoardIndex, numberOfTileTypes.NumberOfTileTypesCurrent);
 						break;
-					case CurrentState.LayerUpdated layer: // 레이어
-						m_boardView.OnUpdateLayerView(layer.Layers, layer.LayerIndex);
-						m_menuView.UpdateLayerUI(layer.CurrentColors, layer.LayerIndex);
-						m_menuView.UpdateLevelInfoUI(layer.TileCountInBoard, layer.TileCountAll);
-						break;
 					case CurrentState.TileUpdated tile: //타일
+						m_boardView.OnUpdateLayerView(tile.Layers);
+						m_menuView.UpdateLayerUI(tile.CurrentColors);
 						m_menuView.UpdateLevelInfoUI(tile.TileCountInBoard, tile.TileCountAll);
 						break;
 					case CurrentState.DifficultUpdated { difficult : var difficult }:
@@ -197,8 +194,8 @@ public partial class LevelEditor : MonoBehaviour
 		);
 
 		m_presenter.BrushMessageBroker.Subscribe(info => {
-			var (interactable, drawable, position) = info;
-			m_boardView.OnUpdateBrushWidget(position, interactable, drawable);
+			var (interactable, position) = info;
+			m_boardView.OnUpdateBrushWidget(position, interactable);
 		});
 
 		m_palette.Subscriber.Subscribe(m_presenter.ChangeSnapping);

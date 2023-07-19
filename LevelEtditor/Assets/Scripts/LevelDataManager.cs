@@ -59,9 +59,9 @@ public class LevelDataManager : IDisposable
 
 			var dic = new Dictionary<int, LevelData>();
 			foreach(var (key, value) in enumerable)
-            {
+			{
 				dic.TryAdd(key, value);
-            }
+			}
 
 			if (m_currentData != null && !dic.ContainsKey(m_currentData.Key))
 			{
@@ -205,42 +205,102 @@ public class LevelDataManager : IDisposable
 	}
 
 	// index뒤에 추가
-	public bool TryAddLayerData(int boardIndex, int prevIndex, out int addIndex)
+	public bool TryAddLayerData(int boardIndex, out int addedLayerIndex)
+	{
+		addedLayerIndex = -1;
+		Board? board = m_currentData?[boardIndex];
+
+		if (board == null)
+		{
+			return false;
+		}
+
+		addedLayerIndex = board.Layers.Count;
+		board.Layers.Add(new Layer());
+
+		return true;
+	}
+
+	public bool TryRemovePeekLayer(int boardIndex)
 	{
 		Board? board = m_currentData?[boardIndex];
 
-		if (board?.Layers.HasIndex(prevIndex) ?? false)
+		if (board?.Layers == null)
 		{
-			addIndex = prevIndex + 1;
-			board.Layers.Insert(addIndex, new Layer());
+			return false;
+		}
+
+		int last = board.Layers.Count - 1;
+
+		if (last > 0)
+		{
+			board.Layers.RemoveAt(last);
 			return true;
 		}
-
-		addIndex = prevIndex;
-		return false;
-	}
-
-	public void RemoveLayerData(int boardIndex, int index)
-	{
-		Board? board = m_currentData?[boardIndex];
-
-		if (board?.Layers.HasIndex(index) ?? false)
+		else
+		if (last == 0)
 		{
-			board.Layers.RemoveAt(index);
-		}
-	}
-
-	public bool TryAddTileData(int boardIndex, int layerIndex, Vector2 position)
-	{
-		Layer? layerData = m_currentData?.GetLayer(boardIndex, layerIndex);
-
-		if (layerData?.Tiles?.All(tile => !position.Equals(tile.Position)) ?? false)
-		{
-			layerData.Tiles.Add(new Tile(0, position));
+			board.Layers[0].Tiles.Clear();
 			return true;
 		}
 
 		return false;
+	}
+
+	public bool TryAddTileData(int boardIndex, Bounds bounds, out int layerIndex)
+	{
+		layerIndex = -1;
+
+		if (m_currentData == null)
+		{
+			return false;
+		}
+
+		if (!m_currentData.Boards.HasIndex(boardIndex))
+		{
+			return false;
+		}
+
+		Board board = m_currentData[boardIndex]!;
+
+		if (board.Layers == null)
+		{
+			board.Layers = new();
+		}
+
+		for (int index = 0, count = board.Layers.Count; index < count; index++)
+		{
+			if (!board.Layers.HasIndex(index))
+			{
+				continue;
+			}
+
+			Layer layer = board.Layers[index];
+			if (layer.Tiles?.All(tile => Intersect(tile.GetBounds(bounds.size.x), bounds)) ?? false)
+			{
+				return AddTileInLayer(bounds.center, out layerIndex, index, layer);
+			}
+		}
+
+		if (TryAddLayerData(boardIndex, out int addIndex))
+		{
+			return AddTileInLayer(bounds.center, out layerIndex, addIndex, board.Layers[addIndex]);
+		}
+
+		return true;
+
+		bool AddTileInLayer(Vector2 position, out int layerIndex, int index, Layer layer)
+		{
+			layer.Tiles.Add(new Tile(0, position));
+			layerIndex = index;
+			return true;
+		}
+
+		
+		bool Intersect(Bounds placed, Bounds bounds)
+		{
+			return placed.SqrDistance(bounds.center) >= Mathf.Pow(bounds.size.x * 0.5f, 2f);
+		}
 	}
 
 	public int? UpdateNumberOfTypes(int boardIndex, int number)
@@ -262,25 +322,48 @@ public class LevelDataManager : IDisposable
 		return clamp;
 	}
 
-	public bool TryRemoveTileData(int boardIndex, int layerIndex, Vector2 position)
+	public bool TryRemoveTileData(int boardIndex, Bounds bounds)
 	{
-		Layer? layerData = m_currentData?.GetLayer(boardIndex, layerIndex);
-
-		if (layerData?.Tiles is var tiles and not null)
+		if (m_currentData == null)
 		{
-			return tiles.RemoveAll(tile => tile.Position == position) > 0;
+			return false;
+		}
+
+		if (!m_currentData.Boards.HasIndex(boardIndex))
+		{
+			return false;
+		}
+
+		Board board = m_currentData[boardIndex]!;
+
+		if (board.Layers == null)
+		{
+			return false;
+		}
+		
+		for (int index = board.Layers.Count - 1; index >= 0; index--)
+		{
+			Layer layer = board.Layers[index];
+
+			int removeCount = layer.Tiles.RemoveAll(tile => Overlap(bounds, tile.GetBounds(bounds.size.x)));
+			if (removeCount > 0)
+			{
+				if (layer.Tiles.Count <= 0 && board.Layers.Count > 1)
+				{
+					board.Layers.RemoveAt(index);
+				}
+				return true;
+			}
 		}
 
 		return false;
-	}
 
-	public void ClearTileDatasInLayer(int boardIndex, int layerIndex)
-	{
-		Layer? layerData = m_currentData?[boardIndex]?[layerIndex];
-
-		if (layerData != null)
+		bool Overlap(Bounds bounds, Bounds other)
 		{
-			layerData.Tiles.Clear();
+			return bounds.min.x >= other.min.x &&
+				bounds.min.y >= other.min.y &&
+				bounds.max.x <= other.max.x &&
+				bounds.max.y <= other.max.y;
 		}
 	}
 

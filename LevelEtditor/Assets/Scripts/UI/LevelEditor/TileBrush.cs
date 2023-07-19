@@ -18,11 +18,8 @@ public class TileBrush : MonoBehaviour
 
 	public RectTransform RectTransform => transform as RectTransform;
 
-	private IAsyncReactiveProperty<InputController.State> m_clickBinder;
-
 	public void OnSetup(int size, Action<InputController.State> onClick)
 	{
-		m_clickBinder = new AsyncReactiveProperty<InputController.State>(State.NONE).WithDispatcher();
 		InputController input = InputController.Instance;
 
 		CancellationToken token = this.GetCancellationTokenOnDestroy();
@@ -35,33 +32,16 @@ public class TileBrush : MonoBehaviour
 
 		entry.callback.AddListener(
 			eventData => {
-				onClick?.Invoke( 
-					(m_clickBinder.Value, input.WasState) switch {
-						(State.LEFT_BUTTON_PRESSED, State.LEFT_BUTTON_PRESSED or State.LEFT_BUTTON_RELEASED) => State.LEFT_BUTTON_PRESSED,
-						(State.RIGHT_BUTTON_PRESSED, State.RIGHT_BUTTON_PRESSED or State.RIGHT_BUTTON_RELEASED) => State.RIGHT_BUTTON_PRESSED,
-						_=> State.NONE
-					}
-				);
+				onClick?.Invoke(input.WasState);
 			}
 		);
 		m_button.triggers.Add(entry);
+		m_image.color = Color.green;
 	}
 
-	public void UpdateUI(bool interactable, bool drawable)
+	public void UpdateUI(bool interactable)
 	{
-		m_clickBinder.Update(binder => 
-			binder = (interactable, drawable) switch { 
-				(true, true) => State.LEFT_BUTTON_PRESSED,
-				(true, false) => State.RIGHT_BUTTON_PRESSED,
-				_ => State.NONE
-			}
-		);
-
 		m_button.enabled = interactable;
 		m_image.enabled = interactable;
-		m_image.color = drawable switch {
-			true => Color.green,
-			_ => Color.red
-		};
 	}
 }

@@ -10,10 +10,7 @@ using static TMPro.TMP_Dropdown;
 
 public class LayerContainerParameter
 {
-	public Action OnCreate;
 	public Action OnRemove;
-	public Action OnClear;
-	public Action<int> OnSelect;
 	public Action<int, bool> OnVisible;
 }
 
@@ -23,33 +20,19 @@ public class LayerContainer : MonoBehaviour
 	private InfiniteScroll m_scrollView;
 
 	[SerializeField]
-	private TMP_Dropdown m_selectLayerDropdown;
-
-	[SerializeField]
-	private LevelEditorButton m_createLayerButton;
-
-	[SerializeField]
 	private LevelEditorButton m_removeLayerButton;
-
-	[SerializeField]
-	private LevelEditorButton m_clearTilesButton;
 
 	private Action<int, bool> m_onVisible;
 
 	public void OnSetup(LayerContainerParameter parameter)
 	{
 		m_onVisible = parameter?.OnVisible;
-		m_clearTilesButton.OnSetup("Clear Tiles in Layer", () => parameter?.OnClear?.Invoke());
-		m_createLayerButton.OnSetup("Add Layer", () => parameter?.OnCreate?.Invoke());
-		m_removeLayerButton.OnSetup("Remove Layer", () => parameter?.OnRemove?.Invoke());
-
-		m_selectLayerDropdown.onValueChanged.AddListener(index => parameter?.OnSelect?.Invoke(index));
+		m_removeLayerButton.OnSetup(() => parameter?.OnRemove?.Invoke());
 	}
 
-	public void OnUpdateUI(IReadOnlyList<Color> layerColors, int layerIndex)
+	public void OnUpdateUI(IReadOnlyList<Color> layerColors)
 	{
 		m_scrollView.ClearData(true);
-		m_selectLayerDropdown.ClearOptions();
 
 		List<LayerListScrollItemData> items = new();
 		List<OptionData> options = new();
@@ -69,10 +52,5 @@ public class LayerContainer : MonoBehaviour
 		}
 
 		m_scrollView.InsertData(items.ToArray(), true);
-		m_selectLayerDropdown.AddOptions(options);
-
-		m_selectLayerDropdown.SetValueWithoutNotify(layerIndex);
-
-		m_removeLayerButton.SetInteractable(layerCount > 1);
 	}
 }

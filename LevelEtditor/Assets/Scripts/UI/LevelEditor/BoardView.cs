@@ -71,10 +71,10 @@ public class BoardView : MonoBehaviour
 		m_removeButton.OnSetup("Remove", () => parameter?.OnRemove?.Invoke());
 	}
 
-	public void OnUpdateBrushWidget(Vector2 localPosition, bool interactable, bool drawable)
+	public void OnUpdateBrushWidget(Vector2 localPosition, bool interactable)
 	{
 		m_brush.transform.localPosition = localPosition;
-		m_brush.UpdateUI(interactable, drawable);
+		m_brush.UpdateUI(interactable);
 	}
 
 	public void OnDrawTile(int layerIndex, Vector2 position, float size, Color color)
@@ -101,9 +101,9 @@ public class BoardView : MonoBehaviour
 		m_nextButton.UpdateUI(boardIndex + 1 >= boardCount? "+": ">>");
 	}
 
-	public void OnUpdateLayerView(IReadOnlyList<LayerInfo> layers, int selectedIndex)
+	public void OnUpdateLayerView(IReadOnlyList<LayerInfo> layers)
 	{
-		m_frame.color = layers[selectedIndex].Color;
+		m_frame.color = Color.black;
 
 		m_placedLayerObjects.ForEach(
 			each => {
