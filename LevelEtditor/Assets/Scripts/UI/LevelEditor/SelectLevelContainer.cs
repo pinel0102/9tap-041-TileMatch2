@@ -118,7 +118,7 @@ public class SelectLevelContainer : MonoBehaviour
 			process.Exited += Exited;
 
 			#if !UNITY_EDITOR && UNITY_STANDALONE_OSX
-			string appDir = Directory.GetParent(path).Parent.Parent.Parent.FullName;
+			string appDir = Directory.GetParent(path).FullName;
 			#else
 			string appDir = Directory.GetCurrentDirectory(); //Directory.GetParent(path).FullName;
 			#endif
