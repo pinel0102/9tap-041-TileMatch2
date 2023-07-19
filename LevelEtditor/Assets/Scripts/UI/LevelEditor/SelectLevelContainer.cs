@@ -73,18 +73,35 @@ public class SelectLevelContainer : MonoBehaviour
 					async token => {		
 						if (!PlayerPrefs.HasKey("client_path"))
 						{
-							//FileBrowser.SetFilters(true, new string[] {"exe", "app"});
-							FileBrowser.ShowLoadDialog(
-								onSuccess: async paths => {
-									string path = paths[0];
-									PlayerPrefs.SetString("client_path", path);
-									await StartProcess(path, token);
-								},
-								() => Application.Quit(),
-								pickMode: FileBrowser.PickMode.Folders,
-								title: "플레이할 앱 선택",
-								loadButtonText: "선택"
-							);
+							if (Application.platform is RuntimePlatform.OSXPlayer or RuntimePlatform.OSXEditor)
+							{
+								FileBrowser.ShowLoadDialog(
+									onSuccess: async paths => {
+										string path = paths[0];
+										PlayerPrefs.SetString("client_path", path);
+										await StartProcess(path, token);
+									},
+									() => Application.Quit(),
+									pickMode: FileBrowser.PickMode.Folders,
+									title: "플레이할 앱 선택",
+									loadButtonText: "선택"
+								);
+							}
+							else
+							{
+								FileBrowser.SetFilters(false, new string[] {"exe"});
+								FileBrowser.ShowLoadDialog(
+									onSuccess: async paths => {
+										string path = paths[0];
+										PlayerPrefs.SetString("client_path", path);
+										await StartProcess(path, token);
+									},
+									() => Application.Quit(),
+									pickMode: FileBrowser.PickMode.Files,
+									title: "플레이할 앱 선택",
+									loadButtonText: "선택"
+								);
+							}
 							return;
 						}
 
@@ -117,17 +134,18 @@ public class SelectLevelContainer : MonoBehaviour
 		{
 			if (m_clientProcess != null)
             {
-				m_clientProcess.Kill();
+				m_clientProcess?.Dispose();
+				m_clientProcess = null;
             }
+
 			m_clientProcess = new Process();
 			m_clientProcess.StartInfo.FileName = path;
 			m_clientProcess.Exited += Exited;
 
-			#if UNITY_STANDALONE_OSX
-			string appDir = Directory.GetParent(path).FullName;
-			#else
-			string appDir = Directory.GetCurrentDirectory(); //Directory.GetParent(path).FullName;
-			#endif
+			string appDir = Application.platform switch {
+				RuntimePlatform.OSXEditor or RuntimePlatform.OSXPlayer => Directory.GetParent(path).FullName,
+				_=> Directory.GetCurrentDirectory()
+			};
 
 			string levelDataDir = Path.Combine(appDir, "LevelDatas");
 			UnityEngine.Debug.Log(levelDataDir);
@@ -183,7 +201,6 @@ public class SelectLevelContainer : MonoBehaviour
 				}
 			}
 
-
 			parameter.OnVisibleDim.Invoke(true, "게임 실행 중...");
 			
 			await UniTask.Delay(500,  cancellationToken: token);
@@ -191,6 +208,8 @@ public class SelectLevelContainer : MonoBehaviour
 			m_clientProcess.Start();
 
 			m_clientProcess.WaitForExit();
+
+			UnityEngine.Debug.LogWarning(m_clientProcess.Id);
 
 			Exited();
 		}
@@ -216,7 +235,7 @@ public class SelectLevelContainer : MonoBehaviour
 
     private void OnDestroy()
     {
-		m_clientProcess?.Kill();
+		m_clientProcess?.Dispose();
     }
 
 }
