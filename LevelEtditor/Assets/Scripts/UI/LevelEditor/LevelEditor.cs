@@ -42,8 +42,13 @@ public partial class LevelEditor : MonoBehaviour
 	private LevelEditorPresenter m_presenter;
 	private Palette m_palette;
 
+	[SerializeField]
+	private Text m_error;
+
+
 	private void Awake()
 	{
+		m_error.gameObject.SetActive(false);
 		m_loading.SetActive(false);
 		m_prevDim.alpha = 1f;
 	}
@@ -149,66 +154,74 @@ public partial class LevelEditor : MonoBehaviour
 			}
 		);
 
-		await m_presenter.Initialize();
+		try
+		{
+			await m_presenter.Initialize();
 
-		CancellationToken token = this.GetCancellationTokenOnDestroy();
+			CancellationToken token = this.GetCancellationTokenOnDestroy();
 
-		// 편집 이벤트가 발생해 에디터 state가 변경되어 case에 따라 ui 업데이트를 하도록 함.
-		m_presenter.UpdateState.Subscribe(
-			action: info => {
-				switch (info)
+			// 편집 이벤트가 발생해 에디터 state가 변경되어 case에 따라 ui 업데이트를 하도록 함.
+			m_presenter.UpdateState.Subscribe(
+				action: info => {
+					switch (info)
+					{
+						case CurrentState.AllUpdated all: // 레벨 변경시 모든 ui가 변경되어야 함
+							m_boardView.OnUpdateBoardView(all.BoardCount, all.BoardIndex);
+							m_boardView.OnUpdateLayerView(all.CurrentBoard);
+							m_menuView.UpdateLevelUI(all.LastLevel, all.CurrentLevel);
+							m_menuView.UpdateDifficult(all.Difficult);
+							m_menuView.UpdateNumberOfTileTypesUI(all.BoardIndex, all.NumberOfTileTypesCurrent);
+							m_menuView.UpdateLayerUI(all.CurrentLayerColors);
+							m_menuView.UpdateLevelInfoUI(all.TileCountInBoard, all.TileCountAll);
+							break;
+						case CurrentState.BoardUpdated board: //맵
+							m_boardView.OnUpdateBoardView(board.BoardCount, board.BoardIndex);
+							m_boardView.OnUpdateLayerView(board.CurrentBoard);
+							m_menuView.UpdateLayerUI(board.CurrentLayerColors);
+							m_menuView.UpdateLevelInfoUI(board.TileCountInBoard, board.TileCountAll);
+							m_menuView.UpdateNumberOfTileTypesUI(board.BoardIndex, board.NumberOfTileTypesCurrent);
+							break;
+						case CurrentState.NumberOfTileTypesUpdated numberOfTileTypes: // 타일 종류 개수
+							m_menuView.UpdateNumberOfTileTypesUI(numberOfTileTypes.BoardIndex, numberOfTileTypes.NumberOfTileTypesCurrent);
+							break;
+						case CurrentState.TileUpdated tile: //타일
+							m_boardView.OnUpdateLayerView(tile.Layers);
+							m_menuView.UpdateLayerUI(tile.CurrentColors);
+							m_menuView.UpdateLevelInfoUI(tile.TileCountInBoard, tile.TileCountAll);
+							break;
+						case CurrentState.DifficultUpdated { difficult : var difficult }:
+							m_menuView.UpdateDifficult(difficult);
+							break;
+					}
+
+					m_prevDim.alpha = 0f;
+					m_prevDim.gameObject.SetActive(false);
+					m_loading.SetActive(false);
+				}
+			);
+
+			m_presenter.BrushMessageBroker.Subscribe(info => {
+				var (interactable, position) = info;
+				m_boardView.OnUpdateBrushWidget(position, interactable);
+			});
+
+			m_palette.Subscriber.Subscribe(m_presenter.ChangeSnapping);
+
+			await foreach (var _ in UniTaskAsyncEnumerable.EveryUpdate(PlayerLoopTiming.LastPostLateUpdate))
+			{
+				if (token.IsCancellationRequested)
 				{
-					case CurrentState.AllUpdated all: // 레벨 변경시 모든 ui가 변경되어야 함
-						m_boardView.OnUpdateBoardView(all.BoardCount, all.BoardIndex);
-						m_boardView.OnUpdateLayerView(all.CurrentBoard);
-						m_menuView.UpdateLevelUI(all.LastLevel, all.CurrentLevel);
-						m_menuView.UpdateDifficult(all.Difficult);
-						m_menuView.UpdateNumberOfTileTypesUI(all.BoardIndex, all.NumberOfTileTypesCurrent);
-						m_menuView.UpdateLayerUI(all.CurrentLayerColors);
-						m_menuView.UpdateLevelInfoUI(all.TileCountInBoard, all.TileCountAll);
-						break;
-					case CurrentState.BoardUpdated board: //맵
-						m_boardView.OnUpdateBoardView(board.BoardCount, board.BoardIndex);
-						m_boardView.OnUpdateLayerView(board.CurrentBoard);
-						m_menuView.UpdateLayerUI(board.CurrentLayerColors);
-						m_menuView.UpdateLevelInfoUI(board.TileCountInBoard, board.TileCountAll);
-						m_menuView.UpdateNumberOfTileTypesUI(board.BoardIndex, board.NumberOfTileTypesCurrent);
-						break;
-					case CurrentState.NumberOfTileTypesUpdated numberOfTileTypes: // 타일 종류 개수
-						m_menuView.UpdateNumberOfTileTypesUI(numberOfTileTypes.BoardIndex, numberOfTileTypes.NumberOfTileTypesCurrent);
-						break;
-					case CurrentState.TileUpdated tile: //타일
-						m_boardView.OnUpdateLayerView(tile.Layers);
-						m_menuView.UpdateLayerUI(tile.CurrentColors);
-						m_menuView.UpdateLevelInfoUI(tile.TileCountInBoard, tile.TileCountAll);
-						break;
-					case CurrentState.DifficultUpdated { difficult : var difficult }:
-						m_menuView.UpdateDifficult(difficult);
-						break;
+					return;
 				}
 
-				m_prevDim.alpha = 0f;
-				m_prevDim.gameObject.SetActive(false);
-				m_loading.SetActive(false);
+				Vector2 inputPosition = InputController.Instance.ToLocalPosition(m_boardView.transform);
+				m_presenter.SetBrushPosition(inputPosition);
 			}
-		);
-
-		m_presenter.BrushMessageBroker.Subscribe(info => {
-			var (interactable, position) = info;
-			m_boardView.OnUpdateBrushWidget(position, interactable);
-		});
-
-		m_palette.Subscriber.Subscribe(m_presenter.ChangeSnapping);
-
-		await foreach (var _ in UniTaskAsyncEnumerable.EveryUpdate(PlayerLoopTiming.LastPostLateUpdate))
+		}
+		catch
 		{
-			if (token.IsCancellationRequested)
-			{
-				return;
-			}
-
-			Vector2 inputPosition = InputController.Instance.ToLocalPosition(m_boardView.transform);
-			m_presenter.SetBrushPosition(inputPosition);
+			PlayerPrefs.DeleteKey(DATA_PATH_KEY);
+			m_error.gameObject.SetActive(true);
 		}
 
 		#region Local Functions
