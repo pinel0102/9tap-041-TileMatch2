@@ -9,8 +9,6 @@ using TMPro;
 
 using Cysharp.Threading.Tasks;
 
-using SimpleFileBrowser;
-
 using Newtonsoft.Json;
 using Newtonsoft.Json.UnityConverters.Math;
 using Newtonsoft.Json.UnityConverters;
@@ -81,7 +79,7 @@ public class SelectLevelContainer : MonoBehaviour
 			)
 		);
 
-		m_browserButton.OnSetup(() => Application.OpenURL($"file:///{parameter.DataPath}"));
+		m_browserButton.OnSetup(() => Application.OpenURL($"file:///{PlayerPrefs.GetString(LevelEditor.DATA_PATH_KEY)}"));
 
 		parameter?.SaveButtonBinder?.BindTo(m_saveButton, (button, interactable) => button.SetInteractable(interactable));
 		parameter?.SaveButtonBinder?.BindTo(m_playButton, (button, interactable) => button.SetInteractable(interactable));
@@ -109,10 +107,7 @@ public class SelectLevelContainer : MonoBehaviour
 			m_clientProcess.StartInfo.FileName = path;
 			m_clientProcess.Exited += Exited;
 
-			string appDir = Application.platform switch {
-				RuntimePlatform.OSXEditor or RuntimePlatform.OSXPlayer => Directory.GetParent(path).FullName,
-				_=> Directory.GetCurrentDirectory()
-			};
+			string appDir = Application.persistentDataPath;
 
 			string levelDataDir = Path.Combine(appDir, "LevelDatas");
 			UnityEngine.Debug.Log(levelDataDir);
