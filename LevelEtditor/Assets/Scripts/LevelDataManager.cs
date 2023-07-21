@@ -247,8 +247,9 @@ public class LevelDataManager : IDisposable
 		return false;
 	}
 
-	public bool TryAddTileData(int boardIndex, Bounds bounds, out int layerIndex)
+	public bool TryAddTileData(DrawOrder drawOrder, int boardIndex, Bounds bounds, out int layerIndex)
 	{
+		Debug.LogWarning(drawOrder);
 		layerIndex = -1;
 
 		if (m_currentData == null)
@@ -268,23 +269,56 @@ public class LevelDataManager : IDisposable
 			board.Layers = new();
 		}
 
-		for (int index = 0, count = board.Layers.Count; index < count; index++)
+		switch (drawOrder)
 		{
-			if (!board.Layers.HasIndex(index))
-			{
-				continue;
-			}
+			case DrawOrder.BOTTOM:
+				for (int index = 0, count = board.Layers.Count; index < count; index++)
+				{
+					if (!board.Layers.HasIndex(index))
+					{
+						continue;
+					}
 
-			Layer layer = board.Layers[index];
-			if (layer.Tiles?.All(tile => Intersect(tile.GetBounds(bounds.size.x), bounds)) ?? false)
-			{
-				return AddTileInLayer(bounds.center, out layerIndex, index, layer);
-			}
-		}
+					Layer layer = board.Layers[index];
+					if (layer.Tiles?.All(tile => Intersect(tile.GetBounds(bounds.size.x), bounds)) ?? false)
+					{
+						return AddTileInLayer(bounds.center, out layerIndex, index, layer);
+					}
 
-		if (TryAddLayerData(boardIndex, out int addIndex))
-		{
-			return AddTileInLayer(bounds.center, out layerIndex, addIndex, board.Layers[addIndex]);
+				}
+
+				if (TryAddLayerData(boardIndex, out int addIndex))
+				{
+					return AddTileInLayer(bounds.center, out layerIndex, addIndex, board.Layers[addIndex]);
+				}
+				break;
+			case DrawOrder.TOP:
+				int lastIndex = board.Layers.Count - 1;
+				for (int index = lastIndex; index >= 0; index--)
+				{
+					if (!board.Layers.HasIndex(index))
+					{
+						continue;
+					}
+
+					Layer layer = board.Layers[index];
+					if (layer.Tiles?.Any(tile => !Intersect(tile.GetBounds(bounds.size.x), bounds)) ?? false)
+					{
+						if (index >= lastIndex)
+						{
+							if (TryAddLayerData(boardIndex, out int addTopIndex))
+							{
+								return AddTileInLayer(bounds.center, out layerIndex, addTopIndex, board.Layers[addTopIndex]);
+							}
+						}
+						else
+						{
+							int upperIndex = index + 1;
+							return AddTileInLayer(bounds.center, out _, upperIndex, board.Layers[upperIndex]);
+						}
+					}
+				}
+				return AddTileInLayer(bounds.center, out _, 0, board.Layers[0]);
 		}
 
 		return true;
@@ -374,9 +408,7 @@ public class LevelDataManager : IDisposable
 			return default;
 		}
 
-		m_currentData = m_currentData with {
-			Difficult = difficult
-		};
+		m_currentData = m_currentData with { Difficult = difficult };
 
 		return difficult;
 	}
@@ -421,6 +453,16 @@ public class LevelDataManager : IDisposable
 
 		string json = JsonConvert.SerializeObject(data, m_serializerSettings);
 		string path = Path.Combine(m_folderPath, fileName);
+
+		if (File.Exists(path))
+		{
+			if (File.Exists($"{path}.backup"))
+			{
+				File.Delete($"{path}.backup");
+			}
+			File.Move(path, $"{path}.backup");
+		}
+
 		using (FileStream fileStream = new FileStream(path: path, access: FileAccess.Write, mode: FileMode.OpenOrCreate))
 		{
 			using (StreamWriter writer = new StreamWriter(fileStream))

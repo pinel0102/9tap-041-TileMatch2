@@ -38,7 +38,7 @@ public class LevelEditorPresenter : IDisposable
 		m_cancellationTokenSource = new();
 		m_boardBounds = new Bounds(Vector2.zero, Vector2.one * cellSize * cellCount);
 		m_brushInfo = new AsyncReactiveProperty<BrushInfo>(
-			new BrushInfo(Color.white, cellSize, cellSize, Position: Vector2.zero)
+			new BrushInfo(Color.white, cellSize, cellSize, Position: Vector2.zero, DrawOrder.BOTTOM)
 		).WithDispatcher();
 		m_internalState = new AsyncReactiveProperty<InternalState>(InternalState.Empty).WithDispatcher();
 		m_savable = new(false);
@@ -139,7 +139,7 @@ public class LevelEditorPresenter : IDisposable
 			return;
 		}
 
-		(_, float size, _, _) = m_brushInfo.Value;
+		(_, float size, _, _, _) = m_brushInfo.Value;
 
 		m_internalState.Update(info => 
 			InternalState.ToInternalInfo(levelData, m_dataManager.Config.LastLevel, size)
@@ -185,7 +185,7 @@ public class LevelEditorPresenter : IDisposable
 
 	private void LoadBoardInternal(int index, int boardCount)
 	{
-		(_, float size, _, _) = m_brushInfo.Value;
+		(_, float size, _, _, _) = m_brushInfo.Value;
 
 		var boardInfos = BoardInfo.Create(m_dataManager.CurrentLevelData, size);
 
@@ -229,7 +229,7 @@ public class LevelEditorPresenter : IDisposable
 	#region Tile
 	public void SetTileInLayer(InputController.State state)
 	{
-		(Color color, float size, _, Vector2 position) = m_brushInfo.Value;
+		(Color color, float size, _, Vector2 position, DrawOrder drawOrder) = m_brushInfo.Value;
 
 		int boardIndex = State.BoardIndex;
 
@@ -237,7 +237,7 @@ public class LevelEditorPresenter : IDisposable
 		{
 			case LEFT_BUTTON_PRESSED:
 			case LEFT_BUTTON_RELEASED:
-				m_dataManager.TryAddTileData(boardIndex, new Bounds(position, Vector2.one * size), out int layerIndex);
+				m_dataManager.TryAddTileData(drawOrder, boardIndex, new Bounds(position, Vector2.one * size), out int layerIndex);
 				break;
 			case RIGHT_BUTTON_PRESSED:
 			case RIGHT_BUTTON_RELEASED:
@@ -315,7 +315,7 @@ public class LevelEditorPresenter : IDisposable
 
 	private void ResetPlacedTilesInLayer(int layerIndex)
 	{
-		(Color c, float size, _, _) = m_brushInfo.Value;
+		(Color c, float size, _, _, _) = m_brushInfo.Value;
 		
 		List<Bounds> bounds = new();
 
@@ -336,7 +336,7 @@ public class LevelEditorPresenter : IDisposable
 	#region Layer
 	public void RemoveLayer()
 	{
-		(Color c, float size, _, _) = m_brushInfo.Value;
+		(Color c, float size, _, _, _) = m_brushInfo.Value;
 
 		if (m_dataManager.TryRemovePeekLayer(State.BoardIndex))
 		{
@@ -367,5 +367,11 @@ public class LevelEditorPresenter : IDisposable
 				Difficult = (DifficultType)difficult
 			}
 		);
+	}
+
+	public void ChangeDrawOrder(DrawOrder order)
+	{
+		//Debug.Log(order);
+		m_brushInfo.Update(info => info with { DrawOrder = order });
 	}
 }

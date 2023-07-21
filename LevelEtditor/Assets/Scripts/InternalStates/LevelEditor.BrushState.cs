@@ -9,7 +9,8 @@ partial class LevelEditor
 		Color Color,
 		float Size,
 		float Snapping,
-		Vector2 Position
+		Vector2 Position,
+		DrawOrder DrawOrder
 	)
 	{
 		public Bounds GetBounds() => new Bounds(Position, Vector2.one * Size);
