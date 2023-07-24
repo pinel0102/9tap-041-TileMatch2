@@ -105,7 +105,7 @@ public class LevelDataManager : IDisposable
 
 	public async UniTask<LevelData?> LoadLevelData(int level)
 	{
-		if (level < 0 || level >= m_gameConfig.LastLevel)
+		if (level < 0)
 		{
 			return m_currentData;
 		}
