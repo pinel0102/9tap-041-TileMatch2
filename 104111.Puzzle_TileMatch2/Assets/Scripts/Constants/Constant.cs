@@ -1,0 +1,62 @@
+using UnityEngine;
+
+using System.IO;
+using System;
+
+public static class Constant
+{
+	public static class UI
+	{
+		public const float REFERENCE_RESOLUTION_X = 720f;
+		public const float REFERENCE_RESOLUTION_Y = 1280f;
+
+		public const string BUTTON_CLICK_FX_NAME = "block_bubble_switch";
+	}
+
+	public static class User
+	{
+		public const int MAX_LIFE_COUNT = 5;
+		public static readonly long REQUIRE_CHARGE_LIFE_MILLISECONDS = (long)TimeSpan.FromMinutes(30).TotalMilliseconds;
+		public static readonly string DATA_PATH = Path.Combine(Application.persistentDataPath, "user.dat");
+	}
+
+	public static class Game
+	{
+		public const float TILE_WIDTH = 88f;
+		public const float TILE_HEIGHT = 92f;
+		public const int REQUIRED_MATCH_COUNT = 3;
+		public const int MAX_BASKET_AMOUNT = 7;
+		public const int STASH_TILE_AMOUNT = 3;
+		public const int GOLD_PUZZLE_PIECE_COUNT = 4;
+		public const float TWEEN_DURATION_SECONDS = 0.3f;
+		public const float DEFAULT_DURATION_SECONDS = 0.25f;
+
+		public static readonly Vector2 RESIZE_TILE_RATIOS = new Vector2(0.55f, 0.575f);
+	}
+
+	public static class Puzzle
+	{
+		public const int MAX_ROW_COUNT = 5;
+		public const int MAX_COLUMN_COUNT = 5;
+	}
+
+	public static class Editor
+	{
+		public const string CLIENT_PATH_KEY = "client_path";
+		public const string DATA_PATH_KEY = "data_path";
+		public const string LATEST_LEVEL_KEY = "latest_level";
+		public const string DEVELOP_MODE_SCENE_KEY = "develop_mode_scene";
+		public const string DEVELOP_MODE_SWITCH_KEY = "develop_mode_switch";
+	}
+
+	public static class Input
+	{
+		public const float DOUBLE_CLICK_SECOND = 3f;
+	}
+
+	public static class Scene
+	{
+		public const string CLIENT = "Game";
+		public const string EDITOR = "Editor";
+	}
+}

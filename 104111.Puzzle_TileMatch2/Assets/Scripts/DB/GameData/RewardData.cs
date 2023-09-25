@@ -1,0 +1,64 @@
+using System.Linq;
+using System.Reflection;
+using System.Collections.Generic;
+
+public record RewardData
+(
+	long Index,
+	RewardType RewardType,
+	DifficultType DifficultType,
+	int Level,
+	int Repeat,
+	int Coin,
+	int PuzzlePiece,
+	int StashItem, 
+	int UndoItem, 
+	int ShuffleItem,
+	long HeartBooster
+) : TableRowData<long>(Index)
+{
+	private readonly List<IReward> m_rewards = new();
+	public List<IReward> Rewards => m_rewards;
+
+	public void CreateRewards()
+	{
+		List<IReward> result = new();
+		PropertyInfo[] infos = typeof(RewardData).GetProperties();
+
+		foreach (var info in infos)
+		{
+			if (!System.Enum.TryParse(typeof(ProductType), info.Name, true, out var type))
+			{
+				continue;
+			}
+
+			if (type is ProductType.Unknown)
+			{
+				continue;
+			}
+
+			ProductType goodsType = (ProductType)type;
+
+			long? count = goodsType switch {
+				ProductType.HeartBooster => (long)info.GetValue(this),
+				_=> (int)info.GetValue(this)
+			};
+
+			if (!count.HasValue || count <= 0)
+			{
+				continue;
+			}
+
+			result.Add(
+				goodsType switch {
+					ProductType.HeartBooster => new BoosterReward(goodsType, count.Value),
+					_=> new ItemReward(goodsType, (int)count.Value)
+				}
+			);
+		}
+
+		m_rewards.AddRange(result);
+	}
+
+	public IReward this[ProductType type] => m_rewards.FirstOrDefault(reward => reward.Type == type);
+}
