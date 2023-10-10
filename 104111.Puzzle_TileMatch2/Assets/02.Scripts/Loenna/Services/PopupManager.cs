@@ -142,9 +142,9 @@ public class PopupManager
 		}
 		catch (Exception e)
 		{
-#if DEBUG
+//#if DEBUG
 			Debug.LogException(e);
-#endif
+//#endif
 		}
 		finally
 		{
