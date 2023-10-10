@@ -115,6 +115,7 @@ namespace AssetKits.ParticleImage.Editor
                 }
                 catch (Exception e)
                 {
+                    Debug.LogException(e);
                     // ignored
                 }
             }
@@ -137,6 +138,7 @@ namespace AssetKits.ParticleImage.Editor
                 }
                 catch (Exception e)
                 {
+                    Debug.LogException(e);
                     // ignored
                 }
             }

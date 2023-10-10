@@ -14,9 +14,9 @@ namespace Gpm.Manager.Constant
 
         public const string STORE_URI = "https://assetstore.unity.com/packages/tools/utilities/game-package-manager-147711";
 
-        public static readonly string GPM_ROOT = "Plugins/GPM";
+        public static readonly string GPM_ROOT = "GPM";
 
-        public static readonly string LANGUAGE_FILE_PATH = string.Format("{0}/Manager/Data/strings.xml", GPM_ROOT);
+        public static readonly string LANGUAGE_FILE_PATH = string.Format("Plugins/{0}/Manager/Data/strings.xml", GPM_ROOT);
 
         public const string INSTALL_INFO_FILE_NAME = "install.json";
         public const string CDN_INFO_FILE_NAME = "cdn.xml";

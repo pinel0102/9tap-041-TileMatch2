@@ -154,15 +154,24 @@ namespace Gpm.Manager.Internal
                         Directory.CreateDirectory(ManagerPaths.LIBRARY_PATH);
                         File.WriteAllText(ManagerPaths.TEMP_REFRESH_FILE_PATH, JsonUtility.ToJson(refreshInfo));
 
-                        if(string.IsNullOrEmpty(installedVersion) == true)
+                        foreach (var packageInfo in downloadedList)
                         {
-                            GpmManagerIndicator.SendInstall(service.title, service.version);
+                            if (packageInfo.serviceName.Equals(service.title) == true)
+                            {
+                                if (string.IsNullOrEmpty(installedVersion) == true)
+                                {
+                                    GpmManagerIndicator.SendInstall(packageInfo.serviceName, packageInfo.serviceVersion, service.title);
+                                }
+                                else
+                                {
+                                    GpmManagerIndicator.SendUpdate(service.title, service.version, installedVersion);
+                                }
+                            }
+                            else
+                            {
+                                GpmManagerIndicator.SendInstall(packageInfo.serviceName, packageInfo.serviceVersion, service.title);
+                            }   
                         }
-                        else
-                        {
-                            GpmManagerIndicator.SendUpdate(service.title, service.version, installedVersion);
-                        }
-                        
 
                         callback(null);
                     }

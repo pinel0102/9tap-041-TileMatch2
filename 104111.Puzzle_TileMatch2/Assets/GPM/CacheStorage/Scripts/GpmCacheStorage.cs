@@ -9,7 +9,7 @@ namespace Gpm.CacheStorage
     public static class GpmCacheStorage
     {
         public const string NAME = "GpmCacheStorage";
-        public const string VERSION = "1.3.0";
+        public const string VERSION = "1.3.1";
 
         /// <summary>
         /// This function will know that CacheStorage has been initialized.

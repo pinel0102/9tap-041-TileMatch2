@@ -1,6 +1,9 @@
-﻿using Gpm.Common.Indicator;
+using Gpm.Common.Indicator;
+using Gpm.Common.Multilanguage;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEngine;
+using System.Globalization;
 
 namespace Gpm.Manager.Internal
 {
@@ -48,7 +51,26 @@ namespace Gpm.Manager.Internal
             return guid;
 
         }
+        
+        internal static string GetCurtureCode()
+        {
+#if UNITY_EDITOR_WIN
+            string curture = CultureInfo.CurrentCulture.Name;
+            if (string.IsNullOrEmpty(curture) == true)
+            {
+                curture = GpmMultilanguage.GetSystemLanguage(false);
+            }
+#else
+            string curture = GpmMultilanguage.GetSystemLanguage(false);
+#endif
+            if (string.IsNullOrEmpty(curture) == true)
+            {
+                curture = Application.systemLanguage.ToString();
+            }
 
+            return curture;
+        }
+        
         public static void SendAd(string name, string linkUrl)
         {
             Send(new Dictionary<string, string>() 
@@ -72,7 +94,7 @@ namespace Gpm.Manager.Internal
             });
         }
 
-        public static void SendInstall(string serviceName, string serviceVersion)
+        public static void SendInstall(string serviceName, string serviceVersion, string installName)
         {
             Send(new Dictionary<string, string>()
             {
@@ -80,6 +102,7 @@ namespace Gpm.Manager.Internal
                 { KEY_GUID,               GetGuid() },
                 { KEY_ACTION_DETAIL_1,    serviceName },
                 { KEY_ACTION_DETAIL_2,    serviceVersion },
+                { KEY_ACTION_DETAIL_3,    installName },
             });
         }
 
@@ -112,7 +135,8 @@ namespace Gpm.Manager.Internal
             {
                 { KEY_ACTION,             ACTION_ACTIVATION },
                 { KEY_GUID,               GetGuid() },
-                { KEY_ACTION_DETAIL_1,    ManagerTime.ToLogString(ManagerTime.Now) }
+                { KEY_ACTION_DETAIL_1,    ManagerTime.ToLogString(ManagerTime.Now) },
+                { KEY_ACTION_DETAIL_2,    GetCurtureCode() },
             });
         }
 

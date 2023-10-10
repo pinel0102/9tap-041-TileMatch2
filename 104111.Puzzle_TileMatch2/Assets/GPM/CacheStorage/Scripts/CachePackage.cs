@@ -752,7 +752,7 @@ namespace Gpm.CacheStorage
         {
             if (string.IsNullOrEmpty(cachePath) == true)
             {
-                cachePath = Path.Combine(Application.dataPath, GpmCacheStorage.NAME);
+                cachePath = Path.Combine(Application.persistentDataPath, GpmCacheStorage.NAME);
 #if UNITY_IOS
                 UnityEngine.iOS.Device.SetNoBackupFlag(cachePath);
 #endif

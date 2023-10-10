@@ -18,7 +18,6 @@ namespace Gpm.Common.Multilanguage
 
         public static void Load(string serviceName, string filepath, MultilanguageCallback callback)
         {
-            UnityEngine.Debug.LogWarning(filepath);
             MultilanguageImplementation.Instance.Load(serviceName, filepath, callback);
         }
 

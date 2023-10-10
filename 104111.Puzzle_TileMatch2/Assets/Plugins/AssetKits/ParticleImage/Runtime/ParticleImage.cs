@@ -960,7 +960,7 @@ namespace AssetKits.ParticleImage
         public Vector3 deltaPosition => _deltaPosition;
 
         private Camera _camera;
-        private Camera camera
+        new private Camera camera
         {
             get
             {
@@ -984,7 +984,7 @@ namespace AssetKits.ParticleImage
         public bool moduleMovementFoldout;
         public bool moduleEventsFoldout;
 
-        void Awake()
+        new void Awake()
         {
             _noise.SetNoiseType(Noise.NoiseType.OpenSimplex2);
             _noise.SetFrequency(_noiseFrequency / 100f);
@@ -998,7 +998,7 @@ namespace AssetKits.ParticleImage
             }
         }
 
-        public void OnEnable()
+        new public void OnEnable()
         {
             
             if (isMain)
@@ -1081,7 +1081,7 @@ namespace AssetKits.ParticleImage
             }
         }
 
-        void OnTransformParentChanged()
+        new void OnTransformParentChanged()
         {
             main = GetMain();
             if(isMain)
@@ -1634,7 +1634,7 @@ namespace AssetKits.ParticleImage
             return part;
         }
         
-        public Material material
+        new public Material material
         {
             get
             {
