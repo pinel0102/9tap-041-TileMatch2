@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85440359e43b748d6a3fb9fc222e5c0e, type: 3}
+  m_Name: BuildPlayerPipeline
+  m_EditorClassIdentifier: 
+  pipelineVersion: 1.4.0
+  useRevertPlatform: 1
+  useDevelopmentFlag: 0
+  buildName_Android: TileMatch2
+  buildName_iOS: TileMatch2
+  buildName_MacOS: TileMatch2_Editor
+  buildName_Windows: TileMatch2_Editor
+  buildOptions_Android: 262144
+  buildOptions_iOS: 262144
+  buildOptions_MacOS: 0
+  buildOptions_Windows: 0
+  excludeFolders:
+  - LevelData
+  excludeFiles:
+  - StringData.csv
+  - LevelCount.txt
+  - LevelCount_Editor.txt
+  excludeScenes:
+  - Editor
+  - Init
+  currentGroup: 7
+  currentTarget: 13
+  isBuildEditorScene: 0
+  buildTargetGroup: 7
+  buildTarget: 13
+  buildOptions: 262144
+  buildLocationPathName: Builds/Android/TileMatch2_Debug_v0.0.4_1.apk
