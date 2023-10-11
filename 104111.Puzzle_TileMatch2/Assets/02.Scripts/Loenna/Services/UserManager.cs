@@ -54,7 +54,6 @@ public class UserManager : IDisposable
 				using (StreamReader sr = new StreamReader(fs))
 				{
 					string json = await sr.ReadToEndAsync().AsUniTask();
-
 					m_user.Value = JsonConvert.DeserializeObject<User>(json);
 				}
 			}
@@ -64,6 +63,8 @@ public class UserManager : IDisposable
 		{
 			m_user.Value = User.NewUser;
 		}
+
+        LogUserData();
 
 		return true;
 
@@ -93,6 +94,12 @@ public class UserManager : IDisposable
 			);
 		}
 	}
+
+    public void LogUserData()
+    {
+        string json = JsonConvert.SerializeObject(Current);
+        Debug.Log(CodeManager.GetMethodName() + string.Format("\n{0}", JsonHelper.Beautify(json)));
+    }
 
 	public void Save()
 	{
