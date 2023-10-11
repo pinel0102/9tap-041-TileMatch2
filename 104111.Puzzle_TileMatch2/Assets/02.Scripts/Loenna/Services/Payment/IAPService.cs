@@ -304,21 +304,17 @@ namespace NineTap.Payment
 
 		private async UniTaskVoid RequestReceiptValidation(Product product, IPurchaseReceipt receipt)
 		{
+            Debug.Log($"Confirming purchase of {product.definition.id}");
+			
 #if !UNITY_EDITOR
-
-			// 서버에서 validate
-
-			m_storeController.ConfirmPendingPurchase(product);
-
-			//m_purchaseResult.Update(value =>
+            m_storeController.ConfirmPendingPurchase(product);
+			//m_purchaseResult.Update(value => value = new IAPResult.Success(0, product.definition.id)
 				// 구매에 성공하면 result 콜백
 			//);
 #else
-			Debug.Log($"Confirming purchase of {product.definition.id}");
-			m_storeController.ConfirmPendingPurchase(product);
-
-			await UniTask.CompletedTask;
+            m_storeController.ConfirmPendingPurchase(product);
 #endif
+            await UniTask.CompletedTask;
 		}
 
 		private bool IsCurrentStoreSupportedByValidator()
