@@ -2,8 +2,8 @@
  * Code Manager
  * 
  * Author : Pinelia Luna
- * Update : 2015.06.26
- * Version : 1.0.0
+ * Update : 2023.10.11
+ * Version : 1.1.0
  * Contact : pinel0102@gmail.com
  * 
  * Summary:
@@ -18,8 +18,10 @@
  * - public string GetDeclaringType()	// Returns the declaring type, usually the class name.
  * - public string GetClassName()		// Returns the current class name.
  * - public string GetMethodName()		// Returns the current method name.
- * - public string GetMethodCall()		// Returns the method call orders recursively.
  * - public string GetFunctionName()	// Returns the current method name.
+ * - public string GetAsyncName()	    // Returns the current async method or coroutine name.
+ * - public string GetCoroutineName()	// Returns the current async method or coroutine name.
+ * - public string GetMethodCall()		// Returns the method call orders recursively.
  * - public string GetFunctionCall()	// Returns the method call orders recursively.
  * 
 */
@@ -40,6 +42,9 @@ public static class CodeManager
     const string strGetFunctionName = "GetFunctionName";
     const string strGetCoroutineName = "GetCoroutineName";
     const string strGetFunctionCall = "GetFunctionCall";
+    const string strAsyncCaret = ">d__";
+    const string strTimeFormat = "<tt hh:mm:ss.fff> ";
+    const string strWarning = "[Warning] StackTrace.FrameCount = {0}";
 
     /// <summary>
     /// Returns the declaring type, usually the class name.
@@ -48,7 +53,7 @@ public static class CodeManager
     /// <param name="index">Defines the class level. (current: 0, +1 per previous level).</param>	
     /// <returns>The declaring type, usually the class name.</returns>
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static string GetDeclaringType(bool showCurrentTime = false, bool showNamespace = false, int index = 0)
+    public static string GetDeclaringType(bool showNamespace = false, int index = 0, bool typeOnly = true)
     {
         StringBuilder sb = new StringBuilder();
 
@@ -68,14 +73,18 @@ public static class CodeManager
                 
                 var stt = new StackTrace(new StackFrame(index));
 
-                if (stt.GetFrame(0).GetMethod().Name.Equals(strGetMethodName) || 
+                if (typeOnly)
+                    sb.Append("] ");
+                else
+                    sb.Append(".");
+
+                /*if (stt.GetFrame(0).GetMethod().Name.Equals(strGetMethodName) || 
                     stt.GetFrame(0).GetMethod().Name.Equals(strGetFunctionName) || 
                     stt.GetFrame(0).GetMethod().Name.Equals(strGetCoroutineName))
 
                     sb.Append(".");
                 else
-                    sb.Append("] ");		
-                
+                    sb.Append("] ");*/
             }
             catch
             {
@@ -85,8 +94,7 @@ public static class CodeManager
         }
         else
         {
-            sb.Append("[Warning] StackTrace.FrameCount = ");
-            sb.Append(st.FrameCount);
+            sb.Append(string.Format(strWarning, st.FrameCount));
         }
 
         return sb.ToString();
@@ -95,18 +103,21 @@ public static class CodeManager
     /// <summary>
     /// Returns the current class name.
     /// </summary>	
+    /// <param name="showNamespace">Includes the namespace.</param>
     /// <param name="index">Defines the class level. (current: 0, +1 per previous level).</param>	
     /// <returns>The class name.</returns>
     [MethodImpl(MethodImplOptions.NoInlining)]
-    public static string GetClassName(bool showCurrentTime = false, bool showNamespace = false, int index = 0)
+    public static string GetClassName(bool showNamespace = false, int index = 0)
     {
-        return GetDeclaringType(showCurrentTime, showNamespace, index + 1);
+        return GetDeclaringType(showNamespace, index + 1);
     }
 
 
     /// <summary>
     /// Returns the current method name.
     /// </summary>	
+    /// <param name="showCurrentTime">Includes current time.</param>
+    /// <param name="showNamespace">Includes the namespace.</param>
     /// <param name="showClassName">Includes the class name.</param>
     /// <param name="showParams">Includes the declaring type and params.</param>	
     /// <param name="index">Defines the method level. (current: 0, +1 per previous level).</param>
@@ -124,12 +135,14 @@ public static class CodeManager
             {
                 if (showCurrentTime)
                 {
-                    sb.Append(System.DateTime.Now.ToString("<tt hh:mm:ss.fff> "));
+                    sb.Append(System.DateTime.Now.ToString(strTimeFormat));
                 }
 
+                string className = GetDeclaringType(showNamespace, index + 1, false);
+
                 if (showClassName)
-                {					
-                    sb.Append(GetDeclaringType(false, showNamespace, index + 1));
+                {
+                    sb.Append(className);
                 }
                 else
                 {
@@ -141,6 +154,13 @@ public static class CodeManager
                 else
                     sb.Append(st.GetFrame(0).GetMethod().Name);
                 
+                if (className.Contains(strAsyncCaret))
+                {
+                    string tempString = sb.ToString();
+                    int caretIndex = tempString.IndexOf(strAsyncCaret) + 1;
+                    sb.Remove(caretIndex, tempString.Length - caretIndex);
+                }
+
                 sb.Append("] ");
             }
             catch
@@ -151,8 +171,7 @@ public static class CodeManager
         }
         else
         {
-            sb.Append("[Warning] StackTrace.FrameCount = ");
-            sb.Append(st.FrameCount);
+            sb.Append(string.Format(strWarning, st.FrameCount));
         }
 
         return sb.ToString();
@@ -161,6 +180,8 @@ public static class CodeManager
     /// <summary>
     /// Returns the current method name.
     /// </summary>	
+    /// <param name="showCurrentTime">Includes current time.</param>
+    /// <param name="showNamespace">Includes the namespace.</param>
     /// <param name="showClassName">Includes the class name.</param>
     /// <param name="showParams">Includes the declaring type and params.</param>	
     /// <param name="index">Defines the method level. (current: 0, +1 per previous level).</param>
@@ -172,16 +193,31 @@ public static class CodeManager
     }
 
     /// <summary>
-    /// 
+    /// Returns the current async method or coroutine name.
     /// </summary>
-    /// <param name="showCurrentTime"></param>
-    /// <param name="showNamespace"></param>
-    /// <param name="showClassName"></param>
-    /// <param name="showParams"></param>
+    /// <param name="showCurrentTime">Includes current time.</param>
+    /// <param name="showNamespace">Includes the namespace.</param>
+    /// <param name="showClassName">Includes the class name.</param>
+    /// <param name="showParams">Includes the declaring type and params.</param>	
     /// <param name="index"></param>
     /// <returns></returns>
     [MethodImpl(MethodImplOptions.NoInlining)]
     public static string GetCoroutineName(bool showCurrentTime = false, bool showNamespace = true, bool showClassName = true, bool showParams = false, int index = 0)
+    {
+        return GetMethodName(showCurrentTime, showNamespace, showClassName, showParams, index + 1);
+    }
+
+    /// <summary>
+    /// Returns the current async method or coroutine name.
+    /// </summary>
+    /// <param name="showCurrentTime">Includes current time.</param>
+    /// <param name="showNamespace">Includes the namespace.</param>
+    /// <param name="showClassName">Includes the class name.</param>
+    /// <param name="showParams">Includes the declaring type and params.</param>	
+    /// <param name="index"></param>
+    /// <returns></returns>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static string GetAsyncName(bool showCurrentTime = false, bool showNamespace = true, bool showClassName = true, bool showParams = false, int index = 0)
     {
         return GetMethodName(showCurrentTime, showNamespace, showClassName, showParams, index + 1);
     }
@@ -270,8 +306,7 @@ public static class CodeManager
         }
         else
         {
-            sb.Append("[Warning] StackTrace.FrameCount = ");
-            sb.Append(st.FrameCount);
+            sb.Append(string.Format(strWarning, st.FrameCount));
         }
 
         return sb.ToString();

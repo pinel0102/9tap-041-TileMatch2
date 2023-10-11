@@ -96,15 +96,17 @@ public class InitScene : UIScene
 
 	private UniTask Initialize(IProgress<float> progress)
 	{
+        string mode = PlayerPrefs.GetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, Constant.Scene.CLIENT);
+		bool editorMode = mode == Constant.Scene.EDITOR;
+
+        Debug.Log(CodeManager.GetAsyncName() + string.Format("<color=yellow>Current Mode : {0}</color>", mode));
+
 		TableManager tableManager = Game.Inst.Get<TableManager>();
 		UserManager userManager = Game.Inst.Get<UserManager>();
 		SoundManager soundManager= Game.Inst.Get<SoundManager>();
 		PaymentService paymentService = Game.Inst.Get<PaymentService>();
 
 		soundManager.Load();
-
-		string mode = PlayerPrefs.GetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, Constant.Scene.CLIENT);
-		bool editorMode = mode == Constant.Scene.EDITOR;
 
 		List<UniTask<bool>> tasks = new List<UniTask<bool>>
 		{

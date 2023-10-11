@@ -28,6 +28,8 @@ public static class UIManager
 
 	public static void Initialize(ServiceRegistry<object> serviceRegistry, UserManager userManager)
 	{
+        Debug.Log(CodeManager.GetMethodName());
+        
 		HUD hud = new HUD(userManager);
 		SceneManager sceneManager = CreateSceneManager();
 		PopupManager popupManager = new PopupManager(Root);
@@ -41,6 +43,8 @@ public static class UIManager
 
 	public static void ShowSceneUI<T>(UIParameter uiParameter, bool clearStack = false) where T: UIScene
 	{
+        Debug.Log(CodeManager.GetMethodName() + uiParameter.ToString());
+
 		s_implementation?.AttachHUD(uiParameter.VisibleHUD)?.SceneManager?.ShowSceneUI<T>(uiParameter, clearStack);
 	}
 

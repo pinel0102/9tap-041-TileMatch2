@@ -31,6 +31,8 @@ public class TableManager
 
 	public async UniTask<bool> LoadGameData()
 	{
+        Debug.Log(CodeManager.GetAsyncName());
+
 		CountryCodeDataTable.Load();
 		TileDataTable.Load();
 		PuzzleDataTable.Load();
@@ -46,6 +48,8 @@ public class TableManager
 
 	public async UniTask<bool> LoadLevelData(bool editorMode)
 	{
+        Debug.Log(CodeManager.GetAsyncName());
+
 		string path = PlayerPrefs.GetString(Constant.Editor.DATA_PATH_KEY);
 
 		if (editorMode && PlayerPrefs.HasKey(Constant.Editor.LATEST_LEVEL_KEY))

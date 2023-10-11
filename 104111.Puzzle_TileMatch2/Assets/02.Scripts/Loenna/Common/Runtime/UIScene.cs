@@ -17,7 +17,8 @@ namespace NineTap.Common
 
 		public override void OnSetup(UIParameter uiParameter)
 		{
-			base.OnSetup(uiParameter);
+            Debug.Log(CodeManager.GetMethodName(index:1));
+            base.OnSetup(uiParameter);
 		}
 
 		public override void OnShow()

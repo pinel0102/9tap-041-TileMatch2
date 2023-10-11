@@ -28,7 +28,14 @@ public class Game : MonoBehaviour
 
 	private void Start()
 	{
-		Application.targetFrameRate = 120;
+		Initialize();
+	}
+
+    private void Initialize()
+    {
+        Debug.Log(CodeManager.GetMethodName());
+
+        Application.targetFrameRate = 120;
 		DOTween.SetTweensCapacity(500, 50);
 		SpriteManager.Initialize();
 		TableManager tableManager = new TableManager();
@@ -48,7 +55,7 @@ public class Game : MonoBehaviour
 		m_serviceRegistry.Register(soundManager);
 		
 		UIManager.ShowSceneUI<InitScene>(new DefaultParameterWithoutHUD());
-	}
+    }
 
 	public TService Get<TService>()
 	{

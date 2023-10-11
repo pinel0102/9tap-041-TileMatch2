@@ -205,7 +205,19 @@ public class TileItem : CachedBehaviour
 				return UniTask.CompletedTask;
 			}
 
-			if (type is EventTriggerType.PointerDown)
+            // Press 단계에서 바로 이동.
+            if (type is EventTriggerType.PointerDown)
+			{
+				soundManager.PlayFx(Constant.UI.BUTTON_CLICK_FX_NAME);
+                m_interactable = false;
+				parameter.OnClick?.Invoke(this);
+
+                return m_scaleTween?.OnChangeValue(Vector3.one * 1.25f, Constant.Game.DEFAULT_DURATION_SECONDS * 0.5f, () => {
+                    m_scaleTween?.OnChangeValue(Vector3.one, Constant.Game.DEFAULT_DURATION_SECONDS * 0.5f);
+                }) ?? UniTask.CompletedTask;
+            }
+
+			/*if (type is EventTriggerType.PointerDown)
 			{
 				soundManager.PlayFx(Constant.UI.BUTTON_CLICK_FX_NAME);
 				return m_scaleTween?.OnChangeValue(Vector3.one * 1.25f, Constant.Game.DEFAULT_DURATION_SECONDS) ?? UniTask.CompletedTask;
@@ -227,7 +239,9 @@ public class TileItem : CachedBehaviour
 				#endif
 			}
 
-			return m_scaleTween?.OnChangeValue(Vector3.one, Constant.Game.DEFAULT_DURATION_SECONDS) ?? UniTask.CompletedTask;
+			return m_scaleTween?.OnChangeValue(Vector3.one, Constant.Game.DEFAULT_DURATION_SECONDS) ?? UniTask.CompletedTask;*/
+
+            return UniTask.CompletedTask;
 		}
 	}
 

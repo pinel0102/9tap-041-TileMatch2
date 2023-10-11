@@ -7,7 +7,7 @@ namespace NineTap.Common
 
 		public virtual void OnSetup(UIParameter uiParameter)
 		{
-			CachedParameter = uiParameter;
+            CachedParameter = uiParameter;
 		}
 
 		public virtual void Show()

@@ -36,6 +36,8 @@ public class UserManager : IDisposable
 
 	public async UniTask<bool> LoadAsync(bool editorMode)
 	{
+        Debug.Log(CodeManager.GetAsyncName());
+
 		if (editorMode)
 		{
 			int level = PlayerPrefs.GetInt(Constant.Editor.LATEST_LEVEL_KEY, 1);
