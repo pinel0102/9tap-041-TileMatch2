@@ -18,6 +18,7 @@ partial class PlayScene
 	private IObjectPool<TileItem> m_tileItemPool;
 	private IObjectPool<MissionCollectedFx> m_particlePool;
 	private List<TileItem> m_tileItems;
+    private PuzzleData m_puzzleData;
 
 	private int m_progressId = 0;
 	private Queue<UniTask> m_queue;
@@ -125,7 +126,7 @@ partial class PlayScene
 
 	private async UniTask OnUpdateUI(CurrentPlayState currentPlayState)
 	{
-		++m_progressId;
+        ++m_progressId;
 
 		switch (currentPlayState)
 		{
@@ -138,6 +139,9 @@ partial class PlayScene
 				CurrentBoardIndex: var index,
 				CurrentBoard: var current
 			}:
+                m_puzzleData = m_puzzleDataTable.FirstOrDefault(index => index == level);
+                SetBackground();
+
 				m_progressId = 0;
 				m_block.SetActive(true);
 				m_tileItems.ForEach(item => m_tileItemPool.Release(item));
@@ -284,5 +288,14 @@ partial class PlayScene
 				--m_progressId;
 				break;
 		}
+
+        void SetBackground()
+        {
+            string path = m_puzzleData.GetImagePath();
+            Debug.Log(CodeManager.GetMethodName() + path);
+
+            var sprite = Resources.Load<Sprite>(path);
+            backgroundImage.sprite = sprite;
+        }
 	}
 }

@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
 
@@ -16,29 +16,20 @@ public record PlaySceneParameter : DefaultParameterWithoutHUD;
 [ResourcePath("UI/Scene/PlayScene")]
 public partial class PlayScene : UIScene
 {
-	[SerializeField]
-	private CanvasGroup m_canvasGroup;
-
-	[SerializeField]
-	private PlaySceneTopUIView m_topView;
-
-	[SerializeField]
-	private PlaySceneBoardView m_mainView;
-
-	[SerializeField]
-	private PlaySceneBottomUIView m_bottomView;
-
-	[SerializeField]
-	private GameObject m_block;
-
-	[SerializeField]
-	private Transform m_particleParent;
+	[SerializeField]	private CanvasGroup m_canvasGroup;
+	[SerializeField]	private PlaySceneTopUIView m_topView;
+	[SerializeField]	private PlaySceneBoardView m_mainView;
+	[SerializeField]	private PlaySceneBottomUIView m_bottomView;
+	[SerializeField]	private GameObject m_block;
+	[SerializeField]	private Transform m_particleParent;
+    [SerializeField]    private Image backgroundImage;
 
 	private GameManager m_gameManager;
 	private UserManager m_userManager;
 	private PaymentService m_paymentService;
 	private ItemDataTable m_itemDataTable;
 	private ProductDataTable m_productDataTable;
+    private PuzzleDataTable m_puzzleDataTable;
 
 	private void OnDestroy()
 	{
@@ -48,6 +39,8 @@ public partial class PlayScene : UIScene
 	public override void OnSetup(UIParameter uiParameter)
 	{
 		base.OnSetup(uiParameter);
+
+        Debug.Log(CodeManager.GetMethodName());
 
 		if (uiParameter is not PlaySceneParameter parameter)
 		{
@@ -61,6 +54,7 @@ public partial class PlayScene : UIScene
 		m_paymentService = Game.Inst.Get<PaymentService>();
 		m_itemDataTable = tableManager.ItemDataTable;
 		m_productDataTable = tableManager.ProductDataTable;
+        m_puzzleDataTable = tableManager.PuzzleDataTable;
 		m_tileItems = new List<TileItem>();
 
 		Dictionary<SkillItemType, AsyncReactiveProperty<int>> skillDic = new Dictionary<SkillItemType, AsyncReactiveProperty<int>>();
@@ -105,17 +99,27 @@ public partial class PlayScene : UIScene
 
 		GameObject CreateButtonSubWidget(SkillItemType itemType)
 		{
+            if (!m_itemDataTable.TryGetValue((int)itemType, out var itemData))
+            {
+                return null;
+            }
+
+            if (!m_productDataTable.TryGetValue(itemData.ProductIndex, out var product))
+            {
+                return null;
+            }
+
 			var widget = Instantiate(ResourcePathAttribute.GetResource<ButtonCountWidget>());
 			if (skillDic.TryGetValue(itemType, out var binder))
 			{
-				widget.BindTo(binder);
+                widget.BindTo(binder, product);
 			}
 			return widget.gameObject;
 		}
 
 		void OpenBuyItemPopup(int itemIndex)
 		{
-			if (!m_itemDataTable.TryGetValue(itemIndex, out var itemData))
+            if (!m_itemDataTable.TryGetValue(itemIndex, out var itemData))
 			{
 				return;
 			}
