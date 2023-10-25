@@ -1,7 +1,5 @@
 using UnityEngine;
-
 using System.Collections.Generic;
-
 using NineTap.Common;
 
 public record MainSceneParameter(MainMenuType ShowMenuType = MainMenuType.HOME, PuzzleManager PuzzleManager = null) : DefaultParameter();
@@ -32,6 +30,19 @@ public class MainScene : UIScene
 			m_userManager,
 			tableManager: Game.Inst.Get<TableManager>()
 		);
+
+        HUD m_hud = Game.Inst.Get<HUD>();
+        m_hud.behaviour.AddListener(
+            new KeyValuePair<HUDType, System.Action>(
+                HUDType.STAR, () => m_lobbyManager.OnCheckShowPopup(() => m_scrollView.MoveTo((int)MainMenuType.STORE))
+            ),
+            new KeyValuePair<HUDType, System.Action>(
+                HUDType.LIFE, null
+            ),
+            new KeyValuePair<HUDType, System.Action>(
+                HUDType.COIN, () => m_scrollView.MoveTo((int)MainMenuType.STORE)
+            )
+        );
 
 		m_scrollView.OnSetup(
 			new MainSceneScrollViewParameter(

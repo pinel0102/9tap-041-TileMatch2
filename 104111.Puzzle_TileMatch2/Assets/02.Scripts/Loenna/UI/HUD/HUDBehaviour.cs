@@ -48,4 +48,12 @@ public class HUDBehaviour : CachedBehaviour
 
 		return null;
 	}
+
+    public void AddListener(params KeyValuePair<HUDType, System.Action>[] OnClick)
+    {
+        for(int i=0; i < OnClick.Length; i++)
+        {
+            m_fieldDic.FirstOrDefault(item => item.Key == OnClick[i].Key).Value?.AddListener(OnClick[i].Value);
+        }
+    }
 }

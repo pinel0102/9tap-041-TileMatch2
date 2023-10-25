@@ -46,4 +46,9 @@ public class HUD_Field : CachedBehaviour
 	{
 		m_canvasGroup.alpha = visible? 1f : 0f;
 	}
+
+    public void AddListener(Action OnClick)
+    {
+        m_button.onClick.AddListener(() => OnClick?.Invoke());
+    }
 }

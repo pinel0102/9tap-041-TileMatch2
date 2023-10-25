@@ -21,8 +21,8 @@ public enum HUDType : byte
 
 public class HUD
 {
-	private readonly HUDBehaviour m_behaviour;
-
+    public HUDBehaviour behaviour => m_behaviour;
+    private readonly HUDBehaviour m_behaviour;
 	private readonly AsyncMessageBroker<User> m_messageBroker;
 
 	public HUD(UserManager userManager)
@@ -53,9 +53,9 @@ public class HUD
 			}
 		);
 
-		m_behaviour = instance;
+        m_behaviour = instance;
 
-		userManager.Update();
+        userManager.Update();
 	}
 
 	public Transform GetAttractorTarget(HUDType hudType) => m_behaviour.GetAttractorTarget(hudType);
