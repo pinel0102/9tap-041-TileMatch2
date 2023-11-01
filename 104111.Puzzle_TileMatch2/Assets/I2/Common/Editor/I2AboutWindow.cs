@@ -75,13 +75,13 @@ namespace I2
 
         public static void StartConnection()
         {
-            wwwPluginData = UnityWebRequest.Get("http://bit.ly/1F0fIQx");//http://goo.gl/FjiyOR");//http://inter-illusion.com/assets/I2AssetStore.xml");
+            /*wwwPluginData = UnityWebRequest.Get("http://bit.ly/1F0fIQx");//http://goo.gl/FjiyOR");//http://inter-illusion.com/assets/I2AssetStore.xml");
 #if UNITY_2017_2_OR_NEWER
             wwwPluginData.SendWebRequest();
 #else
             wwwPluginData.Send();
 #endif
-            EditorApplication.update += CheckConectionResult;
+            EditorApplication.update += CheckConectionResult;*/
         }
 
         static void CheckConectionResult()

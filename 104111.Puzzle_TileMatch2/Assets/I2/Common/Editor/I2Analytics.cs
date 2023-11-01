@@ -80,7 +80,7 @@ namespace I2
 
         public static void SendAnalytics( string pluginName, string version )
         {
-            string uVersion = GetUnityVersion();
+            /*string uVersion = GetUnityVersion();
             string key = "LastUsed " +uVersion + pluginName;
             string LastTime = EditorPrefs.GetString(key, "");
 
@@ -111,7 +111,7 @@ namespace I2
             www.Send();
 #endif
             I2Analytics.wwwAnalytics.Add( www );
-            EditorApplication.update += I2Analytics.CheckAnalyticsResult;
+            EditorApplication.update += I2Analytics.CheckAnalyticsResult;*/
         }
 
         public static string GetUnityVersion()
