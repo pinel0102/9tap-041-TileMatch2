@@ -50,8 +50,10 @@ public class UIToggleButton : CachedBehaviour
 		m_toggle.group = group;
 		m_textField.text = text;
 
+        SoundManager soundManager = Game.Inst?.Get<SoundManager>();
 		m_toggle.onValueChanged.AddListener(isOn => {
-				onToggle?.Invoke(isOn);
+                onToggle?.Invoke(isOn);
+                soundManager?.PlayFx(Constant.UI.BUTTON_CLICK_FX_NAME);
 				SetToggleIcon(builder, isOn);
 			}
 		);

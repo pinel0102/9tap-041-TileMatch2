@@ -32,7 +32,7 @@ public class HomeSideContainer : CachedBehaviour
 
 	public void OnTest()
 	{
-		switch (m_direction)
+        switch (m_direction)
 		{
 			case Direction.LEFT:
 				CreateIcon(20301);
@@ -50,7 +50,8 @@ public class HomeSideContainer : CachedBehaviour
 			icon.CachedTransform.SetParentReset(CachedTransform, true);
 			icon.OnSetup(
 				new EventCircleIconParameter {
-					Product = product
+					Product = product,
+                    OnClick = () => { }
 				}
 			);
 			icon.OnUpdateUI(product);

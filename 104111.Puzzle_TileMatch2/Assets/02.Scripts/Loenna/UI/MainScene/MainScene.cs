@@ -31,16 +31,17 @@ public class MainScene : UIScene
 			tableManager: Game.Inst.Get<TableManager>()
 		);
 
+        SoundManager soundManager = Game.Inst?.Get<SoundManager>();
         HUD m_hud = Game.Inst.Get<HUD>();
         m_hud.behaviour.AddListener(
             new KeyValuePair<HUDType, System.Action>(
-                HUDType.STAR, () => m_lobbyManager.OnCheckShowPopup(() => m_scrollView.MoveTo((int)MainMenuType.STORE))
+                HUDType.STAR, () => { m_lobbyManager.OnCheckShowPopup(() => m_scrollView.MoveTo((int)MainMenuType.STORE)); }
             ),
             new KeyValuePair<HUDType, System.Action>(
-                HUDType.LIFE, null
+                HUDType.LIFE, () => {   }
             ),
             new KeyValuePair<HUDType, System.Action>(
-                HUDType.COIN, () => m_scrollView.MoveTo((int)MainMenuType.STORE)
+                HUDType.COIN, () => { m_scrollView.MoveTo((int)MainMenuType.STORE); }
             )
         );
 
@@ -150,7 +151,8 @@ public class MainScene : UIScene
 
 		m_navigationView.OnSetup(
 			new MainSceneNavigationViewParameter{
-				OnClickTab = type => m_scrollView.MoveTo((int)type)
+				OnClickTab = type => {  soundManager?.PlayFx(Constant.UI.BUTTON_CLICK_FX_NAME);
+                                        m_scrollView.MoveTo((int)type);}
 			}
 		);
 

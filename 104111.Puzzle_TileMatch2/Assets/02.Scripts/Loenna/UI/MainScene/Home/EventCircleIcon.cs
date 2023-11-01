@@ -8,6 +8,7 @@ using NineTap.Common;
 public class EventCircleIconParameter
 {
 	public ProductData Product;
+    public Action OnClick;
 }
 
 [ResourcePath("UI/Widgets/EventCircleIcon")]
@@ -53,7 +54,11 @@ public class EventCircleIcon : CachedBehaviour
 
 	public void OnSetup(EventCircleIconParameter parameter)
 	{
-		
+        SoundManager soundManager = Game.Inst?.Get<SoundManager>();
+		m_button.onClick.AddListener(() => {    
+                soundManager?.PlayFx(Constant.UI.BUTTON_CLICK_FX_NAME);
+                parameter.OnClick?.Invoke(); 
+            });
 	}
 
 	public void OnUpdateUI(ProductData productData)
