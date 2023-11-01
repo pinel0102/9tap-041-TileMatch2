@@ -1,0 +1,6618 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!29 &1
+SceneSettings:
+  m_ObjectHideFlags: 0
+  m_PVSData: 
+  m_PVSObjectsArray: []
+  m_PVSPortalsArray: []
+  m_OcclusionBakeSettings:
+    smallestOccluder: 5
+    smallestHole: 0.25
+    backfaceThreshold: 100
+--- !u!104 &2
+RenderSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 7
+  m_Fog: 0
+  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_FogMode: 3
+  m_FogDensity: 0.01
+  m_LinearFogStart: 0
+  m_LinearFogEnd: 300
+  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
+  m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
+  m_AmbientIntensity: 1
+  m_AmbientMode: 0
+  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_HaloStrength: 0.5
+  m_FlareStrength: 1
+  m_FlareFadeSpeed: 3
+  m_HaloTexture: {fileID: 0}
+  m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}
+  m_DefaultReflectionMode: 0
+  m_DefaultReflectionResolution: 128
+  m_ReflectionBounces: 1
+  m_ReflectionIntensity: 1
+  m_CustomReflection: {fileID: 0}
+  m_Sun: {fileID: 0}
+  m_IndirectSpecularColor: {r: 0.44711828, g: 0.49739373, b: 0.5761545, a: 1}
+--- !u!157 &3
+LightmapSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 7
+  m_GIWorkflowMode: 0
+  m_GISettings:
+    serializedVersion: 2
+    m_BounceScale: 1
+    m_IndirectOutputScale: 1
+    m_AlbedoBoost: 1
+    m_TemporalCoherenceThreshold: 1
+    m_EnvironmentLightingMode: 0
+    m_EnableBakedLightmaps: 1
+    m_EnableRealtimeLightmaps: 1
+  m_LightmapEditorSettings:
+    serializedVersion: 4
+    m_Resolution: 2
+    m_BakeResolution: 40
+    m_TextureWidth: 1024
+    m_TextureHeight: 1024
+    m_AO: 1
+    m_AOMaxDistance: 1
+    m_CompAOExponent: 1
+    m_CompAOExponentDirect: 0
+    m_Padding: 2
+    m_LightmapParameters: {fileID: 0}
+    m_LightmapsBakeMode: 1
+    m_TextureCompression: 1
+    m_DirectLightInLightProbes: 1
+    m_FinalGather: 0
+    m_FinalGatherFiltering: 1
+    m_FinalGatherRayCount: 256
+    m_ReflectionCompression: 2
+  m_LightingDataAsset: {fileID: 0}
+  m_RuntimeCPUUsage: 25
+--- !u!196 &4
+NavMeshSettings:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_BuildSettings:
+    serializedVersion: 2
+    agentRadius: 0.5
+    agentHeight: 2
+    agentSlope: 45
+    agentClimb: 0.4
+    ledgeDropHeight: 0
+    maxJumpAcrossDistance: 0
+    accuratePlacement: 0
+    minRegionArea: 2
+    cellSize: 0.16666667
+    manualCellSize: 0
+  m_NavMeshData: {fileID: 0}
+--- !u!1 &156391786
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 156391787}
+  - 222: {fileID: 156391790}
+  - 114: {fileID: 156391789}
+  - 114: {fileID: 156391788}
+  m_Layer: 5
+  m_Name: Button
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &156391787
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 156391786}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 890452697}
+  m_Father: {fileID: 1073470401}
+  m_RootOrder: 0
+  m_AnchorMin: {x: -0.0007698245, y: 0.1875}
+  m_AnchorMax: {x: 0.16400154, y: 0.8125}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &156391788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 156391786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 156391789}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+--- !u!114 &156391789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 156391786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.30980393, g: 0.30980393, b: 0.9607844, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+--- !u!222 &156391790
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 156391786}
+--- !u!1 &277164700
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 277164701}
+  - 222: {fileID: 277164703}
+  - 114: {fileID: 277164702}
+  m_Layer: 5
+  m_Name: Fill
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &277164701
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 277164700}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 955412834}
+  m_RootOrder: 0
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 10, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &277164702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 277164700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+--- !u!222 &277164703
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 277164700}
+--- !u!1 &314106537
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 314106538}
+  - 222: {fileID: 314106541}
+  - 114: {fileID: 314106540}
+  - 114: {fileID: 314106539}
+  - 114: {fileID: 314106542}
+  m_Layer: 5
+  m_Name: Button (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &314106538
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 314106537}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 1845193869}
+  m_Father: {fileID: 1073470401}
+  m_RootOrder: 1
+  m_AnchorMin: {x: 0.16400154, y: 0.1875}
+  m_AnchorMax: {x: 0.3287729, y: 0.8125}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &314106539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 314106537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 314106540}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 314106542}
+        m_MethodName: Open
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: https://goo.gl/cI2EPD
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+--- !u!114 &314106540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 314106537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.30980393, g: 0.30980393, b: 0.9607844, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+--- !u!222 &314106541
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 314106537}
+--- !u!114 &314106542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 314106537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8b32346cc1dd47408aa69bd685b6d92, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &575550665
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 575550666}
+  - 222: {fileID: 575550668}
+  - 114: {fileID: 575550667}
+  m_Layer: 5
+  m_Name: Handle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &575550666
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 575550665}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1764725470}
+  m_RootOrder: 0
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 5.1, y: 0}
+  m_SizeDelta: {x: 30.3, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &575550667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 575550665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+--- !u!222 &575550668
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 575550665}
+--- !u!1 &743882927
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 743882930}
+  - 114: {fileID: 743882929}
+  - 114: {fileID: 743882928}
+  m_Layer: 0
+  m_Name: EventSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &743882928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 743882927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1077351063, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalAxis: Horizontal
+  m_VerticalAxis: Vertical
+  m_SubmitButton: Submit
+  m_CancelButton: Cancel
+  m_InputActionsPerSecond: 10
+  m_RepeatDelay: 0.5
+  m_ForceModuleActive: 0
+--- !u!114 &743882929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 743882927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -619905303, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_FirstSelected: {fileID: 0}
+  m_sendNavigationEvents: 1
+  m_DragThreshold: 5
+--- !u!4 &743882930
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 743882927}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+--- !u!1 &890452696
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 890452697}
+  - 222: {fileID: 890452701}
+  - 114: {fileID: 890452700}
+  - 114: {fileID: 890452699}
+  m_Layer: 5
+  m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &890452697
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 890452696}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 156391787}
+  m_RootOrder: 0
+  m_AnchorMin: {x: 0.042155992, y: 0.16666667}
+  m_AnchorMax: {x: 0.9448729, y: 0.8333333}
+  m_AnchoredPosition: {x: -0.00000023841858, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &890452699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 890452696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b91132341bbeae4b91b9374ab5e8a2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _TimeSource: 0
+  _OnEnable_PlayAnim: -1
+  _AnimationSlots: []
+  _RenderParams:
+    _FaceColor:
+      serializedVersion: 2
+      rgba: 4294967295
+    _EdgeSize: 0.5
+    _Softness: 0.35
+    _FaceSoftness: 0
+    _SDF_Spread: 0
+    _EnableFace: 1
+    _UseWidgetTexture: 0
+    _UseSuperSampling: 1
+    _EnableFaceGradient: 0
+    _FaceGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _FaceTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _EnableOutline: 0
+    _UseOutlineLayer: 0
+    _OutlineSoftness: 0
+    _OutlineColor:
+      serializedVersion: 2
+      rgba: 4278190080
+    _OutlineWidth: 0.1
+    _OutlinePosition: 0
+    _EnableOutlineGradient: 0
+    _OutlineGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _OutlineTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _OutlineDivisions: 4
+    _EnableGlow: 0
+    _GlowColor:
+      serializedVersion: 2
+      rgba: 4278255615
+    _GlowOuterWidth: 0.1
+    _GlowInnerWidth: 0.01
+    _GlowPower: 0.25
+    _GlowEdgeWidth: 0
+    _GlowOffset: 0
+    _GlowIntensity: 1
+    _GlowPosition: {x: 0, y: 0, z: 0}
+    _EnableGlowGradient: 0
+    _GlowGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _GlowLayer: 0
+    _GlowTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _EnableShadows: 0
+    _SimpleShadows: 0
+    _ShadowColor:
+      serializedVersion: 2
+      rgba: 2147483648
+    _ShadowOffset: {x: 0.05, y: -0.05, z: 0}
+    _ShadowEdgeOffset: 0
+    _ShadowSmoothWidth: 0.2
+    _ShadowHollow: 0
+    _ShadowEdgeWidth: 0
+    _ShadowInnerSmoothWidth: 0.2
+    _ShadowSmoothPower: 1
+    _ShadowHeight: 0
+    _ShadowBorderLeft: 0
+    _ShadowBorderRight: 0
+    _ShadowSmoothTop: 1
+    _ShadowSmoothBottom: 1
+    _ShadowOpacityTop: 1
+    _ShadowOpacityBottom: 1
+    _ShadowSmoothingDivisions: 4
+    _ShadowSubdivisionLevel: 0
+    _EnableInnerShadows: 0
+    _InnerShadowColor:
+      serializedVersion: 2
+      rgba: 2147483648
+    _InnerShadowOffset: {x: -0.16, y: 0.16}
+    _InnerShadowEdgeOffset: 0.096
+    _InnerShadowMaskOffset: 0
+    _InnerShadowSmoothWidth: 0.2
+    _InnerShadowMaskSoftness: 0.05
+    _EnableReflection: 0
+    _ReflectionColor_Face: {r: 1, g: 1, b: 1, a: 1}
+    _ReflectionColor_Outline: {r: 1, g: 1, b: 1, a: 1}
+    _ReflectionRotation: {x: 0, y: 0, z: 0}
+    _ReflectionFresnel_Scale: 0.5
+    _ReflectionFresnel_Bias: 0
+    _ReflectionIntensity: 1
+    _ReflectionGlass: 1
+    _ReflectionMap: {fileID: 0}
+    _EnableFloorReflection: 0
+    _FloorReflectionOpacity: 0.7
+    _FloorReflectionPlane: 0
+    _FloorReflectionDistance: 0.5
+    _FloorReflectionFloor: 0
+    _FloorReflection_EnableFloorClamp: 0
+    _FloorReflection_Back: 1
+    _FloorReflectionTint_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+    _FloorReflectionTint_BlendMode: 0
+    _FloorReflectionTint_Opacity: 1
+    _FloorReflection_Region: 1
+    _EnableBevel: 0
+    _BevelOffset: 0
+    _BevelWidth: 0.2
+    _BevelInnerSoftness: 0.5
+    _BevelOuterSoftness: 0.5
+    _BevelDepth: 1
+    _BevelCurve: 1
+    _BevelClamp: 0
+    _LightDiffuseShadow: 0.7
+    _LightDiffuseHighlight: 0.7
+    _LightSpecularPower: 0.05
+    _LightSpecularStart: 0
+    _LightSpecularSoftness: 0.3
+    _LightSpecularColor: {r: 1, g: 1, b: 1, a: 1}
+    _LightAngle: 225
+    _LightAltitude: 45
+    _NormalMap:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _NormalMapStrength_Face: 0.2
+    _NormalMapStrength_Outline: 0.2
+    _NormalMapDepth: 1
+  _RenderPresets:
+  - {fileID: 0}
+  mSETextureFormat: 3
+  _Deformation:
+    _FreeTransform:
+      _Enabled: 0
+      _Curve_Top:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 1, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 1, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+      _Curve_Bottom:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 0, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 0, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+      _Curve_Left:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 0, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 0, y: 1, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+      _Curve_Right:
+        _Points:
+        - time: 0
+          point: {x: 1, y: 0, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 1, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+      _SubdivisionLevel: 0
+      _Strength: 1
+      _LinkCurve_TopDown: 0
+      _LinkCurve_LeftRight: 0
+      _TransformType: 3
+      _EasyType: 1
+      _SliderIsCenter: 1
+      _StartSlider: 0
+      _EndSlider: 0
+      _LinkSliders: 1
+      _InvertEndSlider: 1
+      _WaveRangeMin: 0
+      _WaveRangeMax: 1
+      _WaveRangeSize: 10
+  _TextEffect:
+    _TextWrapping:
+      _Enabled: 0
+      _VerticalWrapMode: 0
+      _HorizontalWrapMode: 0
+      _CurrentPage: 0
+      _Pages: 1
+      _HorizontalAlignment: 0
+      _VerticalAlignment: 0
+      _JustifiedWordCharacterRatio: 0.2
+      _JustifiedMinWordSpace: 0.1
+    _Spacing:
+      _Enabled: 0
+      _Space_Character: 0
+      _Space_Word: 0
+      _Space_Line: 0
+      _Space_Paragraph: 0
+      _Paragraph_FirstLineMargin: 0
+      _KerningPairs: []
+    _BestFit:
+      _Enabled: 1
+      _TargetRect: {fileID: 0}
+      _FitWidth: 1
+      _FitHeight: 1
+      _KeepAspectRatio: 1
+      _Border:
+        m_Left: 0
+        m_Right: 0
+        m_Top: 0
+        m_Bottom: 0
+      _Scale: {x: 1, y: 1}
+      _Snapping: 0
+--- !u!114 &890452700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 890452696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: d9c5ff92875266440849a6feff8d2755, type: 2}
+    m_FontSize: 24
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 7
+    m_MaxSize: 150
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 0
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
+    m_LineSpacing: 1
+  m_Text: Asset Store
+--- !u!222 &890452701
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 890452696}
+--- !u!1 &930588736
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 930588737}
+  - 222: {fileID: 930588741}
+  - 114: {fileID: 930588740}
+  - 114: {fileID: 930588739}
+  - 114: {fileID: 930588738}
+  m_Layer: 5
+  m_Name: Button (3)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &930588737
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 930588736}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 1364284242}
+  m_Father: {fileID: 2129871144}
+  m_RootOrder: 2
+  m_AnchorMin: {x: 0.61371297, y: 0.7195997}
+  m_AnchorMax: {x: 0.737298, y: 0.8687119}
+  m_AnchoredPosition: {x: 0, y: 16}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &930588738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 930588736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d27960adc27182e448415b1c2e59dfd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &930588739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 930588736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 930588740}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1894164690}
+        m_MethodName: PlayAnimation
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 7a1d18071cdd20b438b4daf16835c833,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: I2.SmartEdge.SE_AnimationPreset, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: SmartEdge Demo2 Presets
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+--- !u!114 &930588740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 930588736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.30980393, g: 0.30980393, b: 0.9607844, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+--- !u!222 &930588741
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 930588736}
+--- !u!1 &955412833
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 955412834}
+  m_Layer: 5
+  m_Name: Fill Area
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &955412834
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 955412833}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 277164701}
+  m_Father: {fileID: 2120559621}
+  m_RootOrder: 1
+  m_AnchorMin: {x: 0, y: 0.25}
+  m_AnchorMax: {x: 1, y: 0.75}
+  m_AnchoredPosition: {x: -5, y: 0}
+  m_SizeDelta: {x: -20, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1073470400
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1073470401}
+  m_Layer: 5
+  m_Name: Buttons
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1073470401
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1073470400}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 156391787}
+  - {fileID: 314106538}
+  - {fileID: 1916393609}
+  m_Father: {fileID: 1343238212}
+  m_RootOrder: 3
+  m_AnchorMin: {x: 0.015306123, y: 0.030263158}
+  m_AnchorMax: {x: 0.97157437, y: 0.15657894}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1079543816
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1079543821}
+  - 20: {fileID: 1079543820}
+  - 92: {fileID: 1079543819}
+  - 124: {fileID: 1079543818}
+  - 81: {fileID: 1079543817}
+  m_Layer: 0
+  m_Name: Main Camera
+  m_TagString: MainCamera
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!81 &1079543817
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1079543816}
+  m_Enabled: 1
+--- !u!124 &1079543818
+Behaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1079543816}
+  m_Enabled: 1
+--- !u!92 &1079543819
+Behaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1079543816}
+  m_Enabled: 1
+--- !u!20 &1079543820
+Camera:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1079543816}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0.18790759, g: 0.16619812, b: 0.21323532, a: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: -1
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+  m_StereoMirrorMode: 0
+--- !u!4 &1079543821
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1079543816}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!1 &1080978166
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1080978167}
+  - 222: {fileID: 1080978171}
+  - 114: {fileID: 1080978170}
+  - 114: {fileID: 1080978169}
+  - 114: {fileID: 1080978168}
+  m_Layer: 5
+  m_Name: Button (4)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1080978167
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1080978166}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 1211759718}
+  m_Father: {fileID: 2129871144}
+  m_RootOrder: 3
+  m_AnchorMin: {x: 0.7372721, y: 0.7195997}
+  m_AnchorMax: {x: 0.86286616, y: 0.8687119}
+  m_AnchoredPosition: {x: 0, y: 16}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1080978168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1080978166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d27960adc27182e448415b1c2e59dfd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1080978169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1080978166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 1080978170}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1894164690}
+        m_MethodName: StopAnimation
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 11400000, guid: 7a1d18071cdd20b438b4daf16835c833,
+            type: 2}
+          m_ObjectArgumentAssemblyTypeName: I2.SmartEdge.SE_AnimationPreset, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: SmartEdge Demo2 Presets
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+--- !u!114 &1080978170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1080978166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.30980393, g: 0.30980393, b: 0.9607844, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+--- !u!222 &1080978171
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1080978166}
+--- !u!1 &1128956491
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1128956492}
+  - 222: {fileID: 1128956495}
+  - 114: {fileID: 1128956494}
+  - 114: {fileID: 1128956493}
+  m_Layer: 5
+  m_Name: SmartEdge
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1128956492
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1128956491}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1343238212}
+  m_RootOrder: 1
+  m_AnchorMin: {x: 0.015788283, y: 0.8944797}
+  m_AnchorMax: {x: 0.32515407, y: 0.961}
+  m_AnchoredPosition: {x: 0.19999981, y: 0.5}
+  m_SizeDelta: {x: 0.39999962, y: 1}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1128956493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1128956491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b91132341bbeae4b91b9374ab5e8a2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _TimeSource: 0
+  _OnEnable_PlayAnim: 0
+  _AnimationSlots: []
+  _RenderParams:
+    _FaceColor:
+      serializedVersion: 2
+      rgba: 4294967295
+    _EdgeSize: 0.5
+    _Softness: 0.35
+    _FaceSoftness: 0
+    _SDF_Spread: 0
+    _EnableFace: 1
+    _UseWidgetTexture: 0
+    _UseSuperSampling: 1
+    _EnableFaceGradient: 0
+    _FaceGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _FaceTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _EnableOutline: 0
+    _UseOutlineLayer: 0
+    _OutlineSoftness: 0
+    _OutlineColor:
+      serializedVersion: 2
+      rgba: 4278190080
+    _OutlineWidth: 0.1
+    _OutlinePosition: 0
+    _EnableOutlineGradient: 0
+    _OutlineGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _OutlineTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _OutlineDivisions: 4
+    _EnableGlow: 0
+    _GlowColor:
+      serializedVersion: 2
+      rgba: 4278255615
+    _GlowOuterWidth: 0.971
+    _GlowInnerWidth: 0.166
+    _GlowPower: 0.25
+    _GlowEdgeWidth: 0.125
+    _GlowOffset: 0
+    _GlowIntensity: 0.97
+    _GlowPosition: {x: 0, y: 0, z: 0}
+    _EnableGlowGradient: 0
+    _GlowGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _GlowLayer: 0
+    _GlowTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _EnableShadows: 0
+    _SimpleShadows: 1
+    _ShadowColor:
+      serializedVersion: 2
+      rgba: 2147483648
+    _ShadowOffset: {x: 0.42, y: 0.4, z: 0}
+    _ShadowEdgeOffset: 0
+    _ShadowSmoothWidth: 0.385
+    _ShadowHollow: 0
+    _ShadowEdgeWidth: 0
+    _ShadowInnerSmoothWidth: 0.2
+    _ShadowSmoothPower: 1
+    _ShadowHeight: 0
+    _ShadowBorderLeft: 0
+    _ShadowBorderRight: 0
+    _ShadowSmoothTop: 1
+    _ShadowSmoothBottom: 1
+    _ShadowOpacityTop: 1
+    _ShadowOpacityBottom: 1
+    _ShadowSmoothingDivisions: 4
+    _ShadowSubdivisionLevel: 0
+    _EnableInnerShadows: 0
+    _InnerShadowColor:
+      serializedVersion: 2
+      rgba: 2147483648
+    _InnerShadowOffset: {x: -0.16, y: 0.16}
+    _InnerShadowEdgeOffset: 0.096
+    _InnerShadowMaskOffset: 0
+    _InnerShadowSmoothWidth: 0.2
+    _InnerShadowMaskSoftness: 0.05
+    _EnableReflection: 0
+    _ReflectionColor_Face: {r: 1, g: 1, b: 1, a: 1}
+    _ReflectionColor_Outline: {r: 1, g: 1, b: 1, a: 1}
+    _ReflectionRotation: {x: 0, y: 0, z: 0}
+    _ReflectionFresnel_Scale: 0.5
+    _ReflectionFresnel_Bias: 0
+    _ReflectionIntensity: 1
+    _ReflectionGlass: 1
+    _ReflectionMap: {fileID: 0}
+    _EnableFloorReflection: 0
+    _FloorReflectionOpacity: 0.7
+    _FloorReflectionPlane: 0
+    _FloorReflectionDistance: 0.5
+    _FloorReflectionFloor: 0
+    _FloorReflection_EnableFloorClamp: 0
+    _FloorReflection_Back: 1
+    _FloorReflectionTint_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+    _FloorReflectionTint_BlendMode: 0
+    _FloorReflectionTint_Opacity: 1
+    _FloorReflection_Region: 1
+    _EnableBevel: 0
+    _BevelOffset: 0
+    _BevelWidth: 0.2
+    _BevelInnerSoftness: 0.5
+    _BevelOuterSoftness: 0.5
+    _BevelDepth: 1
+    _BevelCurve: 1
+    _BevelClamp: 0
+    _LightDiffuseShadow: 0.7
+    _LightDiffuseHighlight: 0.7
+    _LightSpecularPower: 0.05
+    _LightSpecularStart: 0
+    _LightSpecularSoftness: 0.3
+    _LightSpecularColor: {r: 1, g: 1, b: 1, a: 1}
+    _LightAngle: 225
+    _LightAltitude: 45
+    _NormalMap:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _NormalMapStrength_Face: 0.2
+    _NormalMapStrength_Outline: 0.2
+    _NormalMapDepth: 1
+  _RenderPresets:
+  - {fileID: 0}
+  mSETextureFormat: 3
+  _Deformation:
+    _FreeTransform:
+      _Enabled: 0
+      _Curve_Top:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 1, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 1, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+      _Curve_Bottom:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 0, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 0, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+      _Curve_Left:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 0, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 0, y: 1, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+      _Curve_Right:
+        _Points:
+        - time: 0
+          point: {x: 1, y: 0, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 1, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+      _SubdivisionLevel: 0
+      _Strength: 1
+      _LinkCurve_TopDown: 0
+      _LinkCurve_LeftRight: 0
+      _TransformType: 3
+      _EasyType: 1
+      _SliderIsCenter: 1
+      _StartSlider: 0
+      _EndSlider: 0
+      _LinkSliders: 1
+      _InvertEndSlider: 1
+      _WaveRangeMin: 0
+      _WaveRangeMax: 1
+      _WaveRangeSize: 10
+  _TextEffect:
+    _TextWrapping:
+      _Enabled: 0
+      _VerticalWrapMode: 0
+      _HorizontalWrapMode: 0
+      _CurrentPage: 0
+      _Pages: 1
+      _HorizontalAlignment: 0
+      _VerticalAlignment: 0
+      _JustifiedWordCharacterRatio: 0.2
+      _JustifiedMinWordSpace: 0.1
+    _Spacing:
+      _Enabled: 0
+      _Space_Character: 0
+      _Space_Word: 0
+      _Space_Line: 0
+      _Space_Paragraph: 0
+      _Paragraph_FirstLineMargin: 0
+      _KerningPairs: []
+    _BestFit:
+      _Enabled: 1
+      _TargetRect: {fileID: 0}
+      _FitWidth: 1
+      _FitHeight: 1
+      _KeepAspectRatio: 1
+      _Border:
+        m_Left: 0
+        m_Right: 0
+        m_Top: 0
+        m_Bottom: 0
+      _Scale: {x: 1, y: 1}
+      _Snapping: 0
+--- !u!114 &1128956494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1128956491}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: d9c5ff92875266440849a6feff8d2755, type: 2}
+    m_FontSize: 34
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 3
+    m_MaxSize: 150
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
+    m_LineSpacing: 1
+  m_Text: Smart Edge
+--- !u!222 &1128956495
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1128956491}
+--- !u!1 &1190129744
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1190129746}
+  - 108: {fileID: 1190129745}
+  m_Layer: 0
+  m_Name: Directional Light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!108 &1190129745
+Light:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1190129744}
+  m_Enabled: 1
+  serializedVersion: 7
+  m_Type: 1
+  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+  m_Intensity: 1
+  m_Range: 10
+  m_SpotAngle: 30
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 2
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_Lightmapping: 4
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+--- !u!4 &1190129746
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1190129744}
+  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
+--- !u!1 &1211759717
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1211759718}
+  - 222: {fileID: 1211759722}
+  - 114: {fileID: 1211759721}
+  - 114: {fileID: 1211759720}
+  m_Layer: 5
+  m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1211759718
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1211759717}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1080978167}
+  m_RootOrder: 0
+  m_AnchorMin: {x: 0, y: 0.16666667}
+  m_AnchorMax: {x: 1, y: 0.8333333}
+  m_AnchoredPosition: {x: 0, y: -0.00000023841858}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1211759720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1211759717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b91132341bbeae4b91b9374ab5e8a2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _TimeSource: 0
+  _OnEnable_PlayAnim: -1
+  _AnimationSlots: []
+  _RenderParams:
+    _FaceColor:
+      serializedVersion: 2
+      rgba: 4294967295
+    _EdgeSize: 0.5
+    _Softness: 0.35
+    _FaceSoftness: 0
+    _SDF_Spread: 0
+    _EnableFace: 1
+    _UseWidgetTexture: 0
+    _UseSuperSampling: 1
+    _EnableFaceGradient: 0
+    _FaceGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _FaceTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _EnableOutline: 0
+    _UseOutlineLayer: 0
+    _OutlineSoftness: 0
+    _OutlineColor:
+      serializedVersion: 2
+      rgba: 4278190080
+    _OutlineWidth: 0.1
+    _OutlinePosition: 0
+    _EnableOutlineGradient: 0
+    _OutlineGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _OutlineTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _OutlineDivisions: 4
+    _EnableGlow: 0
+    _GlowColor:
+      serializedVersion: 2
+      rgba: 4278255615
+    _GlowOuterWidth: 0.1
+    _GlowInnerWidth: 0.01
+    _GlowPower: 0.25
+    _GlowEdgeWidth: 0
+    _GlowOffset: 0
+    _GlowIntensity: 1
+    _GlowPosition: {x: 0, y: 0, z: 0}
+    _EnableGlowGradient: 0
+    _GlowGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _GlowLayer: 0
+    _GlowTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _EnableShadows: 0
+    _SimpleShadows: 0
+    _ShadowColor:
+      serializedVersion: 2
+      rgba: 2147483648
+    _ShadowOffset: {x: 0.05, y: -0.05, z: 0}
+    _ShadowEdgeOffset: 0
+    _ShadowSmoothWidth: 0.2
+    _ShadowHollow: 0
+    _ShadowEdgeWidth: 0
+    _ShadowInnerSmoothWidth: 0.2
+    _ShadowSmoothPower: 1
+    _ShadowHeight: 0
+    _ShadowBorderLeft: 0
+    _ShadowBorderRight: 0
+    _ShadowSmoothTop: 1
+    _ShadowSmoothBottom: 1
+    _ShadowOpacityTop: 1
+    _ShadowOpacityBottom: 1
+    _ShadowSmoothingDivisions: 4
+    _ShadowSubdivisionLevel: 0
+    _EnableInnerShadows: 0
+    _InnerShadowColor:
+      serializedVersion: 2
+      rgba: 2147483648
+    _InnerShadowOffset: {x: -0.16, y: 0.16}
+    _InnerShadowEdgeOffset: 0.096
+    _InnerShadowMaskOffset: 0
+    _InnerShadowSmoothWidth: 0.2
+    _InnerShadowMaskSoftness: 0.05
+    _EnableReflection: 0
+    _ReflectionColor_Face: {r: 1, g: 1, b: 1, a: 1}
+    _ReflectionColor_Outline: {r: 1, g: 1, b: 1, a: 1}
+    _ReflectionRotation: {x: 0, y: 0, z: 0}
+    _ReflectionFresnel_Scale: 0.5
+    _ReflectionFresnel_Bias: 0
+    _ReflectionIntensity: 1
+    _ReflectionGlass: 1
+    _ReflectionMap: {fileID: 0}
+    _EnableFloorReflection: 0
+    _FloorReflectionOpacity: 0.7
+    _FloorReflectionPlane: 0
+    _FloorReflectionDistance: 0.5
+    _FloorReflectionFloor: 0
+    _FloorReflection_EnableFloorClamp: 0
+    _FloorReflection_Back: 1
+    _FloorReflectionTint_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+    _FloorReflectionTint_BlendMode: 0
+    _FloorReflectionTint_Opacity: 1
+    _FloorReflection_Region: 1
+    _EnableBevel: 0
+    _BevelOffset: 0
+    _BevelWidth: 0.2
+    _BevelInnerSoftness: 0.5
+    _BevelOuterSoftness: 0.5
+    _BevelDepth: 1
+    _BevelCurve: 1
+    _BevelClamp: 0
+    _LightDiffuseShadow: 0.7
+    _LightDiffuseHighlight: 0.7
+    _LightSpecularPower: 0.05
+    _LightSpecularStart: 0
+    _LightSpecularSoftness: 0.3
+    _LightSpecularColor: {r: 1, g: 1, b: 1, a: 1}
+    _LightAngle: 225
+    _LightAltitude: 45
+    _NormalMap:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _NormalMapStrength_Face: 0.2
+    _NormalMapStrength_Outline: 0.2
+    _NormalMapDepth: 1
+  _RenderPresets:
+  - {fileID: 0}
+  mSETextureFormat: 3
+  _Deformation:
+    _FreeTransform:
+      _Enabled: 0
+      _Curve_Top:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 1, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 1, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+      _Curve_Bottom:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 0, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 0, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+      _Curve_Left:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 0, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 0, y: 1, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+      _Curve_Right:
+        _Points:
+        - time: 0
+          point: {x: 1, y: 0, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 1, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+      _SubdivisionLevel: 0
+      _Strength: 1
+      _LinkCurve_TopDown: 0
+      _LinkCurve_LeftRight: 0
+      _TransformType: 3
+      _EasyType: 1
+      _SliderIsCenter: 1
+      _StartSlider: 0
+      _EndSlider: 0
+      _LinkSliders: 1
+      _InvertEndSlider: 1
+      _WaveRangeMin: 0
+      _WaveRangeMax: 1
+      _WaveRangeSize: 10
+  _TextEffect:
+    _TextWrapping:
+      _Enabled: 0
+      _VerticalWrapMode: 0
+      _HorizontalWrapMode: 0
+      _CurrentPage: 0
+      _Pages: 1
+      _HorizontalAlignment: 0
+      _VerticalAlignment: 0
+      _JustifiedWordCharacterRatio: 0.2
+      _JustifiedMinWordSpace: 0.1
+    _Spacing:
+      _Enabled: 0
+      _Space_Character: 0
+      _Space_Word: 0
+      _Space_Line: 0
+      _Space_Paragraph: 0
+      _Paragraph_FirstLineMargin: 0
+      _KerningPairs: []
+    _BestFit:
+      _Enabled: 1
+      _TargetRect: {fileID: 0}
+      _FitWidth: 1
+      _FitHeight: 1
+      _KeepAspectRatio: 1
+      _Border:
+        m_Left: 0
+        m_Right: 0
+        m_Top: 0
+        m_Bottom: 0
+      _Scale: {x: 1, y: 1}
+      _Snapping: 0
+--- !u!114 &1211759721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1211759717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: d9c5ff92875266440849a6feff8d2755, type: 2}
+    m_FontSize: 23
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 150
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 0
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
+    m_LineSpacing: 1
+  m_Text: Stop
+--- !u!222 &1211759722
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1211759717}
+--- !u!1 &1319423929
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1319423930}
+  - 222: {fileID: 1319423932}
+  m_Layer: 5
+  m_Name: RawImage
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1319423930
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1319423929}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 1553651273}
+  m_Father: {fileID: 1343238212}
+  m_RootOrder: 0
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &1319423932
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1319423929}
+--- !u!1 &1343238208
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1343238212}
+  - 223: {fileID: 1343238211}
+  - 114: {fileID: 1343238210}
+  - 114: {fileID: 1343238209}
+  m_Layer: 5
+  m_Name: Canvas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1343238209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1343238208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1301386320, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &1343238210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1343238208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1980459831, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UiScaleMode: 0
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 800, y: 600}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
+--- !u!223 &1343238211
+Canvas:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1343238208}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_RenderMode: 0
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
+--- !u!224 &1343238212
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1343238208}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 1319423930}
+  - {fileID: 1128956492}
+  - {fileID: 1513815307}
+  - {fileID: 1073470401}
+  - {fileID: 2129871144}
+  - {fileID: 1421667638}
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 0}
+--- !u!1 &1364284241
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1364284242}
+  - 222: {fileID: 1364284246}
+  - 114: {fileID: 1364284245}
+  - 114: {fileID: 1364284244}
+  m_Layer: 5
+  m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1364284242
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1364284241}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 930588737}
+  m_RootOrder: 0
+  m_AnchorMin: {x: 0, y: 0.16666667}
+  m_AnchorMax: {x: 1, y: 0.8333333}
+  m_AnchoredPosition: {x: 0, y: -0.00000023841858}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1364284244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1364284241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b91132341bbeae4b91b9374ab5e8a2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _TimeSource: 0
+  _OnEnable_PlayAnim: -1
+  _AnimationSlots: []
+  _RenderParams:
+    _FaceColor:
+      serializedVersion: 2
+      rgba: 4294967295
+    _EdgeSize: 0.5
+    _Softness: 0.35
+    _FaceSoftness: 0
+    _SDF_Spread: 0
+    _EnableFace: 1
+    _UseWidgetTexture: 0
+    _UseSuperSampling: 1
+    _EnableFaceGradient: 0
+    _FaceGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _FaceTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _EnableOutline: 0
+    _UseOutlineLayer: 0
+    _OutlineSoftness: 0
+    _OutlineColor:
+      serializedVersion: 2
+      rgba: 4278190080
+    _OutlineWidth: 0.1
+    _OutlinePosition: 0
+    _EnableOutlineGradient: 0
+    _OutlineGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _OutlineTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _OutlineDivisions: 4
+    _EnableGlow: 0
+    _GlowColor:
+      serializedVersion: 2
+      rgba: 4278255615
+    _GlowOuterWidth: 0.1
+    _GlowInnerWidth: 0.01
+    _GlowPower: 0.25
+    _GlowEdgeWidth: 0
+    _GlowOffset: 0
+    _GlowIntensity: 1
+    _GlowPosition: {x: 0, y: 0, z: 0}
+    _EnableGlowGradient: 0
+    _GlowGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _GlowLayer: 0
+    _GlowTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _EnableShadows: 0
+    _SimpleShadows: 0
+    _ShadowColor:
+      serializedVersion: 2
+      rgba: 2147483648
+    _ShadowOffset: {x: 0.05, y: -0.05, z: 0}
+    _ShadowEdgeOffset: 0
+    _ShadowSmoothWidth: 0.2
+    _ShadowHollow: 0
+    _ShadowEdgeWidth: 0
+    _ShadowInnerSmoothWidth: 0.2
+    _ShadowSmoothPower: 1
+    _ShadowHeight: 0
+    _ShadowBorderLeft: 0
+    _ShadowBorderRight: 0
+    _ShadowSmoothTop: 1
+    _ShadowSmoothBottom: 1
+    _ShadowOpacityTop: 1
+    _ShadowOpacityBottom: 1
+    _ShadowSmoothingDivisions: 4
+    _ShadowSubdivisionLevel: 0
+    _EnableInnerShadows: 0
+    _InnerShadowColor:
+      serializedVersion: 2
+      rgba: 2147483648
+    _InnerShadowOffset: {x: -0.16, y: 0.16}
+    _InnerShadowEdgeOffset: 0.096
+    _InnerShadowMaskOffset: 0
+    _InnerShadowSmoothWidth: 0.2
+    _InnerShadowMaskSoftness: 0.05
+    _EnableReflection: 0
+    _ReflectionColor_Face: {r: 1, g: 1, b: 1, a: 1}
+    _ReflectionColor_Outline: {r: 1, g: 1, b: 1, a: 1}
+    _ReflectionRotation: {x: 0, y: 0, z: 0}
+    _ReflectionFresnel_Scale: 0.5
+    _ReflectionFresnel_Bias: 0
+    _ReflectionIntensity: 1
+    _ReflectionGlass: 1
+    _ReflectionMap: {fileID: 0}
+    _EnableFloorReflection: 0
+    _FloorReflectionOpacity: 0.7
+    _FloorReflectionPlane: 0
+    _FloorReflectionDistance: 0.5
+    _FloorReflectionFloor: 0
+    _FloorReflection_EnableFloorClamp: 0
+    _FloorReflection_Back: 1
+    _FloorReflectionTint_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+    _FloorReflectionTint_BlendMode: 0
+    _FloorReflectionTint_Opacity: 1
+    _FloorReflection_Region: 1
+    _EnableBevel: 0
+    _BevelOffset: 0
+    _BevelWidth: 0.2
+    _BevelInnerSoftness: 0.5
+    _BevelOuterSoftness: 0.5
+    _BevelDepth: 1
+    _BevelCurve: 1
+    _BevelClamp: 0
+    _LightDiffuseShadow: 0.7
+    _LightDiffuseHighlight: 0.7
+    _LightSpecularPower: 0.05
+    _LightSpecularStart: 0
+    _LightSpecularSoftness: 0.3
+    _LightSpecularColor: {r: 1, g: 1, b: 1, a: 1}
+    _LightAngle: 225
+    _LightAltitude: 45
+    _NormalMap:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _NormalMapStrength_Face: 0.2
+    _NormalMapStrength_Outline: 0.2
+    _NormalMapDepth: 1
+  _RenderPresets:
+  - {fileID: 0}
+  mSETextureFormat: 3
+  _Deformation:
+    _FreeTransform:
+      _Enabled: 0
+      _Curve_Top:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 1, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 1, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+      _Curve_Bottom:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 0, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 0, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+      _Curve_Left:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 0, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 0, y: 1, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+      _Curve_Right:
+        _Points:
+        - time: 0
+          point: {x: 1, y: 0, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 1, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+      _SubdivisionLevel: 0
+      _Strength: 1
+      _LinkCurve_TopDown: 0
+      _LinkCurve_LeftRight: 0
+      _TransformType: 3
+      _EasyType: 1
+      _SliderIsCenter: 1
+      _StartSlider: 0
+      _EndSlider: 0
+      _LinkSliders: 1
+      _InvertEndSlider: 1
+      _WaveRangeMin: 0
+      _WaveRangeMax: 1
+      _WaveRangeSize: 10
+  _TextEffect:
+    _TextWrapping:
+      _Enabled: 0
+      _VerticalWrapMode: 0
+      _HorizontalWrapMode: 0
+      _CurrentPage: 0
+      _Pages: 1
+      _HorizontalAlignment: 0
+      _VerticalAlignment: 0
+      _JustifiedWordCharacterRatio: 0.2
+      _JustifiedMinWordSpace: 0.1
+    _Spacing:
+      _Enabled: 0
+      _Space_Character: 0
+      _Space_Word: 0
+      _Space_Line: 0
+      _Space_Paragraph: 0
+      _Paragraph_FirstLineMargin: 0
+      _KerningPairs: []
+    _BestFit:
+      _Enabled: 1
+      _TargetRect: {fileID: 0}
+      _FitWidth: 1
+      _FitHeight: 1
+      _KeepAspectRatio: 1
+      _Border:
+        m_Left: 0
+        m_Right: 0
+        m_Top: 0
+        m_Bottom: 0
+      _Scale: {x: 1, y: 1}
+      _Snapping: 0
+--- !u!114 &1364284245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1364284241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: d9c5ff92875266440849a6feff8d2755, type: 2}
+    m_FontSize: 23
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 150
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 0
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
+    m_LineSpacing: 1
+  m_Text: Start
+--- !u!222 &1364284246
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1364284241}
+--- !u!1 &1421667637
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1421667638}
+  - 222: {fileID: 1421667642}
+  - 114: {fileID: 1421667641}
+  - 114: {fileID: 1421667640}
+  m_Layer: 5
+  m_Name: SmartEdge Description (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1421667638
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1421667637}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1343238212}
+  m_RootOrder: 5
+  m_AnchorMin: {x: 0.032214336, y: 0.26994595}
+  m_AnchorMax: {x: 0.4522507, y: 0.32026562}
+  m_AnchoredPosition: {x: 561, y: -4}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1421667640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1421667637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b91132341bbeae4b91b9374ab5e8a2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _TimeSource: 0
+  _OnEnable_PlayAnim: -1
+  _AnimationSlots: []
+  _RenderParams:
+    _FaceColor:
+      serializedVersion: 2
+      rgba: 4294967295
+    _EdgeSize: 0.5
+    _Softness: 0.35
+    _FaceSoftness: 0
+    _SDF_Spread: 0
+    _EnableFace: 1
+    _UseWidgetTexture: 0
+    _UseSuperSampling: 1
+    _EnableFaceGradient: 0
+    _FaceGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _FaceTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _EnableOutline: 0
+    _UseOutlineLayer: 0
+    _OutlineSoftness: 0
+    _OutlineColor:
+      serializedVersion: 2
+      rgba: 4278190080
+    _OutlineWidth: 0.1
+    _OutlinePosition: 0
+    _EnableOutlineGradient: 0
+    _OutlineGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _OutlineTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _OutlineDivisions: 4
+    _EnableGlow: 0
+    _GlowColor:
+      serializedVersion: 2
+      rgba: 4278255615
+    _GlowOuterWidth: 0.1
+    _GlowInnerWidth: 0.01
+    _GlowPower: 0.25
+    _GlowEdgeWidth: 0
+    _GlowOffset: 0
+    _GlowIntensity: 1
+    _GlowPosition: {x: 0, y: 0, z: 0}
+    _EnableGlowGradient: 0
+    _GlowGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _GlowLayer: 0
+    _GlowTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _EnableShadows: 0
+    _SimpleShadows: 0
+    _ShadowColor:
+      serializedVersion: 2
+      rgba: 2147483648
+    _ShadowOffset: {x: 0.05, y: -0.05, z: 0}
+    _ShadowEdgeOffset: 0
+    _ShadowSmoothWidth: 0.2
+    _ShadowHollow: 0
+    _ShadowEdgeWidth: 0
+    _ShadowInnerSmoothWidth: 0.2
+    _ShadowSmoothPower: 1
+    _ShadowHeight: 0
+    _ShadowBorderLeft: 0
+    _ShadowBorderRight: 0
+    _ShadowSmoothTop: 1
+    _ShadowSmoothBottom: 1
+    _ShadowOpacityTop: 1
+    _ShadowOpacityBottom: 1
+    _ShadowSmoothingDivisions: 4
+    _ShadowSubdivisionLevel: 0
+    _EnableInnerShadows: 0
+    _InnerShadowColor:
+      serializedVersion: 2
+      rgba: 2147483648
+    _InnerShadowOffset: {x: -0.16, y: 0.16}
+    _InnerShadowEdgeOffset: 0.096
+    _InnerShadowMaskOffset: 0
+    _InnerShadowSmoothWidth: 0.2
+    _InnerShadowMaskSoftness: 0.05
+    _EnableReflection: 0
+    _ReflectionColor_Face: {r: 1, g: 1, b: 1, a: 1}
+    _ReflectionColor_Outline: {r: 1, g: 1, b: 1, a: 1}
+    _ReflectionRotation: {x: 0, y: 0, z: 0}
+    _ReflectionFresnel_Scale: 0.5
+    _ReflectionFresnel_Bias: 0
+    _ReflectionIntensity: 1
+    _ReflectionGlass: 1
+    _ReflectionMap: {fileID: 0}
+    _EnableFloorReflection: 0
+    _FloorReflectionOpacity: 0.7
+    _FloorReflectionPlane: 0
+    _FloorReflectionDistance: 0.5
+    _FloorReflectionFloor: 0
+    _FloorReflection_EnableFloorClamp: 0
+    _FloorReflection_Back: 1
+    _FloorReflectionTint_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+    _FloorReflectionTint_BlendMode: 0
+    _FloorReflectionTint_Opacity: 1
+    _FloorReflection_Region: 1
+    _EnableBevel: 0
+    _BevelOffset: 0
+    _BevelWidth: 0.2
+    _BevelInnerSoftness: 0.5
+    _BevelOuterSoftness: 0.5
+    _BevelDepth: 1
+    _BevelCurve: 1
+    _BevelClamp: 0
+    _LightDiffuseShadow: 0.7
+    _LightDiffuseHighlight: 0.7
+    _LightSpecularPower: 0.05
+    _LightSpecularStart: 0
+    _LightSpecularSoftness: 0.3
+    _LightSpecularColor: {r: 1, g: 1, b: 1, a: 1}
+    _LightAngle: 225
+    _LightAltitude: 45
+    _NormalMap:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _NormalMapStrength_Face: 0.2
+    _NormalMapStrength_Outline: 0.2
+    _NormalMapDepth: 1
+  _RenderPresets:
+  - {fileID: 0}
+  mSETextureFormat: 3
+  _Deformation:
+    _FreeTransform:
+      _Enabled: 0
+      _Curve_Top:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 1, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 1, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+      _Curve_Bottom:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 0, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 0, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+      _Curve_Left:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 0, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 0, y: 1, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+      _Curve_Right:
+        _Points:
+        - time: 0
+          point: {x: 1, y: 0, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 1, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+      _SubdivisionLevel: 0
+      _Strength: 1
+      _LinkCurve_TopDown: 0
+      _LinkCurve_LeftRight: 0
+      _TransformType: 3
+      _EasyType: 1
+      _SliderIsCenter: 1
+      _StartSlider: 0
+      _EndSlider: 0
+      _LinkSliders: 1
+      _InvertEndSlider: 1
+      _WaveRangeMin: 0
+      _WaveRangeMax: 1
+      _WaveRangeSize: 10
+  _TextEffect:
+    _TextWrapping:
+      _Enabled: 0
+      _VerticalWrapMode: 0
+      _HorizontalWrapMode: 0
+      _CurrentPage: 0
+      _Pages: 1
+      _HorizontalAlignment: 0
+      _VerticalAlignment: 0
+      _JustifiedWordCharacterRatio: 0.2
+      _JustifiedMinWordSpace: 0.1
+    _Spacing:
+      _Enabled: 0
+      _Space_Character: 0
+      _Space_Word: 0
+      _Space_Line: 0
+      _Space_Paragraph: 0
+      _Paragraph_FirstLineMargin: 0
+      _KerningPairs: []
+    _BestFit:
+      _Enabled: 1
+      _TargetRect: {fileID: 0}
+      _FitWidth: 1
+      _FitHeight: 1
+      _KeepAspectRatio: 1
+      _Border:
+        m_Left: 0
+        m_Right: 0
+        m_Top: 0
+        m_Bottom: 0
+      _Scale: {x: 1, y: 1}
+      _Snapping: 0
+--- !u!114 &1421667641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1421667637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: d9c5ff92875266440849a6feff8d2755, type: 2}
+    m_FontSize: 23
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 0
+    m_MaxSize: 160
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
+    m_LineSpacing: 1
+  m_Text: 'Outer Glow:'
+--- !u!222 &1421667642
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1421667637}
+--- !u!1 &1497355888
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1497355889}
+  - 222: {fileID: 1497355893}
+  - 114: {fileID: 1497355892}
+  - 114: {fileID: 1497355891}
+  m_Layer: 5
+  m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1497355889
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1497355888}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1916393609}
+  m_RootOrder: 0
+  m_AnchorMin: {x: 0, y: 0.16666667}
+  m_AnchorMax: {x: 1, y: 0.8333333}
+  m_AnchoredPosition: {x: 0, y: -0.00000023841858}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1497355891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1497355888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b91132341bbeae4b91b9374ab5e8a2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _TimeSource: 0
+  _OnEnable_PlayAnim: -1
+  _AnimationSlots: []
+  _RenderParams:
+    _FaceColor:
+      serializedVersion: 2
+      rgba: 4294967295
+    _EdgeSize: 0.5
+    _Softness: 0.35
+    _FaceSoftness: 0
+    _SDF_Spread: 0
+    _EnableFace: 1
+    _UseWidgetTexture: 0
+    _UseSuperSampling: 1
+    _EnableFaceGradient: 0
+    _FaceGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _FaceTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _EnableOutline: 0
+    _UseOutlineLayer: 0
+    _OutlineSoftness: 0
+    _OutlineColor:
+      serializedVersion: 2
+      rgba: 4278190080
+    _OutlineWidth: 0.1
+    _OutlinePosition: 0
+    _EnableOutlineGradient: 0
+    _OutlineGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _OutlineTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _OutlineDivisions: 4
+    _EnableGlow: 0
+    _GlowColor:
+      serializedVersion: 2
+      rgba: 4278255615
+    _GlowOuterWidth: 0.1
+    _GlowInnerWidth: 0.01
+    _GlowPower: 0.25
+    _GlowEdgeWidth: 0
+    _GlowOffset: 0
+    _GlowIntensity: 1
+    _GlowPosition: {x: 0, y: 0, z: 0}
+    _EnableGlowGradient: 0
+    _GlowGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _GlowLayer: 0
+    _GlowTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _EnableShadows: 0
+    _SimpleShadows: 0
+    _ShadowColor:
+      serializedVersion: 2
+      rgba: 2147483648
+    _ShadowOffset: {x: 0.05, y: -0.05, z: 0}
+    _ShadowEdgeOffset: 0
+    _ShadowSmoothWidth: 0.2
+    _ShadowHollow: 0
+    _ShadowEdgeWidth: 0
+    _ShadowInnerSmoothWidth: 0.2
+    _ShadowSmoothPower: 1
+    _ShadowHeight: 0
+    _ShadowBorderLeft: 0
+    _ShadowBorderRight: 0
+    _ShadowSmoothTop: 1
+    _ShadowSmoothBottom: 1
+    _ShadowOpacityTop: 1
+    _ShadowOpacityBottom: 1
+    _ShadowSmoothingDivisions: 4
+    _ShadowSubdivisionLevel: 0
+    _EnableInnerShadows: 0
+    _InnerShadowColor:
+      serializedVersion: 2
+      rgba: 2147483648
+    _InnerShadowOffset: {x: -0.16, y: 0.16}
+    _InnerShadowEdgeOffset: 0.096
+    _InnerShadowMaskOffset: 0
+    _InnerShadowSmoothWidth: 0.2
+    _InnerShadowMaskSoftness: 0.05
+    _EnableReflection: 0
+    _ReflectionColor_Face: {r: 1, g: 1, b: 1, a: 1}
+    _ReflectionColor_Outline: {r: 1, g: 1, b: 1, a: 1}
+    _ReflectionRotation: {x: 0, y: 0, z: 0}
+    _ReflectionFresnel_Scale: 0.5
+    _ReflectionFresnel_Bias: 0
+    _ReflectionIntensity: 1
+    _ReflectionGlass: 1
+    _ReflectionMap: {fileID: 0}
+    _EnableFloorReflection: 0
+    _FloorReflectionOpacity: 0.7
+    _FloorReflectionPlane: 0
+    _FloorReflectionDistance: 0.5
+    _FloorReflectionFloor: 0
+    _FloorReflection_EnableFloorClamp: 0
+    _FloorReflection_Back: 1
+    _FloorReflectionTint_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+    _FloorReflectionTint_BlendMode: 0
+    _FloorReflectionTint_Opacity: 1
+    _FloorReflection_Region: 1
+    _EnableBevel: 0
+    _BevelOffset: 0
+    _BevelWidth: 0.2
+    _BevelInnerSoftness: 0.5
+    _BevelOuterSoftness: 0.5
+    _BevelDepth: 1
+    _BevelCurve: 1
+    _BevelClamp: 0
+    _LightDiffuseShadow: 0.7
+    _LightDiffuseHighlight: 0.7
+    _LightSpecularPower: 0.05
+    _LightSpecularStart: 0
+    _LightSpecularSoftness: 0.3
+    _LightSpecularColor: {r: 1, g: 1, b: 1, a: 1}
+    _LightAngle: 225
+    _LightAltitude: 45
+    _NormalMap:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _NormalMapStrength_Face: 0.2
+    _NormalMapStrength_Outline: 0.2
+    _NormalMapDepth: 1
+  _RenderPresets:
+  - {fileID: 0}
+  mSETextureFormat: 3
+  _Deformation:
+    _FreeTransform:
+      _Enabled: 0
+      _Curve_Top:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 1, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 1, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+      _Curve_Bottom:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 0, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 0, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+      _Curve_Left:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 0, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 0, y: 1, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+      _Curve_Right:
+        _Points:
+        - time: 0
+          point: {x: 1, y: 0, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 1, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+      _SubdivisionLevel: 0
+      _Strength: 1
+      _LinkCurve_TopDown: 0
+      _LinkCurve_LeftRight: 0
+      _TransformType: 3
+      _EasyType: 1
+      _SliderIsCenter: 1
+      _StartSlider: 0
+      _EndSlider: 0
+      _LinkSliders: 1
+      _InvertEndSlider: 1
+      _WaveRangeMin: 0
+      _WaveRangeMax: 1
+      _WaveRangeSize: 10
+  _TextEffect:
+    _TextWrapping:
+      _Enabled: 0
+      _VerticalWrapMode: 0
+      _HorizontalWrapMode: 0
+      _CurrentPage: 0
+      _Pages: 1
+      _HorizontalAlignment: 0
+      _VerticalAlignment: 0
+      _JustifiedWordCharacterRatio: 0.2
+      _JustifiedMinWordSpace: 0.1
+    _Spacing:
+      _Enabled: 0
+      _Space_Character: 0
+      _Space_Word: 0
+      _Space_Line: 0
+      _Space_Paragraph: 0
+      _Paragraph_FirstLineMargin: 0
+      _KerningPairs: []
+    _BestFit:
+      _Enabled: 1
+      _TargetRect: {fileID: 0}
+      _FitWidth: 1
+      _FitHeight: 1
+      _KeepAspectRatio: 1
+      _Border:
+        m_Left: 0
+        m_Right: 0
+        m_Top: 0
+        m_Bottom: 0
+      _Scale: {x: 1, y: 1}
+      _Snapping: 0
+--- !u!114 &1497355892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1497355888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: d9c5ff92875266440849a6feff8d2755, type: 2}
+    m_FontSize: 24
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 10
+    m_MaxSize: 150
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 0
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
+    m_LineSpacing: 1
+  m_Text: Next
+--- !u!222 &1497355893
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1497355888}
+--- !u!1 &1513815306
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1513815307}
+  - 222: {fileID: 1513815310}
+  - 114: {fileID: 1513815309}
+  - 114: {fileID: 1513815308}
+  m_Layer: 5
+  m_Name: SmartEdge Description
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1513815307
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1513815306}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1343238212}
+  m_RootOrder: 2
+  m_AnchorMin: {x: 0.015306123, y: 0.6848992}
+  m_AnchorMax: {x: 0.97157437, y: 0.8473684}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1513815308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1513815306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b91132341bbeae4b91b9374ab5e8a2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _TimeSource: 0
+  _OnEnable_PlayAnim: -1
+  _AnimationSlots: []
+  _RenderParams:
+    _FaceColor:
+      serializedVersion: 2
+      rgba: 4294967295
+    _EdgeSize: 0.5
+    _Softness: 0.35
+    _FaceSoftness: 0
+    _SDF_Spread: 0
+    _EnableFace: 1
+    _UseWidgetTexture: 0
+    _UseSuperSampling: 1
+    _EnableFaceGradient: 0
+    _FaceGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _FaceTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _EnableOutline: 0
+    _UseOutlineLayer: 0
+    _OutlineSoftness: 0
+    _OutlineColor:
+      serializedVersion: 2
+      rgba: 4278190080
+    _OutlineWidth: 0.1
+    _OutlinePosition: 0
+    _EnableOutlineGradient: 0
+    _OutlineGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _OutlineTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _OutlineDivisions: 4
+    _EnableGlow: 0
+    _GlowColor:
+      serializedVersion: 2
+      rgba: 4278255615
+    _GlowOuterWidth: 0.1
+    _GlowInnerWidth: 0.01
+    _GlowPower: 0.25
+    _GlowEdgeWidth: 0
+    _GlowOffset: 0
+    _GlowIntensity: 1
+    _GlowPosition: {x: 0, y: 0, z: 0}
+    _EnableGlowGradient: 0
+    _GlowGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _GlowLayer: 0
+    _GlowTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _EnableShadows: 0
+    _SimpleShadows: 0
+    _ShadowColor:
+      serializedVersion: 2
+      rgba: 2147483648
+    _ShadowOffset: {x: 0.05, y: -0.05, z: 0}
+    _ShadowEdgeOffset: 0
+    _ShadowSmoothWidth: 0.2
+    _ShadowHollow: 0
+    _ShadowEdgeWidth: 0
+    _ShadowInnerSmoothWidth: 0.2
+    _ShadowSmoothPower: 1
+    _ShadowHeight: 0
+    _ShadowBorderLeft: 0
+    _ShadowBorderRight: 0
+    _ShadowSmoothTop: 1
+    _ShadowSmoothBottom: 1
+    _ShadowOpacityTop: 1
+    _ShadowOpacityBottom: 1
+    _ShadowSmoothingDivisions: 4
+    _ShadowSubdivisionLevel: 0
+    _EnableInnerShadows: 0
+    _InnerShadowColor:
+      serializedVersion: 2
+      rgba: 2147483648
+    _InnerShadowOffset: {x: -0.16, y: 0.16}
+    _InnerShadowEdgeOffset: 0.096
+    _InnerShadowMaskOffset: 0
+    _InnerShadowSmoothWidth: 0.2
+    _InnerShadowMaskSoftness: 0.05
+    _EnableReflection: 0
+    _ReflectionColor_Face: {r: 1, g: 1, b: 1, a: 1}
+    _ReflectionColor_Outline: {r: 1, g: 1, b: 1, a: 1}
+    _ReflectionRotation: {x: 0, y: 0, z: 0}
+    _ReflectionFresnel_Scale: 0.5
+    _ReflectionFresnel_Bias: 0
+    _ReflectionIntensity: 1
+    _ReflectionGlass: 1
+    _ReflectionMap: {fileID: 0}
+    _EnableFloorReflection: 0
+    _FloorReflectionOpacity: 0.7
+    _FloorReflectionPlane: 0
+    _FloorReflectionDistance: 0.5
+    _FloorReflectionFloor: 0
+    _FloorReflection_EnableFloorClamp: 0
+    _FloorReflection_Back: 1
+    _FloorReflectionTint_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+    _FloorReflectionTint_BlendMode: 0
+    _FloorReflectionTint_Opacity: 1
+    _FloorReflection_Region: 1
+    _EnableBevel: 0
+    _BevelOffset: 0
+    _BevelWidth: 0.2
+    _BevelInnerSoftness: 0.5
+    _BevelOuterSoftness: 0.5
+    _BevelDepth: 1
+    _BevelCurve: 1
+    _BevelClamp: 0
+    _LightDiffuseShadow: 0.7
+    _LightDiffuseHighlight: 0.7
+    _LightSpecularPower: 0.05
+    _LightSpecularStart: 0
+    _LightSpecularSoftness: 0.3
+    _LightSpecularColor: {r: 1, g: 1, b: 1, a: 1}
+    _LightAngle: 225
+    _LightAltitude: 45
+    _NormalMap:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _NormalMapStrength_Face: 0.2
+    _NormalMapStrength_Outline: 0.2
+    _NormalMapDepth: 1
+  _RenderPresets:
+  - {fileID: 0}
+  mSETextureFormat: 3
+  _Deformation:
+    _FreeTransform:
+      _Enabled: 0
+      _Curve_Top:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 1, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 1, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+      _Curve_Bottom:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 0, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 0, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+      _Curve_Left:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 0, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 0, y: 1, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+      _Curve_Right:
+        _Points:
+        - time: 0
+          point: {x: 1, y: 0, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 1, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+      _SubdivisionLevel: 0
+      _Strength: 1
+      _LinkCurve_TopDown: 0
+      _LinkCurve_LeftRight: 0
+      _TransformType: 3
+      _EasyType: 1
+      _SliderIsCenter: 1
+      _StartSlider: 0
+      _EndSlider: 0
+      _LinkSliders: 1
+      _InvertEndSlider: 1
+      _WaveRangeMin: 0
+      _WaveRangeMax: 1
+      _WaveRangeSize: 10
+  _TextEffect:
+    _TextWrapping:
+      _Enabled: 0
+      _VerticalWrapMode: 0
+      _HorizontalWrapMode: 0
+      _CurrentPage: 0
+      _Pages: 1
+      _HorizontalAlignment: 0
+      _VerticalAlignment: 0
+      _JustifiedWordCharacterRatio: 0.2
+      _JustifiedMinWordSpace: 0.1
+    _Spacing:
+      _Enabled: 0
+      _Space_Character: 0
+      _Space_Word: 0
+      _Space_Line: 0
+      _Space_Paragraph: 0
+      _Paragraph_FirstLineMargin: 0
+      _KerningPairs: []
+    _BestFit:
+      _Enabled: 1
+      _TargetRect: {fileID: 0}
+      _FitWidth: 1
+      _FitHeight: 1
+      _KeepAspectRatio: 1
+      _Border:
+        m_Left: 0
+        m_Right: 0
+        m_Top: 0
+        m_Bottom: 0
+      _Scale: {x: 1, y: 1}
+      _Snapping: 0
+--- !u!114 &1513815309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1513815306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: d9c5ff92875266440849a6feff8d2755, type: 2}
+    m_FontSize: 25
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 0
+    m_MaxSize: 160
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
+    m_LineSpacing: 1
+  m_Text: "This example shows how to <color=yellow>change RenderPreset, Animation
+    and Parameters</color>.\nUsing two triggers, one when hover and the other when
+    buttons are clicked. \n<color=yellow>The same functions can also be called from
+    scripts.</color>"
+--- !u!222 &1513815310
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1513815306}
+--- !u!1 &1553651272
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1553651273}
+  - 222: {fileID: 1553651275}
+  - 114: {fileID: 1553651274}
+  m_Layer: 5
+  m_Name: Image (3)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1553651273
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1553651272}
+  m_LocalRotation: {x: -0, y: -0, z: -0.000000029802322, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 1319423930}
+  m_RootOrder: 0
+  m_AnchorMin: {x: -0.011876223, y: 0.87871945}
+  m_AnchorMax: {x: 0.34301397, y: 0.9785311}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1553651274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1553651272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.32352942, g: 0.32352942, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+--- !u!222 &1553651275
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1553651272}
+--- !u!1 &1764725469
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1764725470}
+  m_Layer: 5
+  m_Name: Handle Slide Area
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1764725470
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1764725469}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 575550666}
+  m_Father: {fileID: 2120559621}
+  m_RootOrder: 2
+  m_AnchorMin: {x: 0.022387674, y: 0}
+  m_AnchorMax: {x: 0.9776123, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1800008394
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1800008395}
+  - 222: {fileID: 1800008397}
+  - 114: {fileID: 1800008396}
+  m_Layer: 5
+  m_Name: Background
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1800008395
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1800008394}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 2120559621}
+  m_RootOrder: 0
+  m_AnchorMin: {x: 0, y: 0.25}
+  m_AnchorMax: {x: 1, y: 0.75}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1800008396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1800008394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+--- !u!222 &1800008397
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1800008394}
+--- !u!1 &1845193868
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1845193869}
+  - 222: {fileID: 1845193873}
+  - 114: {fileID: 1845193872}
+  - 114: {fileID: 1845193871}
+  m_Layer: 5
+  m_Name: Text
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1845193869
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1845193868}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 314106538}
+  m_RootOrder: 0
+  m_AnchorMin: {x: 0, y: 0.16666667}
+  m_AnchorMax: {x: 1, y: 0.8333333}
+  m_AnchoredPosition: {x: 0, y: -0.00000023841858}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1845193871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1845193868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b91132341bbeae4b91b9374ab5e8a2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _TimeSource: 0
+  _OnEnable_PlayAnim: -1
+  _AnimationSlots: []
+  _RenderParams:
+    _FaceColor:
+      serializedVersion: 2
+      rgba: 4294967295
+    _EdgeSize: 0.5
+    _Softness: 0.35
+    _FaceSoftness: 0
+    _SDF_Spread: 0
+    _EnableFace: 1
+    _UseWidgetTexture: 0
+    _UseSuperSampling: 1
+    _EnableFaceGradient: 0
+    _FaceGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _FaceTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _EnableOutline: 0
+    _UseOutlineLayer: 0
+    _OutlineSoftness: 0
+    _OutlineColor:
+      serializedVersion: 2
+      rgba: 4278190080
+    _OutlineWidth: 0.1
+    _OutlinePosition: 0
+    _EnableOutlineGradient: 0
+    _OutlineGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _OutlineTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _OutlineDivisions: 4
+    _EnableGlow: 0
+    _GlowColor:
+      serializedVersion: 2
+      rgba: 4278255615
+    _GlowOuterWidth: 0.1
+    _GlowInnerWidth: 0.01
+    _GlowPower: 0.25
+    _GlowEdgeWidth: 0
+    _GlowOffset: 0
+    _GlowIntensity: 1
+    _GlowPosition: {x: 0, y: 0, z: 0}
+    _EnableGlowGradient: 0
+    _GlowGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _GlowLayer: 0
+    _GlowTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _EnableShadows: 0
+    _SimpleShadows: 0
+    _ShadowColor:
+      serializedVersion: 2
+      rgba: 2147483648
+    _ShadowOffset: {x: 0.05, y: -0.05, z: 0}
+    _ShadowEdgeOffset: 0
+    _ShadowSmoothWidth: 0.2
+    _ShadowHollow: 0
+    _ShadowEdgeWidth: 0
+    _ShadowInnerSmoothWidth: 0.2
+    _ShadowSmoothPower: 1
+    _ShadowHeight: 0
+    _ShadowBorderLeft: 0
+    _ShadowBorderRight: 0
+    _ShadowSmoothTop: 1
+    _ShadowSmoothBottom: 1
+    _ShadowOpacityTop: 1
+    _ShadowOpacityBottom: 1
+    _ShadowSmoothingDivisions: 4
+    _ShadowSubdivisionLevel: 0
+    _EnableInnerShadows: 0
+    _InnerShadowColor:
+      serializedVersion: 2
+      rgba: 2147483648
+    _InnerShadowOffset: {x: -0.16, y: 0.16}
+    _InnerShadowEdgeOffset: 0.096
+    _InnerShadowMaskOffset: 0
+    _InnerShadowSmoothWidth: 0.2
+    _InnerShadowMaskSoftness: 0.05
+    _EnableReflection: 0
+    _ReflectionColor_Face: {r: 1, g: 1, b: 1, a: 1}
+    _ReflectionColor_Outline: {r: 1, g: 1, b: 1, a: 1}
+    _ReflectionRotation: {x: 0, y: 0, z: 0}
+    _ReflectionFresnel_Scale: 0.5
+    _ReflectionFresnel_Bias: 0
+    _ReflectionIntensity: 1
+    _ReflectionGlass: 1
+    _ReflectionMap: {fileID: 0}
+    _EnableFloorReflection: 0
+    _FloorReflectionOpacity: 0.7
+    _FloorReflectionPlane: 0
+    _FloorReflectionDistance: 0.5
+    _FloorReflectionFloor: 0
+    _FloorReflection_EnableFloorClamp: 0
+    _FloorReflection_Back: 1
+    _FloorReflectionTint_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+    _FloorReflectionTint_BlendMode: 0
+    _FloorReflectionTint_Opacity: 1
+    _FloorReflection_Region: 1
+    _EnableBevel: 0
+    _BevelOffset: 0
+    _BevelWidth: 0.2
+    _BevelInnerSoftness: 0.5
+    _BevelOuterSoftness: 0.5
+    _BevelDepth: 1
+    _BevelCurve: 1
+    _BevelClamp: 0
+    _LightDiffuseShadow: 0.7
+    _LightDiffuseHighlight: 0.7
+    _LightSpecularPower: 0.05
+    _LightSpecularStart: 0
+    _LightSpecularSoftness: 0.3
+    _LightSpecularColor: {r: 1, g: 1, b: 1, a: 1}
+    _LightAngle: 225
+    _LightAltitude: 45
+    _NormalMap:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _NormalMapStrength_Face: 0.2
+    _NormalMapStrength_Outline: 0.2
+    _NormalMapDepth: 1
+  _RenderPresets:
+  - {fileID: 0}
+  mSETextureFormat: 3
+  _Deformation:
+    _FreeTransform:
+      _Enabled: 0
+      _Curve_Top:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 1, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 1, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+      _Curve_Bottom:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 0, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 0, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+      _Curve_Left:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 0, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 0, y: 1, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+      _Curve_Right:
+        _Points:
+        - time: 0
+          point: {x: 1, y: 0, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 1, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+      _SubdivisionLevel: 0
+      _Strength: 1
+      _LinkCurve_TopDown: 0
+      _LinkCurve_LeftRight: 0
+      _TransformType: 3
+      _EasyType: 1
+      _SliderIsCenter: 1
+      _StartSlider: 0
+      _EndSlider: 0
+      _LinkSliders: 1
+      _InvertEndSlider: 1
+      _WaveRangeMin: 0
+      _WaveRangeMax: 1
+      _WaveRangeSize: 10
+  _TextEffect:
+    _TextWrapping:
+      _Enabled: 0
+      _VerticalWrapMode: 0
+      _HorizontalWrapMode: 0
+      _CurrentPage: 0
+      _Pages: 1
+      _HorizontalAlignment: 0
+      _VerticalAlignment: 0
+      _JustifiedWordCharacterRatio: 0.2
+      _JustifiedMinWordSpace: 0.1
+    _Spacing:
+      _Enabled: 0
+      _Space_Character: 0
+      _Space_Word: 0
+      _Space_Line: 0
+      _Space_Paragraph: 0
+      _Paragraph_FirstLineMargin: 0
+      _KerningPairs: []
+    _BestFit:
+      _Enabled: 1
+      _TargetRect: {fileID: 0}
+      _FitWidth: 1
+      _FitHeight: 1
+      _KeepAspectRatio: 1
+      _Border:
+        m_Left: 0
+        m_Right: 0
+        m_Top: 0
+        m_Bottom: 0
+      _Scale: {x: 1, y: 1}
+      _Snapping: 0
+--- !u!114 &1845193872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1845193868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: d9c5ff92875266440849a6feff8d2755, type: 2}
+    m_FontSize: 24
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 7
+    m_MaxSize: 150
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 0
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
+    m_LineSpacing: 1
+  m_Text: Tutorials
+--- !u!222 &1845193873
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1845193868}
+--- !u!1 &1894164688
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1894164689}
+  - 222: {fileID: 1894164692}
+  - 114: {fileID: 1894164691}
+  - 114: {fileID: 1894164690}
+  m_Layer: 5
+  m_Name: Animations
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1894164689
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1894164688}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 2129871144}
+  m_RootOrder: 1
+  m_AnchorMin: {x: 0.5259149, y: 0.32585046}
+  m_AnchorMax: {x: 1.0000002, y: 0.61585045}
+  m_AnchoredPosition: {x: 0, y: 7.931366}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1894164690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1894164688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b91132341bbeae4b91b9374ab5e8a2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _TimeSource: 0
+  _OnEnable_PlayAnim: -1
+  _AnimationSlots:
+  - _LocalSerializedData: "<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<SE_Animation
+      xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"
+      Name=\"Custom\" _Playback=\"Loop\" _Backwards=\"false\" _PlaybackTimes=\"-1\"
+      _ExtraTimeFinal=\"0\" _ExtraTimePerLoop=\"0\">\r\n  <_Sequences>\r\n    <SE_AnimSequence
+      xsi:type=\"SE_AnimSequence_Scale\">\r\n      <_Name />\r\n      <_StartType>OnAnimStart</_StartType>\r\n
+      \     <_StartDelay>0</_StartDelay>\r\n      <_Separation>0.18</_Separation>\r\n
+      \     <_DurationType>TotalTime</_DurationType>\r\n      <_Duration>1</_Duration>\r\n
+      \     <_Playback>Single</_Playback>\r\n      <_Backwards>false</_Backwards>\r\n
+      \     <_PlaybackTimes>1</_PlaybackTimes>\r\n      <_EasingCurve>\r\n        <keys>\r\n
+      \         <Keyframe>\r\n            <time>0</time>\r\n            <value>0</value>\r\n
+      \           <inTangent>9.234255</inTangent>\r\n            <outTangent>9.234255</outTangent>\r\n
+      \           <tangentMode>0</tangentMode>\r\n          </Keyframe>\r\n          <Keyframe>\r\n
+      \           <time>0.2581864</time>\r\n            <value>0.995525</value>\r\n
+      \           <inTangent>0</inTangent>\r\n            <outTangent>0</outTangent>\r\n
+      \           <tangentMode>0</tangentMode>\r\n          </Keyframe>\r\n          <Keyframe>\r\n
+      \           <time>1</time>\r\n            <value>-0.00223214179</value>\r\n
+      \           <inTangent>0</inTangent>\r\n            <outTangent>0</outTangent>\r\n
+      \           <tangentMode>0</tangentMode>\r\n          </Keyframe>\r\n        </keys>\r\n
+      \       <preWrapMode>ClampForever</preWrapMode>\r\n        <postWrapMode>ClampForever</postWrapMode>\r\n
+      \     </_EasingCurve>\r\n      <_TargetType>Letters</_TargetType>\r\n      <_TargetRangeType>All</_TargetRangeType>\r\n
+      \     <_TargetRangeStart>0</_TargetRangeStart>\r\n      <_TargetRangeAmount>0</_TargetRangeAmount>\r\n
+      \     <_AnimBlend_From>Explicit</_AnimBlend_From>\r\n      <_AnimBlend_To>Explicit</_AnimBlend_To>\r\n
+      \     <_Enabled>true</_Enabled>\r\n      <_From>\r\n        <x>1</x>\r\n        <y>1</y>\r\n
+      \       <z>1</z>\r\n      </_From>\r\n      <_FromRandom>\r\n        <x>0</x>\r\n
+      \       <y>0</y>\r\n        <z>0</z>\r\n      </_FromRandom>\r\n      <_To>\r\n
+      \       <x>1.3</x>\r\n        <y>2</y>\r\n        <z>1.3</z>\r\n      </_To>\r\n
+      \     <_ToRandom>\r\n        <x>0</x>\r\n        <y>0</y>\r\n        <z>0</z>\r\n
+      \     </_ToRandom>\r\n      <_ApplyX>true</_ApplyX>\r\n      <_ApplyY>true</_ApplyY>\r\n
+      \     <_ApplyZ>true</_ApplyZ>\r\n      <_UseAxisEasingCurves>false</_UseAxisEasingCurves>\r\n
+      \     <_EasingCurveY>\r\n        <keys>\r\n          <Keyframe>\r\n            <time>0</time>\r\n
+      \           <value>0</value>\r\n            <inTangent>0</inTangent>\r\n            <outTangent>0</outTangent>\r\n
+      \           <tangentMode>0</tangentMode>\r\n          </Keyframe>\r\n          <Keyframe>\r\n
+      \           <time>1</time>\r\n            <value>1</value>\r\n            <inTangent>0</inTangent>\r\n
+      \           <outTangent>0</outTangent>\r\n            <tangentMode>0</tangentMode>\r\n
+      \         </Keyframe>\r\n        </keys>\r\n        <preWrapMode>ClampForever</preWrapMode>\r\n
+      \       <postWrapMode>ClampForever</postWrapMode>\r\n      </_EasingCurveY>\r\n
+      \     <_EasingCurveZ>\r\n        <keys>\r\n          <Keyframe>\r\n            <time>0</time>\r\n
+      \           <value>0</value>\r\n            <inTangent>0</inTangent>\r\n            <outTangent>0</outTangent>\r\n
+      \           <tangentMode>0</tangentMode>\r\n          </Keyframe>\r\n          <Keyframe>\r\n
+      \           <time>1</time>\r\n            <value>1</value>\r\n            <inTangent>0</inTangent>\r\n
+      \           <outTangent>0</outTangent>\r\n            <tangentMode>0</tangentMode>\r\n
+      \         </Keyframe>\r\n        </keys>\r\n        <preWrapMode>ClampForever</preWrapMode>\r\n
+      \       <postWrapMode>ClampForever</postWrapMode>\r\n      </_EasingCurveZ>\r\n
+      \     <_Pivot>\r\n        <x>0.5</x>\r\n        <y>0.5</y>\r\n        <z>0</z>\r\n
+      \     </_Pivot>\r\n      <_PivotType>Relative_All</_PivotType>\r\n    </SE_AnimSequence>\r\n
+      \ </_Sequences>\r\n</SE_Animation>"
+    _Preset: {fileID: 11400000, guid: 7a1d18071cdd20b438b4daf16835c833, type: 2}
+  _RenderParams:
+    _FaceColor:
+      serializedVersion: 2
+      rgba: 4294967295
+    _EdgeSize: 0.5
+    _Softness: 0.35
+    _FaceSoftness: 0
+    _SDF_Spread: 0
+    _EnableFace: 1
+    _UseWidgetTexture: 0
+    _UseSuperSampling: 0
+    _EnableFaceGradient: 0
+    _FaceGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _FaceTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _EnableOutline: 0
+    _UseOutlineLayer: 0
+    _OutlineSoftness: 0
+    _OutlineColor:
+      serializedVersion: 2
+      rgba: 4278190080
+    _OutlineWidth: 0.1
+    _OutlinePosition: 0
+    _EnableOutlineGradient: 0
+    _OutlineGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _OutlineTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _OutlineDivisions: 4
+    _EnableGlow: 1
+    _GlowColor:
+      serializedVersion: 2
+      rgba: 4278255615
+    _GlowOuterWidth: 0
+    _GlowInnerWidth: 0.106
+    _GlowPower: 0.25
+    _GlowEdgeWidth: 0
+    _GlowOffset: 0
+    _GlowIntensity: 1
+    _GlowPosition: {x: 0, y: 0, z: 0}
+    _EnableGlowGradient: 0
+    _GlowGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _GlowLayer: 2
+    _GlowTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _EnableShadows: 0
+    _SimpleShadows: 0
+    _ShadowColor:
+      serializedVersion: 2
+      rgba: 2147483648
+    _ShadowOffset: {x: 0.05, y: -0.05, z: 0}
+    _ShadowEdgeOffset: 0
+    _ShadowSmoothWidth: 0.2
+    _ShadowHollow: 0
+    _ShadowEdgeWidth: 0
+    _ShadowInnerSmoothWidth: 0.2
+    _ShadowSmoothPower: 1
+    _ShadowHeight: 0
+    _ShadowBorderLeft: 0
+    _ShadowBorderRight: 0
+    _ShadowSmoothTop: 1
+    _ShadowSmoothBottom: 1
+    _ShadowOpacityTop: 1
+    _ShadowOpacityBottom: 1
+    _ShadowSmoothingDivisions: 4
+    _ShadowSubdivisionLevel: 0
+    _EnableInnerShadows: 0
+    _InnerShadowColor:
+      serializedVersion: 2
+      rgba: 2147483648
+    _InnerShadowOffset: {x: -0.16, y: 0.16}
+    _InnerShadowEdgeOffset: 0.096
+    _InnerShadowMaskOffset: 0
+    _InnerShadowSmoothWidth: 0.2
+    _InnerShadowMaskSoftness: 0.05
+    _EnableReflection: 0
+    _ReflectionColor_Face: {r: 1, g: 1, b: 1, a: 1}
+    _ReflectionColor_Outline: {r: 1, g: 1, b: 1, a: 1}
+    _ReflectionRotation: {x: 0, y: 0, z: 0}
+    _ReflectionFresnel_Scale: 0.5
+    _ReflectionFresnel_Bias: 0
+    _ReflectionIntensity: 1
+    _ReflectionGlass: 1
+    _ReflectionMap: {fileID: 0}
+    _EnableFloorReflection: 0
+    _FloorReflectionOpacity: 0.129
+    _FloorReflectionPlane: -0.25
+    _FloorReflectionDistance: 0.541
+    _FloorReflectionFloor: 0.281
+    _FloorReflection_EnableFloorClamp: 1
+    _FloorReflection_Back: 1
+    _FloorReflectionTint_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+    _FloorReflectionTint_BlendMode: 0
+    _FloorReflectionTint_Opacity: 1
+    _FloorReflection_Region: 1
+    _EnableBevel: 0
+    _BevelOffset: 0
+    _BevelWidth: 0.2
+    _BevelInnerSoftness: 0.5
+    _BevelOuterSoftness: 0.5
+    _BevelDepth: 1
+    _BevelCurve: 1
+    _BevelClamp: 0
+    _LightDiffuseShadow: 0.7
+    _LightDiffuseHighlight: 0.7
+    _LightSpecularPower: 0.05
+    _LightSpecularStart: 0
+    _LightSpecularSoftness: 0.3
+    _LightSpecularColor: {r: 1, g: 1, b: 1, a: 1}
+    _LightAngle: 225
+    _LightAltitude: 45
+    _NormalMap:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _NormalMapStrength_Face: 0.2
+    _NormalMapStrength_Outline: 0.2
+    _NormalMapDepth: 1
+  _RenderPresets:
+  - {fileID: 0}
+  mSETextureFormat: 1
+  _Deformation:
+    _FreeTransform:
+      _Enabled: 0
+      _Curve_Top:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 1, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 1, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+      _Curve_Bottom:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 0, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 0, z: 0}
+          tangent0: {x: -0.33333334, y: 0, z: 0}
+          tangent1: {x: 0.33333334, y: 0, z: 0}
+          lerpType: 0
+      _Curve_Left:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 0, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 0, y: 1, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+      _Curve_Right:
+        _Points:
+        - time: 0
+          point: {x: 1, y: 0, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 1, z: 0}
+          tangent0: {x: 0, y: -0.33333334, z: 0}
+          tangent1: {x: 0, y: 0.33333334, z: 0}
+          lerpType: 0
+      _SubdivisionLevel: 0
+      _Strength: 1
+      _LinkCurve_TopDown: 0
+      _LinkCurve_LeftRight: 0
+      _TransformType: 3
+      _EasyType: 1
+      _SliderIsCenter: 1
+      _StartSlider: 0
+      _EndSlider: 0
+      _LinkSliders: 1
+      _InvertEndSlider: 1
+      _WaveRangeMin: 0
+      _WaveRangeMax: 1
+      _WaveRangeSize: 10
+  _TextEffect:
+    _TextWrapping:
+      _Enabled: 0
+      _VerticalWrapMode: 0
+      _HorizontalWrapMode: 0
+      _CurrentPage: 0
+      _Pages: 1
+      _HorizontalAlignment: 0
+      _VerticalAlignment: 0
+      _JustifiedWordCharacterRatio: 0.2
+      _JustifiedMinWordSpace: 0.1
+    _Spacing:
+      _Enabled: 0
+      _Space_Character: 0
+      _Space_Word: 0
+      _Space_Line: 0
+      _Space_Paragraph: 0
+      _Paragraph_FirstLineMargin: 0
+      _KerningPairs: []
+    _BestFit:
+      _Enabled: 1
+      _TargetRect: {fileID: 0}
+      _FitWidth: 1
+      _FitHeight: 1
+      _KeepAspectRatio: 1
+      _Border:
+        m_Left: 0
+        m_Right: 0
+        m_Top: 0
+        m_Bottom: 0
+      _Scale: {x: 1, y: 1}
+      _Snapping: 0
+--- !u!114 &1894164691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1894164688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: 270f377989d716947ab92a6d0dcf1c90, type: 2}
+    m_FontSize: 67
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 1
+    m_MaxSize: 150
+    m_Alignment: 1
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
+    m_LineSpacing: 1
+  m_Text: Animations
+--- !u!222 &1894164692
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1894164688}
+--- !u!1 &1916393608
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 1916393609}
+  - 222: {fileID: 1916393613}
+  - 114: {fileID: 1916393612}
+  - 114: {fileID: 1916393611}
+  - 114: {fileID: 1916393610}
+  m_Layer: 5
+  m_Name: Button (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1916393609
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1916393608}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 1497355889}
+  m_Father: {fileID: 1073470401}
+  m_RootOrder: 2
+  m_AnchorMin: {x: 0.83522105, y: 0.1875}
+  m_AnchorMax: {x: 0.99999243, y: 0.8125}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1916393610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1916393608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d27960adc27182e448415b1c2e59dfd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1916393611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1916393608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1392445389, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 1916393612}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1916393610}
+        m_MethodName: OpenNext
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: SmartEdge Demo7 Deformation
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+--- !u!114 &1916393612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1916393608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.30980393, g: 0.30980393, b: 0.9607844, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+--- !u!222 &1916393613
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1916393608}
+--- !u!1 &2019550368
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 2019550369}
+  - 222: {fileID: 2019550372}
+  - 114: {fileID: 2019550371}
+  - 114: {fileID: 2019550370}
+  - 114: {fileID: 2019550375}
+  m_Layer: 5
+  m_Name: Effects
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2019550369
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2019550368}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 2129871144}
+  m_RootOrder: 0
+  m_AnchorMin: {x: 0.025914604, y: 0.48089}
+  m_AnchorMax: {x: 0.45891264, y: 0.76147264}
+  m_AnchoredPosition: {x: 0, y: -31.691}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2019550370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2019550368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b91132341bbeae4b91b9374ab5e8a2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _TimeSource: 0
+  _OnEnable_PlayAnim: 0
+  _AnimationSlots: []
+  _RenderParams:
+    _FaceColor:
+      serializedVersion: 2
+      rgba: 4294967295
+    _EdgeSize: 0.5
+    _Softness: 0.48
+    _FaceSoftness: 0
+    _SDF_Spread: 0
+    _EnableFace: 1
+    _UseWidgetTexture: 0
+    _UseSuperSampling: 0
+    _EnableFaceGradient: 0
+    _FaceGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _FaceTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _EnableOutline: 1
+    _UseOutlineLayer: 0
+    _OutlineSoftness: 0.025
+    _OutlineColor:
+      serializedVersion: 2
+      rgba: 4278190080
+    _OutlineWidth: 0.18
+    _OutlinePosition: 0
+    _EnableOutlineGradient: 0
+    _OutlineGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _OutlineTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _OutlineDivisions: 4
+    _EnableGlow: 1
+    _GlowColor:
+      serializedVersion: 2
+      rgba: 4278255615
+    _GlowOuterWidth: 1
+    _GlowInnerWidth: 0.035
+    _GlowPower: 0.25
+    _GlowEdgeWidth: 0
+    _GlowOffset: 0
+    _GlowIntensity: 1.07
+    _GlowPosition: {x: 0, y: 0, z: 0}
+    _EnableGlowGradient: 0
+    _GlowGradient:
+      _Gradient:
+        key0:
+          serializedVersion: 2
+          rgba: 4294967295
+        key1:
+          serializedVersion: 2
+          rgba: 4294967295
+        key2:
+          serializedVersion: 2
+          rgba: 0
+        key3:
+          serializedVersion: 2
+          rgba: 0
+        key4:
+          serializedVersion: 2
+          rgba: 0
+        key5:
+          serializedVersion: 2
+          rgba: 0
+        key6:
+          serializedVersion: 2
+          rgba: 0
+        key7:
+          serializedVersion: 2
+          rgba: 0
+        ctime0: 0
+        ctime1: 65535
+        ctime2: 0
+        ctime3: 0
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 65535
+        atime2: 0
+        atime3: 0
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_NumColorKeys: 2
+        m_NumAlphaKeys: 2
+      _Angle: 90
+      _Scale: 1
+      _Bias: 0
+      _Region: 2
+      _BlendMode: 2
+      _Opacity: 1
+      _Precision: 0
+    _GlowLayer: 0
+    _GlowTexture:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _EnableShadows: 1
+    _SimpleShadows: 0
+    _ShadowColor:
+      serializedVersion: 2
+      rgba: 2147483648
+    _ShadowOffset: {x: 0.04, y: -0.025, z: 0}
+    _ShadowEdgeOffset: 0
+    _ShadowSmoothWidth: 0.041
+    _ShadowHollow: 0
+    _ShadowEdgeWidth: 0
+    _ShadowInnerSmoothWidth: 0.2
+    _ShadowSmoothPower: 1
+    _ShadowHeight: 0
+    _ShadowBorderLeft: 0
+    _ShadowBorderRight: 0
+    _ShadowSmoothTop: 1
+    _ShadowSmoothBottom: 1
+    _ShadowOpacityTop: 1
+    _ShadowOpacityBottom: 1
+    _ShadowSmoothingDivisions: 4
+    _ShadowSubdivisionLevel: 0
+    _EnableInnerShadows: 0
+    _InnerShadowColor:
+      serializedVersion: 2
+      rgba: 2147483648
+    _InnerShadowOffset: {x: -0.16, y: 0.16}
+    _InnerShadowEdgeOffset: 0.096
+    _InnerShadowMaskOffset: 0
+    _InnerShadowSmoothWidth: 0.2
+    _InnerShadowMaskSoftness: 0.05
+    _EnableReflection: 0
+    _ReflectionColor_Face: {r: 1, g: 1, b: 1, a: 1}
+    _ReflectionColor_Outline: {r: 1, g: 1, b: 1, a: 1}
+    _ReflectionRotation: {x: 0, y: 0, z: 0}
+    _ReflectionFresnel_Scale: 0.5
+    _ReflectionFresnel_Bias: 0
+    _ReflectionIntensity: 1
+    _ReflectionGlass: 1
+    _ReflectionMap: {fileID: 0}
+    _EnableFloorReflection: 0
+    _FloorReflectionOpacity: 0.7
+    _FloorReflectionPlane: 0
+    _FloorReflectionDistance: 0.5
+    _FloorReflectionFloor: 0
+    _FloorReflection_EnableFloorClamp: 0
+    _FloorReflection_Back: 1
+    _FloorReflectionTint_Color:
+      serializedVersion: 2
+      rgba: 4294967295
+    _FloorReflectionTint_BlendMode: 0
+    _FloorReflectionTint_Opacity: 1
+    _FloorReflection_Region: 1
+    _EnableBevel: 0
+    _BevelOffset: 0
+    _BevelWidth: 0.2
+    _BevelInnerSoftness: 0.5
+    _BevelOuterSoftness: 0.5
+    _BevelDepth: 1
+    _BevelCurve: 1
+    _BevelClamp: 0
+    _LightDiffuseShadow: 0.7
+    _LightDiffuseHighlight: 0.7
+    _LightSpecularPower: 0.05
+    _LightSpecularStart: 0
+    _LightSpecularSoftness: 0.3
+    _LightSpecularColor: {r: 1, g: 1, b: 1, a: 1}
+    _LightAngle: 225
+    _LightAltitude: 45
+    _NormalMap:
+      _Enable: 0
+      _Texture: {fileID: 0}
+      _MappingType: 1
+      _Region: 1
+      _CustomRegion: {fileID: 0}
+      _Tile: {x: 1, y: 1}
+      _Offset: {x: 0, y: 0}
+      _Pivot: {x: 0.5, y: 0.5}
+      _Angle: 0
+    _NormalMapStrength_Face: 0.2
+    _NormalMapStrength_Outline: 0.2
+    _NormalMapDepth: 1
+  _RenderPresets:
+  - {fileID: 11400000, guid: 5a9c2ba62e2ac2f4685775dd10333133, type: 2}
+  mSETextureFormat: 1
+  _Deformation:
+    _FreeTransform:
+      _Enabled: 1
+      _Curve_Top:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 1, z: 0}
+          tangent0: {x: -0.3333, y: 0, z: 0}
+          tangent1: {x: 0.3333, y: 0, z: 0}
+          lerpType: 2
+        - time: 1
+          point: {x: 1, y: 1, z: 0}
+          tangent0: {x: -0.3333, y: -0, z: -0}
+          tangent1: {x: 0.3333, y: 0, z: 0}
+          lerpType: 2
+      _Curve_Bottom:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 0, z: 0}
+          tangent0: {x: -0.3333, y: 0, z: 0}
+          tangent1: {x: 0.3333, y: 0, z: 0}
+          lerpType: 2
+        - time: 1
+          point: {x: 1, y: 0, z: 0}
+          tangent0: {x: -0.3333, y: -0, z: -0}
+          tangent1: {x: 0.3333, y: 0, z: 0}
+          lerpType: 2
+      _Curve_Left:
+        _Points:
+        - time: 0
+          point: {x: 0, y: 0, z: 0}
+          tangent0: {x: -0, y: -0.333, z: -0}
+          tangent1: {x: 0, y: 0.333, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 0, y: 1, z: 0}
+          tangent0: {x: -0, y: -0.333, z: -0}
+          tangent1: {x: 0, y: 0.333, z: 0}
+          lerpType: 0
+      _Curve_Right:
+        _Points:
+        - time: 0
+          point: {x: 1, y: 0, z: 0}
+          tangent0: {x: -0, y: -0.333, z: -0}
+          tangent1: {x: 0, y: 0.333, z: 0}
+          lerpType: 0
+        - time: 1
+          point: {x: 1, y: 1, z: 0}
+          tangent0: {x: -0, y: -0.333, z: -0}
+          tangent1: {x: 0, y: 0.333, z: 0}
+          lerpType: 0
+      _SubdivisionLevel: 0
+      _Strength: 1
+      _LinkCurve_TopDown: 0
+      _LinkCurve_LeftRight: 0
+      _TransformType: 1
+      _EasyType: 1
+      _SliderIsCenter: 1
+      _StartSlider: 0
+      _EndSlider: -0
+      _LinkSliders: 1
+      _InvertEndSlider: 1
+      _WaveRangeMin: 0
+      _WaveRangeMax: 1
+      _WaveRangeSize: 10
+  _TextEffect:
+    _TextWrapping:
+      _Enabled: 0
+      _VerticalWrapMode: 0
+      _HorizontalWrapMode: 0
+      _CurrentPage: 0
+      _Pages: 1
+      _HorizontalAlignment: 0
+      _VerticalAlignment: 0
+      _JustifiedWordCharacterRatio: 0.2
+      _JustifiedMinWordSpace: 0.1
+    _Spacing:
+      _Enabled: 0
+      _Space_Character: 0
+      _Space_Word: 0
+      _Space_Line: 0
+      _Space_Paragraph: 0
+      _Paragraph_FirstLineMargin: 0
+      _KerningPairs: []
+    _BestFit:
+      _Enabled: 1
+      _TargetRect: {fileID: 0}
+      _FitWidth: 1
+      _FitHeight: 1
+      _KeepAspectRatio: 1
+      _Border:
+        m_Left: 0
+        m_Right: 0
+        m_Top: 0
+        m_Bottom: 0
+      _Scale: {x: 1, y: 1}
+      _Snapping: 0
+--- !u!114 &2019550371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2019550368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: 270f377989d716947ab92a6d0dcf1c90, type: 2}
+    m_FontSize: 75
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 1
+    m_MaxSize: 177
+    m_Alignment: 1
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
+    m_LineSpacing: 1
+  m_Text: Hover Here
+--- !u!222 &2019550372
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2019550368}
+--- !u!114 &2019550375
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2019550368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1862395651, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2019550370}
+          m_MethodName: SetRenderPreset
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 1d506a0e8d407db4b87f7661048538a9,
+              type: 2}
+            m_ObjectArgumentAssemblyTypeName: I2.SmartEdge.SmartEdgeRenderPreset,
+              Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: ahhh
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
+        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  - eventID: 1
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2019550370}
+          m_MethodName: SetRenderPreset
+          m_Mode: 2
+          m_Arguments:
+            m_ObjectArgument: {fileID: 11400000, guid: 5a9c2ba62e2ac2f4685775dd10333133,
+              type: 2}
+            m_ObjectArgumentAssemblyTypeName: I2.SmartEdge.SmartEdgeRenderPreset,
+              Assembly-CSharp
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: ahhh
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
+        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  delegates: []
+--- !u!1 &2120559620
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 2120559621}
+  - 114: {fileID: 2120559623}
+  - 114: {fileID: 2120559622}
+  m_Layer: 5
+  m_Name: Slider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2120559621
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2120559620}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 1800008395}
+  - {fileID: 955412834}
+  - {fileID: 1764725470}
+  m_Father: {fileID: 2129871144}
+  m_RootOrder: 4
+  m_AnchorMin: {x: 0.01990744, y: 0.017327359}
+  m_AnchorMax: {x: 0.45891267, y: 0.15375173}
+  m_AnchoredPosition: {x: 561, y: -4}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2120559622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2120559620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86fb0ce5bda47b74e939772ac89a03ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _SmartEdge: {fileID: 1894164690}
+--- !u!114 &2120559623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2120559620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -113659843, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 575550667}
+  m_FillRect: {fileID: 277164701}
+  m_HandleRect: {fileID: 575550666}
+  m_Direction: 0
+  m_MinValue: 0
+  m_MaxValue: 1
+  m_WholeNumbers: 0
+  m_Value: 0
+  m_OnValueChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2120559622}
+        m_MethodName: ModifyRenderParameter
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: UnityEngine.UI.Slider+SliderEvent, UnityEngine.UI, Version=1.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+--- !u!1 &2129871143
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 224: {fileID: 2129871144}
+  - 114: {fileID: 2129871145}
+  m_Layer: 5
+  m_Name: Features
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2129871144
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2129871143}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children:
+  - {fileID: 2019550369}
+  - {fileID: 1894164689}
+  - {fileID: 930588737}
+  - {fileID: 1080978167}
+  - {fileID: 2120559621}
+  m_Father: {fileID: 1343238212}
+  m_RootOrder: 4
+  m_AnchorMin: {x: 0.015306123, y: 0.17631578}
+  m_AnchorMax: {x: 0.97157437, y: 0.6848992}
+  m_AnchoredPosition: {x: 0, y: -0.0000038146973}
+  m_SizeDelta: {x: 0, y: 0.000008583069}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2129871145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2129871143}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -405508275, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 3
+  m_Spacing: 10
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
