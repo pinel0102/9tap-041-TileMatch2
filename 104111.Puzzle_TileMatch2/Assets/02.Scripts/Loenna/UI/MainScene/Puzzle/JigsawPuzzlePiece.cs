@@ -7,12 +7,14 @@ using UnityEngine.UI;
 using System;
 
 using NineTap.Common;
+using Coffee.UIEffects;
 
 [ResourcePath("UI/Widgets/JigsawPuzzlePiece")]
 public class JigsawPuzzlePiece : CachedBehaviour, IDragHandler
 {
 	[SerializeField]
 	private Image m_image = null!;
+    public UIShiny shiny = null!;
 
 	private bool m_draggable = false;
 	private Action<Vector2> m_onCheck = null!;
@@ -53,5 +55,6 @@ public class JigsawPuzzlePiece : CachedBehaviour, IDragHandler
 	public void Attached()
 	{
 		m_draggable = false;
+        shiny.Play();
 	}
 }

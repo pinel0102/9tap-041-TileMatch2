@@ -52,6 +52,7 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
 	[SerializeField]
 	private GridLayoutGroup m_layoutGroup;
 	private List<Slot> m_slots = new List<Slot>();
+    private List<int> checkList = new List<int>();
 
 	public void OnSetup()
 	{
@@ -73,7 +74,7 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
 
 	public void UpdateSlot(int index, GameObject pieceObject)
 	{
-		if (index < 0 || index > 25)
+		if (index < 0 || index >= 25)
 		{
 			return;
 		}
@@ -97,9 +98,57 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
 
 		if (distance < CHECK_OFFSET)
 		{
+            Debug.Log(CodeManager.GetMethodName() + index);
+
 			piece.Attached();
+            CrossPieceEffect(CrossPieceList(index));
+
 			UpdateSlot(index, piece.CachedGameObject);
 			onAttach?.Invoke(index);
 		}
 	}
+
+    private void CrossPieceEffect(List<Slot> crossSlots)
+    {
+        for(int i=0; i < crossSlots.Count; i++)
+        {
+            if (crossSlots[i].HasPiece)
+            {
+                JigsawPuzzlePiece piece = crossSlots[i].Transform.GetComponentInChildren<JigsawPuzzlePiece>();
+                piece.Attached();
+            }
+        }
+    }
+
+    private List<Slot> CrossPieceList(int index)
+    {
+        if (index < 0 || index >= 25)
+		{
+			return null;
+		}
+
+        checkList.Clear();
+        checkList.Add(index - 1);
+        checkList.Add(index + 1);
+        checkList.Add(index - 5);
+        checkList.Add(index + 5);
+
+        List<Slot> result = new List<Slot>();
+
+        for(int i=0; i < checkList.Count; i++)
+        {
+            int checkIndex = checkList[i];
+            if (IsEnableIndex(checkIndex) && m_slots[checkIndex].HasPiece)
+            {  
+                result.Add(m_slots[checkIndex]);
+            }
+        }
+
+        return result;
+    }
+
+    private bool IsEnableIndex(int index)
+    {
+        return index >= 0 && index < 25;
+    }
 }
