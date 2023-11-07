@@ -15,6 +15,8 @@ public class MainScene : UIScene
 
 	private LobbyManager m_lobbyManager;
 	private	UserManager m_userManager;
+    private ItemDataTable m_itemDataTable;
+	private ProductDataTable m_productDataTable;
 
 	public override void OnSetup(UIParameter uiParameter)
 	{
@@ -31,17 +33,39 @@ public class MainScene : UIScene
 			tableManager: Game.Inst.Get<TableManager>()
 		);
 
+        TableManager tableManager = Game.Inst.Get<TableManager>();
+        m_itemDataTable = tableManager.ItemDataTable;
+        m_productDataTable = tableManager.ProductDataTable;
+
         SoundManager soundManager = Game.Inst?.Get<SoundManager>();
         HUD m_hud = Game.Inst.Get<HUD>();
         m_hud.behaviour.AddListener(
             new KeyValuePair<HUDType, System.Action>(
-                HUDType.STAR, () => { m_lobbyManager.OnCheckShowPopup(() => m_scrollView.MoveTo((int)MainMenuType.STORE)); }
+                HUDType.STAR, () => { 
+                    if (IsEnableShowPopup())
+                    {
+                        soundManager?.PlayFx(Constant.UI.BUTTON_CLICK_FX_NAME);
+                        m_lobbyManager.OnCheckShowPopup(() => m_scrollView.MoveTo((int)MainMenuType.STORE));
+                    } 
+                }
             ),
             new KeyValuePair<HUDType, System.Action>(
-                HUDType.LIFE, () => {   }
+                HUDType.LIFE, () => { 
+                    if (IsEnableShowPopup())
+                    {
+                        soundManager?.PlayFx(Constant.UI.BUTTON_CLICK_FX_NAME);
+                        OpenBuyHeartPopup(4);
+                    }  
+                }
             ),
             new KeyValuePair<HUDType, System.Action>(
-                HUDType.COIN, () => { m_scrollView.MoveTo((int)MainMenuType.STORE); }
+                HUDType.COIN, () => { 
+                    if (IsEnableShowPopup()) 
+                    {
+                        soundManager?.PlayFx(Constant.UI.BUTTON_CLICK_FX_NAME);
+                        m_scrollView.MoveTo((int)MainMenuType.STORE); 
+                    }
+                }
             )
         );
 
@@ -157,6 +181,34 @@ public class MainScene : UIScene
 		);
 
 		m_userManager.OnUpdated += OnUpdateUI;
+
+        void OpenBuyHeartPopup(int itemIndex)
+        {
+            if (!m_itemDataTable.TryGetValue(itemIndex, out var itemData))
+			{
+				return;
+			}
+            
+			UIManager.ShowPopupUI<BuyHeartPopup>(
+				new BuyHeartPopupParameter(
+					Title: "Charge Heart",
+					Message: "Heart",
+					ExitParameter: ExitBaseParameter.CancelParam,
+                    BaseButtonParameter: new UITextButtonParameter {
+						OnClick = () => {
+							Debug.Log(CodeManager.GetMethodName() + "Request AD");
+						},
+						ButtonText = "Watch",
+						SubWidgetBuilder = () => {
+							var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
+							widget.OnSetup("UI_Icon_AD");
+							return widget.CachedGameObject;
+						}
+					},
+                    ItemData: itemData
+				)
+			);
+        }
 	}
 
 	public override void Show()
@@ -182,4 +234,9 @@ public class MainScene : UIScene
 	{
 		m_scrollView.OnUpdateUI(user);
 	}
+
+    private bool IsEnableShowPopup()
+    {
+        return transform.root.childCount < 2;
+    }
 }

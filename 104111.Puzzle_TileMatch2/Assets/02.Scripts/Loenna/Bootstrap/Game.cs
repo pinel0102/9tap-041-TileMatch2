@@ -9,7 +9,7 @@ using NineTap.Common;
 // 처음 구동
 public class Game : MonoBehaviour
 {
-	private static Game s_inst;
+    private static Game s_inst;
 	public static Game Inst => s_inst;
 
 	private ServiceRegistry<object> m_serviceRegistry = new();

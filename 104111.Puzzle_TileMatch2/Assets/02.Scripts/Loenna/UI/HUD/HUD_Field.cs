@@ -50,7 +50,6 @@ public class HUD_Field : CachedBehaviour
     public void AddListener(Action OnClick)
     {
         SoundManager soundManager = Game.Inst?.Get<SoundManager>();
-        m_button.onClick.AddListener(() => {    soundManager?.PlayFx(Constant.UI.BUTTON_CLICK_FX_NAME);
-                                                OnClick?.Invoke();  });
+        m_button.onClick.AddListener(() => {    OnClick?.Invoke();  });
     }
 }
