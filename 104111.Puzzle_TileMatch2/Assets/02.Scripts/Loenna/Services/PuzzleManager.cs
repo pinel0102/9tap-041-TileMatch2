@@ -66,7 +66,7 @@ public class PuzzleManager : IDisposable
 
 	public bool TryUnlockPiece(int index)
 	{
-		if(m_userManager.TryUpdate(requirePuzzle: 1))
+		if(m_userManager.TryUpdate(requirePuzzle: m_currentPlayingPuzzle.PieceCost))
 		{
 			var piece = PuzzlePieceMaker.CHECKER << index;
 			m_unlockedPieces |= piece;
