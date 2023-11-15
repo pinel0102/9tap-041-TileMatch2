@@ -139,8 +139,18 @@ partial class PlayScene
 				CurrentBoardIndex: var index,
 				CurrentBoard: var current
 			}:
-                m_puzzleData = m_puzzleDataTable.FirstOrDefault(index => index == level);
-                SetBackground();
+                if (level < 26)
+                {
+                    bg_default.SetActive(true);
+                    bg_puzzle.SetActive(false);
+                }
+                else
+                {
+                    m_puzzleData = m_puzzleDataTable.FirstOrDefault(index => index == level);
+                    bg_default.SetActive(false);
+                    bg_puzzle.SetActive(true);
+                    SetBackground();
+                }
 
 				m_progressId = 0;
 				m_block.SetActive(true);

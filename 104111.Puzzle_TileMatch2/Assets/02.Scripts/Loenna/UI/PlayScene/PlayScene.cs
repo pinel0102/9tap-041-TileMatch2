@@ -22,6 +22,8 @@ public partial class PlayScene : UIScene
 	[SerializeField]	private PlaySceneBottomUIView m_bottomView;
 	[SerializeField]	private GameObject m_block;
 	[SerializeField]	private Transform m_particleParent;
+    [SerializeField]	private GameObject bg_default;
+    [SerializeField]	private GameObject bg_puzzle;
     [SerializeField]    private Image backgroundImage;
 
 	private GameManager m_gameManager;
