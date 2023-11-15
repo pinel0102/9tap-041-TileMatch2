@@ -90,7 +90,7 @@ public class PuzzleContentItem : UIButton
 		onClick.AddListener(() => contentData?.onClick?.Invoke());
 		m_puzzleContentData = contentData;
 		PuzzleData puzzleData = contentData.PuzzleData;
-		var texture = Resources.Load<Texture2D>(puzzleData.GetImagePath());
+        var texture = Resources.Load<Texture2D>(puzzleData.GetImagePath());
 		m_thumbnail.texture = texture;
 		m_nameText.text = puzzleData.Name;
 

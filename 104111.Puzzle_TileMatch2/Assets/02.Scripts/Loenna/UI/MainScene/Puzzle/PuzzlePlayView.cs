@@ -89,7 +89,8 @@ public class PuzzlePlayView : CachedBehaviour
 
 		List<PuzzlePieceItemData> pieceScrollDatas = new();
 
-		var pieceSources = content.PieceSources;
+		int pieceCost = content.PieceCost;
+        var pieceSources = content.PieceSources;
 		List<int> placedList = content.GetPlacedPieceList();
 		List<int> unlockedList = content.GetUnlockedPieceList();
 
@@ -99,6 +100,7 @@ public class PuzzlePlayView : CachedBehaviour
 			int realIndex = pieceSource.Index;
 			PuzzlePieceItemData pieceData = new PuzzlePieceItemData { 
 				Index = realIndex,
+                Cost = pieceCost,
 				Sprite = pieceSources[index].Sprite,
 				Size = JigsawPuzzleSetting.Instance.PieceSizeWithPadding * ratio,
 				IsLocked = !unlockedList.Contains(realIndex),
@@ -125,8 +127,12 @@ public class PuzzlePlayView : CachedBehaviour
 
 	private void OnTryUnlock(PuzzlePieceItemData itemData)
 	{
+        Debug.Log(CodeManager.GetMethodName() + itemData.Index);
+
 		if (m_puzzleManager.TryUnlockPiece(itemData.Index))
 		{
+            Debug.Log(CodeManager.GetMethodName() + "SUCCESS");
+
 			itemData.IsLocked = false;
 			m_pieceScrollView.UpdateUI(itemData);
 		}
@@ -134,6 +140,8 @@ public class PuzzlePlayView : CachedBehaviour
 
 	private void OnMovePiece(PuzzlePieceItemData itemData, PointerEventData eventData)
 	{
+        Debug.Log(CodeManager.GetMethodName() + itemData.Index);
+        
 		JigsawPuzzlePiece piece = Instantiate(m_piecePrefab);
 
 		piece.name = $"piece[{itemData.Index}]";

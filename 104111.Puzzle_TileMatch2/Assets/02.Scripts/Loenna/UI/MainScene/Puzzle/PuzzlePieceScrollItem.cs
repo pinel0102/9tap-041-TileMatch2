@@ -7,10 +7,12 @@ using System;
 using Gpm.Ui;
 
 using TMPro;
+using UnityEditor.DeviceSimulation;
 
 public class PuzzlePieceItemData : InfiniteScrollData
 {
 	public int Index;
+    public int Cost;
 	public Sprite Sprite;
 	public float Size;
 	
@@ -33,6 +35,7 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem, IBeginDragHandler, IDra
 
 	[SerializeField]
 	private TMP_Text m_text;
+    private int cost;
 
 	private ScrollRect m_scrollRect;
 
@@ -53,6 +56,8 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem, IBeginDragHandler, IDra
 
 		if (scrollData is PuzzlePieceItemData itemData)
 		{
+            cost = itemData.Cost;
+            m_text.text = itemData.IsLocked ? cost.ToString() : string.Empty;
 			m_locked.SetActive(itemData.IsLocked);
 			m_image.sprite = itemData.Sprite;
 			m_image.rectTransform.SetSize(itemData.Size * RESIZE_RATIO);
@@ -62,8 +67,45 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem, IBeginDragHandler, IDra
 		m_image.color = Color.clear;
 	}
 
-	public void OnBeginDrag(PointerEventData eventData)
+    public void OnPointerDown()
+    {
+        if (m_dragging || m_scrolling)
+            return;
+        
+        if (scrollData is PuzzlePieceItemData itemData)
+        {
+            if (itemData.IsLocked)
+            {
+                itemData.OnTryUnlock?.Invoke(itemData);
+            }
+            else
+            {
+                //Select Piece
+            }
+        }
+    }
+
+    public void OnPointerUp()
+    {
+        if (m_dragging)
+            return;
+
+        m_dragging = false;
+		m_scrolling = false;
+
+        /*if (scrollData is PuzzlePieceItemData itemData)
+        {
+            if (itemData.IsLocked)
+            {
+                itemData.OnTryUnlock?.Invoke(itemData);
+            }
+        }*/
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
 	{
+        //Debug.Log(CodeManager.GetMethodName() + gameObject.name);
+
 		m_dragging = false;
 		m_scrolling = false;
 
@@ -72,6 +114,8 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem, IBeginDragHandler, IDra
 
 	public void OnDrag(PointerEventData eventData)
 	{
+        //Debug.Log(CodeManager.GetMethodName() + gameObject.name);
+
 		var (x, y) = eventData.delta.normalized;
 
 		if (m_dragging)
@@ -105,6 +149,8 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem, IBeginDragHandler, IDra
 
 	public void OnEndDrag(PointerEventData eventData)
 	{
+        //Debug.Log(CodeManager.GetMethodName() + gameObject.name);
+
 		if (m_dragging && m_scrolling)
 		{		
 			m_scrollRect?.OnEndDrag(eventData);
@@ -113,12 +159,12 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem, IBeginDragHandler, IDra
 		m_dragging = false;
 		m_scrolling = false;
 
-		if (eventData.delta.magnitude < 1f && scrollData is PuzzlePieceItemData itemData)
+		/*if (eventData.delta.magnitude < 1f && scrollData is PuzzlePieceItemData itemData)
 		{
 			if (itemData.IsLocked)
 			{
 				itemData.OnTryUnlock?.Invoke(itemData);
 			}
-		}
+		}*/
 	}
 }

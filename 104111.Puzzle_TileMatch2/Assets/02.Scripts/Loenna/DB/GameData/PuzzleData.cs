@@ -9,6 +9,7 @@ public record PuzzleData
     string Name,
     string Path,
     string CountryCode,
+    int Cost,
     int Level,
 	IReadOnlyList<int> Orders,
     IReadOnlyList<PieceData> Pieces

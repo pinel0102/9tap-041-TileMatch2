@@ -12,7 +12,7 @@ public class PuzzleManager : IDisposable
 	private readonly CancellationTokenSource m_cancellationTokenSource;
 	
 	private int m_puzzleIndex = 0;
-	private uint m_placedPieces = 0;
+    private uint m_placedPieces = 0;
 	private uint m_unlockedPieces = 0;
 
 	private Texture2D m_background;
@@ -48,8 +48,11 @@ public class PuzzleManager : IDisposable
 		m_currentPlayingPuzzle = new CurrentPlayingPuzzleContent(
 			PieceSources: puzzleData.Orders.Select(index => puzzlePieces[index]).ToArray(),
 			PlacedPieces: placedPieces,
-			UnlockedPieces: unlockedPieces
+			UnlockedPieces: unlockedPieces,
+            PieceCost: puzzleData.Cost
 		);
+
+        Debug.Log(CodeManager.GetMethodName() + string.Format("{0} / {1} / {2}", puzzleData.Index, puzzleData.Cost, puzzleData.Level));
 
 		return true;
 	}
