@@ -73,15 +73,17 @@ public record User
 		in Optional<Dictionary<SettingsType, bool>> settings = default
 	)
 	{
-		DateTimeOffset now = DateTimeOffset.Now;
+        DateTimeOffset now = DateTimeOffset.Now;
 		var endChargeAtValue = endChargeLifeAt.GetValueOrDefault(EndChargeLifeAt);
 
 		TimeSpan chargeTimeSpan = now > endChargeAtValue? TimeSpan.Zero : endChargeAtValue - now;
 
 		var remain = Mathf.CeilToInt((float)(chargeTimeSpan / TimeSpan.FromMilliseconds(Constant.User.REQUIRE_CHARGE_LIFE_MILLISECONDS)));
 
-		int maxLife = Constant.User.MAX_LIFE_COUNT;
-		var modifiedLife = Mathf.Clamp(maxLife - remain, 0, maxLife);
+        int maxLife = Constant.User.MAX_LIFE_COUNT;
+        var modifiedLife = IsFullLife() ? Life : Mathf.Clamp(maxLife - remain, 0, maxLife);
+
+        int newLife = life.HasValue ? life.Value : modifiedLife;
 
 		var (playingPuzzleIndex, placedPieces) = playingPuzzle.GetValueOrDefault((0, 0));
 		var (index, pieces) = unlockedPuzzlePiece.GetValueOrDefault((0, 0));
@@ -95,7 +97,6 @@ public record User
 				currentPlayingCollection.Add(playingPuzzleIndex, 0);
 			}
 
-
 			currentPlayingCollection[playingPuzzleIndex] = placedPieces;
 		}
 
@@ -108,9 +109,11 @@ public record User
 			unlockedPuzzlePieceDic[index] = pieces;
 		}
 
+        //Debug.Log(CodeManager.GetMethodName() + newLife);
+        
 		return new User(
 			Coin: coin.GetValueOrDefault(Coin),
-			Life: modifiedLife,
+			Life: newLife,
 			Puzzle: puzzle.GetValueOrDefault(Puzzle),
 			ExpiredLifeBoosterTime: expiredLifeBoosterAt.GetValueOrDefault(ExpiredLifeBoosterAt).ToUnixTimeMilliseconds(),
 			EndChargeLifeTime: endChargeLifeAt.GetValueOrDefault(EndChargeLifeAt).ToUnixTimeMilliseconds(),

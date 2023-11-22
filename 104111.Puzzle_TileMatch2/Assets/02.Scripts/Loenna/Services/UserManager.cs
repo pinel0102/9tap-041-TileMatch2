@@ -285,6 +285,6 @@ public class UserManager : IDisposable
 			return;
 		}
 
-		m_user.Update(user => user.Update());
+        m_user.Update(user => user.Update());
 	}
 }

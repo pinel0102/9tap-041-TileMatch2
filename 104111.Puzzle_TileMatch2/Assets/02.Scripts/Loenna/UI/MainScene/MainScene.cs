@@ -197,7 +197,7 @@ public class MainScene : UIScene
                     BaseButtonParameter: new UITextButtonParameter {
 						OnClick = () => {
 							Debug.Log(CodeManager.GetMethodName() + "Request AD");
-                            //m_userManager.Update(life: m_userManager.Current.Life + 10);
+                            m_userManager.Update(life: m_userManager.Current.Life + 1);
 						},
 						ButtonText = "Watch",
 						SubWidgetBuilder = () => {
