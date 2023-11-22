@@ -64,6 +64,11 @@ public class PlaySceneBasketView : CachedBehaviour
 			return UniTask.CompletedTask;
 		}
 
+        foreach(var item in removedTiles)
+        {
+            Debug.Log(CodeManager.GetMethodName() + string.Format("removedTiles.Guid : {0}", item.Current.Guid));
+        }
+
 		m_tileItems.RemoveAll(item => basket.All(b => b.Guid != item.Current.Guid));
 		
 		var tasks = removedTiles.Select(
@@ -80,6 +85,7 @@ public class PlaySceneBasketView : CachedBehaviour
 		var task = UniTask.Create(
 			async () => {
 				await UniTask.Defer(() => UniTask.WhenAll(tasks));
+                //Debug.Log(CodeManager.GetMethodName() + string.Format("m_tileItems.Count : {0}", m_tileItems.Count));
 				if (m_tileItems.Count > 0)
 				{
 					await UniTask.Defer(

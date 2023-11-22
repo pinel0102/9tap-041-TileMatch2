@@ -205,7 +205,7 @@ partial class GameManager
 				removeStartAt = currentBasket.FindIndex(x => x.Icon == tileItemModel.Icon);
 				if (removeStartAt >= 0)
 				{
-                    //Debug.Log(CodeManager.GetMethodName() + string.Format("removeStartAt : {0}", removeStartAt));
+                    Debug.Log(CodeManager.GetMethodName() + string.Format("removeStartAt : {0}", removeStartAt));
 					return true;
 				}
 			}
