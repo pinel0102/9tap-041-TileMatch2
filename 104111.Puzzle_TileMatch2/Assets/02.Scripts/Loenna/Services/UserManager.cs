@@ -109,8 +109,8 @@ public class UserManager : IDisposable
 		{
 			return;
 		}
-		
-		string path = Constant.User.DATA_PATH;
+
+        string path = Constant.User.DATA_PATH;
 
 		if (File.Exists(path))
 		{
@@ -126,6 +126,8 @@ public class UserManager : IDisposable
 				sr.Write(json);
 			}
 		}
+
+        Debug.Log(CodeManager.GetMethodName());
 	}
 
 	public bool TryUpdate
@@ -158,22 +160,28 @@ public class UserManager : IDisposable
 		}
 
 		bool onBooster = DateTimeOffset.FromUnixTimeMilliseconds(Current.ExpiredLifeBoosterTime) - DateTimeOffset.Now >= TimeSpan.FromSeconds(0);
+        int oldLife = Current.Life;
+        int newLife = onBooster ? Current.Life : Current.Life - 1;
 
 		m_user.Update(user => 
 			user.Update(
 				coin: user.Coin - requireCoin.GetValueOrDefault(0),
 				puzzle: user.Puzzle - requirePuzzle.GetValueOrDefault(0),
-				life: onBooster? Current.Life : Current.Life - 1,
-				endChargeLifeAt: CalcualteChargeLifeAt(user.EndChargeLifeTime, requireLife && user.ExpiredLifeBoosterTime <= 0)
+				life: newLife,
+				endChargeLifeAt: CalcualteChargeLifeAt(user.EndChargeLifeTime, newLife, requireLife && user.ExpiredLifeBoosterTime <= 0)
 			)
 		);
 
-		DateTimeOffset CalcualteChargeLifeAt(long time, bool requireLife)
+        if(requireLife)
+            Debug.Log(CodeManager.GetMethodName() + string.Format("[Life] {0} - {1} = {2} / Full : {3}", oldLife, onBooster ? 0 : 1, Current.Life, Current.EndChargeLifeAt.LocalDateTime));
+
+		DateTimeOffset CalcualteChargeLifeAt(long _oldEndChargeLifeTime, int _newLife, bool _requireLife)
 		{
-			DateTimeOffset at = DateTimeOffset.FromUnixTimeMilliseconds(time);
+			DateTimeOffset at = DateTimeOffset.FromUnixTimeMilliseconds(_oldEndChargeLifeTime);
 			DateTimeOffset chargeAt = at > DateTimeOffset.Now? at : DateTimeOffset.Now;
 
-			return requireLife? (chargeAt + TimeSpan.FromMilliseconds(Constant.User.REQUIRE_CHARGE_LIFE_MILLISECONDS)) : chargeAt;
+			return _newLife >= Constant.User.MAX_LIFE_COUNT ? DateTimeOffset.Now :
+                _requireLife ? chargeAt.Add(TimeSpan.FromMilliseconds(Constant.User.REQUIRE_CHARGE_LIFE_MILLISECONDS)) : chargeAt;
 		}
 		return true;
 	}
@@ -252,6 +260,34 @@ public class UserManager : IDisposable
 				ownSkillItems: ownSkillItems
 			)
 		);
+	}
+
+    public void GetItem_Life(int addCount)
+	{
+		if (m_user?.Value == null)
+		{
+			return;
+		}
+
+        int oldLife = Current.Life;
+
+        m_user.Update(
+			user => user.Update(
+				life: user.Life + addCount,
+				endChargeLifeAt: CalcualteChargeLifeAt(user.EndChargeLifeTime, user.Life, addCount)
+			)
+		);
+
+        Debug.Log(CodeManager.GetMethodName() + string.Format("[Life] {0} + {1} = {2} / Full : {3}", oldLife, addCount, Current.Life, Current.EndChargeLifeAt.LocalDateTime));
+
+        DateTimeOffset CalcualteChargeLifeAt(long _oldEndChargeLifeTime, int _oldLife, int _addCount)
+        {
+            DateTimeOffset at = DateTimeOffset.FromUnixTimeMilliseconds(_oldEndChargeLifeTime);
+            DateTimeOffset chargeAt = at > DateTimeOffset.Now ? at : DateTimeOffset.Now;
+
+            return (_oldLife + _addCount) >= Constant.User.MAX_LIFE_COUNT ? DateTimeOffset.Now : (
+                _addCount == 0 ? chargeAt : chargeAt.Subtract(TimeSpan.FromMilliseconds(Constant.User.REQUIRE_CHARGE_LIFE_MILLISECONDS * _addCount)));
+        }
 	}
 
 	public void UpdateSettings(SettingsType type, bool value)

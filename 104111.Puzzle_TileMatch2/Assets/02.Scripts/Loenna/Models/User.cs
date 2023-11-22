@@ -74,18 +74,15 @@ public record User
 	)
 	{
         DateTimeOffset now = DateTimeOffset.Now;
-		var endChargeAtValue = endChargeLifeAt.GetValueOrDefault(EndChargeLifeAt);
-
-		TimeSpan chargeTimeSpan = now > endChargeAtValue? TimeSpan.Zero : endChargeAtValue - now;
-
-		var remain = Mathf.CeilToInt((float)(chargeTimeSpan / TimeSpan.FromMilliseconds(Constant.User.REQUIRE_CHARGE_LIFE_MILLISECONDS)));
-
+        DateTimeOffset endChargeAtValue = endChargeLifeAt.GetValueOrDefault(EndChargeLifeAt);
+		TimeSpan chargeTimeSpan = now > endChargeAtValue ? TimeSpan.Zero : endChargeAtValue.Subtract(now);        
+		
+        var remain = Mathf.CeilToInt((float)(chargeTimeSpan / TimeSpan.FromMilliseconds(Constant.User.REQUIRE_CHARGE_LIFE_MILLISECONDS)));
         int maxLife = Constant.User.MAX_LIFE_COUNT;
         var modifiedLife = IsFullLife() ? Life : Mathf.Clamp(maxLife - remain, 0, maxLife);
-
         int newLife = life.HasValue ? life.Value : modifiedLife;
 
-		var (playingPuzzleIndex, placedPieces) = playingPuzzle.GetValueOrDefault((0, 0));
+        var (playingPuzzleIndex, placedPieces) = playingPuzzle.GetValueOrDefault((0, 0));
 		var (index, pieces) = unlockedPuzzlePiece.GetValueOrDefault((0, 0));
 		var currentPlayingCollection = PlayingPuzzleCollection ?? new();
 		var unlockedPuzzlePieceDic = UnlockedPuzzlePieceDic ?? new();
@@ -109,9 +106,7 @@ public record User
 			unlockedPuzzlePieceDic[index] = pieces;
 		}
 
-        //Debug.Log(CodeManager.GetMethodName() + newLife);
-        
-		return new User(
+        User user = new User(
 			Coin: coin.GetValueOrDefault(Coin),
 			Life: newLife,
 			Puzzle: puzzle.GetValueOrDefault(Puzzle),
@@ -125,6 +120,10 @@ public record User
 			OwnSkillItems: ownSkillItems.GetValueOrDefault(OwnSkillItems),
 			Settings: settings.GetValueOrDefault(Settings)
 		);
+
+        //Debug.Log(CodeManager.GetMethodName() + string.Format("Life : {0} / EndChargeLifeAt : {1}", user.Life, user.EndChargeLifeAt.LocalDateTime));
+
+		return user;
 	}
 
 	public (bool coin, bool life, bool puzzle) Valid

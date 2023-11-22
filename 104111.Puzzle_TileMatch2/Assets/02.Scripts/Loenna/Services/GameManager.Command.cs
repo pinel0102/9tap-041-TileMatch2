@@ -214,6 +214,16 @@ partial class GameManager
 		}
 	}
 
+    public bool IsBasketEnable()
+    {
+        return GetBasketCount() < Constant.Game.MAX_BASKET_AMOUNT;
+    }
+
+    public int GetBasketCount()
+    {
+        return BoardInfo.Basket.Count;
+    }
+
 	#region Private Methods
 	public void UseStash()
 	{

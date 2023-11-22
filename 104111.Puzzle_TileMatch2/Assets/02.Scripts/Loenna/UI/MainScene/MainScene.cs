@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
 using NineTap.Common;
+using System;
+using UnityEngine.Rendering;
 
 public record MainSceneParameter(MainMenuType ShowMenuType = MainMenuType.HOME, PuzzleManager PuzzleManager = null) : DefaultParameter();
 
@@ -196,8 +198,8 @@ public class MainScene : UIScene
 					ExitParameter: ExitBaseParameter.CancelParam,
                     BaseButtonParameter: new UITextButtonParameter {
 						OnClick = () => {
-							Debug.Log(CodeManager.GetMethodName() + "Request AD");
-                            m_userManager.Update(life: m_userManager.Current.Life + 1);
+							Debug.Log(CodeManager.GetMethodName() + "Request AD");                            
+                            GetItem_Life(1);
 						},
 						ButtonText = "Watch",
 						SubWidgetBuilder = () => {
@@ -211,6 +213,11 @@ public class MainScene : UIScene
 			);
         }
 	}
+
+    public void GetItem_Life(int addCount)
+    {
+        m_userManager.GetItem_Life(addCount);
+    }
 
 	public override void Show()
 	{

@@ -1,4 +1,6 @@
+using System.Diagnostics;
 using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks.Linq;
 
 public class PlaySceneCommandReceiver : Command.Receiver<CommandResource.PlayScene>
 {
@@ -11,25 +13,27 @@ public class PlaySceneCommandReceiver : Command.Receiver<CommandResource.PlaySce
 
 	public override UniTask Execute(CommandResource.PlayScene resource)
 	{
-		var (type, tileItem) = resource;
+        if (m_gameManager.IsBasketEnable())
+        {
+            var (type, tileItem) = resource;
 
-		var list = m_gameManager.MoveTo(tileItem, type.GetLocationType());
+            var list = m_gameManager.MoveTo(tileItem, type.GetLocationType());
+            var result = tileItem with { Location = type.GetLocationType()};
 
-		var result = tileItem with { Location = type.GetLocationType() };
-
-		switch (type)
-		{
-			case CommandType.PlayScene.ROLLBACK_TILE_TO_BOARD:
-				m_gameManager.AddToBoard(result, list);
-				break;
-			case CommandType.PlayScene.MOVE_TILE_IN_BOARD_TO_BASKET:
-			case CommandType.PlayScene.MOVE_TILE_IN_STASH_TO_BASKET:
-				m_gameManager.AddToBasket(result, list);
-				break;
-			case CommandType.PlayScene.ROLLBACK_TILE_TO_STASH:
-				m_gameManager.AddToStash(result, list);
-				break;
-		}
+            switch (type)
+            {
+                case CommandType.PlayScene.ROLLBACK_TILE_TO_BOARD:
+                    m_gameManager.AddToBoard(result, list);
+                    break;
+                case CommandType.PlayScene.MOVE_TILE_IN_BOARD_TO_BASKET:
+                case CommandType.PlayScene.MOVE_TILE_IN_STASH_TO_BASKET:
+                    m_gameManager.AddToBasket(result, list);
+                    break;
+                case CommandType.PlayScene.ROLLBACK_TILE_TO_STASH:
+                    m_gameManager.AddToStash(result, list);
+                    break;
+            }
+        }
 
 		return UniTask.CompletedTask;
 	}
