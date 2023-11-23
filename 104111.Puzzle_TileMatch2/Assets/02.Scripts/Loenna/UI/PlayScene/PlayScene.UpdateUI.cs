@@ -110,18 +110,21 @@ partial class PlayScene
 			m_block.SetActive(false);
 			return;
 		}
-		
-		UIManager.ShowPopupUI<GiveupPopup>(
-			new DefaultPopupParameter(
-				Title: "Purchase (TBD)",
-				Message: "Purchase Coin (TBD)",
-				ExitParameter: ExitBaseParameter.CancelParam,
-				BaseButtonParameter: new UITextButtonParameter {
-					ButtonText = "Go to Shop",
-					OnClick = () => OnExit(true)
-				}
-			)
-		);
+
+        UIManager.ShowPopupUI<GiveupPopup>(
+            new DefaultPopupParameter(
+                Title: "Purchase",
+                Message: "Purchase Coin",
+                ExitParameter: new ExitBaseParameter(
+                    includeBackground: false,
+                    onExit: () => OnExit(false)
+                ),
+                BaseButtonParameter: new UITextButtonParameter {
+                    ButtonText = "Go to Shop",
+                    OnClick = () => OnExit(true)
+                }
+            )
+        );
 	}
 
 	private async UniTask OnUpdateUI(CurrentPlayState currentPlayState)

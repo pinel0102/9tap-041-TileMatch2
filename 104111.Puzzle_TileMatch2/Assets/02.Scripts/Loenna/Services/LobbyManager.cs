@@ -63,8 +63,8 @@ public class LobbyManager : IDisposable
 							//하트 구매 요구 (TBD)
 							UIManager.ShowPopupUI<GiveupPopup>(
 								new DefaultPopupParameter(
-									Title: "Purchase (TBD)",
-									Message: "Purchase Life (TBD)",
+									Title: "Purchase",
+									Message: "Purchase Life",
 									ExitParameter: ExitBaseParameter.CancelParam,
 									BaseButtonParameter: new UITextButtonParameter {
 										ButtonText = "Go to Shop",

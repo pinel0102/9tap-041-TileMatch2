@@ -313,8 +313,8 @@ public partial class PlayScene : UIScene
 							//하트 구매 요구 (TBD)
 							UIManager.ShowPopupUI<GiveupPopup>(
 								new DefaultPopupParameter(
-									Title: "Purchase (TBD)",
-									Message: "Purchase Life (TBD)",
+									Title: "Purchase",
+									Message: "Purchase Life",
 									ExitParameter: new ExitBaseParameter(
 										onExit: () => OnExit(false)
 									),
