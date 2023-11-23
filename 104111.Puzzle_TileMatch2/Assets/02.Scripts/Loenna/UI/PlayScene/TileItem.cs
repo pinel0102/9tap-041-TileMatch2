@@ -100,6 +100,8 @@ public class TileItem : CachedBehaviour
 	[SerializeField]
 	private EventTrigger m_trigger;
 
+    public RectTransform m_triggerArea;
+
 	[SerializeField]
 	private MissionPiece m_missionTile;
 
@@ -115,6 +117,7 @@ public class TileItem : CachedBehaviour
 	private TileItemModel m_current;
 	public TileItemModel Current => m_current;
 
+    public bool isInteractable => m_interactable;
 	private bool m_interactable = false;
 
 	private TweenContext? m_positionTween;
@@ -210,15 +213,19 @@ public class TileItem : CachedBehaviour
 			{
 				soundManager.PlayFx(Constant.UI.BUTTON_CLICK_FX_NAME);
                 m_interactable = false;
-				//parameter.OnClick?.Invoke(this);
-                Debug.Log(CodeManager.GetMethodName() + string.Format("Scale 1.25f : {0}", m_current.Guid));
+				
+                m_view.SetLocalScale(Vector2.one * 1.25f);
 
-                return m_scaleTween?.OnChangeValue(Vector3.one * 1.25f, Constant.Game.DEFAULT_DURATION_SECONDS * 0.25f, () => {
+                return m_scaleTween?.OnChangeValue(Vector3.one, Constant.Game.DEFAULT_DURATION_SECONDS * 0.5f, () => {
+                        parameter.OnClick?.Invoke(this);
+                }) ?? UniTask.CompletedTask;
+
+                /*return m_scaleTween?.OnChangeValue(Vector3.one * 1.25f, Constant.Game.DEFAULT_DURATION_SECONDS * 0.25f, () => {
                     Debug.Log(CodeManager.GetMethodName() + string.Format("Scale 1.00f : {0}", m_current.Guid));
                     m_scaleTween?.OnChangeValue(Vector3.one, Constant.Game.DEFAULT_DURATION_SECONDS * 0.25f, () => {
                         parameter.OnClick?.Invoke(this);
                     });                    
-                }) ?? UniTask.CompletedTask;
+                }) ?? UniTask.CompletedTask;*/
             }
 
 			/*if (type is EventTriggerType.PointerDown)
@@ -298,8 +305,8 @@ public class TileItem : CachedBehaviour
 
 		Vector2 direction = moveAt ?? Current.Position;
 
-        if (location == LocationType.POOL)
-            Debug.Log(CodeManager.GetMethodName() + string.Format("Scale 0 : {0}", m_current.Guid));
+        //if (location == LocationType.POOL)
+        //    Debug.Log(CodeManager.GetMethodName() + string.Format("Scale 0 : {0}", m_current.Guid));
 
 		return (location, Current != null) switch {
 			(LocationType.STASH or LocationType.BASKET, _) => m_positionTween?.OnChangeValue(direction, duration) ?? UniTask.CompletedTask,

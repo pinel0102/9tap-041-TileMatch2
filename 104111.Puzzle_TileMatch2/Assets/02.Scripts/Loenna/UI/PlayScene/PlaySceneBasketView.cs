@@ -64,10 +64,10 @@ public class PlaySceneBasketView : CachedBehaviour
 			return UniTask.CompletedTask;
 		}
 
-        foreach(var item in removedTiles)
+        /*foreach(var item in removedTiles)
         {
             Debug.Log(CodeManager.GetMethodName() + string.Format("removedTiles.Guid : {0}", item.Current.Guid));
-        }
+        }*/
 
 		m_tileItems.RemoveAll(item => basket.All(b => b.Guid != item.Current.Guid));
 		

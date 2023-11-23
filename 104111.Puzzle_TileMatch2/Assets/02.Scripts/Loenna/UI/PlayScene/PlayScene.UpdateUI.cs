@@ -299,6 +299,8 @@ partial class PlayScene
 				break;
 		}
 
+        CheckAroundTiles();
+
         void SetBackground()
         {
             string path = m_puzzleData.GetImagePath();
@@ -306,6 +308,40 @@ partial class PlayScene
 
             var sprite = Resources.Load<Sprite>(path);
             backgroundImage.sprite = sprite;
+        }
+
+        void CheckAroundTiles()
+        {
+            //Debug.Log(CodeManager.GetMethodName());
+
+            m_tileItems.ForEach(tile => {
+                tile.m_triggerArea.SetOffsetX(0, 0);
+                tile.m_triggerArea.SetOffsetY(0, 0);
+            });
+
+            var boardTiles = m_tileItems
+                .Where(tileItem => tileItem.isInteractable && tileItem.Current.Location is LocationType.BOARD).ToList();
+
+            for(int i=0; i < boardTiles.Count; i++)
+            {
+                TileItem currentTile = boardTiles[i];
+                TileItemModel currentModel = currentTile.Current;
+                Vector2 currentPosition = currentModel.Position;
+
+                var checkPosition = Constant.Game.AROUND_TILE_POSITION
+                    .Select(pos => { return pos + currentPosition; }).ToList();
+
+                var checkTiles = boardTiles
+                    .Where(tileItem => tileItem != currentTile && checkPosition.Contains(tileItem.Current.Position)).ToList();
+
+                bool existLeft   = checkTiles.Count > 0 && checkTiles.Where(item => item.Current.Position.x == currentPosition.x - Constant.Game.TILE_WIDTH).Count() > 0;
+                bool existRight  = checkTiles.Count > 0 && checkTiles.Where(item => item.Current.Position.x == currentPosition.x + Constant.Game.TILE_WIDTH).Count() > 0;
+                bool existTop    = checkTiles.Count > 0 && checkTiles.Where(item => item.Current.Position.y == currentPosition.y + Constant.Game.TILE_HEIGHT).Count() > 0;
+                bool existBottom = checkTiles.Count > 0 && checkTiles.Where(item => item.Current.Position.y == currentPosition.y - Constant.Game.TILE_HEIGHT).Count() > 0;
+
+                currentTile.m_triggerArea.SetOffsetX(existLeft ? 0 : Constant.Game.AROUND_TILE_OFFSET_LEFT, existRight ? 0 : Constant.Game.AROUND_TILE_OFFSET_RIGHT);
+                currentTile.m_triggerArea.SetOffsetY(existBottom ? 0 : Constant.Game.AROUND_TILE_OFFSET_BOTTOM, existTop ? 0 : Constant.Game.AROUND_TILE_OFFSET_TOP);
+            }
         }
 	}
 }

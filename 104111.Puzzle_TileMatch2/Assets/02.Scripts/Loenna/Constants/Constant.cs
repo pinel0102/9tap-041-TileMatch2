@@ -2,6 +2,7 @@ using UnityEngine;
 
 using System.IO;
 using System;
+using System.Collections.Generic;
 
 public static class Constant
 {
@@ -24,6 +25,8 @@ public static class Constant
 	{
 		public const float TILE_WIDTH = 88f;
 		public const float TILE_HEIGHT = 92f;
+        public const float TILE_WIDTH_HALF = 44f;
+		public const float TILE_HEIGHT_HALF = 46f;
 		public const int REQUIRED_MATCH_COUNT = 3;
 		public const int MAX_BASKET_AMOUNT = 7;
 		public const int STASH_TILE_AMOUNT = 3;
@@ -32,6 +35,38 @@ public static class Constant
 		public const float DEFAULT_DURATION_SECONDS = 0.25f;
 
 		public static readonly Vector2 RESIZE_TILE_RATIOS = new Vector2(0.55f, 0.575f);
+
+        public const float AROUND_TILE_OFFSET_LEFT = -15;
+        public const float AROUND_TILE_OFFSET_RIGHT = 15;
+        public const float AROUND_TILE_OFFSET_BOTTOM = -25;
+        public const float AROUND_TILE_OFFSET_TOP = 15;
+        public static readonly List<Vector2> AROUND_TILE_POSITION = new List<Vector2>()
+        {
+            new Vector2(TILE_WIDTH, TILE_HEIGHT),
+            new Vector2(TILE_WIDTH, TILE_HEIGHT_HALF),
+            new Vector2(TILE_WIDTH, 0),
+            new Vector2(TILE_WIDTH, -TILE_HEIGHT_HALF),
+            new Vector2(TILE_WIDTH, -TILE_HEIGHT),
+            new Vector2(TILE_WIDTH_HALF, TILE_HEIGHT),
+            new Vector2(TILE_WIDTH_HALF, TILE_HEIGHT_HALF),
+            new Vector2(TILE_WIDTH_HALF, 0),
+            new Vector2(TILE_WIDTH_HALF, -TILE_HEIGHT_HALF),
+            new Vector2(TILE_WIDTH_HALF, -TILE_HEIGHT),
+            new Vector2(-TILE_WIDTH, TILE_HEIGHT),
+            new Vector2(-TILE_WIDTH, TILE_HEIGHT_HALF),
+            new Vector2(-TILE_WIDTH, 0),
+            new Vector2(-TILE_WIDTH, -TILE_HEIGHT_HALF),
+            new Vector2(-TILE_WIDTH, -TILE_HEIGHT),
+            new Vector2(-TILE_WIDTH_HALF, TILE_HEIGHT),
+            new Vector2(-TILE_WIDTH_HALF, TILE_HEIGHT_HALF),
+            new Vector2(-TILE_WIDTH_HALF, 0),
+            new Vector2(-TILE_WIDTH_HALF, -TILE_HEIGHT_HALF),
+            new Vector2(-TILE_WIDTH_HALF, -TILE_HEIGHT),
+            new Vector2(0, TILE_HEIGHT),
+            new Vector2(0, TILE_HEIGHT_HALF),
+            new Vector2(0, -TILE_HEIGHT_HALF),
+            new Vector2(0, -TILE_HEIGHT)
+        };
 	}
 
 	public static class Puzzle
