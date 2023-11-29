@@ -117,11 +117,17 @@ partial class PlayScene
                 Message: "Purchase Coin",
                 ExitParameter: new ExitBaseParameter(
                     includeBackground: false,
-                    onExit: () => OnExit(false)
+                    onExit: () => {
+                        m_userManager.TryUpdate(requireLife: true);
+                        OnExit(false);
+                    }
                 ),
                 BaseButtonParameter: new UITextButtonParameter {
                     ButtonText = "Go to Shop",
-                    OnClick = () => OnExit(true)
+                    OnClick = () => {
+                        m_userManager.TryUpdate(requireLife: true);
+                        OnExit(true);
+                    }
                 }
             )
         );
