@@ -9,16 +9,18 @@ public record MainSceneParameter(MainMenuType ShowMenuType = MainMenuType.HOME, 
 [ResourcePath("UI/Scene/MainScene")]
 public class MainScene : UIScene
 {
-	[SerializeField]
+    [SerializeField]
 	private MainSceneScrollView m_scrollView;
 
 	[SerializeField]
 	private MainSceneNavigationView m_navigationView;
 
-	private LobbyManager m_lobbyManager;
+    private LobbyManager m_lobbyManager;
 	private	UserManager m_userManager;
     private ItemDataTable m_itemDataTable;
 	private ProductDataTable m_productDataTable;
+
+    public MainSceneScrollView scrollView => m_scrollView;
 
 	public override void OnSetup(UIParameter uiParameter)
 	{
@@ -213,6 +215,11 @@ public class MainScene : UIScene
 			);
         }
 	}
+
+    public void MoveTo(MainMenuType type)
+    {
+        m_scrollView.MoveTo((int)type);
+    }
 
     public void GetItem_Life(int addCount)
     {

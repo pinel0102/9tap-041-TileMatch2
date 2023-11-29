@@ -9,6 +9,8 @@ namespace UI.Pagination
         {
             if (PaginationUtilities.IsPrefab(this)) return;
 
+            isInitialized = false;
+
             CurrentPage = DefaultPage;
 
             // This is to help maintain compatibility with earlier versions of PagedRect where ScrollRect was a standard Unity ScrollRect instead of a PagedRect_ScrollRect

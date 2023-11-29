@@ -58,47 +58,65 @@ public static class UIManager
 		// 먼저 팝업 닫기 시도
 		bool closedPopup = s_implementation?.PopupManager?.ClosePopupUI() ?? false;
 
-		//씬 닫기
-		if (!closedPopup)
-		{
-			s_implementation?.SceneManager?.BackSceneUI();
-		}
-
-		if (s_implementation?.PopupManager?.Last != null)
-		{
-			UIParameter parameter = s_implementation.PopupManager.Last.CachedParameter!;
-			s_implementation.AttachHUD(parameter.VisibleHUD);
-		}
+        if(closedPopup)
+        {
+            Debug.Log(CodeManager.GetMethodName() + closedPopup);
+            return;
+        }    
 		else
 		{
-			UIScene scene = s_implementation?.SceneManager?.CurrentScene!;
-			if (scene != null)
-			{
-				s_implementation.AttachHUD(scene.CachedParameter.VisibleHUD);
-			}
+            if (s_implementation?.PopupManager?.Last != null)
+            {
+                UIParameter parameter = s_implementation.PopupManager.Last.CachedParameter!;
+                s_implementation.AttachHUD(parameter.VisibleHUD);
+            }
+            else
+            {
+                UIScene scene = s_implementation?.SceneManager?.CurrentScene!;
+                if (scene != null)
+                {
+                    s_implementation.AttachHUD(scene.CachedParameter.VisibleHUD);
+                }
 
-			if (s_implementation?.SceneManager?.CurrentScene is MainScene mainScene)
-			{
-				// 종료 팝업 띄우기
-				ShowPopupUI<SimplePopup>(
-					new SimplePopupParameter(
-						Title: NineTap.Constant.Text.Popup.Title.QUIT,
-						Message: NineTap.Constant.Text.Popup.Message.Quit,
-						ExitParameter: ExitBaseParameter.CancelParam,
-						BaseButtonParameter: new UITextButtonParameter {
-							ButtonText = NineTap.Constant.Text.Button.QUIT,
-							OnClick = Application.Quit
-						},
-						LeftButtonParameter: new UITextButtonParameter {
-							ButtonText = NineTap.Constant.Text.Button.PLAY_ON,
-							OnClick = ClosePopupUI
-						},
-						HUDTypes: mainScene.CachedParameter.VisibleHUD
-					)
-				);
-			}
+                switch (s_implementation?.SceneManager?.CurrentScene)
+                {
+                    case MainScene mainScene:
+                        Debug.Log(CodeManager.GetMethodName() + mainScene.scrollView.PagedRect.currentTab);
+                        if(mainScene.scrollView.PagedRect.currentTab != MainMenuType.HOME)
+                        {
+                            mainScene.MoveTo(MainMenuType.HOME);
+                        }
+                        else
+                        {
+                            // Quit 팝업 띄우기
+                            ShowPopupUI<SimplePopup>(
+                                new SimplePopupParameter(
+                                    Title: NineTap.Constant.Text.Popup.Title.QUIT,
+                                    Message: NineTap.Constant.Text.Popup.Message.Quit,
+                                    ExitParameter: ExitBaseParameter.CancelParam,
+                                    BaseButtonParameter: new UITextButtonParameter {
+                                        ButtonText = NineTap.Constant.Text.Button.PLAY_ON,
+                                        OnClick = ClosePopupUI
+                                    },
+                                    LeftButtonParameter: new UITextButtonParameter {
+                                        ButtonText = NineTap.Constant.Text.Button.QUIT,
+                                        OnClick = Application.Quit
+                                    },						
+                                    HUDTypes: mainScene.CachedParameter.VisibleHUD
+                                )
+                            );
+                        }
+                        break;
+                    case PlayScene playScene:
+                        // Pause 팝업 띄우기
+                        playScene.OnPause();
+                        break;
+                    case StoreScene storeScene:
+                        s_implementation?.SceneManager?.BackSceneUI();
+                        break;
+                }
+            }
 		}
-		
 	}
 
 	public static void ClosePopupUI()

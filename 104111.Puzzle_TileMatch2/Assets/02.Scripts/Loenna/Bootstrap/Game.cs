@@ -81,12 +81,12 @@ public class Game : MonoBehaviour
 		m_serviceRegistry.Dispose();
 	}
 
-	//private void LateUpdate()
-	//{
-	//	if (Keyboard.current.escapeKey.wasPressedThisFrame ||
-	//		Keyboard.current.backspaceKey.wasPressedThisFrame)
-	//	{
-	//		UIManager.ReturnBackUI();
-	//	}
-	//}
+	private void FixedUpdate()
+    {
+        if (Keyboard.current.escapeKey.wasPressedThisFrame ||
+			Keyboard.current.backspaceKey.wasPressedThisFrame)
+        {
+            UIManager.ReturnBackUI();
+        }
+    }
 }

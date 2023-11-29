@@ -150,7 +150,7 @@ public partial class PlayScene : UIScene
 
 			UIManager.ShowPopupUI<BuyItemPopup>(
 				new BuyItemPopupParameter(
-					Title: "Purchase (TBD)",
+					Title: "Purchase",
 					Message: $"{itemData.Name}",
 					ExitParameter: ExitBaseParameter.CancelParam,
 					BaseButtonParameter: new UITextButtonParameter {
@@ -178,7 +178,7 @@ public partial class PlayScene : UIScene
 		m_gameManager.LoadLevel(m_userManager.Current.Level, m_mainView.CachedRectTransform);
 	}
 
-	private void OnPause()
+	public void OnPause()
 	{
 		UIManager.ShowPopupUI<PausePopup>(
 			new PausePopupParameter(

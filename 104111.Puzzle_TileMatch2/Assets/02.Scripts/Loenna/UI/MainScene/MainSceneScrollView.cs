@@ -15,13 +15,14 @@ public record MainSceneScrollViewParameter(
 
 public class MainSceneScrollView : CachedBehaviour
 {
-	[SerializeField]
+    [SerializeField]
 	private PagedRect m_pagedRect;
 
 	[SerializeField]
 	private List<ScrollViewFragmentContent> m_contents;
 
-	public ScrollRect ScrollRect => m_pagedRect.ScrollRect;
+    public ScrollRect ScrollRect => m_pagedRect.ScrollRect;
+    public PagedRect PagedRect => m_pagedRect;
 
 	public void OnSetup(MainSceneScrollViewParameter parameter)
 	{

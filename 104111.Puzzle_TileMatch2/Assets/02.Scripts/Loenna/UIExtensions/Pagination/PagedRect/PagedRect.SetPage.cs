@@ -9,6 +9,7 @@ namespace UI.Pagination
     public partial class PagedRect
     {
         public bool isInitialized = false;
+        public MainMenuType currentTab;
 
 		public event Action<int> OnPageUpdated;
         /// <summary>
@@ -42,6 +43,8 @@ namespace UI.Pagination
             if (initial)
                 isInitialized = true;
 
+            //Debug.Log(CodeManager.GetMethodName() + string.Format("{0} / {1}", initial, isInitialized));
+            
             if (!isInitialized) return;
 
             if (NumberOfPages == 0) return;
@@ -68,6 +71,7 @@ namespace UI.Pagination
             CurrentPage = newPage;
 
             var newPageIndex = GetPagePosition(newPage) - 1;
+            currentTab = (MainMenuType)newPageIndex;
 
             if (!UsingScrollRect)
             {
