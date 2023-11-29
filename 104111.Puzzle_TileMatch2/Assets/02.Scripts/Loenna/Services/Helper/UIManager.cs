@@ -5,10 +5,11 @@ using UnityEngine.UI;
 
 using NineTap.Common;
 
-public static class UIManager
+public static partial class UIManager
 {
 	private static GameObject? m_root;
 	private static UIManager_Imp? s_implementation;
+    private static UserManager? m_userManager;
 
 	public static GameObject Root
 	{
@@ -30,6 +31,8 @@ public static class UIManager
 	{
         Debug.Log(CodeManager.GetMethodName());
         
+        m_userManager = userManager;
+
 		HUD hud = new HUD(userManager);
 		SceneManager sceneManager = CreateSceneManager();
 		PopupManager popupManager = new PopupManager(Root);

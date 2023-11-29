@@ -109,6 +109,7 @@ public class GameClearPopup : UIPopup
 			if (mode == Constant.Scene.CLIENT)
 			{
 				UIManager.ShowSceneUI<MainScene>(new DefaultParameter());
+                UIManager.ShowReviewPopup(parameter.Level);
 			}
 			else
 			{

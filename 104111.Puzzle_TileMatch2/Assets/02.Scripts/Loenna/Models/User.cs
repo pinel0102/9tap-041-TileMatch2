@@ -18,6 +18,8 @@ public record User
 	long ExpiredLifeBoosterTime, // 하트 부스터 끝나는 시간
 	long EndChargeLifeTime, // 하트가 모두 충전되는 시간
 
+    bool IsRated,    
+
 	// 게임 현황
 	int Level, // 플레이할 레벨
 	int CurrentPlayingPuzzleIndex, // 플레이 중인 퍼즐
@@ -35,6 +37,7 @@ public record User
 		Puzzle: 0,
 		ExpiredLifeBoosterTime: 0L,
 		EndChargeLifeTime: 0L,
+        IsRated: false,
 		Level: 1,
 		ClearedPuzzleCollection: new(),
 		CurrentPlayingPuzzleIndex: 1001, //퍼즐 하나는 무조건 언락되어 있는 상태
@@ -64,7 +67,8 @@ public record User
 		in Optional<int> puzzle = default,
 		in Optional<DateTimeOffset> expiredLifeBoosterAt = default,
 		in Optional<DateTimeOffset> endChargeLifeAt = default,
-		in Optional<int> level = default,
+        in Optional<int> level = default,
+        in Optional<bool> isRated = default,
 		in Optional<int> currentPlayingPuzzleIndex = default,
 		in Optional<(int, uint)> unlockedPuzzlePiece = default,
 		in Optional<List<int>> clearedPuzzleCollection = default,
@@ -112,7 +116,8 @@ public record User
 			Puzzle: puzzle.GetValueOrDefault(Puzzle),
 			ExpiredLifeBoosterTime: expiredLifeBoosterAt.GetValueOrDefault(ExpiredLifeBoosterAt).ToUnixTimeMilliseconds(),
 			EndChargeLifeTime: endChargeLifeAt.GetValueOrDefault(EndChargeLifeAt).ToUnixTimeMilliseconds(),
-			Level: level.GetValueOrDefault(Level),
+            Level: level.GetValueOrDefault(Level),
+            IsRated: isRated.GetValueOrDefault(IsRated),
 			CurrentPlayingPuzzleIndex: currentPlayingPuzzleIndex.GetValueOrDefault(CurrentPlayingPuzzleIndex),
 			UnlockedPuzzlePieceDic: unlockedPuzzlePieceDic,
 			PlayingPuzzleCollection: currentPlayingCollection,
