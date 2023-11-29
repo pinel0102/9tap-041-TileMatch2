@@ -8,6 +8,7 @@ namespace UI.Pagination
 {
     public partial class PagedRect
     {
+        public bool isInitialized = false;
 
 		public event Action<int> OnPageUpdated;
         /// <summary>
@@ -38,6 +39,11 @@ namespace UI.Pagination
         /// <param name="initial"></param>
         public virtual void SetCurrentPage(int newPage, bool initial)
         {
+            if (initial)
+                isInitialized = true;
+
+            if (!isInitialized) return;
+
             if (NumberOfPages == 0) return;
 
             if (newPage > NumberOfPages)
