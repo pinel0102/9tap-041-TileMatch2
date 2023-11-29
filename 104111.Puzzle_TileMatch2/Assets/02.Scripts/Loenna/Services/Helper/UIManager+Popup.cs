@@ -7,7 +7,7 @@ using NineTap.Common;
 
 public static partial class UIManager
 {
-    private static bool testReviewPopup = true;
+    private static bool testReviewPopup = false;
 
     public static void ShowReviewPopup(int currentLevel)
     {
@@ -45,7 +45,6 @@ public static partial class UIManager
                 return false;
 
             // 하루 2번 체크.
-
             //return true;
 
             // 레벨 체크.
