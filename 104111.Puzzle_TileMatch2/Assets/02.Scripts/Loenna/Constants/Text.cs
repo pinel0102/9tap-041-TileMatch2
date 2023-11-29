@@ -12,6 +12,9 @@ namespace NineTap.Constant
 			public const string CLAIM = "Claim";
 			public const string REPLAY = "Replay";
 			public const string QUIT = "Quit";
+            public const string NO_THANKS = "No Thanks";
+            public const string SURE = "Sure";
+            public const string OK = "OK";
 		}
 
 		public static class Popup
@@ -20,13 +23,15 @@ namespace NineTap.Constant
 			{
 				public const string QUIT = "Quit Game?";
 				public const string GIVE_UP = "Are you sure?";
+                public const string REVIEW = "Having Fun?";
 			}
 
 			public static class Message
 			{
 				public const string Quit = "Are you sure?\nDo you want to\nquit game?";
 				public const string GIVE_UP = "You lose one life";
-
+                public const string REVIEW_1 = "Are you enjoying\nTile Match! World Tours?";
+                public const string REVIEW_2 = "Thanks for your love!";
 			}
 		}
 
