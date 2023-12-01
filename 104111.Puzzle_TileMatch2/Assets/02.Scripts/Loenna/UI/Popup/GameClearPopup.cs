@@ -78,17 +78,25 @@ public class GameClearPopup : UIPopup
 					OnClickClose();
 					if (existNextLevel)
 					{
-						UIManager.ShowPopupUI<ReadyPopup>(
-							new ReadyPopupParameter(
-								Level: nextLevelData.Key,
-								BaseButtonParameter: new UITextButtonParameter {
-									ButtonText = Text.Button.PLAY,
-									OnClick = () => parameter?.OnContinue?.Invoke(nextLevelData.Key)
-								},
-								ExitParameter: new ExitBaseParameter(OnExit, false),
-								AllPressToClose: true
-							)
-						);
+                        if (UIManager.IsEnableReviewPopup(parameter.Level))
+                        {
+                            UIManager.ShowSceneUI<MainScene>(new DefaultParameter());
+                            UIManager.ShowReviewPopup();
+                        }
+                        else
+                        {
+                            UIManager.ShowPopupUI<ReadyPopup>(
+                                new ReadyPopupParameter(
+                                    Level: nextLevelData.Key,
+                                    BaseButtonParameter: new UITextButtonParameter {
+                                        ButtonText = Text.Button.PLAY,
+                                        OnClick = () => parameter?.OnContinue?.Invoke(nextLevelData.Key)
+                                    },
+                                    ExitParameter: new ExitBaseParameter(OnExit, false),
+                                    AllPressToClose: true
+                                )
+                            );
+                        }
 						return;
 					}
 
@@ -109,7 +117,9 @@ public class GameClearPopup : UIPopup
 			if (mode == Constant.Scene.CLIENT)
 			{
 				UIManager.ShowSceneUI<MainScene>(new DefaultParameter());
-                UIManager.ShowReviewPopup(parameter.Level);
+                
+                if (UIManager.IsEnableReviewPopup(parameter.Level))
+                    UIManager.ShowReviewPopup();
 			}
 			else
 			{
