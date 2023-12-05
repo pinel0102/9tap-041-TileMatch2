@@ -160,8 +160,8 @@ public class TileItem : CachedBehaviour
 
 		m_positionTween = new TweenContext(
 			tweener: ObjectUtility.GetRawObject(CachedTransform)?
-				.DOMove(Vector2.zero, Constant.Game.TWEEN_DURATION_SECONDS)
-				.Pause()
+                .DOMove(Vector2.zero, Constant.Game.TWEEN_DURATION_SECONDS)
+                .Pause()
 				.SetAutoKill(false)
 		);
 
@@ -214,43 +214,12 @@ public class TileItem : CachedBehaviour
 				soundManager.PlayFx(Constant.UI.BUTTON_CLICK_FX_NAME);
                 m_interactable = false;
 				
-                m_view.SetLocalScale(Vector2.one * 1.25f);
-
-                return m_scaleTween?.OnChangeValue(Vector3.one, Constant.Game.DEFAULT_DURATION_SECONDS * 0.5f, () => {
-                        parameter.OnClick?.Invoke(this);
-                }) ?? UniTask.CompletedTask;
-
-                /*return m_scaleTween?.OnChangeValue(Vector3.one * 1.25f, Constant.Game.DEFAULT_DURATION_SECONDS * 0.25f, () => {
-                    Debug.Log(CodeManager.GetMethodName() + string.Format("Scale 1.00f : {0}", m_current.Guid));
-                    m_scaleTween?.OnChangeValue(Vector3.one, Constant.Game.DEFAULT_DURATION_SECONDS * 0.25f, () => {
-                        parameter.OnClick?.Invoke(this);
-                    });                    
-                }) ?? UniTask.CompletedTask;*/
+                m_scaleTween?.OnChangeValue(Vector3.one * 1.25f, Constant.Game.DEFAULT_DURATION_SECONDS * 0.25f, () => {
+                    m_scaleTween?.OnChangeValue(Vector3.one, Constant.Game.DEFAULT_DURATION_SECONDS * 0.25f);}
+                );
+                
+                parameter.OnClick?.Invoke(this);
             }
-
-			/*if (type is EventTriggerType.PointerDown)
-			{
-				soundManager.PlayFx(Constant.UI.BUTTON_CLICK_FX_NAME);
-				return m_scaleTween?.OnChangeValue(Vector3.one * 1.25f, Constant.Game.DEFAULT_DURATION_SECONDS) ?? UniTask.CompletedTask;
-			}
-
-			if (type is EventTriggerType.PointerUp && eventData is PointerEventData pointerEventData)
-			{
-				#if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
-				var sqrMagnitude = Vector2.SqrMagnitude((Vector2)CachedTransform.position - pointerEventData.position);
-
-				if (sqrMagnitude < 4500f)
-				{
-				#endif
-					m_interactable = false;
-					parameter.OnClick?.Invoke(this);
-				
-				#if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS)
-				}
-				#endif
-			}
-
-			return m_scaleTween?.OnChangeValue(Vector3.one, Constant.Game.DEFAULT_DURATION_SECONDS) ?? UniTask.CompletedTask;*/
 
             return UniTask.CompletedTask;
 		}
@@ -308,7 +277,7 @@ public class TileItem : CachedBehaviour
         //if (location == LocationType.POOL)
         //    Debug.Log(CodeManager.GetMethodName() + string.Format("Scale 0 : {0}", m_current.Guid));
 
-		return (location, Current != null) switch {
+        return (location, Current != null) switch {
 			(LocationType.STASH or LocationType.BASKET, _) => m_positionTween?.OnChangeValue(direction, duration) ?? UniTask.CompletedTask,
 			(LocationType.BOARD, true) => m_positionTween?.OnChangeValue(m_originWorldPosition, duration) ?? UniTask.CompletedTask,
 			(LocationType.POOL, _) => m_scaleTween?.OnChangeValue(Vector3.zero, 0.15f, () => m_disappearEffect.gameObject.SetActive(true)) ?? UniTask.CompletedTask,
