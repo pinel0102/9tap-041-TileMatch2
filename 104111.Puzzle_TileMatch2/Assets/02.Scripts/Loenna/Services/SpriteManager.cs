@@ -120,7 +120,7 @@ class SpriteManager_Imp : IDisposable
 	{
 		SpriteAtlasManager.atlasRequested += RequestAtlas;
 
-		var atlases = Resources.LoadAll<SpriteAtlas>("UISources");
+		var atlases = Resources.LoadAll<SpriteAtlas>("SpriteAtlas");
 
 		foreach (var atlas in atlases)
 		{
