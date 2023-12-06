@@ -173,8 +173,7 @@ public class TileItem : CachedBehaviour
 		m_scaleTween = new TweenContext(
 			tweener: ObjectUtility.GetRawObject(m_view)?
 				.DOScale(Vector3.one, Constant.Game.DEFAULT_DURATION_SECONDS)
-                .Pause()
-				.SetAutoKill(false)
+                .SetAutoKill(false)
 		);
 
 		m_dimTween = new TweenContext(
