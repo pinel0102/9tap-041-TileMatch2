@@ -126,6 +126,7 @@ public class TileItem : CachedBehaviour
 	private TweenContext? m_iconAlphaTween;
 
 	private Vector3 m_originWorldPosition;
+    private bool isScaling;
 
 	private void OnDestroy()
 	{
@@ -137,6 +138,9 @@ public class TileItem : CachedBehaviour
 
 	public void Release()
 	{
+        //Debug.Log(CodeManager.GetMethodName() + gameObject.name);
+
+        isScaling = false;
         m_disappearEffect.gameObject.SetActive(false);
 		m_scaleTween?.OnChangeValue(Vector3.one, 0f).Forget();
 		m_iconAlphaTween?.OnChangeValue(Color.white, -1f).Forget();
@@ -155,10 +159,11 @@ public class TileItem : CachedBehaviour
 
 	public void OnSetup(TileItemParameter parameter)
 	{
+        isScaling = false;
 		m_tileDataTable = Game.Inst.Get<TableManager>().TileDataTable;
 		SoundManager soundManager = Game.Inst.Get<SoundManager>();
 
-		m_positionTween = new TweenContext(
+        m_positionTween = new TweenContext(
 			tweener: ObjectUtility.GetRawObject(CachedTransform)?
                 .DOMove(Vector2.zero, Constant.Game.TWEEN_DURATION_SECONDS)
                 .Pause()
@@ -168,6 +173,7 @@ public class TileItem : CachedBehaviour
 		m_scaleTween = new TweenContext(
 			tweener: ObjectUtility.GetRawObject(m_view)?
 				.DOScale(Vector3.one, Constant.Game.DEFAULT_DURATION_SECONDS)
+                .Pause()
 				.SetAutoKill(false)
 		);
 
@@ -201,7 +207,7 @@ public class TileItem : CachedBehaviour
 
 		ObjectUtility.GetRawObject(m_missionTile)?.SetVisible(false);
 
-		UniTask OnTriggerCallback(EventTriggerType type, BaseEventData eventData)
+        UniTask OnTriggerCallback(EventTriggerType type, BaseEventData eventData)
 		{
 			if (!m_interactable)
 			{
@@ -213,10 +219,14 @@ public class TileItem : CachedBehaviour
 			{
 				soundManager.PlayFx(Constant.UI.BUTTON_CLICK_FX_NAME);
                 m_interactable = false;
+                isScaling = true;
 				
-                m_scaleTween?.OnChangeValue(Vector3.one * 1.25f, Constant.Game.DEFAULT_DURATION_SECONDS * 0.25f, () => {
-                    m_scaleTween?.OnChangeValue(Vector3.one, Constant.Game.DEFAULT_DURATION_SECONDS * 0.25f);}
-                );
+                m_scaleTween?.OnChangeValue(Vector3.one * 1.3f, Constant.Game.SCALE_DURATION_SECONDS, () => {
+                    if (isScaling)
+                        m_scaleTween?.OnChangeValue(Vector3.one, Constant.Game.SCALE_DURATION_SECONDS, () => isScaling = false);
+                });
+
+                //Debug.Log(CodeManager.GetMethodName() + m_current.Location);
                 
                 parameter.OnClick?.Invoke(this);
             }
@@ -249,18 +259,23 @@ public class TileItem : CachedBehaviour
 			CachedRectTransform.SetLocalPosition(item.Position);
 		}
 
-		m_current = item;
+		m_current = item;        
 		SetInteractable(item.Location, item.Overlapped, item.InvisibleIcon, ignoreInvisible).Forget();
 
 		string path = m_tileDataTable.TryGetValue(item.Icon, out var rowData)? rowData.Path : string.Empty;
 		Sprite sprite = SpriteManager.GetSprite(path);
 		m_icon.sprite = sprite;
-		
-		(m_tmpText.text, m_icon.enabled) = m_icon.sprite switch {
-			null => (path.Replace("Sprites/Tile/UI_Img_", string.Empty), false),
+
+        string tileName = path.Replace("UI_Img_", string.Empty);
+
+        (m_tmpText.text, m_icon.enabled) = m_icon.sprite switch {
+			null => (tileName, false),
 			_ => (string.Empty, true)
 		};
 		m_missionTile.OnUpdateUI(sprite, item.Location is LocationType.BOARD? item.GoldPuzzleCount : -1);
+
+        gameObject.name = tileName;
+        //Debug.Log(CodeManager.GetMethodName() + gameObject.name);
 
 		return currentType != item.Location;
 	}
@@ -274,13 +289,16 @@ public class TileItem : CachedBehaviour
 
 		Vector2 direction = moveAt ?? Current.Position;
 
-        //if (location == LocationType.POOL)
-        //    Debug.Log(CodeManager.GetMethodName() + string.Format("Scale 0 : {0}", m_current.Guid));
+        if (location == LocationType.POOL)
+        {
+            //Debug.Log(CodeManager.GetMethodName() + string.Format("[m_disappearEffect] {0}", CachedGameObject.name));
+            isScaling = false;
+        }
 
         return (location, Current != null) switch {
 			(LocationType.STASH or LocationType.BASKET, _) => m_positionTween?.OnChangeValue(direction, duration) ?? UniTask.CompletedTask,
 			(LocationType.BOARD, true) => m_positionTween?.OnChangeValue(m_originWorldPosition, duration) ?? UniTask.CompletedTask,
-			(LocationType.POOL, _) => m_scaleTween?.OnChangeValue(Vector3.zero, 0.15f, () => m_disappearEffect.gameObject.SetActive(true)) ?? UniTask.CompletedTask,
+			(LocationType.POOL, _) => m_scaleTween?.OnChangeValue(Vector3.zero, 0.15f, () => {m_disappearEffect.gameObject.SetActive(true); m_view.SetLocalScale(0);}) ?? UniTask.CompletedTask,
 			_ => UniTask.CompletedTask
 		};
 	}
