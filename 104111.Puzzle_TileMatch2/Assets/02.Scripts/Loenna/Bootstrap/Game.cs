@@ -17,6 +17,7 @@ public class Game : MonoBehaviour
 
 	private void Awake()
 	{
+        VersionManager.LogCurrentVersion();
 		Application.runInBackground = true;
 		
 		if (s_inst != null)
@@ -32,7 +33,7 @@ public class Game : MonoBehaviour
 	}
 
     private void Initialize()
-    {
+    {        
         Debug.Log(CodeManager.GetMethodName());
 
         Application.targetFrameRate = 120;
