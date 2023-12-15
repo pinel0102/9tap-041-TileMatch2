@@ -48,7 +48,7 @@ public class MissionCollectedFx : CachedBehaviour
 		DOTween.Kill(m_rotateRectTransform, true);
 
 		m_moveRectTransform.SetLocalPosition(startPosition * UIManager.SceneCanvas.scaleFactor);
-		m_rotateRectTransform.SetSize(100f);
+		m_rotateRectTransform.SetSize(70f);
 		m_rotateRectTransform.SetRotation(Quaternion.identity);
 		
 		m_canvasGroup.alpha = 1f;
