@@ -133,7 +133,7 @@ public partial class PlayScene : UIScene
 
 			var (valid, _, _) = m_userManager.Current.Valid(requireCoin: (long)product.Price);
 			
-			if (!valid)
+			/*if (!valid)
 			{
 				UIManager.ShowSceneUI<StoreScene>(
 					new StoreSceneParameter(
@@ -146,7 +146,7 @@ public partial class PlayScene : UIScene
 					)
 				);
 				return;
-			}
+			}*/
 
 			UIManager.ShowPopupUI<BuyItemPopup>(
 				new BuyItemPopupParameter(
@@ -155,13 +155,31 @@ public partial class PlayScene : UIScene
 					ExitParameter: ExitBaseParameter.CancelParam,
 					BaseButtonParameter: new UITextButtonParameter {
 						OnClick = () => {
-							m_paymentService.Request(
-								product.Index, 
-								onSuccess: (result) => {
-									m_gameManager.UseSkillItem((SkillItemType)itemIndex, false);
-								},
-								onError: (error) => {}
-							);
+                            if (valid)
+                            {
+                                m_paymentService.Request(
+                                    product.Index, 
+                                    onSuccess: (result) => {
+                                        m_gameManager.UseSkillItem((SkillItemType)itemIndex, false);
+                                    },
+                                    onError: (error) => { }
+                                );
+                            }
+                            else
+                            {
+                                UIManager.ShowSceneUI<StoreScene>(
+                                    new StoreSceneParameter(
+                                        StoreParam: new MainSceneFragmentContentParameter_Store {
+                                            TitleText = "Store",
+                                            CloseButtonParameter = new UIImageButtonParameter {
+                                                OnClick = () => { 
+                                                    UIManager.ReturnBackUI();
+                                                }
+                                            }
+                                        }
+                                    )
+                                );
+                            }
 						},
 						ButtonText = "Buy",
 						SubWidgetBuilder = () => {

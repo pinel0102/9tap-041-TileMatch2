@@ -22,7 +22,8 @@ public class ButtonCountWidget : CachedBehaviour
 	{
 		binder.BindTo(m_icon, (_, count) => {
             m_icon.gameObject.SetActive(count > 0);
-            m_priceObject.SetActive(count <= 0);
+            //m_priceObject.SetActive(count <= 0);
+            m_priceObject.SetActive(false);
             m_countText.text = count < COUNT_MAX ? count.ToString() : STR_OVER_MAX;
             m_priceText.text = Mathf.FloorToInt(product.Price).ToString();
         });
