@@ -2,13 +2,11 @@
 
 using UnityEngine;
 using UnityEngine.UI;
-
 using System;
-
+using System.Threading;
 using DG.Tweening;
-
 using Cysharp.Threading.Tasks;
-
+using Cysharp.Threading.Tasks.Linq;
 using Text = NineTap.Constant.Text;
 using NineTap.Common;
 
@@ -30,6 +28,12 @@ public class GameClearPopup : UIPopup
 
 	[SerializeField]
 	private UITextButton m_confirmButton = default!;
+
+    [SerializeField]
+	private CanvasGroup m_clearStarCanvasGroup;
+
+    [SerializeField]
+	private CanvasGroup m_clearStarHalo;
 
 	private LevelData? m_levelData;	
 	private RewardData? m_chestRewardData;
@@ -57,6 +61,7 @@ public class GameClearPopup : UIPopup
 		bool existNextLevel = levelDataTable.TryGetValue(parameter.Level + 1, out var nextLevelData);
 		RewardData rewardData = rewardDataTable.GetDefaultReward(m_levelData.HardMode);
 		
+        m_clearStarCanvasGroup.alpha = 0;
 		m_clearRewardContainer.OnSetup(rewardData);
 
 		bool existChestReward = rewardDataTable.TryPreparedChestReward(parameter.Level, out m_chestRewardData);
@@ -140,6 +145,9 @@ public class GameClearPopup : UIPopup
 					await UniTask.Delay(TimeSpan.FromSeconds(0.25f));
 				}
 
+                await PlayHaloAsync(token);
+                await UniTask.Delay(TimeSpan.FromSeconds(0.25f));
+
 				if (!ObjectUtility.IsNullOrDestroyed(m_clearRewardContainer))
 				{
 					await m_clearRewardContainer.ShowAsync();
@@ -181,4 +189,25 @@ public class GameClearPopup : UIPopup
 			this.GetCancellationTokenOnDestroy()
 		);
     }
+
+    public async UniTask PlayHaloAsync(CancellationToken token)
+	{
+		await m_clearStarCanvasGroup
+			.DOFade(1f, 0.25f)
+			.ToUniTask()
+			.SuppressCancellationThrow();
+
+		UniTaskAsyncEnumerable
+			.EveryUpdate(PlayerLoopTiming.LastPostLateUpdate) 
+			.ForEachAsync(
+				_ => {
+					if (token.IsCancellationRequested)
+					{
+						return;
+					}
+
+					ObjectUtility.GetRawObject(m_clearStarHalo)?.transform.Rotate(Vector3.forward * 0.1f);
+				}
+			).Forget();
+	}
 }

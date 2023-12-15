@@ -27,16 +27,19 @@ public class ClearRewardListContainer : CachedBehaviour
 
 		rewardData.Rewards.ForEach(
 			reward => {
-				var item = Instantiate(prefab);
-				item.OnSetup(
-					new RewardGoodsItemParameter{
-						Animated = false,
-						IconSize = 100,
-						FontSize = 49
-					}
-				);
-				item.CachedTransform.SetParentReset(m_parent);
-				item.UpdateUI(reward.Type.GetIconName(), reward.GetAmountString());
+                if (reward.Type != ProductType.PuzzlePiece)
+                {
+                    var item = Instantiate(prefab);
+                    item.OnSetup(
+                        new RewardGoodsItemParameter{
+                            Animated = false,
+                            IconSize = 100,
+                            FontSize = 49
+                        }
+                    );
+                    item.CachedTransform.SetParentReset(m_parent);
+                    item.UpdateUI(reward.Type.GetIconName(), reward.GetAmountString());
+                }
 			}
 		);
 	}
