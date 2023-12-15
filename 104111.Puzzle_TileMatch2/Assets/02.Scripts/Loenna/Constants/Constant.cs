@@ -23,6 +23,7 @@ public static class Constant
 
 	public static class Game
 	{
+        public const int LEVEL_PUZZLE_START = 5;
 		public const float TILE_WIDTH = 88f;
 		public const float TILE_HEIGHT = 92f;
         public const float TILE_WIDTH_HALF = 44f;

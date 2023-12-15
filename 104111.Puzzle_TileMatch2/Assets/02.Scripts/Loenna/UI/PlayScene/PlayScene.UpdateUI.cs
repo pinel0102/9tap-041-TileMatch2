@@ -148,7 +148,7 @@ partial class PlayScene
 				CurrentBoardIndex: var index,
 				CurrentBoard: var current
 			}:
-                if (level < 26)
+                if (level < Constant.Game.LEVEL_PUZZLE_START)
                 {
                     bg_default.SetActive(true);
                     bg_puzzle.SetActive(false);
