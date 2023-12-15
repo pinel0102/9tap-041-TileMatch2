@@ -32,9 +32,9 @@ public static class Constant
 		public const int MAX_BASKET_AMOUNT = 7;
 		public const int STASH_TILE_AMOUNT = 3;
 		public const int GOLD_PUZZLE_PIECE_COUNT = 4;
-		public const float TWEEN_DURATION_SECONDS = 0.3f;
-		public const float DEFAULT_DURATION_SECONDS = 0.25f;
-        public const float SCALE_DURATION_SECONDS = 0.05f;
+		//public const float TWEENTIME_TILE_POSITION = 0.3f;
+		public const float TWEENTIME_TILE_DEFAULT = 0.15f; // 0.25f
+        public const float TWEENTIME_TILE_SCALE = 0.05f;
 
 		public static readonly Vector2 RESIZE_TILE_RATIOS = new Vector2(0.55f, 0.575f);
 

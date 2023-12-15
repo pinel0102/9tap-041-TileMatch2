@@ -69,7 +69,7 @@ public class PlaySceneStashContainer : CachedBehaviour
 
 					Vector2 moveAt = transform.position + Vector3.right * index * Constant.Game.TILE_WIDTH * UIManager.SceneCanvas.scaleFactor;
 
-					return item.OnChangeLocation(LocationType.STASH, moveAt, Constant.Game.DEFAULT_DURATION_SECONDS);
+					return item.OnChangeLocation(LocationType.STASH, moveAt, Constant.Game.TWEENTIME_TILE_DEFAULT);
 				}
 			)
 		);

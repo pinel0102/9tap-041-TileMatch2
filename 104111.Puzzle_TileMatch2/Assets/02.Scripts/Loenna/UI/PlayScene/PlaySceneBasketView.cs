@@ -44,7 +44,7 @@ public class PlaySceneBasketView : CachedBehaviour
 							return item.OnChangeLocation(
 								LocationType.BASKET, 
 								m_parent.transform.position + Vector3.right * itemIndex * Constant.Game.TILE_WIDTH * UIManager.SceneCanvas!.scaleFactor,
-								itemIndex == insertIndex? Constant.Game.TWEEN_DURATION_SECONDS : Constant.Game.DEFAULT_DURATION_SECONDS
+								itemIndex == insertIndex? Constant.Game.TWEENTIME_TILE_DEFAULT : Constant.Game.TWEENTIME_TILE_DEFAULT
 							);
 						}
 					);
@@ -103,7 +103,7 @@ public class PlaySceneBasketView : CachedBehaviour
 									return item.OnChangeLocation(
 										item.Current.Location, 
 										m_parent.transform.position + Vector3.right * itemIndex * Constant.Game.TILE_WIDTH * UIManager.SceneCanvas!.scaleFactor,
-										Constant.Game.DEFAULT_DURATION_SECONDS
+										Constant.Game.TWEENTIME_TILE_DEFAULT
 									);
 								}
 							)

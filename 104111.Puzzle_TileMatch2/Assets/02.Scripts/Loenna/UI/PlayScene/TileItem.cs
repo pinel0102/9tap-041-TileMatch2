@@ -165,20 +165,20 @@ public class TileItem : CachedBehaviour
 
         m_positionTween = new TweenContext(
 			tweener: ObjectUtility.GetRawObject(CachedTransform)?
-                .DOMove(Vector2.zero, Constant.Game.TWEEN_DURATION_SECONDS)
+                .DOMove(Vector2.zero, Constant.Game.TWEENTIME_TILE_DEFAULT)
                 .Pause()
 				.SetAutoKill(false)
 		);
 
 		m_scaleTween = new TweenContext(
 			tweener: ObjectUtility.GetRawObject(m_view)?
-				.DOScale(Vector3.one, Constant.Game.DEFAULT_DURATION_SECONDS)
+				.DOScale(Vector3.one, Constant.Game.TWEENTIME_TILE_DEFAULT)
                 .SetAutoKill(false)
 		);
 
 		m_dimTween = new TweenContext(
 			tweener: ObjectUtility.GetRawObject(m_dim)?
-				.DOFade(0f, Constant.Game.DEFAULT_DURATION_SECONDS)
+				.DOFade(0f, Constant.Game.TWEENTIME_TILE_DEFAULT)
 				.SetAutoKill(false)
 		);
 
@@ -220,9 +220,9 @@ public class TileItem : CachedBehaviour
                 m_interactable = false;
                 isScaling = true;
 				
-                m_scaleTween?.OnChangeValue(Vector3.one * 1.3f, Constant.Game.SCALE_DURATION_SECONDS, () => {
+                m_scaleTween?.OnChangeValue(Vector3.one * 1.3f, Constant.Game.TWEENTIME_TILE_SCALE, () => {
                     if (isScaling)
-                        m_scaleTween?.OnChangeValue(Vector3.one, Constant.Game.SCALE_DURATION_SECONDS, () => isScaling = false);
+                        m_scaleTween?.OnChangeValue(Vector3.one, Constant.Game.TWEENTIME_TILE_SCALE, () => isScaling = false);
                 });
 
                 //Debug.Log(CodeManager.GetMethodName() + m_current.Location);
@@ -279,7 +279,7 @@ public class TileItem : CachedBehaviour
 		return currentType != item.Location;
 	}
 
-	public UniTask OnChangeLocation(LocationType location, Vector2? moveAt = null, float duration = Constant.Game.TWEEN_DURATION_SECONDS)
+	public UniTask OnChangeLocation(LocationType location, Vector2? moveAt = null, float duration = Constant.Game.TWEENTIME_TILE_DEFAULT)
 	{
 		if (!moveAt.HasValue && Current == null)
 		{
@@ -327,7 +327,7 @@ public class TileItem : CachedBehaviour
 						await m_iconAlphaTween.Value.OnChangeValue(Color.white, -1f);	
 					}
 
-					await UniTask.Defer(() => m_dimTween?.OnChangeValue(0f, Constant.Game.DEFAULT_DURATION_SECONDS) ?? UniTask.CompletedTask);
+					await UniTask.Defer(() => m_dimTween?.OnChangeValue(0f, Constant.Game.TWEENTIME_TILE_DEFAULT) ?? UniTask.CompletedTask);
 				}
 				break;
 			default:
