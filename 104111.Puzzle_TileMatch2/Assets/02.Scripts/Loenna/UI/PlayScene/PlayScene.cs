@@ -317,7 +317,29 @@ public partial class PlayScene : UIScene
 
 	private void ShowReadyPopup(int level)
 	{
-		UIManager.ShowPopupUI<ReadyPopup>(
+        var (_, valid, _) = m_userManager.Current.Valid();
+
+        if (!valid)
+        {
+            //하트 구매 요구 (TBD)
+            UIManager.ShowPopupUI<GiveupPopup>(
+                new DefaultPopupParameter(
+                    Title: "Purchase",
+                    Message: "Purchase Life",
+                    ExitParameter: new ExitBaseParameter(
+                        onExit: () => OnExit(false)
+                    ),
+                    BaseButtonParameter: new UITextButtonParameter {
+                        ButtonText = "Go to Shop",
+                        OnClick = () =>OnExit(true)
+                    }
+                )
+            );
+            return;
+        }
+        m_gameManager.LoadLevel(level, m_mainView.CachedRectTransform);
+
+		/*UIManager.ShowPopupUI<ReadyPopup>(
 			new ReadyPopupParameter(
 				Level: level,
 				BaseButtonParameter: new UITextButtonParameter
@@ -350,8 +372,7 @@ public partial class PlayScene : UIScene
 				ExitParameter: new ExitBaseParameter(() => OnExit(false), false),
 				AllPressToClose: true
 			)
-		);
-		
+		);*/		
 	}
 
 	private void OnExit(bool onJumpStore)

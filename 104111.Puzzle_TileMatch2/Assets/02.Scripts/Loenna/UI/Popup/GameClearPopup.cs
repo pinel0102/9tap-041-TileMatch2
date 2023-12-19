@@ -83,12 +83,14 @@ public class GameClearPopup : UIPopup
 					OnClickClose();
 					if (existNextLevel)
 					{
+                        UIManager.ShowSceneUI<MainScene>(new DefaultParameter());
+
                         if (UIManager.IsEnableReviewPopup(parameter.Level))
                         {
-                            UIManager.ShowSceneUI<MainScene>(new DefaultParameter());
+                            //UIManager.ShowSceneUI<MainScene>(new DefaultParameter());
                             UIManager.ShowReviewPopup();
                         }
-                        else
+                        /*else
                         {
                             UIManager.ShowPopupUI<ReadyPopup>(
                                 new ReadyPopupParameter(
@@ -101,7 +103,7 @@ public class GameClearPopup : UIPopup
                                     AllPressToClose: true
                                 )
                             );
-                        }
+                        }*/
 						return;
 					}
 
