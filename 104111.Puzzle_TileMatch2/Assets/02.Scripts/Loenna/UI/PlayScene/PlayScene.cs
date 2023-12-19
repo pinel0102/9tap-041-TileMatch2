@@ -204,19 +204,19 @@ public partial class PlayScene : UIScene
 				ToggleButtonParameters: new List<UIToggleButtonParameter> {
 					new UIToggleButtonParameter {
 						Text = SettingsType.Fx.GetName(),
-						AwakeOn = m_userManager.Current.Settings[SettingsType.Fx],
+						AwakeOn = m_userManager.Current.Settings.GetValueOrDefault(SettingsType.Fx, true),
 						IconBuilder = isOn => SettingsType.Fx.GetIconPath(isOn),
 						OnToggle = value => m_userManager.UpdateSettings(SettingsType.Fx, value),
 					},
 					new UIToggleButtonParameter {
 						Text = SettingsType.Bgm.GetName(),
-						AwakeOn = m_userManager.Current.Settings[SettingsType.Bgm],
+						AwakeOn = m_userManager.Current.Settings.GetValueOrDefault(SettingsType.Bgm, true),
 						IconBuilder = isOn => SettingsType.Bgm.GetIconPath(isOn),
 						OnToggle = value => m_userManager.UpdateSettings(SettingsType.Bgm, value),
 					},
 					new UIToggleButtonParameter {
 						Text = SettingsType.Vibration.GetName(),
-						AwakeOn = m_userManager.Current.Settings[SettingsType.Vibration],
+						AwakeOn = m_userManager.Current.Settings.GetValueOrDefault(SettingsType.Vibration, true),
 						IconBuilder = isOn => SettingsType.Vibration.GetIconPath(isOn),
 						OnToggle = value => m_userManager.UpdateSettings(SettingsType.Vibration, value),
 					}

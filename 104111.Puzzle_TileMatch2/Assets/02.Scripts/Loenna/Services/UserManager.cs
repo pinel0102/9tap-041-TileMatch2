@@ -301,12 +301,17 @@ public class UserManager : IDisposable
 			return;
 		}
 
-		m_user.Update(
+        if(!m_user.Value.Settings.ContainsKey(type))
+        {
+            m_user.Value.Settings.TryAdd(type, value);
+        }
+
+        m_user.Update(
 			user => user.Update(
 				settings: user.Settings
 					.Select(
 						pair => {
-							if (pair.Key == type)
+                            if (pair.Key == type)
 							{
 								return KeyValuePair.Create(type, value);
 							}

@@ -13,7 +13,7 @@ public class MainSceneFragmentContentParameter_Settings
 	public string TitleText;
 	public UIImageButtonParameter CloseButtonParameter;
 	public List<UIToggleButtonParameter> ToggleButtonParameters;
-	public UITextButtonParameter AchievementButtonParameter;
+	public UITextButtonParameter ServiceButtonParameter;
 	public UITextButtonParameter PrivacyButtonParameter;
 	public UITextButtonParameter ContactButtonParameter;
 }
@@ -58,7 +58,7 @@ public class MainSceneFragmentContent_Settings : ScrollViewFragmentContent
 				}
 			).ToList();
 
-			m_achievementButton.OnSetup(parameter.AchievementButtonParameter);
+			m_achievementButton.OnSetup(parameter.ServiceButtonParameter);
 			m_privacyButton.OnSetup(parameter.PrivacyButtonParameter);
 			m_contactButton.OnSetup(parameter.ContactButtonParameter);
 

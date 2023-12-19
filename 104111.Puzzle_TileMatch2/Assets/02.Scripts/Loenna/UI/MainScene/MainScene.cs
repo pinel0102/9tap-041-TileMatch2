@@ -136,40 +136,40 @@ public class MainScene : UIScene
 							ToggleButtonParameters = new List<UIToggleButtonParameter> {
 								new UIToggleButtonParameter{
 									Text = SettingsType.Fx.GetName(),
-									AwakeOn = m_userManager.Current.Settings[SettingsType.Fx],
+									AwakeOn = m_userManager.Current.Settings.GetValueOrDefault(SettingsType.Fx, true),
 									IconBuilder = isOn => SettingsType.Fx.GetIconPath(isOn),
 									OnToggle = value => m_userManager.UpdateSettings(SettingsType.Fx, value),
 								},
 								new UIToggleButtonParameter{
 									Text = SettingsType.Bgm.GetName(),
-									AwakeOn = m_userManager.Current.Settings[SettingsType.Bgm],
+									AwakeOn = m_userManager.Current.Settings.GetValueOrDefault(SettingsType.Bgm, true),
 									IconBuilder = isOn => SettingsType.Bgm.GetIconPath(isOn),
 									OnToggle = value => m_userManager.UpdateSettings(SettingsType.Bgm, value),
 								},
 								new UIToggleButtonParameter{
 									Text = SettingsType.Vibration.GetName(),
-									AwakeOn = m_userManager.Current.Settings[SettingsType.Vibration],
+									AwakeOn = m_userManager.Current.Settings.GetValueOrDefault(SettingsType.Vibration, true),
 									IconBuilder = isOn => SettingsType.Vibration.GetIconPath(isOn),
 									OnToggle = value => m_userManager.UpdateSettings(SettingsType.Vibration, value),
 								},
 								new UIToggleButtonParameter{
 									Text = SettingsType.Notification.GetName(),
-									AwakeOn = m_userManager.Current.Settings[SettingsType.Notification],
+									AwakeOn = m_userManager.Current.Settings.GetValueOrDefault(SettingsType.Notification, true),
 									IconBuilder = isOn => SettingsType.Notification.GetIconPath(isOn),
 									OnToggle = value => m_userManager.UpdateSettings(SettingsType.Notification, value),
 								}
 							},
-							AchievementButtonParameter = new UITextButtonParameter{
-								ButtonText = "Achievement",
-								OnClick = Stub.Nothing
+							ServiceButtonParameter = new UITextButtonParameter{
+								ButtonText = "Terms of Service",
+								OnClick = GlobalSettings.OpenURL_TermsOfService
 							},
 							PrivacyButtonParameter = new UITextButtonParameter{
 								ButtonText = "Privacy Policy",
-								OnClick = Stub.Nothing
+								OnClick = GlobalSettings.OpenURL_PrivacyPolicy
 							},
 							ContactButtonParameter = new UITextButtonParameter{
 								ButtonText = "Contact",
-								OnClick = Stub.Nothing
+								OnClick = GlobalSettings.OpenMail_Contacts
 							}
 						}
 					)

@@ -55,12 +55,7 @@ public class ReviewPopup : PopupBase
     {
         Debug.Log(CodeManager.GetMethodName());
 
-#if UNITY_IOS
-        Application.OpenURL(string.Format(ProjectManager.storeURL_iOS, ProjectManager.appStoreConnectId));
-#endif
-#if UNITY_ANDROID
-        Application.OpenURL(string.Format(ProjectManager.storeURL_AOS, ProjectManager.appIdentifier));
-#endif
+        GlobalSettings.OpenURL_Review();
 
         m_container1.SetActive(false);
         m_container2.SetActive(true);
