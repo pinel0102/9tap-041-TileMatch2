@@ -285,7 +285,7 @@ public partial class PlayScene : UIScene
 					includeBackground: false,
 					onExit: () => {
 						m_userManager.TryUpdate(requireLife: true);
-						ShowReadyPopup(m_gameManager.CurrentLevel);
+						OnExit(false);
 					}
 				)
 			);
