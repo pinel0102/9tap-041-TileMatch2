@@ -10,9 +10,22 @@ public static class Constant
 	{
 		public const float REFERENCE_RESOLUTION_X = 720f;
 		public const float REFERENCE_RESOLUTION_Y = 1280f;
-
-		public const string BUTTON_CLICK_FX_NAME = "block_bubble_switch";
 	}
+
+    public static class Sound
+    {
+        public const string BGM = "bgm"; // 배경 음악.
+        public const string SFX_BUTTON = "click_button"; // 버튼음.
+        public const string SFX_TILE_SELECT = "click_object"; // 타일 선택시.
+        public const string SFX_TILE_MOVE = "move_object"; // 타일 이동시.
+        public const string SFX_TILE_MATCH = "match_object"; // 매칭 될 때.
+        public const string SFX_TILE_MATCH_FINISH = "match_finish"; // 마지막 매칭 될 때.
+        public const string SFX_ITEM_SHUFFLE = "item_shuffle"; // 아이템 - 셔플.
+        public const string SFX_ITEM_UNDO = "item_undo"; // 아이템 - 언두.
+        public const string SFX_ITEM_STASH = "click_object"; // 아이템 - 스태시.
+        public const string SFX_REWARD_OPEN = "reward_open"; // 리워드 열릴 때.
+        public const string SFX_PROGRESS = "Progress Complete"; // 수집 이벤트 프로그레스.
+    }
 
 	public static class User
 	{
@@ -32,7 +45,6 @@ public static class Constant
 		public const int MAX_BASKET_AMOUNT = 7;
 		public const int STASH_TILE_AMOUNT = 3;
 		public const int GOLD_PUZZLE_PIECE_COUNT = 4;
-		//public const float TWEENTIME_TILE_POSITION = 0.3f;
 		public const float TWEENTIME_TILE_DEFAULT = 0.15f; // 0.25f
         public const float TWEENTIME_TILE_SCALE = 0.05f;
 

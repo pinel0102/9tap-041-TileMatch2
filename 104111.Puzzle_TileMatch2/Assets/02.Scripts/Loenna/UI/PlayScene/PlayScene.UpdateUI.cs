@@ -262,11 +262,11 @@ partial class PlayScene
 				--m_progressId;
 				break;
 			case CurrentPlayState.Finished { Result: var result }:
-				m_block.SetActive(true);
+                m_block.SetActive(true);
 				await UniTask.WaitUntil(() => m_progressId <= 1);
 				await UniTask.Defer(() => UniTask.Delay(TimeSpan.FromSeconds(0.25f)));
-				
-				if (result is CurrentPlayState.Finished.State.CLEAR)
+
+                if (result is CurrentPlayState.Finished.State.CLEAR)
 				{
 					await UniTask.Defer(() => m_canvasGroup.DOFade(0f, 0.5f).ToUniTask());
 				}
@@ -293,6 +293,9 @@ partial class PlayScene
 				}
 				else
 				{
+                    SoundManager soundManager = Game.Inst?.Get<SoundManager>();
+                    soundManager?.PlayFx(Constant.Sound.SFX_TILE_MATCH_FINISH);
+
 					m_canvasGroup.alpha = 0f;
 					UIManager.ShowPopupUI<GameClearPopup>(
 						new GameClearPopupParameter(

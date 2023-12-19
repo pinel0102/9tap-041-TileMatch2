@@ -35,11 +35,14 @@ public class AnimatedBox : CachedBehaviour
 			.ToUniTask()
 			.AttachExternalCancellation(cancellationToken);
 
-		await UniTask.WhenAll(
+        await UniTask.WhenAll(
 			m_lid.rectTransform.DOAnchorPosY(200f, 0.5f).SetEase(Ease.OutQuad).ToUniTask(),
 			UniTask.Create(
 					async () => {
-					await UniTask.Delay(TimeSpan.FromSeconds(0.25f));
+                    SoundManager soundManager = Game.Inst?.Get<SoundManager>();
+                    soundManager?.PlayFx(Constant.Sound.SFX_REWARD_OPEN);
+					
+                    await UniTask.Delay(TimeSpan.FromSeconds(0.25f));
 					await m_lid.DOFade(0f, 0.25f).SetEase(Ease.OutQuad);
 				}
 			)

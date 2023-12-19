@@ -37,6 +37,9 @@ partial class GameManager
 	// 해당 타일 이동
 	public List<TileItemModel> MoveTo(TileItemModel tileItemModel, LocationType location)
 	{
+        SoundManager soundManager = Game.Inst?.Get<SoundManager>();
+        soundManager?.PlayFx(Constant.Sound.SFX_TILE_MOVE);
+
 		var tiles = BoardInfo.CurrentBoard.Tiles
 			.Select(tile => {
 				if (tile.Guid == tileItemModel.Guid)
@@ -158,7 +161,7 @@ partial class GameManager
 
 		if (CheckTilesInBasket(out int startAt))
 		{
-			var removed = currentBasket.GetRange(startAt, Constant.Game.REQUIRED_MATCH_COUNT);
+            var removed = currentBasket.GetRange(startAt, Constant.Game.REQUIRED_MATCH_COUNT);
 
 			var tileItems = BoardInfo.CurrentBoard.Tiles.Select(
 				tile => {
@@ -174,7 +177,7 @@ partial class GameManager
 
 			currentBasket.RemoveRange(startAt, 3);
 
-			m_boardInfo.Update(info =>
+            m_boardInfo.Update(info =>
 				info with {
 					StateType = InternalState.Type.CurrentUpdated,
 					Basket = currentBasket,
@@ -264,7 +267,7 @@ partial class GameManager
 
 	private void Shuffle()
 	{
-		IList<int> types = BoardInfo.CurrentBoard.Tiles.Where(tile => tile.Location is LocationType.BOARD).Select(tile => tile.Icon).ToList();
+        IList<int> types = BoardInfo.CurrentBoard.Tiles.Where(tile => tile.Location is LocationType.BOARD).Select(tile => tile.Icon).ToList();
 		Queue<int> queue = new Queue<int>(types.Shuffle());
 
 		// 랜덤 타입 타일의 타입을 임의적으로 설정한다.

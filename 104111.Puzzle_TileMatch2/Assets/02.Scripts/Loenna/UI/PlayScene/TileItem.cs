@@ -153,7 +153,7 @@ public class TileItem : CachedBehaviour
 
 	public void SetActive(bool enabled)
 	{
-		m_view.SetLocalScale(Vector2.one);
+        m_view.SetLocalScale(Vector2.one);
 		CachedGameObject.SetActive(enabled);
 	}
 
@@ -216,7 +216,7 @@ public class TileItem : CachedBehaviour
             // Press 단계에서 바로 이동.
             if (type is EventTriggerType.PointerDown)
 			{
-				soundManager.PlayFx(Constant.UI.BUTTON_CLICK_FX_NAME);
+				soundManager?.PlayFx(Constant.Sound.SFX_TILE_SELECT);
                 m_interactable = false;
                 isScaling = true;
 				
@@ -297,7 +297,10 @@ public class TileItem : CachedBehaviour
         return (location, Current != null) switch {
 			(LocationType.STASH or LocationType.BASKET, _) => m_positionTween?.OnChangeValue(direction, duration) ?? UniTask.CompletedTask,
 			(LocationType.BOARD, true) => m_positionTween?.OnChangeValue(m_originWorldPosition, duration) ?? UniTask.CompletedTask,
-			(LocationType.POOL, _) => m_scaleTween?.OnChangeValue(Vector3.zero, 0.15f, () => {m_disappearEffect.gameObject.SetActive(true); m_view.SetLocalScale(0);}) ?? UniTask.CompletedTask,
+			(LocationType.POOL, _) => m_scaleTween?.OnChangeValue(Vector3.zero, 0.15f, () => {
+                    m_disappearEffect.gameObject.SetActive(true);
+                    m_view.SetLocalScale(0);
+                }) ?? UniTask.CompletedTask,
 			_ => UniTask.CompletedTask
 		};
 	}

@@ -56,7 +56,7 @@ public class EventCircleIcon : CachedBehaviour
 	{
         SoundManager soundManager = Game.Inst?.Get<SoundManager>();
 		m_button.onClick.AddListener(() => {    
-                soundManager?.PlayFx(Constant.UI.BUTTON_CLICK_FX_NAME);
+                soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
                 parameter.OnClick?.Invoke(); 
             });
 	}

@@ -48,7 +48,7 @@ public class MainScene : UIScene
                 HUDType.STAR, () => { 
                     if (IsEnableShowPopup())
                     {
-                        soundManager?.PlayFx(Constant.UI.BUTTON_CLICK_FX_NAME);
+                        soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
                         m_lobbyManager.OnCheckShowPopup(() => m_scrollView.MoveTo((int)MainMenuType.STORE));
                     } 
                 }
@@ -57,7 +57,7 @@ public class MainScene : UIScene
                 HUDType.LIFE, () => { 
                     if (IsEnableShowPopup())
                     {
-                        soundManager?.PlayFx(Constant.UI.BUTTON_CLICK_FX_NAME);
+                        soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
                         OpenBuyHeartPopup(4);
                     }  
                 }
@@ -66,7 +66,7 @@ public class MainScene : UIScene
                 HUDType.COIN, () => { 
                     if (IsEnableShowPopup()) 
                     {
-                        soundManager?.PlayFx(Constant.UI.BUTTON_CLICK_FX_NAME);
+                        soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
                         m_scrollView.MoveTo((int)MainMenuType.STORE); 
                     }
                 }
@@ -179,7 +179,7 @@ public class MainScene : UIScene
 
 		m_navigationView.OnSetup(
 			new MainSceneNavigationViewParameter{
-				OnClickTab = type => {  soundManager?.PlayFx(Constant.UI.BUTTON_CLICK_FX_NAME);
+				OnClickTab = type => {  soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
                                         m_scrollView.MoveTo((int)type);}
 			}
 		);

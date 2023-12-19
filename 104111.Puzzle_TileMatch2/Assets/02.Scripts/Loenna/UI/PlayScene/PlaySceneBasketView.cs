@@ -70,6 +70,9 @@ public class PlaySceneBasketView : CachedBehaviour
             Debug.Log(CodeManager.GetMethodName() + string.Format("removedTiles.name : {0}", item.gameObject.name));
         }*/
 
+        SoundManager soundManager = Game.Inst?.Get<SoundManager>();
+        soundManager?.PlayFx(Constant.Sound.SFX_TILE_MATCH);
+
 		m_tileItems.RemoveAll(item => basket.All(b => b.Guid != item.Current.Guid));
 		
 		var tasks = removedTiles.Select(

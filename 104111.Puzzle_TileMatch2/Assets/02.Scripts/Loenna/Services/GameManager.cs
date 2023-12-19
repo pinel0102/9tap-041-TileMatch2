@@ -397,15 +397,20 @@ public partial class GameManager : IDisposable
 
 		void UseSkill()
 		{
+            SoundManager soundManager = Game.Inst?.Get<SoundManager>();
+            
 			switch(skillItemType)
 			{
 				case SkillItemType.Stash: // 바구니에 있는 타일 3개를 보드에 둔다
+                    soundManager?.PlayFx(Constant.Sound.SFX_ITEM_STASH);
 					UseStash();
 					break;
 				case SkillItemType.Undo: // 되돌리기
+                    soundManager?.PlayFx(Constant.Sound.SFX_ITEM_UNDO);
 					m_commandInvoker.UnExecute();
 					break;
 				case SkillItemType.Shuffle: // 섞기
+                    soundManager?.PlayFx(Constant.Sound.SFX_ITEM_SHUFFLE);
 					Shuffle();
 					break;
 			}

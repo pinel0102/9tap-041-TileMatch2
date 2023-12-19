@@ -6,7 +6,8 @@ using System.Collections.Generic;
 public class SoundManager
 {
 	private readonly UserManager m_userManager;
-	private readonly AudioSource m_audioSource;
+    private readonly AudioSource m_audioSource;
+    private readonly AudioSource m_bgmSource;
 	private readonly Dictionary<string, AudioClip> m_audioClipDic;
 
 	public SoundManager(GameObject root, UserManager userManager)
@@ -14,6 +15,9 @@ public class SoundManager
 		m_userManager = userManager;
 		m_audioClipDic = new();
 		m_audioSource = root.AddComponent<AudioSource>();
+        m_bgmSource = root.AddComponent<AudioSource>();
+
+        BgmInitialize();
 
 		userManager.OnUpdated += OnUpdateSettings;
 	}
@@ -26,9 +30,31 @@ public class SoundManager
 		}
 	}
 
+    private void BgmInitialize()
+    {
+        m_bgmSource.mute = true;
+        m_bgmSource.playOnAwake = false;
+        m_bgmSource.loop = true;
+    }
+
 	private void OnUpdateSettings(User user)
 	{
 		//Bgm 처리
+        if (user != null && user.Settings.TryGetValue(SettingsType.Bgm, out var isMusicOn))
+        {
+            if (isMusicOn)
+            {
+                m_bgmSource.mute = false;
+                if(!m_bgmSource.isPlaying)
+                    m_bgmSource.Play();
+            }
+            else
+            {
+                m_bgmSource.mute = true;
+                if (m_bgmSource.isPlaying)
+                    m_bgmSource.Stop();
+            }
+        }
 	}
 
 	public void Load()
@@ -45,6 +71,11 @@ public class SoundManager
 				m_audioClipDic.TryAdd(clip.name, clip);
 			}
 		);
+
+        if (m_audioClipDic.TryGetValue(Constant.Sound.BGM, out var clip))
+		{
+            m_bgmSource.clip = clip;
+		}
 	}
 
 	public void PlayFx(string clipName)

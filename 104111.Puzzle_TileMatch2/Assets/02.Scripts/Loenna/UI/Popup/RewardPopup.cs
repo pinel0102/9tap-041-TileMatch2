@@ -82,9 +82,9 @@ public class RewardPopup : UIPopup
 	{
 		base.OnShow();
 
-		UniTask.Void(
+        UniTask.Void(
 			async token => {
-				foreach (var box in m_animatedBoxes)
+                foreach (var box in m_animatedBoxes)
 				{
 					bool matched = box.Type == m_popupType;
 					box.CachedGameObject.SetActive(matched);
@@ -94,13 +94,11 @@ public class RewardPopup : UIPopup
 					}
 				}
 
-				await m_animatedRewardContainer.ShowAsync(token);
+                await m_animatedRewardContainer.ShowAsync(token);
 				await m_confirmButton.ShowAsync(0.5f, token);
-
 			},
 			this.GetCancellationTokenOnDestroy()
 		);
-
 	}
 
 	public override void OnHide()

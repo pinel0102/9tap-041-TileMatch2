@@ -64,7 +64,8 @@ public class GameClearPopup : UIPopup
         m_clearStarCanvasGroup.alpha = 0;
 		m_clearRewardContainer.OnSetup(rewardData);
 
-		bool existChestReward = rewardDataTable.TryPreparedChestReward(parameter.Level, out m_chestRewardData);
+		//bool existChestReward = rewardDataTable.TryPreparedChestReward(parameter.Level, out m_chestRewardData);
+        bool existChestReward = rewardDataTable.TryPreparedChestReward(10, out m_chestRewardData);
 
 		if (existChestReward)
 		{
@@ -157,8 +158,11 @@ public class GameClearPopup : UIPopup
 
 				if (!ObjectUtility.IsNullOrDestroyed(m_gaugeBar))
 				{
+                    SoundManager soundManager = Game.Inst.Get<SoundManager>();
+                    soundManager?.PlayFx(Constant.Sound.SFX_PROGRESS);
+
 					int level = m_levelData?.Key ?? 0;
-					int prev = Mathf.Max(level - 1, 0);
+					int prev = Mathf.Max(level - 1, 0);                    
 					await m_gaugeBar.OnUpdateUIAsync(prev, m_levelData?.Key ?? 0, m_chestRewardData?.Level ?? 0);
 
 					if (m_levelData?.Key! >= m_chestRewardData?.Level!)
