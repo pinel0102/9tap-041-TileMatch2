@@ -64,8 +64,8 @@ public class GameClearPopup : UIPopup
         m_clearStarCanvasGroup.alpha = 0;
 		m_clearRewardContainer.OnSetup(rewardData);
 
-		//bool existChestReward = rewardDataTable.TryPreparedChestReward(parameter.Level, out m_chestRewardData);
-        bool existChestReward = rewardDataTable.TryPreparedChestReward(10, out m_chestRewardData);
+		bool existChestReward = rewardDataTable.TryPreparedChestReward(parameter.Level, out m_chestRewardData);
+        //bool existChestReward = rewardDataTable.TryPreparedChestReward(10, out m_chestRewardData);
 
 		if (existChestReward)
 		{
