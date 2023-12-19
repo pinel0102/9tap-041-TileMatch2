@@ -218,7 +218,7 @@ public partial class PlayScene : UIScene
 						Text = SettingsType.Vibration.GetName(),
 						AwakeOn = m_userManager.Current.Settings[SettingsType.Vibration],
 						IconBuilder = isOn => SettingsType.Vibration.GetIconPath(isOn),
-						OnToggle = value => m_userManager.UpdateSettings(SettingsType.Bgm, value),
+						OnToggle = value => m_userManager.UpdateSettings(SettingsType.Vibration, value),
 					}
 				},
 				TopButtonParameter: new UITextButtonParameter

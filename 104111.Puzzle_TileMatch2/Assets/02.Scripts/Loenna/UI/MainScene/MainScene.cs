@@ -150,13 +150,13 @@ public class MainScene : UIScene
 									Text = SettingsType.Vibration.GetName(),
 									AwakeOn = m_userManager.Current.Settings[SettingsType.Vibration],
 									IconBuilder = isOn => SettingsType.Vibration.GetIconPath(isOn),
-									OnToggle = value => m_userManager.UpdateSettings(SettingsType.Bgm, value),
+									OnToggle = value => m_userManager.UpdateSettings(SettingsType.Vibration, value),
 								},
 								new UIToggleButtonParameter{
 									Text = SettingsType.Notification.GetName(),
-									AwakeOn = true,
+									AwakeOn = m_userManager.Current.Settings[SettingsType.Notification],
 									IconBuilder = isOn => SettingsType.Notification.GetIconPath(isOn),
-									OnToggle = value => {},
+									OnToggle = value => m_userManager.UpdateSettings(SettingsType.Notification, value),
 								}
 							},
 							AchievementButtonParameter = new UITextButtonParameter{

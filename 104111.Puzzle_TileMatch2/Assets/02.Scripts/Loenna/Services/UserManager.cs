@@ -91,6 +91,7 @@ public class UserManager : IDisposable
 					{SettingsType.Fx, true},
 					{SettingsType.Bgm, true},
 					{SettingsType.Vibration, true},
+                    {SettingsType.Notification, true},
 				}
 			);
 		}
