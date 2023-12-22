@@ -70,7 +70,7 @@ partial class PlayScene
 				Vector2 position = m_particleParent.InverseTransformPoint(worldPosition) / UIManager.SceneCanvas.scaleFactor;
 				Vector2 direction = m_particleParent.InverseTransformPoint(m_topView.PuzzleIconTransform.position);
 
-				fx.Play(position, direction, 1.5f, () => {
+				fx.Play(position, direction, 1f, () => {
                         SoundManager soundManager = Game.Inst?.Get<SoundManager>();
                         soundManager?.PlayFx(Constant.Sound.SFX_GOLD_PIECE);
 
