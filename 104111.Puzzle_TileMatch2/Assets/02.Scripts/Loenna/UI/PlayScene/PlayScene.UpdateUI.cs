@@ -71,6 +71,9 @@ partial class PlayScene
 				Vector2 direction = m_particleParent.InverseTransformPoint(m_topView.PuzzleIconTransform.position);
 
 				fx.Play(position, direction, 1.5f, () => {
+                        SoundManager soundManager = Game.Inst?.Get<SoundManager>();
+                        soundManager?.PlayFx(Constant.Sound.SFX_GOLD_PIECE);
+
 						m_particlePool.Release(fx);
 						m_topView.UpdateMissionCount(value.count, value.max);
 					}

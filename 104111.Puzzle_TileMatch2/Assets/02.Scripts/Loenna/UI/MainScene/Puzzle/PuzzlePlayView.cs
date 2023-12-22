@@ -104,8 +104,9 @@ public class PuzzlePlayView : CachedBehaviour
 				Sprite = pieceSources[index].Sprite,
 				Size = JigsawPuzzleSetting.Instance.PieceSizeWithPadding * ratio,
 				IsLocked = !unlockedList.Contains(realIndex),
-				OnMovePiece = OnMovePiece,
+				//OnMovePiece = OnMovePiece,
 				OnTryUnlock = OnTryUnlock,
+                MovePiece = MovePiece,
 			};
 
 			if (placedList.Contains(realIndex))
@@ -125,7 +126,7 @@ public class PuzzlePlayView : CachedBehaviour
 		m_pieceScrollView.UpdateUI(pieceScrollDatas.ToArray());
 	}
 
-	private void OnTryUnlock(PuzzlePieceItemData itemData)
+	private void OnTryUnlock(PuzzlePieceItemData itemData, Vector2 position)
 	{
         Debug.Log(CodeManager.GetMethodName() + itemData.Index);
 
@@ -135,10 +136,31 @@ public class PuzzlePlayView : CachedBehaviour
 
 			itemData.IsLocked = false;
 			m_pieceScrollView.UpdateUI(itemData);
+
+            itemData.MovePiece?.Invoke(itemData, position);
 		}
 	}
 
-	private void OnMovePiece(PuzzlePieceItemData itemData, PointerEventData eventData)
+    private void MovePiece(PuzzlePieceItemData itemData, Vector2 position)
+	{
+        Debug.Log(CodeManager.GetMethodName() + itemData.Index);
+
+        SoundManager soundManager = Game.Inst?.Get<SoundManager>();
+        soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
+        
+		JigsawPuzzlePiece piece = Instantiate(m_piecePrefab);
+
+		piece.name = $"piece[{itemData.Index}]";
+		piece.CachedTransform.SetParentReset(CachedTransform);
+		piece.CachedTransform.position = position;
+		
+		piece.OnSetup(itemData);        
+        m_pieceSlotContainer.MoveToSlot(itemData, piece, m_puzzleManager.AddPlacedList);
+
+		m_pieceScrollView.RemoveItem(itemData);
+	}
+
+    /*private void OnMovePiece(PuzzlePieceItemData itemData, PointerEventData eventData)
 	{
         Debug.Log(CodeManager.GetMethodName() + itemData.Index);
         
@@ -157,7 +179,7 @@ public class PuzzlePlayView : CachedBehaviour
 		);
 
 		m_pieceScrollView.RemoveItem(itemData);
-	}
+	}*/
 
 	public void OnHide()
 	{

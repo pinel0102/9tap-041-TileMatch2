@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 
 using NineTap.Common;
+using DG.Tweening;
 
 public class PuzzlePieceSlotContainer : CachedBehaviour
 {
@@ -89,6 +90,18 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
 		m_slots[index] = Slot.AttachPiece(slot, pieceObject);
 	}
 
+    public void MoveToSlot(PuzzlePieceItemData itemData, JigsawPuzzlePiece piece, Action<int> onAttach)
+	{
+        int index = itemData.Index;
+		Vector2 slotPosition = m_slots[index].Transform.position;
+		Vector2 piecePosition = piece.CachedTransform.position;
+
+        piece.transform.DOMove(slotPosition, Constant.Game.TWEENTIME_JIGSAW_MOVE, false)
+            .OnComplete(() => {
+                Check(index, piece, onAttach);
+            });
+	}
+
 	public void Check(int index, JigsawPuzzlePiece piece, Action<int> onAttach)
 	{
 		Vector2 slotPosition = m_slots[index].Transform.position;
@@ -99,6 +112,9 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
 		if (distance < CHECK_OFFSET)
 		{
             Debug.Log(CodeManager.GetMethodName() + index);
+
+            SoundManager soundManager = Game.Inst?.Get<SoundManager>();
+            soundManager?.PlayFx(Constant.Sound.SFX_TILE_MATCH);
 
 			piece.Attached();
             CrossPieceEffect(CrossPieceList(index));
@@ -128,8 +144,8 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
 		}
 
         checkList.Clear();
-        checkList.Add(index - 1);
-        checkList.Add(index + 1);
+        checkList.Add(index%5 == 0 ? -1 : index - 1);
+        checkList.Add(index%5 == 4 ? -1 : index + 1);
         checkList.Add(index - 5);
         checkList.Add(index + 5);
 

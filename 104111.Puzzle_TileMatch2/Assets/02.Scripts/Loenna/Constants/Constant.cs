@@ -25,6 +25,9 @@ public static class Constant
         public const string SFX_ITEM_STASH = "click_object"; // 아이템 - 스태시.
         public const string SFX_REWARD_OPEN = "reward_open"; // 리워드 열릴 때.
         public const string SFX_PROGRESS = "Progress Complete"; // 수집 이벤트 프로그레스.
+
+        //Temp
+        public const string SFX_GOLD_PIECE = "popup_open"; // 골든 타일 획득시.
     }
 
 	public static class User
@@ -47,6 +50,8 @@ public static class Constant
 		public const int GOLD_PUZZLE_PIECE_COUNT = 4;
 		public const float TWEENTIME_TILE_DEFAULT = 0.15f; // 0.25f
         public const float TWEENTIME_TILE_SCALE = 0.05f;
+
+        public const float TWEENTIME_JIGSAW_MOVE = 0.3f;
 
 		public static readonly Vector2 RESIZE_TILE_RATIOS = new Vector2(0.55f, 0.575f);
 

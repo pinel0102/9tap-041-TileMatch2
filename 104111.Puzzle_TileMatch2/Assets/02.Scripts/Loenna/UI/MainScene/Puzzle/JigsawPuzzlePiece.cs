@@ -10,7 +10,7 @@ using NineTap.Common;
 using Coffee.UIEffects;
 
 [ResourcePath("UI/Widgets/JigsawPuzzlePiece")]
-public class JigsawPuzzlePiece : CachedBehaviour, IDragHandler
+public class JigsawPuzzlePiece : CachedBehaviour
 {
 	[SerializeField]
 	private Image m_image = null!;
@@ -22,11 +22,11 @@ public class JigsawPuzzlePiece : CachedBehaviour, IDragHandler
 	public void OnSetup(PuzzlePieceItemData itemData)
 	{
 		m_image.sprite = itemData.Sprite;
-		m_draggable = false;
 		m_image.rectTransform.SetSize(itemData.Size);
+        m_draggable = false;
 	}
 
-	public void OnSetup(PuzzlePieceItemData itemData, PointerEventData eventData, Action onCheck)
+    /*public void OnSetup(PuzzlePieceItemData itemData, PointerEventData eventData, Action onCheck)
 	{
 		m_image.sprite = itemData.Sprite;
 		m_image.rectTransform.SetSize(itemData.Size);
@@ -37,7 +37,7 @@ public class JigsawPuzzlePiece : CachedBehaviour, IDragHandler
 		OnDrag(eventData);
 	}
 
-	public void OnDrag(PointerEventData eventData)
+    public void OnDrag(PointerEventData eventData)
 	{
 		if (m_draggable && UIManager.SceneCanvas != null)
 		{	
@@ -50,7 +50,7 @@ public class JigsawPuzzlePiece : CachedBehaviour, IDragHandler
 			CachedRectTransform.anchoredPosition += eventData.delta / factor;
 			m_onCheck?.Invoke(CachedRectTransform.position);
 		}
-	}
+	}*/
 
 	public void Attached()
 	{

@@ -17,8 +17,9 @@ public class PuzzlePieceItemData : InfiniteScrollData
 	
 	public bool IsLocked;
 
-	public Action<PuzzlePieceItemData, PointerEventData> OnMovePiece;
-	public Action<PuzzlePieceItemData> OnTryUnlock;
+    //public Action<PuzzlePieceItemData, PointerEventData> OnMovePiece;
+	public Action<PuzzlePieceItemData, Vector2> OnTryUnlock;
+    public Action<PuzzlePieceItemData, Vector2> MovePiece;
 }
 
 public class PuzzlePieceScrollItem : InfiniteScrollItem, IBeginDragHandler, IDragHandler, IEndDragHandler
@@ -75,11 +76,12 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem, IBeginDragHandler, IDra
         {
             if (itemData.IsLocked)
             {
-                itemData.OnTryUnlock?.Invoke(itemData);
+                itemData.OnTryUnlock?.Invoke(itemData, m_image.transform.position);
             }
             else
             {
                 //Select Piece
+                itemData.MovePiece?.Invoke(itemData, m_image.transform.position);
             }
         }
     }
@@ -140,7 +142,7 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem, IBeginDragHandler, IDra
 		}
 		else
 		{
-			itemData.OnMovePiece?.Invoke(itemData, eventData);
+			//itemData.OnMovePiece?.Invoke(itemData, eventData);
 
 			m_scrolling = false;
 		}
