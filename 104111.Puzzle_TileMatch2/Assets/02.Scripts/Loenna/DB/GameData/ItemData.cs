@@ -14,6 +14,7 @@ public record ItemData
 	ValueType ValueType, 
 	string ImagePath, 
 	string Name,
+    string Description,
 	int ProductIndex
 ): TableRowData<int>(Index)
 {

@@ -37,8 +37,8 @@ partial class GameManager
 	// 해당 타일 이동
 	public List<TileItemModel> MoveTo(TileItemModel tileItemModel, LocationType location)
 	{
-        SoundManager soundManager = Game.Inst?.Get<SoundManager>();
-        soundManager?.PlayFx(Constant.Sound.SFX_TILE_MOVE);
+        //SoundManager soundManager = Game.Inst?.Get<SoundManager>();
+        //soundManager?.PlayFx(Constant.Sound.SFX_TILE_MOVE);
 
 		var tiles = BoardInfo.CurrentBoard.Tiles
 			.Select(tile => {

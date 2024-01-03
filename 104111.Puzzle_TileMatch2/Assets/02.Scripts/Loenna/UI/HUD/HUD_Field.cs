@@ -27,6 +27,9 @@ public class HUD_Field : CachedBehaviour
 	[SerializeField]
 	private TMP_Text m_text;
 
+    [SerializeField]
+	private TMP_Text m_timeText;
+
 	[SerializeField]
 	private RectTransform m_attractorTarget;
 

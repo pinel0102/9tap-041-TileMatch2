@@ -346,8 +346,8 @@ MonoBehaviour:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-      m_ConstantMin: 30
-      m_ConstantMax: 40
+      m_ConstantMin: 20
+      m_ConstantMax: 60
     xCurve:
       m_Mode: 0
       m_CurveMultiplier: 0
@@ -1442,7 +1442,7 @@ MonoBehaviour:
   _rateOverDistance: 0
   _bursts:
   - time: 0
-    count: 10
+    count: 30
     used: 0
   _particleTrailRenderer: {fileID: 0}
   _trailModule:
@@ -1647,7 +1647,7 @@ MonoBehaviour:
       m_Calls: []
   moduleEmitterFoldout: 1
   moduleParticleFoldout: 1
-  moduleMovementFoldout: 1
+  moduleMovementFoldout: 0
   moduleEventsFoldout: 1
   m_Texture: {fileID: 2800000, guid: d1e722e6b5d13493ab5760c8fa9d5b01, type: 3}
 --- !u!1 &1297834307885000933

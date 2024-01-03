@@ -150,8 +150,8 @@ public partial class PlayScene : UIScene
 
 			UIManager.ShowPopupUI<BuyItemPopup>(
 				new BuyItemPopupParameter(
-					Title: "Purchase",
-					Message: $"{itemData.Name}",
+					Title: $"{itemData.Name}",
+					Message: $"{itemData.Description}",
 					ExitParameter: ExitBaseParameter.CancelParam,
 					BaseButtonParameter: new UITextButtonParameter {
 						OnClick = () => {
@@ -160,7 +160,10 @@ public partial class PlayScene : UIScene
                                 m_paymentService.Request(
                                     product.Index, 
                                     onSuccess: (result) => {
-                                        m_gameManager.UseSkillItem((SkillItemType)itemIndex, false);
+                                        var ownSkillItems = m_userManager.Current.OwnSkillItems;
+                                        ownSkillItems[(SkillItemType)itemIndex] += 3;
+                                        m_userManager.Update(ownSkillItems: ownSkillItems);
+                                        m_gameManager.UseSkillItem((SkillItemType)itemIndex, true);
                                     },
                                     onError: (error) => { }
                                 );
