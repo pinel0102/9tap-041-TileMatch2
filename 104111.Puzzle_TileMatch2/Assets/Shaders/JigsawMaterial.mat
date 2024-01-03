@@ -12,9 +12,10 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - _ENABLEINNEROUTLINE_ON
-  - _ENABLEPIXELOUTLINE_ON
-  - _INNEROUTLINETEXTURETOGGLE_ON
+  - _ENABLEOUTEROUTLINE_ON
+  - _INNEROUTLINEOUTLINEONLYTOGGLE_ON
+  - _OUTEROUTLINEOUTLINEONLYTOGGLE_ON
+  - _OUTEROUTLINETEXTURETOGGLE_ON
   - _SHADERFADING_NONE
   - _SHADERSPACE_UV
   m_InvalidKeywords: []
@@ -49,11 +50,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _InnerOutlineTintTexture:
-        m_Texture: {fileID: 2800000, guid: 7a222bda646744673b4a0503607b30ee, type: 3}
+        m_Texture: {fileID: 2800000, guid: 275939220585233408091b591ed311d0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: ef40b00a83f7bd34f84851386b3321f0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
@@ -69,7 +70,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OuterOutlineTintTexture:
-        m_Texture: {fileID: 2800000, guid: be6c7dc1d21e82a40b4f37e323df4c6c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 0dc94c6eb3e463a479c839873ff17314, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PixelOutlineTintTexture:
@@ -110,6 +111,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - PixelSnap: 0
     - _AddColorContrast: 0.5
     - _AddColorContrastToggle: 0
     - _AddColorFade: 1
@@ -194,12 +196,12 @@ Material:
     - _EnableHologram: 0
     - _EnableHue: 0
     - _EnableInkSpread: 0
-    - _EnableInnerOutline: 1
+    - _EnableInnerOutline: 0
     - _EnableMetal: 0
     - _EnableNegative: 0
-    - _EnableOuterOutline: 0
+    - _EnableOuterOutline: 1
     - _EnablePingPongGlow: 0
-    - _EnablePixelOutline: 1
+    - _EnablePixelOutline: 0
     - _EnablePixelate: 0
     - _EnablePoison: 0
     - _EnableRainbow: 0
@@ -287,10 +289,10 @@ Material:
     - _InkSpreadNoiseFactor: 0.5
     - _InkSpreadWidth: 0.2
     - _InnerOutlineDistortionToggle: 0
-    - _InnerOutlineFade: 1
-    - _InnerOutlineOutlineOnlyToggle: 0
-    - _InnerOutlineTextureToggle: 1
-    - _InnerOutlineWidth: 0.02
+    - _InnerOutlineFade: 0.2
+    - _InnerOutlineOutlineOnlyToggle: 1
+    - _InnerOutlineTextureToggle: 0
+    - _InnerOutlineWidth: 0.05
     - _IsText: 0
     - _IsTextMeshPro: 0
     - _MetalContrast: 2
@@ -300,17 +302,17 @@ Material:
     - _MetalMaskToggle: 0
     - _NegativeFade: 1
     - _OuterOutlineDistortionToggle: 0
-    - _OuterOutlineFade: 0.2
-    - _OuterOutlineOutlineOnlyToggle: 0
-    - _OuterOutlineTextureToggle: 0
-    - _OuterOutlineWidth: 0.01
+    - _OuterOutlineFade: 0.3
+    - _OuterOutlineOutlineOnlyToggle: 1
+    - _OuterOutlineTextureToggle: 1
+    - _OuterOutlineWidth: 0.1
     - _PingPongGlowContrast: 1
     - _PingPongGlowFade: 1
     - _PingPongGlowFrequency: 3
     - _PixelOutlineFade: 1
     - _PixelOutlineOutlineOnlyToggle: 0
     - _PixelOutlineTextureToggle: 0
-    - _PixelOutlineWidth: 0.5
+    - _PixelOutlineWidth: 1
     - _PixelPerfectSpace: 0
     - _PixelPerfectUV: 0
     - _PixelateFade: 1
@@ -511,7 +513,7 @@ Material:
     - _InkSpreadColor: {r: 8.47419, g: 5.013525, b: 0.08873497, a: 0}
     - _InkSpreadNoiseScale: {r: 0.4, g: 0.4, b: 0, a: 0}
     - _InkSpreadPosition: {r: 0.5, g: -1, b: 0, a: 0}
-    - _InnerOutlineColor: {r: 2.0152123, g: 2.0152123, b: 2.0152123, a: 1}
+    - _InnerOutlineColor: {r: 1.3759509, g: 1.3759509, b: 1.3759509, a: 1}
     - _InnerOutlineDistortionIntensity: {r: 0.01, g: 0.01, b: 0, a: 0}
     - _InnerOutlineNoiseScale: {r: 4, g: 4, b: 0, a: 0}
     - _InnerOutlineNoiseSpeed: {r: 0, g: 0.1, b: 0, a: 0}
@@ -523,14 +525,14 @@ Material:
     - _MetalNoiseDistortionSpeed: {r: -0.05, g: -0.05, b: 0, a: 0}
     - _MetalNoiseScale: {r: 0.25, g: 0.25, b: 0, a: 0}
     - _MetalNoiseSpeed: {r: 0.05, g: 0.05, b: 0, a: 0}
-    - _OuterOutlineColor: {r: 0, g: 0, b: 0, a: 1}
+    - _OuterOutlineColor: {r: 0.09411765, g: 0.09411765, b: 0.09411765, a: 1}
     - _OuterOutlineDistortionIntensity: {r: 0.01, g: 0.01, b: 0, a: 0}
     - _OuterOutlineNoiseScale: {r: 4, g: 4, b: 0, a: 0}
     - _OuterOutlineNoiseSpeed: {r: 0, g: 0.1, b: 0, a: 0}
-    - _OuterOutlineTextureSpeed: {r: 0.5, g: 0, b: 0, a: 0}
+    - _OuterOutlineTextureSpeed: {r: 0, g: 0, b: 0, a: 0}
     - _PingPongGlowFrom: {r: 5.992157, g: 0.1882353, b: 0.1882353, a: 0}
     - _PingPongGlowTo: {r: 0.1882353, g: 0.1882353, b: 5.992157, a: 0}
-    - _PixelOutlineColor: {r: 0.39215687, g: 0.39215687, b: 0.39215687, a: 1}
+    - _PixelOutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _PixelOutlineTextureSpeed: {r: 0.5, g: 0, b: 0, a: 0}
     - _PoisonColor: {r: 0.3137255, g: 2.996078, b: 0.3137255, a: 0}
     - _PoisonNoiseScale: {r: 0.2, g: 0.2, b: 0, a: 0}

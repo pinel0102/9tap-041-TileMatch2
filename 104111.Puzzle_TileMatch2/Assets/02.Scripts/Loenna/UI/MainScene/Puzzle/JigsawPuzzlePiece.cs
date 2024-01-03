@@ -14,6 +14,8 @@ public class JigsawPuzzlePiece : CachedBehaviour
 {
 	[SerializeField]
 	private Image m_image = null!;
+    [SerializeField]
+	private Image m_ssuImage = null!;
     public UIShiny shiny = null!;
 
 	private bool m_draggable = false;
@@ -23,7 +25,9 @@ public class JigsawPuzzlePiece : CachedBehaviour
 	{
 		m_image.sprite = itemData.Sprite;
 		m_image.rectTransform.SetSize(itemData.Size);
+        m_ssuImage.sprite = itemData.Sprite;
         m_draggable = false;
+        shiny.Stop();
 	}
 
     /*public void OnSetup(PuzzlePieceItemData itemData, PointerEventData eventData, Action onCheck)

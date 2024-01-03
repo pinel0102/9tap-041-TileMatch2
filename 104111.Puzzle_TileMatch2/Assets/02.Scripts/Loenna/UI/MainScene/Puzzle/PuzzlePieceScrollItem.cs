@@ -29,6 +29,8 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem, IBeginDragHandler, IDra
 
 	[SerializeField]
 	private Image m_image;
+    [SerializeField]
+	private Image m_ssuImage;
 
 	[SerializeField]
 	private GameObject m_locked;
@@ -61,6 +63,7 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem, IBeginDragHandler, IDra
 			m_locked.SetActive(itemData.IsLocked);
 			m_image.sprite = itemData.Sprite;
 			m_image.rectTransform.SetSize(itemData.Size * RESIZE_RATIO);
+            m_ssuImage.sprite = itemData.Sprite;
 			return;
 		}
 
