@@ -10,6 +10,9 @@ public static class Constant
 	{
 		public const float REFERENCE_RESOLUTION_X = 720f;
 		public const float REFERENCE_RESOLUTION_Y = 1280f;
+
+        public static readonly Color COLOR_WHITE = Color.white;
+        public static readonly Color COLOR_BOOSTER_TIME = Color.yellow;
 	}
 
     public static class Sound
@@ -33,6 +36,7 @@ public static class Constant
 	public static class User
 	{
 		public const int MAX_LIFE_COUNT = 5;
+        public const string MAX_LIFE_TEXT = "Full";
 		public static readonly long REQUIRE_CHARGE_LIFE_MILLISECONDS = (long)TimeSpan.FromMinutes(30).TotalMilliseconds;
 		public static readonly string DATA_PATH = Path.Combine(Application.persistentDataPath, "user.dat");
 	}

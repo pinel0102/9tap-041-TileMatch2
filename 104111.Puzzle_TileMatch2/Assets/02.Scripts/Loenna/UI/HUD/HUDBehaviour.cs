@@ -1,9 +1,8 @@
 using UnityEngine;
-
 using System.Collections.Generic;
 using System.Linq;
-
 using NineTap.Common;
+using TMPro;
 
 [ResourcePath("UI/HUD/HUDBehaviour")]
 public class HUDBehaviour : CachedBehaviour
@@ -11,7 +10,7 @@ public class HUDBehaviour : CachedBehaviour
 	[SerializeField]
 	private List<HUD_Field> m_fields;
 
-	private Dictionary<HUDType, HUD_Field> m_fieldDic = new();
+    private Dictionary<HUDType, HUD_Field> m_fieldDic = new();
 
 	public void OnSetup(params HUDFieldParameter[] parameters)
 	{

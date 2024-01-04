@@ -14,6 +14,7 @@ public class HUDFieldParameter
 	public HUDType Type;
 	public Action OnClick;
 	public IUniTaskAsyncEnumerable<string> FieldBinder;
+    public IUniTaskAsyncEnumerable<(bool, string, string)> LifeStatus;
 }
 
 public class HUD_Field : CachedBehaviour
@@ -30,7 +31,10 @@ public class HUD_Field : CachedBehaviour
     [SerializeField]
 	private TMP_Text m_timeText;
 
-	[SerializeField]
+    [SerializeField]
+    private GameObject boosterTimeObject;
+
+    [SerializeField]
 	private RectTransform m_attractorTarget;
 
 	public Transform AttractorTarget => m_attractorTarget;
@@ -43,6 +47,15 @@ public class HUD_Field : CachedBehaviour
 		{
 			parameter.FieldBinder.BindTo(m_text, (component, text) => component.text = text);
 		}
+        else if (parameter.LifeStatus != null)
+		{
+            parameter.LifeStatus.BindTo(m_text, (component, status) => component.text = status.Item2);
+            parameter.LifeStatus.BindTo(m_timeText, (component, status) => {
+                    boosterTimeObject.SetActive(status.Item1); 
+                    component.text = status.Item3;
+                    component.color = status.Item1 ? Constant.UI.COLOR_BOOSTER_TIME : Constant.UI.COLOR_WHITE;
+                });
+		}
 	}
 
 	public void SetVisible(bool visible)
@@ -52,7 +65,6 @@ public class HUD_Field : CachedBehaviour
 
     public void AddListener(Action OnClick)
     {
-        SoundManager soundManager = Game.Inst?.Get<SoundManager>();
         m_button.onClick.AddListener(() => {    OnClick?.Invoke();  });
     }
 }

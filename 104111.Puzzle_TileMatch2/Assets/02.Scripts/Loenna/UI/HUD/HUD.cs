@@ -43,7 +43,8 @@ public class HUD
 			},
 			new HUDFieldParameter {
 				Type = HUDType.LIFE,
-				FieldBinder = m_messageBroker.Subscribe().Select(user => user.GetLifeString()),
+                FieldBinder = null,
+                LifeStatus = m_messageBroker.Subscribe().Select(user => user.GetLifeStatus()),
 				OnClick = null
 			},
 			new HUDFieldParameter {

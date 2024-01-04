@@ -30,10 +30,10 @@ public class GameClearPopup : UIPopup
 	private UITextButton m_confirmButton = default!;
 
     [SerializeField]
-	private CanvasGroup m_clearStarCanvasGroup;
+	private CanvasGroup m_clearStarCanvasGroup = default!;
 
     [SerializeField]
-	private CanvasGroup m_clearStarHalo;
+	private CanvasGroup m_clearStarHalo = default!;
 
 	private LevelData? m_levelData;	
 	private RewardData? m_chestRewardData;
