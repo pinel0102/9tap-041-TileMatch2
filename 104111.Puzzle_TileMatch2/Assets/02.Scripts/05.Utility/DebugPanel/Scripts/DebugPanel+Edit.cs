@@ -30,24 +30,23 @@ public partial class DebugPanel : MonoBehaviour
 
     private void SetupButtonListeners()
     {
-        buttonActionList.Add(DebugLevelClear);
-        buttonActionList.Add(DebugLevelFail);
-        
-        inputActionListInt.Add(DebugLevelPlay);
-        inputActionListInt.Add(DebugSetClear);
-        inputActionListInt.Add(DebugSetHeart);
-        inputActionListInt.Add(DebugSetCoin);
-        inputActionListInt.Add(DebugSetItem);
+        buttonActionList.Add(Debug_LevelClear);
+        buttonActionList.Add(Debug_LevelFail);        
+        inputActionListInt.Add(Debug_LevelPlay);
+        inputActionListInt.Add(Debug_SetClear);
+        inputActionListInt.Add(Debug_SetHeart);
+        inputActionListInt.Add(Debug_SetCoin);
+        inputActionListInt.Add(Debug_SetItem);
     }
 
 #endregion Setup Listeners
 
 
-#region Edit Functions
+#region Debug Functions
 
     private UserManager m_userManager { get { return Game.Inst.Get<UserManager>();} }
 
-    private void DebugSetClear(int level)
+    private void Debug_SetClear(int level)
     {
         if (level < 1) return;
 
@@ -57,7 +56,7 @@ public partial class DebugPanel : MonoBehaviour
         UIManager.ShowSceneUI<MainScene>(new NineTap.Common.DefaultParameter());
     }
 
-    private void DebugSetHeart(int count)
+    private void Debug_SetHeart(int count)
     {
         if (count < 0) return;
 
@@ -66,7 +65,7 @@ public partial class DebugPanel : MonoBehaviour
         m_userManager?.Update(life: count);
     }
 
-    private void DebugSetCoin(int count)
+    private void Debug_SetCoin(int count)
     {
         if (count < 0) return;
 
@@ -75,7 +74,7 @@ public partial class DebugPanel : MonoBehaviour
         m_userManager?.Update(coin: count);
     }
 
-    private void DebugSetItem(int count)
+    private void Debug_SetItem(int count)
     {
         if (count < 0) return;
 
@@ -93,7 +92,7 @@ public partial class DebugPanel : MonoBehaviour
 
     #region Play Scene Only
 
-    private void DebugLevelPlay(int level)
+    private void Debug_LevelPlay(int level)
     {
         if (level <= 0) return;
 
@@ -109,7 +108,7 @@ public partial class DebugPanel : MonoBehaviour
         }
     }
 
-    private void DebugLevelClear()
+    private void Debug_LevelClear()
     {
         switch(UIManager.CurrentScene)
         {
@@ -121,7 +120,7 @@ public partial class DebugPanel : MonoBehaviour
         }
     }
 
-    private void DebugLevelFail()
+    private void Debug_LevelFail()
     {
         switch(UIManager.CurrentScene)
         {
@@ -134,7 +133,7 @@ public partial class DebugPanel : MonoBehaviour
 
     #endregion Play Scene Only
 
-#endregion Edit Functions
+#endregion Debug Functions
 }
 
 #endif
