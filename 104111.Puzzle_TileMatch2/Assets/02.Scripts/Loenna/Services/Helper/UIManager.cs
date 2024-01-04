@@ -26,6 +26,7 @@ public static partial class UIManager
 
 	public static Canvas? SceneCanvas { get; private set; }
 	public static HUD? HUD => s_implementation?.HUD;
+    public static UIScene? CurrentScene => s_implementation?.SceneManager?.CurrentScene; 
 
 	public static void Initialize(ServiceRegistry<object> serviceRegistry, UserManager userManager)
 	{

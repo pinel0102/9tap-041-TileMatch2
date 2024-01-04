@@ -33,6 +33,9 @@ public partial class PlayScene : UIScene
 	private ProductDataTable m_productDataTable;
     private PuzzleDataTable m_puzzleDataTable;
 
+    public GameManager gameManager => m_gameManager;
+    public PlaySceneBoardView mainView => m_mainView;
+
 	private void OnDestroy()
 	{
 		m_gameManager?.Dispose();	
