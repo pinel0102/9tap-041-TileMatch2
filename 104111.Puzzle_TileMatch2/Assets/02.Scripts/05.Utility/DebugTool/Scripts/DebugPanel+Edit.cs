@@ -11,8 +11,8 @@ public partial class DebugPanel : MonoBehaviour
     private List<Action<int>> inputActionListInt = new List<Action<int>>();
     private List<Action<string>> inputActionListString = new List<Action<string>>();
     
-    private const string logFormat = "<color=#FFFF00>{0}</color>";
-    private const string logFormat2 = "<color=#FFFF00>{0} : {1}</color>";
+    private const string logFormat = "<color=#FFFF00>[Debug] {0}</color>";
+    private const string logFormat2 = "<color=#FFFF00>[Debug] {0} : {1}</color>";
 
 #region Initialize
 
@@ -50,7 +50,7 @@ public partial class DebugPanel : MonoBehaviour
     {
         if (level < 1) return;
 
-        Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat, level));
+        Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat2, "Set Clear", level));
 
         m_userManager?.Update(level: level);
         UIManager.ShowSceneUI<MainScene>(new NineTap.Common.DefaultParameter());
@@ -60,7 +60,7 @@ public partial class DebugPanel : MonoBehaviour
     {
         if (count < 0) return;
 
-        Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat, count));
+        Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat2, "Set Heart", count));
 
         m_userManager?.Update(life: count);
     }
@@ -69,7 +69,7 @@ public partial class DebugPanel : MonoBehaviour
     {
         if (count < 0) return;
 
-        Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat, count));
+        Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat2, "Set Coin", count));
 
         m_userManager?.Update(coin: count);
     }
@@ -78,7 +78,7 @@ public partial class DebugPanel : MonoBehaviour
     {
         if (count < 0) return;
 
-        Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat, count));
+        Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat2, "Set Item", count));
 
         var OwnSkillItems = new Dictionary<SkillItemType, int>()
         {
@@ -99,7 +99,7 @@ public partial class DebugPanel : MonoBehaviour
         switch(UIManager.CurrentScene)
         {
             case PlayScene playScene:
-                Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat, level));
+                Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat2, "Level Play", level));
                 playScene.gameManager.LoadLevel(level, playScene.mainView.CachedRectTransform);
                 break;
             default:
