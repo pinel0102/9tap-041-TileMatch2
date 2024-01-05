@@ -45,5 +45,6 @@ public class PlaySceneTopUIView : CachedBehaviour
 		m_puzzleIconTransform.DOPunchScale(Vector2.one * 0.25f, 0.25f, vibrato: 1, elasticity: 1f);
 
 		m_missionCountText.text = $"{count}/{maxCount}";
+        GlobalData.Instance.missionCollected = count;
 	}
 }

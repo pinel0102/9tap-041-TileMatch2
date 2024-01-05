@@ -4,7 +4,16 @@ using NineTap.Common;
 using System;
 using UnityEngine.Rendering;
 
-public record MainSceneParameter(MainMenuType ShowMenuType = MainMenuType.HOME, PuzzleManager PuzzleManager = null) : DefaultParameter();
+public record MainSceneParameter(
+    MainMenuType ShowMenuType = MainMenuType.HOME, 
+    PuzzleManager PuzzleManager = null
+    ) : DefaultParameter();
+
+public record MainSceneRewardParameter(
+    int rewardCoin = 0,
+    int rewardPuzzlePiece = 0,
+    int rewardGoldPiece = 0
+    ) : DefaultParameter();
 
 [ResourcePath("UI/Scene/MainScene")]
 public class MainScene : UIScene

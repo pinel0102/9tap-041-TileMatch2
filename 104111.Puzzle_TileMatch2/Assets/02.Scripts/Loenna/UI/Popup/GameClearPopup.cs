@@ -55,6 +55,8 @@ public class GameClearPopup : UIPopup
 		RewardDataTable rewardDataTable = tableManager.RewardDataTable;
 		LevelDataTable levelDataTable = tableManager.LevelDataTable;
 
+        int goldPieceCount = GlobalData.Instance.missionCollected;                
+
 		if (!levelDataTable.TryGetValue(parameter.Level, out m_levelData))
 		{
 			OnClickClose();
@@ -87,7 +89,13 @@ public class GameClearPopup : UIPopup
 					OnClickClose();
 					if (existNextLevel)
 					{
-                        UIManager.ShowSceneUI<MainScene>(new DefaultParameter());
+                        
+                        //UIManager.ShowSceneUI<MainScene>(new DefaultParameter());
+                        UIManager.ShowSceneUI<MainScene>(new MainSceneRewardParameter(
+                            rewardCoin:rewardData.Coin,
+                            rewardPuzzlePiece:rewardData.PuzzlePiece,
+                            rewardGoldPiece:goldPieceCount
+                            ));
 
                         if (UIManager.IsEnableReviewPopup(parameter.Level))
                         {
