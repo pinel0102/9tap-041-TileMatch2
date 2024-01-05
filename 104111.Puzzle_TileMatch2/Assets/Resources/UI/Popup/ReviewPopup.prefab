@@ -129,6 +129,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_transitionEffect: 2
+  ignoreBackKey: 0
   m_cancelButton: {fileID: 2281840730595600343}
   m_title: {fileID: 7652551494642425772}
   m_message: {fileID: 5545984282027158027}
@@ -1226,9 +1227,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 18, y: 10}
+  m_AnchoredPosition: {x: -28, y: -38}
   m_SizeDelta: {x: 92, y: 96}
-  m_Pivot: {x: 1, y: 1}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5791654592625848587
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -52,6 +52,9 @@ public class PlayEndPopup : UIPopup
 	[SerializeField]
 	private UITextButton m_quitButton;
 
+    [SerializeField]
+	private UIImageButton m_exitButton;
+
 	[SerializeField]
 	private UIParticleSystem m_confettiEffect;
 
@@ -64,7 +67,7 @@ public class PlayEndPopup : UIPopup
 			return;
 		}
 
-		CurrentPlayState.Finished.State state = parameter.State;
+        CurrentPlayState.Finished.State state = parameter.State;
 		
 		m_labelCanvasGroup.alpha = 0f;
 
@@ -81,9 +84,34 @@ public class PlayEndPopup : UIPopup
 			canvasGroup => canvasGroup.alpha = state is CurrentPlayState.Finished.State.CLEAR? 0f : 1f
 		);
 
-		m_continueButton.OnSetup(parameter.ContinueButtonParameter);
+		//m_continueButton.OnSetup(parameter.ContinueButtonParameter);
+        m_continueButton.OnSetup(
+            new UITextButtonParameter {
+                OnClick = () => {
+                    OnClickClose();
+                    parameter.ContinueButtonParameter.OnClick?.Invoke();
+                },
+                ButtonText = parameter.ContinueButtonParameter.ButtonText,
+                SubWidgetBuilder = parameter.ContinueButtonParameter.SubWidgetBuilder
+            }
+        );
 
 		m_quitButton.OnSetup(
+			new UITextButtonParameter {
+				OnClick = () => {
+					OnClickClose();
+					parameter.OnQuit?.Invoke();
+				},
+				ButtonText = Text.Button.GIVE_UP,
+				SubWidgetBuilder = () => {
+					var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
+					widget.OnSetup("UI_Icon_Heart_Broken");
+					return widget.CachedGameObject;
+				}
+			}
+		);
+
+        m_exitButton.OnSetup(
 			new UITextButtonParameter {
 				OnClick = () => {
 					OnClickClose();

@@ -17,9 +17,11 @@ namespace NineTap.Common
 			POSITION
 		}
 
-		[SerializeField]
+        [SerializeField]
 		private TransitionEffect m_transitionEffect;
 		public TransitionEffect Effect => m_transitionEffect;
+
+        public bool ignoreBackKey = false;
 
 		private Canvas m_cachedCanvas = null;
 		public Canvas CachedCanvas

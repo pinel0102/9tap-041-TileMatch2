@@ -49,7 +49,7 @@ public class RewardPopup : UIPopup
 			return;
 		}
 
-		m_popupType = parameter.PopupType;
+        m_popupType = parameter.PopupType;
 
 		m_animatedRewardContainer.OnSetup(
 			new AnimatedRewardContainerParameter {

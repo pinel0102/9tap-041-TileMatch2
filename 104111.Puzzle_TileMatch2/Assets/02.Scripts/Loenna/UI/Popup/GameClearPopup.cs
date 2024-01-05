@@ -20,6 +20,9 @@ public class GameClearPopup : UIPopup
 	[SerializeField]
 	private Image m_headLineImage = default!;
 
+    [SerializeField]
+	private RectTransform m_BgEffect = default!;
+
 	[SerializeField]
 	private ClearRewardListContainer m_clearRewardContainer = default!;
 
@@ -48,7 +51,7 @@ public class GameClearPopup : UIPopup
 			return;
 		}
 
-		TableManager tableManager = Game.Inst.Get<TableManager>();
+        TableManager tableManager = Game.Inst.Get<TableManager>();
 		RewardDataTable rewardDataTable = tableManager.RewardDataTable;
 		LevelDataTable levelDataTable = tableManager.LevelDataTable;
 
@@ -116,7 +119,8 @@ public class GameClearPopup : UIPopup
 		m_confirmButton.Alpha = 0f;
 		m_gaugeBar.Alpha = 0f;
 		m_clearRewardContainer.Alpha = 0f;
-		m_headLineImage.transform.localScale = Vector3.one * 0.1f;
+		m_headLineImage.transform.localScale = Vector3.zero;
+        m_BgEffect.SetLocalScale(0);
 
 		void OnExit()
 		{
@@ -140,10 +144,13 @@ public class GameClearPopup : UIPopup
     {
         base.OnShow();
 
+        m_BgEffect.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
+
 		UniTask.Void(
 			async token => {
-				if (!ObjectUtility.IsNullOrDestroyed(m_headLineImage))
-				{
+                
+                if (!ObjectUtility.IsNullOrDestroyed(m_headLineImage))
+				{   
 					await m_headLineImage.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
 					await UniTask.Delay(TimeSpan.FromSeconds(0.25f));
 				}

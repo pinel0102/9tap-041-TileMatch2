@@ -1143,7 +1143,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 416562212430257374, guid: 0ebda9e35b21b0c4c8535d048e66b18f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 10
+      value: -20
       objectReference: {fileID: 0}
     - target: {fileID: 481703771699756096, guid: 0ebda9e35b21b0c4c8535d048e66b18f, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1651,6 +1651,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_transitionEffect: 2
+  ignoreBackKey: 0
   m_cancelButton: {fileID: 8776833793593531585}
   m_title: {fileID: 8913377411953353735}
   m_message: {fileID: 4671765078325079938}

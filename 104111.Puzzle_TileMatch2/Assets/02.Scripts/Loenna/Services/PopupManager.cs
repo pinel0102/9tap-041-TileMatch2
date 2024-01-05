@@ -253,7 +253,12 @@ public class PopupManager
 			return false;
 		}
 
-		ClosePopup(m_popups.Last());
+        UIPopup lastPopup = m_popups.Last();
+
+        if(lastPopup.ignoreBackKey)
+            return true;
+
+		ClosePopup(lastPopup);
 		return true;
 	}
 	#endregion
