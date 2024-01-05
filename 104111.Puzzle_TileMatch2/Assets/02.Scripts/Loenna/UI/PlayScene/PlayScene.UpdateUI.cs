@@ -158,13 +158,14 @@ partial class PlayScene
                 }
                 else
                 {
-                    m_puzzleData = m_puzzleDataTable.FirstOrDefault(index => index == level);
                     bg_default.SetActive(false);
                     bg_puzzle.SetActive(true);
-                    SetBackground();
+
+                    m_puzzleData = m_puzzleDataTable.Dic.LastOrDefault(item => item.Value.Level <= level).Value;
+                    SetBackground(m_puzzleData.GetImagePath());
                 }
 
-				m_progressId = 0;
+                m_progressId = 0;
 				m_block.SetActive(true);
 				m_tileItems.ForEach(item => m_tileItemPool.Release(item));
 				m_tileItems.Clear();
@@ -320,9 +321,8 @@ partial class PlayScene
 
         CheckAroundTiles();
 
-        void SetBackground()
+        void SetBackground(string path)
         {
-            string path = m_puzzleData.GetImagePath();
             Debug.Log(CodeManager.GetMethodName() + path);
 
             var sprite = Resources.Load<Sprite>(path);
