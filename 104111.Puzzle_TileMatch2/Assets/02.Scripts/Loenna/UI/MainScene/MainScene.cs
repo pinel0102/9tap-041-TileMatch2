@@ -13,7 +13,7 @@ public record MainSceneRewardParameter(
     int rewardCoin = 0,
     int rewardPuzzlePiece = 0,
     int rewardGoldPiece = 0
-    ) : DefaultParameter();
+    ) : MainSceneParameter();
 
 [ResourcePath("UI/Scene/MainScene")]
 public class MainScene : UIScene
@@ -241,10 +241,16 @@ public class MainScene : UIScene
 
 		OnUpdateUI(m_userManager.Current);
 
-		if (CachedParameter is not MainSceneParameter parameter)
+        if (CachedParameter is not MainSceneParameter parameter)
 		{
 			return;
 		}
+
+        if (CachedParameter is MainSceneRewardParameter rewardParameter)
+        {
+            Debug.Log(CodeManager.GetMethodName() + string.Format("[Get Reward] {0} / {1} / {2}", rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardGoldPiece));
+            GlobalData.Instance.HUD_LateUpdate(rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardGoldPiece);
+        }
 
 		m_scrollView.MoveTo((int)parameter.ShowMenuType);
 	}

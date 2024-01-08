@@ -28,7 +28,8 @@ public static partial class UIManager
                 CloseButtonParameter: new UITextButtonParameter {
                     ButtonText = NineTap.Constant.Text.Button.OK,
                     OnClick = ClosePopupUI
-                }
+                },
+                HUDTypes: HUDType.ALL
             )
         );
 

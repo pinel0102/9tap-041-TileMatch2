@@ -40,7 +40,7 @@ public class ReviewPopup : PopupBase
 		if (uiParameter is not ReviewPopupParameter parameter)
 		{
 			OnClickClose();
-			return;
+            return;
 		}
 
         OnSetupButton(m_otherButton, parameter.LeftButtonParameter, parameter.AllPressToClose);

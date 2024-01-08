@@ -87,38 +87,6 @@ public class GameClearPopup : UIPopup
 				ButtonText = existNextLevel? Text.Button.CONTINUE : Text.Button.HOME,
 				OnClick = () => {
 					OnClickClose();
-					if (existNextLevel)
-					{
-                        
-                        //UIManager.ShowSceneUI<MainScene>(new DefaultParameter());
-                        UIManager.ShowSceneUI<MainScene>(new MainSceneRewardParameter(
-                            rewardCoin:rewardData.Coin,
-                            rewardPuzzlePiece:rewardData.PuzzlePiece,
-                            rewardGoldPiece:goldPieceCount
-                            ));
-
-                        if (UIManager.IsEnableReviewPopup(parameter.Level))
-                        {
-                            //UIManager.ShowSceneUI<MainScene>(new DefaultParameter());
-                            UIManager.ShowReviewPopup();
-                        }
-                        /*else
-                        {
-                            UIManager.ShowPopupUI<ReadyPopup>(
-                                new ReadyPopupParameter(
-                                    Level: nextLevelData.Key,
-                                    BaseButtonParameter: new UITextButtonParameter {
-                                        ButtonText = Text.Button.PLAY,
-                                        OnClick = () => parameter?.OnContinue?.Invoke(nextLevelData.Key)
-                                    },
-                                    ExitParameter: new ExitBaseParameter(OnExit, false),
-                                    AllPressToClose: true
-                                )
-                            );
-                        }*/
-						return;
-					}
-
 					OnExit();
 				}
 			}
@@ -136,7 +104,11 @@ public class GameClearPopup : UIPopup
 
 			if (mode == Constant.Scene.CLIENT)
 			{
-				UIManager.ShowSceneUI<MainScene>(new DefaultParameter());
+                UIManager.ShowSceneUI<MainScene>(new MainSceneRewardParameter(
+                    rewardCoin:rewardData.Coin,
+                    rewardPuzzlePiece:rewardData.PuzzlePiece,
+                    rewardGoldPiece:goldPieceCount
+                ));
                 
                 if (UIManager.IsEnableReviewPopup(parameter.Level))
                     UIManager.ShowReviewPopup();

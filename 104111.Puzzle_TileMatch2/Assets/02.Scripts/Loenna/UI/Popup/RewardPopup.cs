@@ -35,6 +35,7 @@ public class RewardPopup : UIPopup
 	private UITextButton m_confirmButton = default!;
 
 	private RewardPopupType m_popupType;
+    public int rewardCoin;
 
 	public override void OnSetup(UIParameter uiParameter)
 	{
@@ -49,7 +50,13 @@ public class RewardPopup : UIPopup
 			return;
 		}
 
-        m_popupType = parameter.PopupType;
+        rewardCoin = parameter.Reward.Coin;
+        if (rewardCoin > 0)
+        {
+            GlobalData.Instance.HUD?.behaviour.Fields[2].SetText(GlobalData.Instance.oldCoin);
+        }
+
+        m_popupType = parameter.PopupType;       
 
 		m_animatedRewardContainer.OnSetup(
 			new AnimatedRewardContainerParameter {
@@ -57,8 +64,14 @@ public class RewardPopup : UIPopup
 				OnFinishedAnimation = () => {
 					UniTask.Void(
 						async () => {
-							await UniTask.Delay(
-								TimeSpan.FromSeconds(1f), 
+                            if (rewardCoin > 0)
+                            {
+                                GlobalData.Instance.HUD_LateUpdate(rewardCoin, 0, 0);
+                                GlobalData.Instance.SetOldItems(GlobalData.Instance.oldCoin + rewardCoin, GlobalData.Instance.oldPuzzlePiece, GlobalData.Instance.oldGoldPiece);
+                            }
+							
+                            await UniTask.Delay(
+								TimeSpan.FromSeconds(1.5f), 
 								delayTiming: PlayerLoopTiming.LastPostLateUpdate, 
 								cancellationToken: token
 							);
@@ -73,7 +86,11 @@ public class RewardPopup : UIPopup
 			new UITextButtonParameter {
 				ButtonText = Text.Button.CLAIM,
 				FadeEffect = true,
-				OnClick = m_animatedRewardContainer.ShowParticle
+				OnClick = () => { 
+                    m_confirmButton.interactable = false;
+                    m_confirmButton.Alpha = 0f;
+                    m_animatedRewardContainer.ShowParticle();
+                }
 			}
 		);
 	}

@@ -65,8 +65,10 @@ public class RewardGoodsItem : CachedBehaviour
 			m_particleImage.attractorTarget = attractorTarget;
 			m_particleImage.rectTransform.localRotation = Quaternion.LookRotation(Vector3.forward, attractorTarget.position);
 			m_particleImage.rectTransform.anchoredPosition = Vector2.zero;
-			m_particleImage.duration = 0.5f;
-			m_particleImage.onParticleFinish.AddListener(() => onFinishedParticle?.Invoke());
+			m_particleImage.duration = 0.2f;
+            if(float.TryParse(count, out float val))
+                m_particleImage.rateOverTime = val / m_particleImage.duration;
+			m_particleImage.onLastParticleFinish.AddListener(() => onFinishedParticle?.Invoke());
 		}
 	}
 
@@ -74,6 +76,7 @@ public class RewardGoodsItem : CachedBehaviour
 	{
 		if (m_animated && m_showParticle)
 		{
+            Debug.Log(CodeManager.GetMethodName());
 			m_particleImage.gameObject.SetActive(true);
 			m_particleImage.Play();
 		}

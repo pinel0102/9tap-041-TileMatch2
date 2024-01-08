@@ -14,6 +14,7 @@ public record User
 	long Coin, // 보유 코인
 	int Life, // 보유 하트
 	int Puzzle, // 보유 미션조각
+    int GoldPiece,
 
 	long ExpiredLifeBoosterTime, // 하트 부스터 끝나는 시간
 	long EndChargeLifeTime, // 하트가 모두 충전되는 시간
@@ -35,6 +36,7 @@ public record User
 		Coin: 0,
 		Life: Constant.User.MAX_LIFE_COUNT,
 		Puzzle: 0,
+        GoldPiece: 0,
 		ExpiredLifeBoosterTime: 0L,
 		EndChargeLifeTime: 0L,
         IsRated: false,
@@ -66,6 +68,7 @@ public record User
 	  	in Optional<long> coin = default, 
 		in Optional<int> life = default,
 		in Optional<int> puzzle = default,
+        in Optional<int> goldPiece = default,
 		in Optional<DateTimeOffset> expiredLifeBoosterAt = default,
 		in Optional<DateTimeOffset> endChargeLifeAt = default,
         in Optional<int> level = default,
@@ -115,6 +118,7 @@ public record User
 			Coin: coin.GetValueOrDefault(Coin),
 			Life: newLife,
 			Puzzle: puzzle.GetValueOrDefault(Puzzle),
+            GoldPiece: goldPiece.GetValueOrDefault(GoldPiece),
 			ExpiredLifeBoosterTime: expiredLifeBoosterAt.GetValueOrDefault(ExpiredLifeBoosterAt).ToUnixTimeMilliseconds(),
 			EndChargeLifeTime: endChargeLifeAt.GetValueOrDefault(EndChargeLifeAt).ToUnixTimeMilliseconds(),
             Level: level.GetValueOrDefault(Level),

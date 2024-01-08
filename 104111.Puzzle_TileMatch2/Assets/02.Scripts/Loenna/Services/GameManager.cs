@@ -155,18 +155,24 @@ public partial class GameManager : IDisposable
 
     public void CheckClearRewards()
     {
-        Debug.Log(CodeManager.GetMethodName() + CurrentLevel);
+        Debug.Log(CodeManager.GetMethodName() + string.Format("Level {0}", CurrentLevel));
 
         RewardDataTable rewardDataTable = m_tableManager.RewardDataTable;
         Dictionary<ProductType, long> collectRewardAll = new Dictionary<ProductType, long>();
 
         RewardData rewardData = rewardDataTable.GetDefaultReward(BoardInfo.HardMode);
+        foreach(var item in rewardData.Rewards)
+        {
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Clear Reward] {0} x {1}</color>", item.Type, item.GetAmount()));
+        }
         AddRewards(collectRewardAll, rewardData.Rewards);
 
-        bool existChestReward = rewardDataTable.TryPreparedChestReward(CurrentLevel, out var chestRewardData);
-
-        if (chestRewardData != null && CurrentLevel >= chestRewardData.Level!)
+        if (rewardDataTable.TryPreparedChestReward(CurrentLevel, out var chestRewardData) && CurrentLevel >= chestRewardData.Level!)
         {
+            foreach(var item in chestRewardData.Rewards)
+            {
+                Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Chest Reward] {0} x {1}</color>", item.Type, item.GetAmount()));
+            }
             AddRewards(collectRewardAll, chestRewardData.Rewards);
         }
 
@@ -198,7 +204,11 @@ public partial class GameManager : IDisposable
 	#region Public Methods
 	public void LoadLevel(int level, Transform boardTransform)
 	{
-		m_continueCount = 0;
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0}</color>", level));
+
+        GlobalData.Instance.SetOldItems(m_userManager.Current.Coin, m_userManager.Current.Puzzle, m_userManager.Current.GoldPiece);
+
+        m_continueCount = 0;
 		m_boardInfo.Update(info => InternalState.Empty);
 		m_collectedMissionCount.Value = 0;
 
@@ -264,7 +274,7 @@ public partial class GameManager : IDisposable
 			)
 		);
 
-		#region Local Functions
+        #region Local Functions
 		List<TileItemModel> CreateTileItemModels(int level, string countryCode, Board board)
 		{
 			List<TileItemModel> tileItemModelAll = new();

@@ -74,6 +74,7 @@ public class UserManager : IDisposable
 				Coin: 9999999,
 				Life: Constant.User.MAX_LIFE_COUNT,
 				Puzzle: 0,
+                GoldPiece: 0,
 				ExpiredLifeBoosterTime: 0L,
 				EndChargeLifeTime: 0L,
                 IsRated: false,

@@ -199,7 +199,7 @@ public partial class PlayScene : UIScene
 			);
 		}
 
-		m_gameManager.LoadLevel(m_userManager.Current.Level, m_mainView.CachedRectTransform);
+        m_gameManager.LoadLevel(m_userManager.Current.Level, m_mainView.CachedRectTransform);
 	}
 
 	public void OnPause()

@@ -33,7 +33,7 @@ public partial class DebugPanel : MonoBehaviour
         buttonActionList.Add(Debug_LevelClear);
         buttonActionList.Add(Debug_LevelFail);        
         inputActionListInt.Add(Debug_LevelPlay);
-        inputActionListInt.Add(Debug_SetClear);
+        inputActionListInt.Add(Debug_SetLevel);
         inputActionListInt.Add(Debug_SetHeart);
         inputActionListInt.Add(Debug_SetCoin);
         inputActionListInt.Add(Debug_SetItem);
@@ -46,11 +46,11 @@ public partial class DebugPanel : MonoBehaviour
 
     private UserManager m_userManager { get { return Game.Inst.Get<UserManager>();} }
 
-    private void Debug_SetClear(int level)
+    private void Debug_SetLevel(int level)
     {
         if (level < 1) return;
 
-        Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat2, "Set Clear", level));
+        Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat2, "Set Level", level));
 
         m_userManager?.Update(level: level);
         UIManager.ShowSceneUI<MainScene>(new NineTap.Common.DefaultParameter());

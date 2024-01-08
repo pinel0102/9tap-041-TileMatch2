@@ -34,7 +34,7 @@ public class AnimatedRewardContainer : CachedBehaviour
 
 		var prefab = ResourcePathAttribute.GetResource<RewardGoodsItem>();
 
-		var items = parameter.Rewards.Select(
+        var items = parameter.Rewards.Select(
 			(reward, index) => {
 				GameObject go = new GameObject($"Position {index}");
 				LayoutElement layoutElement = go.AddComponent<LayoutElement>();
@@ -83,19 +83,19 @@ public class AnimatedRewardContainer : CachedBehaviour
 		.ToUniTask()
 		.AttachExternalCancellation(token);
 
-		var tasks = m_rewardGoodsItems.Select(
+        var tasks = m_rewardGoodsItems.Select(
 			item => UniTask.WhenAll(
 				item.CachedRectTransform
-					.DOAnchorPos(Vector2.zero, 0.5f)
+					.DOAnchorPos(Vector2.zero, 0.3f)
 					.SetEase(Ease.OutQuad)
 					.ToUniTask(),
 				item.CachedTransform
-					.DOScale(1f, 0.5f)
+					.DOScale(1f, 0.3f)
 					.SetEase(Ease.OutBack)
 					.ToUniTask(),
 				UniTask.Create(
 					() => UniTask.WhenAll(
-						UniTask.Delay(TimeSpan.FromSeconds(1f)),
+						UniTask.Delay(TimeSpan.FromSeconds(0.5f)),
 						item.PlayAsync(token)
 					)
 				)
@@ -107,6 +107,6 @@ public class AnimatedRewardContainer : CachedBehaviour
 
 	public void ShowParticle()
 	{
-		m_rewardGoodsItems.ForEach(item => item.ShowParticle());
+        m_rewardGoodsItems.ForEach(item => item.ShowParticle());
 	}
 }

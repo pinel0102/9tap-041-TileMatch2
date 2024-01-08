@@ -9,11 +9,13 @@ public class HUDBehaviour : CachedBehaviour
 {
 	[SerializeField]
 	private List<HUD_Field> m_fields;
-
     private Dictionary<HUDType, HUD_Field> m_fieldDic = new();
+    public List<HUD_Field> Fields => m_fields;
 
 	public void OnSetup(params HUDFieldParameter[] parameters)
 	{
+        //Debug.Log(CodeManager.GetMethodName());
+        
 		if (parameters == null)
 		{
 			return;

@@ -67,4 +67,14 @@ public class HUD_Field : CachedBehaviour
     {
         m_button.onClick.AddListener(() => {    OnClick?.Invoke();  });
     }
+
+    public void SetText(long _text)
+    {
+        SetText(_text.ToString());
+    }
+
+    public void SetText(string _text)
+    {
+        m_text.SetText(_text);
+    }
 }

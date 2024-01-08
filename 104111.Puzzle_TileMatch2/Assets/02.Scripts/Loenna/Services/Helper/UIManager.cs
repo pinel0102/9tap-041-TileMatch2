@@ -123,7 +123,7 @@ public static partial class UIManager
 		}
 	}
 
-	public static void ClosePopupUI()
+    public static void ClosePopupUI()
 	{
 		s_implementation?.PopupManager?.ClosePopupUI();
 	}
@@ -131,6 +131,18 @@ public static partial class UIManager
 	public static void ClosePopupUI(UIPopup popup)
 	{
 		s_implementation?.PopupManager?.ClosePopupUI(popup);
+	}
+
+    public static void ClosePopupUI(params HUDType[] types)
+    {
+        s_implementation?.PopupManager?.ClosePopupUI();
+        GlobalData.Instance.HUD_Show(types);
+    }
+
+    public static void ClosePopupUI(UIPopup popup, params HUDType[] types)
+	{
+		s_implementation?.PopupManager?.ClosePopupUI(popup);
+        GlobalData.Instance.HUD_Show(types);
 	}
 
 	private static SceneManager CreateSceneManager()
