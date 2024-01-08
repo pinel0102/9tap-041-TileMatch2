@@ -249,7 +249,7 @@ public class MainScene : UIScene
         if (CachedParameter is MainSceneRewardParameter rewardParameter)
         {
             Debug.Log(CodeManager.GetMethodName() + string.Format("[Get Reward] {0} / {1} / {2}", rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardGoldPiece));
-            GlobalData.Instance.HUD_LateUpdate(rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardGoldPiece);
+            GlobalData.Instance.HUD_LateUpdate_MainSceneReward(this, rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardGoldPiece);
         }
 
 		m_scrollView.MoveTo((int)parameter.ShowMenuType);

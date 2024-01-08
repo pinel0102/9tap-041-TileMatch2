@@ -66,8 +66,7 @@ public class RewardPopup : UIPopup
 						async () => {
                             if (rewardCoin > 0)
                             {
-                                GlobalData.Instance.HUD_LateUpdate(rewardCoin, 0, 0);
-                                GlobalData.Instance.SetOldItems(GlobalData.Instance.oldCoin + rewardCoin, GlobalData.Instance.oldPuzzlePiece, GlobalData.Instance.oldGoldPiece);
+                                GlobalData.Instance.HUD_LateUpdate_Coin(rewardCoin);
                             }
 							
                             await UniTask.Delay(

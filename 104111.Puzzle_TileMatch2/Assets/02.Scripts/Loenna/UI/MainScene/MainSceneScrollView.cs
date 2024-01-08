@@ -23,6 +23,7 @@ public class MainSceneScrollView : CachedBehaviour
 
     public ScrollRect ScrollRect => m_pagedRect.ScrollRect;
     public PagedRect PagedRect => m_pagedRect;
+    public List<ScrollViewFragmentContent> Contents => m_contents;
 
 	public void OnSetup(MainSceneScrollViewParameter parameter)
 	{

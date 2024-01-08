@@ -38,6 +38,7 @@ public class HUD_Field : CachedBehaviour
 	private RectTransform m_attractorTarget;
 
 	public Transform AttractorTarget => m_attractorTarget;
+    public RectTransform Icon;
 
 	public void OnSetup(HUDFieldParameter parameter)
 	{

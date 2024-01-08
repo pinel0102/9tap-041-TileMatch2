@@ -1,8 +1,7 @@
 using UnityEngine;
-
 using System.Collections.Generic;
-
 using NineTap.Common;
+using TMPro;
 
 public class MainSceneFragmentContentParameter_Home
 : ScrollViewFragmentContentParameter
@@ -22,6 +21,10 @@ public class MainSceneFragmentContent_Home : ScrollViewFragmentContent
 
 	[SerializeField]
 	private UITextButton m_playButton;
+
+    public RectTransform rewardPosition_puzzlePiece;
+    public RectTransform rewardPosition_goldPiece;
+    public TMP_Text goldPieceText;
 
 	public override void OnSetup(ScrollViewFragmentContentParameter contentParameter)
 	{
