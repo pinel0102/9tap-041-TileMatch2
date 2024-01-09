@@ -161,6 +161,8 @@ public class LevelEditorPresenter : IDisposable
 		m_internalState.Update(info => 
 			InternalState.ToInternalInfo(levelData, m_dataManager.Config.LastLevel, size)
 		);
+        
+        Debug.Log(CodeManager.GetMethodName() + string.Format("BoardCount : {0}", State.BoardCount));
 
 		ResetPlacedTilesInLayer(0);
 
