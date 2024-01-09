@@ -30,6 +30,7 @@ public class MainScene : UIScene
 	private ProductDataTable m_productDataTable;
 
     public MainSceneScrollView scrollView => m_scrollView;
+    public GameObject m_block;
 
 	public override void OnSetup(UIParameter uiParameter)
 	{

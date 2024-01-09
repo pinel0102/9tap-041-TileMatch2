@@ -26,6 +26,9 @@ public class PuzzlePlayView : CachedBehaviour
 	[SerializeField]
 	private UIImageButton m_backButton;
 
+    [SerializeField]
+    private MainSceneFragmentContent_Home fragmentHome;
+
 	private JigsawPuzzlePiece m_piecePrefab;
 	private PuzzleManager m_puzzleManager;
 
@@ -133,6 +136,8 @@ public class PuzzlePlayView : CachedBehaviour
 		if (m_puzzleManager.TryUnlockPiece(itemData.Index))
 		{
             Debug.Log(CodeManager.GetMethodName() + "SUCCESS");
+
+            fragmentHome?.RefreshPuzzleBadge(GlobalData.Instance.userManager.Current.Puzzle);
 
 			itemData.IsLocked = false;
 			m_pieceScrollView.UpdateUI(itemData);

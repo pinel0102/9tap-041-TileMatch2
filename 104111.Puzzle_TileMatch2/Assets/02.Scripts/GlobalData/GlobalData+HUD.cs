@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System;
-using DG.Tweening;
-using NineTap.Common;
 
 public partial class GlobalData
 {
     public HUD HUD => Game.Inst.Get<HUD>();
-
+    
     public void HUD_LateUpdate_Coin(int _getCount)
     {
         if (_getCount <= 0) return;
@@ -80,13 +78,17 @@ public partial class GlobalData
             HUD?.behaviour.Fields[0].SetText(_oldPuzzle);
         if(_getCoin > 0)
             HUD?.behaviour.Fields[2].SetText(_oldCoin);
-        //if(_goldPiece > 0)
+        if(_getGoldPiece > 0)
+            fragmentHome.RefreshGoldPiece(_oldGoldPiece, GetGoldPiece_NextLevel());
 
-        float _startDelay = 0;
-        float _duration = 0.5f;
+        float _startDelay = 0.5f;
+        float _fxDuration = 1f;
+        float _numDuration = 0.5f;
 
         UniTask.Void(
 			async token => {
+                mainScene.m_block.SetActive(true);
+
                 if(_getPuzzlePiece > 0)
                 {
                     Debug.Log(CodeManager.GetMethodName() + string.Format("[PuzzlePiece] {0} + {1} = {2}", _oldPuzzle, _getPuzzlePiece, _oldPuzzle + _getPuzzlePiece));
@@ -94,57 +96,33 @@ public partial class GlobalData
                     if (_startDelay > 0)
                         await UniTask.Delay(TimeSpan.FromSeconds(_startDelay));
 
-                    var widget = Instantiate(ResourcePathAttribute.GetResource<IconReward>());
-					widget.OnSetup("UI_Icon_Star");
-                    widget.CachedRectTransform.SetParentReset(fragmentHome.CachedRectTransform);
-                    widget.CachedRectTransform.SetSize(80);
-
-                    var widget2 = Instantiate(widget);
-                    widget2.OnSetup("UI_Icon_Star");
-                    widget2.CachedRectTransform.SetParentReset(fragmentHome.CachedRectTransform);
-                    widget2.CachedRectTransform.SetSize(80);
-
-                    float duration = 1f;
-
-                    await UniTask.WhenAll(
-                        AsyncMove(widget.CachedRectTransform, fragmentHome.rewardPosition_puzzlePiece.position, duration),
-                        AsyncMove(widget2.CachedRectTransform, HUD.behaviour.Fields[0].AttractorTarget.position, duration)
-                    );
-
-                    Destroy(widget.gameObject);
-                    Destroy(widget2.gameObject);
+                    CreateEffect("UI_Icon_Star", fragmentHome.rewardPosition_puzzlePiece, _fxDuration);
+                    CreateEffect("UI_Icon_Star", HUD.behaviour.Fields[0].AttractorTarget, _fxDuration);
+                    await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
 
                     int count = _getPuzzlePiece;
-                    float delay = GetDelay(_duration, count);
+                    float delay = GetDelay(_numDuration, count);
 
                     for(int i=0; i < count; i++)
                     {
                         HUD?.behaviour.Fields[0].SetText(_oldPuzzle + i);
+                        fragmentHome.RefreshPuzzleBadge(_oldPuzzle + count);
                         await UniTask.Delay(TimeSpan.FromSeconds(delay));
                     }
 
                     HUD?.behaviour.Fields[0].SetText(_oldPuzzle + count);
+                    fragmentHome.RefreshPuzzleBadge(_oldPuzzle + count);
                 }
 
                 if(_getCoin > 0)
                 {
                     Debug.Log(CodeManager.GetMethodName() + string.Format("[Coin] {0} + {1} = {2}", _oldCoin, _getCoin, _oldCoin + _getCoin));
                     
-                    if (_startDelay > 0)
-                        await UniTask.Delay(TimeSpan.FromSeconds(_startDelay));
+                    CreateEffect("UI_Icon_Coin", HUD.behaviour.Fields[2].AttractorTarget, _fxDuration);
+                    await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
 
-                    var widget = Instantiate(ResourcePathAttribute.GetResource<IconReward>());
-					widget.OnSetup("UI_Icon_Coin");
-                    widget.CachedRectTransform.SetParentReset(fragmentHome.CachedRectTransform);
-                    widget.CachedRectTransform.SetSize(80);
-
-                    float duration = 1f;
-
-                    await AsyncMove(widget.CachedRectTransform, HUD.behaviour.Fields[2].AttractorTarget.position, duration);
-                    Destroy(widget.gameObject);
-                    
                     int count = _getCoin;
-                    float delay = GetDelay(_duration, count);
+                    float delay = GetDelay(_numDuration, count);
 
                     for(int i=0; i < count; i++)
                     {
@@ -159,31 +137,22 @@ public partial class GlobalData
                 {
                     Debug.Log(CodeManager.GetMethodName() + string.Format("[GoldPiece] {0} + {1} = {2}", _oldGoldPiece, _getGoldPiece, _oldGoldPiece + _getGoldPiece));
                     
-                    if (_startDelay > 0)
-                        await UniTask.Delay(TimeSpan.FromSeconds(_startDelay));
-
-                    var widget = Instantiate(ResourcePathAttribute.GetResource<IconReward>());
-					widget.OnSetup("UI_Icon_GoldPuzzle_Big");
-                    widget.CachedRectTransform.SetParentReset(fragmentHome.CachedRectTransform);
-                    widget.CachedRectTransform.SetSize(80);
-
-                    float duration = 1f;
-
-                    await AsyncMove(widget.CachedRectTransform, fragmentHome.rewardPosition_goldPiece.position, duration);
-                    Destroy(widget.gameObject);
+                    CreateEffect("UI_Icon_GoldPuzzle_Big", fragmentHome.rewardPosition_goldPiece, _fxDuration);
+                    await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
 
                     int count = _getGoldPiece;
-                    float delay = GetDelay(_duration, count);
+                    float delay = GetDelay(_numDuration, count);
 
                     for(int i=0; i < count; i++)
                     {
-                        fragmentHome.goldPieceText.SetText(string.Format("{0}/{1}", _oldGoldPiece + i, 100));
+                        fragmentHome.RefreshGoldPiece(_oldGoldPiece + i, GetGoldPiece_NextLevel());
                         await UniTask.Delay(TimeSpan.FromSeconds(delay));
                     }
 
-                    fragmentHome.goldPieceText.SetText(string.Format("{0}/{1}", _oldGoldPiece + count, 100));
+                    fragmentHome.RefreshGoldPiece(_oldGoldPiece + count, GetGoldPiece_NextLevel());
                 }
 
+                mainScene.m_block.SetActive(false);
             },
 			this.GetCancellationTokenOnDestroy()
         );
@@ -193,11 +162,23 @@ public partial class GlobalData
             return time/(float)amount;
         }
 
-        UniTask AsyncMove(RectTransform rt, Vector3 targetPosition, float duration)
+        void CreateEffect(string spriteName, Transform target, float duration = 1f)
         {
-            return rt.DOMove(targetPosition, duration)
-                    .SetEase(Ease.OutQuad)
-                    .ToUniTask();
+            var parent = fragmentHome.objectPool;
+
+            MissionCollectedFx fx = m_particlePool.Get();
+            fx.SetImage(spriteName);
+            fx.CachedRectTransform.SetParentReset(parent, true);
+            
+            Vector2 worldPosition = parent.TransformPoint(Vector2.zero);
+            Vector2 position = parent.InverseTransformPoint(worldPosition) / UIManager.SceneCanvas.scaleFactor;
+            Vector2 direction = parent.InverseTransformPoint(target.position);
+            
+            fx.Play(position, direction, duration, () => {
+                    soundManager?.PlayFx(Constant.Sound.SFX_GOLD_PIECE);
+                    m_particlePool.Release(fx);
+                }
+            );
         }
     }
 
