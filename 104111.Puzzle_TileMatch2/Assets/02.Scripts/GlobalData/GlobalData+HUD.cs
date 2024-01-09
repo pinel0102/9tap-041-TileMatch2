@@ -6,21 +6,19 @@ using System;
 
 public partial class GlobalData
 {
-    public HUD HUD => Game.Inst.Get<HUD>();
-    
-    public void HUD_LateUpdate_Coin(int _getCount)
+    public void HUD_LateUpdate_Coin(int _getCount, float _startDelay = 0, bool autoTurnOff_IncreaseMode = true)
     {
         if (_getCount <= 0) return;
 
-        HUD_LateUpdate(2, oldCoin, _getCount, 0, 0.5f);
+        HUD_LateUpdate(2, oldCoin, _getCount, _startDelay, autoTurnOff_IncreaseMode);
         oldCoin += _getCount;
     }
 
-    public void HUD_LateUpdate_Puzzle(int _getCount)
+    public void HUD_LateUpdate_Puzzle(int _getCount, float _startDelay = 0, bool autoTurnOff_IncreaseMode = true)
     {
         if (_getCount <= 0) return;
 
-        HUD_LateUpdate(0, oldPuzzlePiece, _getCount, 0, 0.5f);
+        HUD_LateUpdate(0, oldPuzzlePiece, _getCount, _startDelay, autoTurnOff_IncreaseMode);
         oldPuzzlePiece += _getCount;
     }
 
@@ -31,59 +29,41 @@ public partial class GlobalData
         oldGoldPiece += _getCount;
     }
 
-    private void HUD_LateUpdate(int _index, long _oldCount, int _getCount, float _startDelay, float _duration)
+    private void HUD_LateUpdate(int _index, long _oldCount, int _getCount, float _startDelay = 0, bool autoTurnOff_IncreaseMode = true)
     {
-        if (_getCount <= 0) return;
-
-        HUD?.behaviour.Fields[_index].SetText(_oldCount);
+        if (_getCount > 0)
+            HUD?.behaviour.Fields[_index].SetIncreaseText(_oldCount);
 
         UniTask.Void(
 			async token => {
                 Debug.Log(CodeManager.GetMethodName() + string.Format("[{0}] {1} + {2} = {3}", _index, _oldCount, _getCount, _oldCount + _getCount));
-                
-                float delay = GetDelay(_duration, _getCount);
 
                 if (_startDelay > 0)
                     await UniTask.Delay(TimeSpan.FromSeconds(_startDelay));
 
-                for(int i=0; i < _getCount; i++)
-                {
-                    HUD?.behaviour.Fields[_index].SetText(_oldCount + i);
-                    await UniTask.Delay(TimeSpan.FromSeconds(delay));
-                }
-
-                HUD?.behaviour.Fields[_index].SetText(_oldCount + _getCount);
-
+                HUD?.behaviour.Fields[_index].IncreaseText(_oldCount, _getCount, autoTurnOff_IncreaseMode:autoTurnOff_IncreaseMode);
             },
 			this.GetCancellationTokenOnDestroy()
         );
-
-        float GetDelay(float time, int amount)
-        {
-            return time/(float)amount;
-        }
     }
 
-    public void HUD_LateUpdate_MainSceneReward(MainScene mainScene, int _getCoin, int _getPuzzlePiece, int _getGoldPiece)
+    public void HUD_LateUpdate_MainSceneReward(int _getCoin, int _getPuzzlePiece, int _getGoldPiece)
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("{0} / {1} / {2}", _getCoin, _getPuzzlePiece, _getGoldPiece));
 
-        var fragmentHome = mainScene.scrollView.Contents[(int)MainMenuType.HOME] as MainSceneFragmentContent_Home;
-
         long _oldCoin = oldCoin;
-        long _oldPuzzle = oldPuzzlePiece;
-        long _oldGoldPiece = oldGoldPiece;
+        int _oldPuzzle = oldPuzzlePiece;
+        int _oldGoldPiece = oldGoldPiece;
 
         if(_getPuzzlePiece > 0)
-            HUD?.behaviour.Fields[0].SetText(_oldPuzzle);
+            HUD?.behaviour.Fields[0].SetIncreaseText(_oldPuzzle);
         if(_getCoin > 0)
-            HUD?.behaviour.Fields[2].SetText(_oldCoin);
+            HUD?.behaviour.Fields[2].SetIncreaseText(_oldCoin);
         if(_getGoldPiece > 0)
             fragmentHome.RefreshGoldPiece(_oldGoldPiece, GetGoldPiece_NextLevel());
-
+        
         float _startDelay = 0.5f;
         float _fxDuration = 1f;
-        float _numDuration = 0.5f;
 
         UniTask.Void(
 			async token => {
@@ -97,59 +77,33 @@ public partial class GlobalData
                         await UniTask.Delay(TimeSpan.FromSeconds(_startDelay));
 
                     CreateEffect("UI_Icon_Star", fragmentHome.rewardPosition_puzzlePiece, _fxDuration);
-                    CreateEffect("UI_Icon_Star", HUD.behaviour.Fields[0].AttractorTarget, _fxDuration);
+                    CreateEffect("UI_Icon_Star", HUD.behaviour.Fields[0].AttractorTarget, _fxDuration, () => { 
+                        HUD?.behaviour.Fields[0].IncreaseText(_oldPuzzle, _getPuzzlePiece, onUpdate:fragmentHome.RefreshPuzzleBadge);
+                    });
+
                     await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
-
-                    int count = _getPuzzlePiece;
-                    float delay = GetDelay(_numDuration, count);
-
-                    for(int i=0; i < count; i++)
-                    {
-                        HUD?.behaviour.Fields[0].SetText(_oldPuzzle + i);
-                        fragmentHome.RefreshPuzzleBadge(_oldPuzzle + count);
-                        await UniTask.Delay(TimeSpan.FromSeconds(delay));
-                    }
-
-                    HUD?.behaviour.Fields[0].SetText(_oldPuzzle + count);
-                    fragmentHome.RefreshPuzzleBadge(_oldPuzzle + count);
                 }
 
                 if(_getCoin > 0)
                 {
                     Debug.Log(CodeManager.GetMethodName() + string.Format("[Coin] {0} + {1} = {2}", _oldCoin, _getCoin, _oldCoin + _getCoin));
                     
-                    CreateEffect("UI_Icon_Coin", HUD.behaviour.Fields[2].AttractorTarget, _fxDuration);
+                    CreateEffect("UI_Icon_Coin", HUD.behaviour.Fields[2].AttractorTarget, _fxDuration, () => {
+                        HUD?.behaviour.Fields[2].IncreaseText(_oldCoin, _getCoin);
+                    });
+
                     await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
-
-                    int count = _getCoin;
-                    float delay = GetDelay(_numDuration, count);
-
-                    for(int i=0; i < count; i++)
-                    {
-                        HUD?.behaviour.Fields[2].SetText(_oldCoin + i);
-                        await UniTask.Delay(TimeSpan.FromSeconds(delay));
-                    }
-
-                    HUD?.behaviour.Fields[2].SetText(_oldCoin + count);
                 }
 
                 if(_getGoldPiece > 0)
                 {
                     Debug.Log(CodeManager.GetMethodName() + string.Format("[GoldPiece] {0} + {1} = {2}", _oldGoldPiece, _getGoldPiece, _oldGoldPiece + _getGoldPiece));
                     
-                    CreateEffect("UI_Icon_GoldPuzzle_Big", fragmentHome.rewardPosition_goldPiece, _fxDuration);
+                    CreateEffect("UI_Icon_GoldPuzzle_Big", fragmentHome.rewardPosition_goldPiece, _fxDuration, () => {
+                        fragmentHome.IncreaseGoldPiece(_oldGoldPiece, _getGoldPiece, GetGoldPiece_NextLevel());
+                    });
+
                     await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
-
-                    int count = _getGoldPiece;
-                    float delay = GetDelay(_numDuration, count);
-
-                    for(int i=0; i < count; i++)
-                    {
-                        fragmentHome.RefreshGoldPiece(_oldGoldPiece + i, GetGoldPiece_NextLevel());
-                        await UniTask.Delay(TimeSpan.FromSeconds(delay));
-                    }
-
-                    fragmentHome.RefreshGoldPiece(_oldGoldPiece + count, GetGoldPiece_NextLevel());
                 }
 
                 mainScene.m_block.SetActive(false);
@@ -157,12 +111,7 @@ public partial class GlobalData
 			this.GetCancellationTokenOnDestroy()
         );
 
-        float GetDelay(float time, int amount)
-        {
-            return time/(float)amount;
-        }
-
-        void CreateEffect(string spriteName, Transform target, float duration = 1f)
+        void CreateEffect(string spriteName, Transform target, float duration = 1f, Action onComplete = null)
         {
             var parent = fragmentHome.objectPool;
 
@@ -177,6 +126,7 @@ public partial class GlobalData
             fx.Play(position, direction, duration, () => {
                     soundManager?.PlayFx(Constant.Sound.SFX_GOLD_PIECE);
                     m_particlePool.Release(fx);
+                    onComplete?.Invoke();
                 }
             );
         }

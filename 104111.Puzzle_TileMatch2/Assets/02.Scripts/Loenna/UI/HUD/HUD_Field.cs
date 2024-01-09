@@ -1,12 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
-
 using System;
-
 using TMPro;
-
 using Cysharp.Threading.Tasks;
-
 using NineTap.Common;
 
 public class HUDFieldParameter
@@ -27,6 +23,9 @@ public class HUD_Field : CachedBehaviour
 
 	[SerializeField]
 	private TMP_Text m_text;
+
+    [SerializeField]
+	private TMP_Text m_textIncrease;
 
     [SerializeField]
 	private TMP_Text m_timeText;
@@ -59,7 +58,7 @@ public class HUD_Field : CachedBehaviour
 		}
 	}
 
-	public void SetVisible(bool visible)
+    public void SetVisible(bool visible)
 	{
 		m_canvasGroup.alpha = visible? 1f : 0f;
 	}
@@ -69,13 +68,56 @@ public class HUD_Field : CachedBehaviour
         m_button.onClick.AddListener(() => {    OnClick?.Invoke();  });
     }
 
-    public void SetText(long _text)
+    public void SetIncreaseMode(bool isIncrease)
     {
-        SetText(_text.ToString());
+        if(m_textIncrease == null) return;
+
+        m_textIncrease.gameObject.SetActive(isIncrease);
+        m_text.gameObject.SetActive(!isIncrease);
     }
 
-    public void SetText(string _text)
+    public void SetIncreaseText(long _text, bool autoTurnOn_IncreaseMode = true)
     {
-        m_text.SetText(_text);
+        SetIncreaseText(_text.ToString());
+        
+        if (autoTurnOn_IncreaseMode)
+            SetIncreaseMode(true);
+    }
+
+    private void SetIncreaseText(string _text)
+    {
+        if(m_textIncrease == null) return;
+        
+        m_textIncrease.SetText(_text);
+    }
+
+    public void IncreaseText(long from, int count, float duration = 0.5f, bool autoTurnOff_IncreaseMode = true, Action<long> onUpdate = null)
+    {
+        SetIncreaseText(from);
+        onUpdate?.Invoke(from);
+
+        SetIncreaseMode(true);
+
+        UniTask.Void(
+			async token => {
+                float delay = GetDelay(duration, count);
+
+                for(int i=1; i <= count; i++)
+                {
+                    SetIncreaseText(from + i);
+                    onUpdate?.Invoke(from + i);
+                    await UniTask.Delay(TimeSpan.FromSeconds(delay));
+                }
+
+                if (autoTurnOff_IncreaseMode)
+                    SetIncreaseMode(false);
+            },
+			this.GetCancellationTokenOnDestroy()
+        );
+
+        float GetDelay(float time, int amount)
+        {
+            return time/(float)amount;
+        }
     }
 }

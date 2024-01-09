@@ -62,7 +62,10 @@ public partial class DebugPanel : MonoBehaviour
 
         Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat2, "Set Heart", count));
 
-        m_userManager?.Update(life: count);
+        m_userManager?.Update(
+            life: count, 
+            endChargeLifeAt: count >= Constant.User.MAX_LIFE_COUNT ? DateTimeOffset.Now : 
+                                    DateTimeOffset.Now.AddMinutes((Constant.User.MAX_LIFE_COUNT - count) * Constant.User.LIFE_CHARGE_TIME_MINUTES));
     }
 
     private void Debug_SetCoin(int count)

@@ -29,6 +29,7 @@ public class MainScene : UIScene
     private ItemDataTable m_itemDataTable;
 	private ProductDataTable m_productDataTable;
 
+    public LobbyManager lobbyManager => m_lobbyManager;
     public MainSceneScrollView scrollView => m_scrollView;
     public GameObject m_block;
 
@@ -196,6 +197,9 @@ public class MainScene : UIScene
 
 		m_userManager.OnUpdated += OnUpdateUI;
 
+        GlobalData.Instance.mainScene = this;
+        GlobalData.Instance.fragmentHome = m_scrollView.Contents[(int)MainMenuType.HOME] as MainSceneFragmentContent_Home;
+
         void OpenBuyHeartPopup(int itemIndex)
         {
             if (!m_itemDataTable.TryGetValue(itemIndex, out var itemData))
@@ -250,7 +254,7 @@ public class MainScene : UIScene
         if (CachedParameter is MainSceneRewardParameter rewardParameter)
         {
             Debug.Log(CodeManager.GetMethodName() + string.Format("[Get Reward] {0} / {1} / {2}", rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardGoldPiece));
-            GlobalData.Instance.HUD_LateUpdate_MainSceneReward(this, rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardGoldPiece);
+            GlobalData.Instance.HUD_LateUpdate_MainSceneReward(rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardGoldPiece);
         }
 
 		m_scrollView.MoveTo((int)parameter.ShowMenuType);

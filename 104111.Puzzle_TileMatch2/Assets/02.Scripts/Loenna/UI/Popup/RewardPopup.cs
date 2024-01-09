@@ -52,9 +52,7 @@ public class RewardPopup : UIPopup
 
         rewardCoin = parameter.Reward.Coin;
         if (rewardCoin > 0)
-        {
-            GlobalData.Instance.HUD?.behaviour.Fields[2].SetText(GlobalData.Instance.oldCoin);
-        }
+            GlobalData.Instance.HUD?.behaviour.Fields[2].SetIncreaseText(GlobalData.Instance.oldCoin);
 
         m_popupType = parameter.PopupType;       
 
@@ -66,7 +64,8 @@ public class RewardPopup : UIPopup
 						async () => {
                             if (rewardCoin > 0)
                             {
-                                GlobalData.Instance.HUD_LateUpdate_Coin(rewardCoin);
+                                GlobalData.Instance.soundManager?.PlayFx(Constant.Sound.SFX_GOLD_PIECE);
+                                GlobalData.Instance.HUD_LateUpdate_Coin(rewardCoin, autoTurnOff_IncreaseMode:false);
                             }
 							
                             await UniTask.Delay(

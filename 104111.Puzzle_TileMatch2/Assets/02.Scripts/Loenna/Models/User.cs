@@ -89,7 +89,7 @@ public record User
         int maxLife = Constant.User.MAX_LIFE_COUNT;
         var modifiedLife = IsFullLife() ? Life : Mathf.Clamp(maxLife - remain, 0, maxLife);
         int newLife = life.HasValue ? life.Value : modifiedLife;
-
+        
         var (playingPuzzleIndex, placedPieces) = playingPuzzle.GetValueOrDefault((0, 0));
 		var (index, pieces) = unlockedPuzzlePiece.GetValueOrDefault((0, 0));
 		var currentPlayingCollection = PlayingPuzzleCollection ?? new();

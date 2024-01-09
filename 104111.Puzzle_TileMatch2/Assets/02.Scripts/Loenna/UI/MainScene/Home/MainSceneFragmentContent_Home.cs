@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using NineTap.Common;
 using TMPro;
+using System;
+using Cysharp.Threading.Tasks;
 
 public class MainSceneFragmentContentParameter_Home
 : ScrollViewFragmentContentParameter
@@ -54,14 +56,37 @@ public class MainSceneFragmentContent_Home : ScrollViewFragmentContent
 		m_puzzleButton.OnUpdateUI(user);
 	}
 
-    public void RefreshGoldPiece(long count, long max)
-    {
-        goldPieceText.SetText(string.Format("{0}/{1}", count, max));
-    }
-
     public void RefreshPuzzleBadge(long count)
     {
         puzzleBadgeText.SetText(count.ToString());
         puzzleBadgeObject.SetActive(count > 0);
+    }
+
+    public void RefreshGoldPiece(int count, int max)
+    {
+        goldPieceText.SetText(string.Format("{0}/{1}", count, max));
+    }
+
+    public void IncreaseGoldPiece(int from, int count, int max, float duration = 0.5f)
+    {
+        RefreshGoldPiece(from, max);
+
+        UniTask.Void(
+			async token => {
+                float delay = GetDelay(duration, count);
+
+                for(int i=1; i <= count; i++)
+                {
+                    RefreshGoldPiece(from + i, max);
+                    await UniTask.Delay(TimeSpan.FromSeconds(delay));
+                }
+            },
+			this.GetCancellationTokenOnDestroy()
+        );
+
+        float GetDelay(float time, int amount)
+        {
+            return time/(float)amount;
+        }
     }
 }

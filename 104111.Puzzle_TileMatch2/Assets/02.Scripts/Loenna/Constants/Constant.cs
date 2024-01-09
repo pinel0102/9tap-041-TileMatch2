@@ -36,8 +36,9 @@ public static class Constant
 	public static class User
 	{
 		public const int MAX_LIFE_COUNT = 5;
+        public const int LIFE_CHARGE_TIME_MINUTES = 30;
         public const string MAX_LIFE_TEXT = "Full";
-		public static readonly long REQUIRE_CHARGE_LIFE_MILLISECONDS = (long)TimeSpan.FromMinutes(30).TotalMilliseconds;
+		public static readonly long REQUIRE_CHARGE_LIFE_MILLISECONDS = (long)TimeSpan.FromMinutes(LIFE_CHARGE_TIME_MINUTES).TotalMilliseconds;
 		public static readonly string DATA_PATH = Path.Combine(Application.persistentDataPath, "user.dat");
 	}
 

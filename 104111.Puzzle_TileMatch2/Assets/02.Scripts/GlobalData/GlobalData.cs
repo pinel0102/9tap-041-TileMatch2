@@ -6,13 +6,17 @@ using NineTap.Common;
 
 public partial class GlobalData : SingletonMono<GlobalData>
 {
+    public MainScene mainScene = default;
+    public MainSceneFragmentContent_Home fragmentHome = default;
     public UserManager userManager => Game.Inst?.Get<UserManager>();
     public SoundManager soundManager => Game.Inst?.Get<SoundManager>();
+    public HUD HUD => Game.Inst.Get<HUD>();
+
     private IObjectPool<MissionCollectedFx> m_particlePool;
 
     public long oldCoin = 0;
-    public long oldPuzzlePiece = 0;
-    public long oldGoldPiece = 0;
+    public int oldPuzzlePiece = 0;
+    public int oldGoldPiece = 0;
 
     public int missionCollected = 0;
 
@@ -35,7 +39,7 @@ public partial class GlobalData : SingletonMono<GlobalData>
 		);
     }
 
-    public void SetOldItems(long _coin, long _puzzlePiece, long _goldPiece)
+    public void SetOldItems(long _coin, int _puzzlePiece, int _goldPiece)
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("{0} / {1} / {2}", _coin, _puzzlePiece, _goldPiece));
 

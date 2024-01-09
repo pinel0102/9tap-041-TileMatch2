@@ -26,10 +26,7 @@ public class PuzzlePlayView : CachedBehaviour
 	[SerializeField]
 	private UIImageButton m_backButton;
 
-    [SerializeField]
-    private MainSceneFragmentContent_Home fragmentHome;
-
-	private JigsawPuzzlePiece m_piecePrefab;
+    private JigsawPuzzlePiece m_piecePrefab;
 	private PuzzleManager m_puzzleManager;
 
 	public void OnSetup(PuzzleManager puzzleManager, Action onClickButton)
@@ -137,13 +134,51 @@ public class PuzzlePlayView : CachedBehaviour
 		{
             Debug.Log(CodeManager.GetMethodName() + "SUCCESS");
 
-            fragmentHome?.RefreshPuzzleBadge(GlobalData.Instance.userManager.Current.Puzzle);
+            GlobalData.Instance.fragmentHome?.RefreshPuzzleBadge(GlobalData.Instance.userManager.Current.Puzzle);
 
 			itemData.IsLocked = false;
 			m_pieceScrollView.UpdateUI(itemData);
 
             itemData.MovePiece?.Invoke(itemData, position);
 		}
+        else
+        {
+            User user = GlobalData.Instance.userManager.Current;
+
+            UIManager.ShowPopupUI<ReadyPopup>(
+			new ReadyPopupParameter(
+				Level: user.Level,
+				ExitParameter: ExitBaseParameter.CancelParam,
+				BaseButtonParameter: new UITextButtonParameter{
+					ButtonText = NineTap.Constant.Text.Button.PLAY,
+					OnClick = () => 
+					{
+						var (_, valid, _) = user.Valid();
+
+						if (!valid) // TODO: 하트 구매 화면으로 옮긴다.
+						{
+							//하트 구매 요구 (TBD)
+							UIManager.ShowPopupUI<GiveupPopup>(
+								new DefaultPopupParameter(
+									Title: "Purchase",
+									Message: "Purchase Life",
+									ExitParameter: ExitBaseParameter.CancelParam,
+									BaseButtonParameter: new UITextButtonParameter {
+										ButtonText = "Go to Shop",
+										OnClick = () => GlobalData.Instance.mainScene.scrollView.MoveTo((int)MainMenuType.STORE)
+									},
+									HUDTypes: HUDType.ALL
+								)
+							);
+							return;
+						}
+						UIManager.ShowSceneUI<PlayScene>(new PlaySceneParameter());
+					}
+				},
+				AllPressToClose: true,
+				HUDTypes: HUDType.ALL
+			));
+        }
 	}
 
     private void MovePiece(PuzzlePieceItemData itemData, Vector2 position)
