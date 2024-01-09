@@ -159,9 +159,10 @@ public class PuzzlePlayView : CachedBehaviour
 						{
 							//하트 구매 요구 (TBD)
 							UIManager.ShowPopupUI<GiveupPopup>(
-								new DefaultPopupParameter(
+								new GiveupPopupParameter(
 									Title: "Purchase",
 									Message: "Purchase Life",
+                                    ignoreBackKey: false,
 									ExitParameter: ExitBaseParameter.CancelParam,
 									BaseButtonParameter: new UITextButtonParameter {
 										ButtonText = "Go to Shop",

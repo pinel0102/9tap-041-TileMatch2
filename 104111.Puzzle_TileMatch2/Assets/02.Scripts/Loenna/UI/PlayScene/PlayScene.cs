@@ -295,26 +295,16 @@ public partial class PlayScene : UIScene
 					}
 				)
 			);
-			//return;
 		}
-
-		//UIManager.ClosePopupUI();
-
-		//m_canvasGroup.alpha = 0f;
-		//UIManager.ShowPopupUI<GameClearPopup>(
-		//	new GameClearPopupParameter(
-		//		m_gameManager.CurrentLevel, 
-		//		OnContinue: level => m_gameManager.LoadLevel(level, m_mainView.CachedRectTransform)
-		//	)
-		//);
 	}
 
 	private void ShowGiveUpPopup(UITextButtonParameter buttonParameter, ExitBaseParameter exitBaseParameter)
 	{
 		UIManager.ShowPopupUI<GiveupPopup>(
-			new DefaultPopupParameter(
+			new GiveupPopupParameter(
 				Title: Text.Popup.Title.GIVE_UP,
 				Message: Text.Popup.Message.GIVE_UP,
+                ignoreBackKey: true,
 				ExitParameter: exitBaseParameter,
 				BaseButtonParameter: buttonParameter
 			)
@@ -329,9 +319,10 @@ public partial class PlayScene : UIScene
         {
             //하트 구매 요구 (TBD)
             UIManager.ShowPopupUI<GiveupPopup>(
-                new DefaultPopupParameter(
+                new GiveupPopupParameter(
                     Title: "Purchase",
                     Message: "Purchase Life",
+                    ignoreBackKey: true,
                     ExitParameter: new ExitBaseParameter(
                         onExit: () => OnExit(false)
                     ),
@@ -344,41 +335,6 @@ public partial class PlayScene : UIScene
             return;
         }
         m_gameManager.LoadLevel(level, m_mainView.CachedRectTransform);
-
-		/*UIManager.ShowPopupUI<ReadyPopup>(
-			new ReadyPopupParameter(
-				Level: level,
-				BaseButtonParameter: new UITextButtonParameter
-				{
-					ButtonText = Text.Button.REPLAY,
-					OnClick = () => {
-						var (_, valid, _) = m_userManager.Current.Valid();
-
-						if (!valid)
-						{
-							//하트 구매 요구 (TBD)
-							UIManager.ShowPopupUI<GiveupPopup>(
-								new DefaultPopupParameter(
-									Title: "Purchase",
-									Message: "Purchase Life",
-									ExitParameter: new ExitBaseParameter(
-										onExit: () => OnExit(false)
-									),
-									BaseButtonParameter: new UITextButtonParameter {
-										ButtonText = "Go to Shop",
-										OnClick = () =>OnExit(true)
-									}
-								)
-							);
-							return;
-						}
-						m_gameManager.LoadLevel(level, m_mainView.CachedRectTransform);
-					}
-				},
-				ExitParameter: new ExitBaseParameter(() => OnExit(false), false),
-				AllPressToClose: true
-			)
-		);*/		
 	}
 
 	private void OnExit(bool onJumpStore)

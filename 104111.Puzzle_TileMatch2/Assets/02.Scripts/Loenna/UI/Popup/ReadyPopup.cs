@@ -16,8 +16,8 @@ public record ReadyPopupParameter
 	bool AllPressToClose,
 	params HUDType[] HUDTypes
 ) : PopupBaseParameter(
-	Text.LevelText(Level), 
-	Text.READY_POPUP_MESSAGE, 
+	Text.Popup.Title.GET_STARS, 
+	Text.Popup.Message.GET_STARS, 
 	ExitParameter, 
 	BaseButtonParameter,
 	AllPressToClose,
@@ -55,9 +55,10 @@ public class ReadyPopup : PopupBase
 			return;
 		}
 
-		m_hardMark.SetActive(levelData.HardMode);
-		m_tileCountText.text = levelData.TileCountAll.ToString();
+        m_hardMark.SetActive(false);
 
-		m_uiImages.ForEach(image => image.ChangeSprite(Text.LevelModeText(levelData.HardMode)));
+		//m_hardMark.SetActive(levelData.HardMode);
+		//m_tileCountText.text = levelData.TileCountAll.ToString();
+		//m_uiImages.ForEach(image => image.ChangeSprite(Text.LevelModeText(levelData.HardMode)));
 	}
 }

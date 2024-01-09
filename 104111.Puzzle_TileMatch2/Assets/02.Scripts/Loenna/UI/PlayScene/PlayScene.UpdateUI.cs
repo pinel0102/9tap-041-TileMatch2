@@ -115,9 +115,10 @@ partial class PlayScene
 		}
 
         UIManager.ShowPopupUI<GiveupPopup>(
-            new DefaultPopupParameter(
+            new GiveupPopupParameter(
                 Title: "Purchase",
                 Message: "Purchase Coin",
+                ignoreBackKey: true,
                 ExitParameter: new ExitBaseParameter(
                     includeBackground: false,
                     onExit: () => {

@@ -54,9 +54,10 @@ public class LobbyManager : IDisposable
         {
             //하트 구매 요구 (TBD)
             UIManager.ShowPopupUI<GiveupPopup>(
-                new DefaultPopupParameter(
+                new GiveupPopupParameter(
                     Title: "Purchase",
                     Message: "Purchase Life",
+                    ignoreBackKey:false,
                     ExitParameter: ExitBaseParameter.CancelParam,
                     BaseButtonParameter: new UITextButtonParameter {
                         ButtonText = "Go to Shop",
@@ -69,41 +70,6 @@ public class LobbyManager : IDisposable
         }
 
         UIManager.ShowSceneUI<PlayScene>(new PlaySceneParameter());
-
-		/*UIManager.ShowPopupUI<ReadyPopup>(
-			new ReadyPopupParameter(
-				Level: user.Level,
-				ExitParameter: ExitBaseParameter.CancelParam,
-				BaseButtonParameter: new UITextButtonParameter{
-					ButtonText = Text.Button.PLAY,
-					OnClick = () => 
-					{
-						var (_, valid, _) = user.Valid();
-
-						if (!valid) // TODO: 하트 구매 화면으로 옮긴다.
-						{
-							//하트 구매 요구 (TBD)
-							UIManager.ShowPopupUI<GiveupPopup>(
-								new DefaultPopupParameter(
-									Title: "Purchase",
-									Message: "Purchase Life",
-									ExitParameter: ExitBaseParameter.CancelParam,
-									BaseButtonParameter: new UITextButtonParameter {
-										ButtonText = "Go to Shop",
-										OnClick = onMoveShop
-									},
-									HUDTypes: HUDType.ALL
-								)
-							);
-							return;
-						}
-						UIManager.ShowSceneUI<PlayScene>(new PlaySceneParameter());
-					}
-				},
-				AllPressToClose: true,
-				HUDTypes: HUDType.ALL
-			)
-		);*/
 	}
 
 	public void Dispose()
