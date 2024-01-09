@@ -11,14 +11,14 @@ public partial class GlobalData : SingletonMono<GlobalData>
     public UserManager userManager => Game.Inst?.Get<UserManager>();
     public SoundManager soundManager => Game.Inst?.Get<SoundManager>();
     public HUD HUD => Game.Inst.Get<HUD>();
-
-    private IObjectPool<MissionCollectedFx> m_particlePool;
+    public bool isLevelEditor => PlayerPrefs.GetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, Constant.Scene.CLIENT) == Constant.Scene.EDITOR;
 
     public long oldCoin = 0;
     public int oldPuzzlePiece = 0;
     public int oldGoldPiece = 0;
-
     public int missionCollected = 0;
+    
+    private IObjectPool<MissionCollectedFx> m_particlePool;
 
     public void Initialize()
     {

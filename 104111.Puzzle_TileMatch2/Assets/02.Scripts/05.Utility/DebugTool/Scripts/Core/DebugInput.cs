@@ -1,5 +1,3 @@
-#if UNITY_EDITOR
-
 using UnityEngine;
 using System;
 using TMPro;
@@ -78,5 +76,3 @@ public class DebugInput : MonoBehaviour
         return false;
     }
 }
-
-#endif

@@ -1,5 +1,3 @@
-#if UNITY_EDITOR
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -138,5 +136,3 @@ public partial class DebugPanel : MonoBehaviour
 
 #endregion Debug Functions
 }
-
-#endif

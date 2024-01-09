@@ -1,5 +1,3 @@
-#if UNITY_EDITOR
-
 using UnityEngine;
 using UnityEngine.UI;
 using System;
@@ -40,5 +38,3 @@ public class DebugButton : MonoBehaviour
         return false;
     }
 }
-
-#endif

@@ -232,20 +232,27 @@ public partial class PlayScene : UIScene
 					ButtonText = Text.Button.REPLAY,
 					OnClick = () =>
 					{
-						ShowGiveUpPopup(
-							new UITextButtonParameter
-							{
-								ButtonText = Text.Button.PLAY_ON
-							},
-							new ExitBaseParameter(
-								includeBackground: false,
-								onExit: () =>
-								{
-									m_userManager.TryUpdate(requireLife: true);
-									ShowReadyPopup(m_gameManager.CurrentLevel);
-								}
-							)
-						);
+                        if (GlobalData.Instance.isLevelEditor)
+                        {
+                            m_gameManager.LoadLevel(m_gameManager.CurrentLevel, m_mainView.CachedRectTransform);
+                        }
+                        else
+                        {
+                            ShowGiveUpPopup(
+                                new UITextButtonParameter
+                                {
+                                    ButtonText = Text.Button.PLAY_ON
+                                },
+                                new ExitBaseParameter(
+                                    includeBackground: false,
+                                    onExit: () =>
+                                    {
+                                        m_userManager.TryUpdate(requireLife: true);
+                                        ShowReadyPopup(m_gameManager.CurrentLevel);
+                                    }
+                                )
+                            );
+                        }
 					}
 				},
 				BottomButtonParameter: new UITextButtonParameter
@@ -253,20 +260,27 @@ public partial class PlayScene : UIScene
 					ButtonText = Text.Button.HOME,
 					OnClick = () =>
 					{
-						ShowGiveUpPopup(
-							new UITextButtonParameter
-							{
-								ButtonText = Text.Button.PLAY_ON
-							},
-							new ExitBaseParameter(
-								includeBackground: false,
-								onExit: () =>
-								{
-									m_userManager.TryUpdate(requireLife: true);
-									OnExit(false);
-								}
-							)
-						);
+                        if (GlobalData.Instance.isLevelEditor)
+                        {
+                            OnExit(false);
+                        }
+                        else
+                        {
+                            ShowGiveUpPopup(
+                                new UITextButtonParameter
+                                {
+                                    ButtonText = Text.Button.PLAY_ON
+                                },
+                                new ExitBaseParameter(
+                                    includeBackground: false,
+                                    onExit: () =>
+                                    {
+                                        m_userManager.TryUpdate(requireLife: true);
+                                        OnExit(false);
+                                    }
+                                )
+                            );
+                        }
 					}
 				}
 			)

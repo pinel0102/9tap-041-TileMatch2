@@ -132,7 +132,7 @@ MonoBehaviour:
   debugButton: {fileID: 4944038887761382696}
   debugPanel: {fileID: 7530785282232834728}
   panelCloseButton: {fileID: 3942601317619564724}
-  initPosition: {x: 60, y: -300}
+  initPosition: {x: 20, y: -250}
   isInitPosition: 1
   isDebugPanelOn: 0
 --- !u!114 &6787608900709061557
@@ -255,7 +255,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -280, y: -400}
+  m_AnchoredPosition: {x: -300, y: -230}
   m_SizeDelta: {x: 80, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5254800639273246930
@@ -530,11 +530,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9152763760071204864, guid: 147366c48b72f43f6a75c8c4d161b2c5, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 60
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 9152763760071204864, guid: 147366c48b72f43f6a75c8c4d161b2c5, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -300
+      value: -250
       objectReference: {fileID: 0}
     - target: {fileID: 9152763760071204864, guid: 147366c48b72f43f6a75c8c4d161b2c5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
