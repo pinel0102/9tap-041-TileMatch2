@@ -580,8 +580,6 @@ public class LevelDataManager : IDisposable
         string backupFolder = Path.Combine(m_folderPath, "Backup");
         string backupPath = Path.Combine(backupFolder, fileName);
 
-        Debug.Log(string.Format("backupPath : {0}", backupPath));
-
         if (!Directory.Exists(backupFolder))
             Directory.CreateDirectory(backupFolder);
 

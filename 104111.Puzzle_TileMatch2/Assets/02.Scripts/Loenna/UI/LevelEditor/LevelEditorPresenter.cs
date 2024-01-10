@@ -272,8 +272,8 @@ public class LevelEditorPresenter : IDisposable
     public async UniTask SeperateBoardAll()
 	{
         int currentLevel = State.CurrentLevel;
-        //int lastLevel = State.LastLevel;
-        int lastLevel = 3; // For Test
+        int lastLevel = State.LastLevel;
+        //int lastLevel = 3; // For Test
 
         Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Seperate Start ({0})</color>", lastLevel));
 
