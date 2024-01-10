@@ -40,7 +40,7 @@ public class LevelEditorPresenter : IDisposable
 	public LevelEditorPresenter(LevelEditor view, float cellSize, float cellCount)
 	{
 		m_view = view;
-		m_dataManager = new LevelDataManager();
+		m_dataManager = new LevelDataManager(m_view);
 		m_cancellationTokenSource = new();
 		m_boardBounds = new Bounds(Vector2.zero, Vector2.one * cellSize * cellCount);
 		m_brushInfo = new AsyncReactiveProperty<BrushInfo>(
@@ -245,11 +245,11 @@ public class LevelEditorPresenter : IDisposable
         if (State.BoardCount < 2)
         {
             //Debug.LogWarning(CodeManager.GetMethodName() + string.Format("<color=yellow>Level {0} : Board Count : {1}</color>", m_dataManager.CurrentLevelData.Key, State.BoardCount));
-            return false;
+            return true;
         }
 
         int currentLevel = State.CurrentLevel;
-        int boardIndex = State.BoardCount - 1; // Last Board
+        int boardIndex = 1; // Second Board
 		//int boardIndex = State.BoardIndex; // Current Showing Board
 
 		if (m_dataManager.TryCopyBoardData(boardIndex, out int toLevel, out Board boardToCopy))
@@ -261,7 +261,7 @@ public class LevelEditorPresenter : IDisposable
             RemoveBoard(boardIndex);
             await SaveLevel();
 
-            return true;
+            return await SeperateBoard();
 		}
 
         Debug.LogWarning(CodeManager.GetMethodName() + string.Format("<color=yellow>Level {0} : Seperate Board Failed</color>", m_dataManager.CurrentLevelData.Key));

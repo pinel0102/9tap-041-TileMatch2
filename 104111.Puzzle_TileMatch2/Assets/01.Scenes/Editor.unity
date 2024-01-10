@@ -7081,6 +7081,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelEditorButton_Seperate_All
       objectReference: {fileID: 0}
+    - target: {fileID: 8535928286156564196, guid: 397520beb1e8e21458d14a0a3c929873, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8694432999389056395, guid: 397520beb1e8e21458d14a0a3c929873, type: 3}
       propertyPath: m_MinWidth
       value: 100
@@ -10357,6 +10361,7 @@ MonoBehaviour:
   m_error: {fileID: 1105696976}
   m_revertButton: {fileID: 341895234}
   m_warning: {fileID: 649365054}
+  m_saveAlert: {fileID: 1502787801}
 --- !u!1 &1429952060
 GameObject:
   m_ObjectHideFlags: 0
@@ -10960,7 +10965,7 @@ GameObject:
   - component: {fileID: 1502787801}
   - component: {fileID: 1502787800}
   m_Layer: 5
-  m_Name: Alert_Seperate
+  m_Name: Alert_Save
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11033,7 +11038,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Board 0 Moved to Level 0
+  m_Text: Level 0 Saved
 --- !u!222 &1502787802
 CanvasRenderer:
   m_ObjectHideFlags: 0

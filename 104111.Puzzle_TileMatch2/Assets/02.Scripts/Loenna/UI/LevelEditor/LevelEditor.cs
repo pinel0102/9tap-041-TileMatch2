@@ -9,6 +9,8 @@ using Cysharp.Threading.Tasks.Linq;
 using SimpleFileBrowser;
 
 using NineTap.Common;
+using System;
+using System.Collections;
 
 public partial class LevelEditor : MonoBehaviour
 {
@@ -46,9 +48,14 @@ public partial class LevelEditor : MonoBehaviour
 
 	[SerializeField]
 	private GameObject m_warning;
+
+    [SerializeField]
+	private Text m_saveAlert;
+    private Coroutine m_saveAlertCoroutine;
+    private WaitForSecondsRealtime m_saveAlertDelay = new WaitForSecondsRealtime(2f);
 	
 	private TableManager m_tableManager;
-	private TimeManager m_timeManager;
+	private TimeManager m_timeManager;    
 
 	private void Awake()
 	{
@@ -56,6 +63,8 @@ public partial class LevelEditor : MonoBehaviour
 		m_error.gameObject.SetActive(false);
 		m_loading.SetActive(false);
 		m_prevDim.alpha = 1f;
+
+        SetSaveAlert(false);
 	}
 
 	private void OnDestroy()
@@ -286,4 +295,29 @@ public partial class LevelEditor : MonoBehaviour
 		m_revertButton.gameObject.SetActive(visible);
 		m_warning.SetActive(visible);
 	}
+
+    public void SetSaveAlert(bool visible, string str = null)
+    {
+        if (m_saveAlertCoroutine != null)
+            StopCoroutine(m_saveAlertCoroutine);
+        
+        if (visible)
+        {   
+            m_saveAlertCoroutine = StartCoroutine(CO_SaveAlert(str));
+        }
+        else
+        {
+            m_saveAlert.gameObject.SetActive(false);
+        }
+    }
+
+    IEnumerator CO_SaveAlert(string str)
+    {
+        m_saveAlert.text = str;
+        m_saveAlert.gameObject.SetActive(true);
+
+        yield return m_saveAlertDelay;
+
+        m_saveAlert.gameObject.SetActive(false);
+    }
 }

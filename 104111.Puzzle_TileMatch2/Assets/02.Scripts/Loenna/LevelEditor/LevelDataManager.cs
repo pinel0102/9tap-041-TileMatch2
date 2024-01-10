@@ -26,6 +26,7 @@ public class LevelDataManager : IDisposable
 
 	public record CachedLevelData(bool Saved, LevelData LevelData);
 
+    private readonly LevelEditor levelEditor;
 	private readonly JsonSerializerSettings m_serializerSettings;
 	private readonly Dictionary<int, CachedLevelData> m_cachedLevelDataDic;
 	private readonly CancellationTokenSource m_cancellationTokenSource;
@@ -45,8 +46,9 @@ public class LevelDataManager : IDisposable
 
 	public int GetLastLayerInCurrent(int boardIndex) => (m_currentData?.Boards?[boardIndex]?.Layers?.Count - 1) ?? 0;
 
-	public LevelDataManager()
+	public LevelDataManager(LevelEditor editor)
 	{
+        levelEditor = editor;
 		m_cancellationTokenSource = new();
 		m_cachedLevelDataDic = new();
 		m_serializerSettings = new JsonSerializerSettings {
@@ -207,6 +209,8 @@ public class LevelDataManager : IDisposable
 		await SaveInternal(GetGameConfigFileName(), m_gameConfig);
 
 		m_saved.Value = true;
+
+        levelEditor.SetSaveAlert(true, string.Format("Level {0} Saved", level));
 	}
 
 	public void AddBoardData(out int count)
