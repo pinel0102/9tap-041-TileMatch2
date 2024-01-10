@@ -1,12 +1,9 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.UI;
 using System;
-
 using TMPro;
-
 using Cysharp.Threading.Tasks;
-
 using SceneManagement = UnityEngine.SceneManagement;
 
 public class SelectLevelContainerParameter
@@ -18,6 +15,7 @@ public class SelectLevelContainerParameter
 	public Action<bool> OnChangeMode;
 	public IUniTaskAsyncEnumerable<bool> SaveButtonBinder;
 	public Action<int> OnControlDifficult;
+    public Action<int> OnLevelSwap;
 }
 
 public class SelectLevelContainer : MonoBehaviour
@@ -54,6 +52,14 @@ public class SelectLevelContainer : MonoBehaviour
 	[SerializeField]
 	private LevelEditorToggleButton m_modeButton;
 
+    [SerializeField]
+	private TMP_InputField m_swapInput;
+
+    [SerializeField]
+	private Button m_swapButton;
+    
+    public int swapLevel = -1;    
+
 	public void OnSetup(SelectLevelContainerParameter parameter)
 	{
 		SceneManagement.SceneManager.sceneLoaded += SceneLoaded;
@@ -77,6 +83,19 @@ public class SelectLevelContainer : MonoBehaviour
 				);
 			}
 		);
+
+        m_swapInput.onEndEdit.AddListener(
+			text => {
+                swapLevel = int.TryParse(text, out int result) switch {
+                    true => result,
+                    _ => -1
+                };
+			}
+		);
+
+        m_swapButton.onClick.AddListener(() => { 
+            parameter.OnLevelSwap.Invoke(swapLevel);
+        });
 
 		m_modeButton.OnSetup(string.Empty, parameter.OnChangeMode, false);
 	}

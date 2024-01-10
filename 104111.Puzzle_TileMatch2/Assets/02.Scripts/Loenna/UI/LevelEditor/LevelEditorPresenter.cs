@@ -310,6 +310,22 @@ public class LevelEditorPresenter : IDisposable
 
 		ResetPlacedTilesInLayer(0);
 	}
+
+    public async void SwapLevel(int toLevel)
+    {
+        int fromLevel = State.CurrentLevel;
+
+        if (IsEnableSwap(toLevel))
+        {
+            if (await m_dataManager.TrySwapLevel(fromLevel, toLevel))
+                await LoadLevel(fromLevel);
+        }
+
+        bool IsEnableSwap(int level)
+        {
+            return (level != fromLevel) && (level > 0) && (level <= State.LastLevel);
+        }
+    }
 	#endregion
 
 	#region Brush

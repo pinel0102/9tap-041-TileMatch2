@@ -153,7 +153,8 @@ public partial class LevelEditor : MonoBehaviour
 					SaveButtonBinder = m_presenter.Savable,
 					OnPlay = m_presenter.PlayGame,
 					OnControlDifficult = m_presenter.SetDifficult,
-					OnChangeMode = m_presenter.UpdateCurrentLevelMode
+					OnChangeMode = m_presenter.UpdateCurrentLevelMode,
+                    OnLevelSwap = m_presenter.SwapLevel
 				},
 				NumberOfContainerParameter = new NumberOfTileTypesContainerParameter {
 					Table = m_tableManager.TileDataTable,

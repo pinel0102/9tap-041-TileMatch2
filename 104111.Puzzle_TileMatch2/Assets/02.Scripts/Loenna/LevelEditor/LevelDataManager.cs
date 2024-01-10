@@ -538,6 +538,49 @@ public class LevelDataManager : IDisposable
 		return m_currentData.HardMode;
 	}
 
+    public async UniTask<bool> TrySwapLevel(int fromLevel, int toLevel)
+    {
+        if (m_currentData == null)
+			return false;
+		
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Swap Level : {0} <-> {1}</color>", fromLevel, toLevel));
+
+        try {
+            string fromFile = GetLevelDataFileName(fromLevel);
+            string toFile = GetLevelDataFileName(toLevel);
+            string fromPath = Path.Combine(m_folderPath, fromFile);
+            string toPath = Path.Combine(m_folderPath, toFile);
+
+            if (File.Exists(fromPath) && File.Exists(toPath))
+            {
+                LevelData fromData = m_currentData with { Key = toLevel};
+
+                await LoadLevelData(toLevel, true);
+
+                LevelData toData = m_currentData with { Key = fromLevel};
+                
+                await SaveInternal(toFile, fromData);
+                await SaveInternal(fromFile, toData);
+                await LoadLevelDataInternal(toLevel, true);
+                await LoadLevelDataInternal(fromLevel, true);
+
+                levelEditor.SetSaveAlert(true, string.Format("Swap Level {0} <-> {1}", fromLevel, toLevel));
+
+                return true;
+            }
+            else
+            {
+                Debug.LogWarning(CodeManager.GetMethodName() + string.Format("<color=yellow>Swap Level Failed : {0} Exists:{1} <-> {2} Exists:{3}</color>", fromLevel, File.Exists(fromPath), toLevel, File.Exists(toPath)));
+            }
+        }
+        catch(Exception ex)
+        {
+            Debug.LogWarning(ex.ToString());
+        }
+
+        return false;
+    }
+
 	private async UniTask<T?> LoadInternal<T>(string fileName, Func<T> onCreateNew)
 	{
 		try
@@ -583,6 +626,8 @@ public class LevelDataManager : IDisposable
 		string path = Path.Combine(m_folderPath, fileName);
         string backupFolder = Path.Combine(m_folderPath, "Backup");
         string backupPath = Path.Combine(backupFolder, fileName);
+
+        //Debug.Log(backupPath);
 
         if (!Directory.Exists(backupFolder))
             Directory.CreateDirectory(backupFolder);
