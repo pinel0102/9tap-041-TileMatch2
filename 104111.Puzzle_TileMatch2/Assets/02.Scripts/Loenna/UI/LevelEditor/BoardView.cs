@@ -19,6 +19,8 @@ public class BoardParameter
 	public Action<InputController.State> OnPointerClick;
 	public Action<int> OnTakeStep;
 	public Action OnRemove;
+    public Action OnSeperate;
+    public Action OnSeperateAll;
 }
 
 public class BoardView : MonoBehaviour
@@ -52,6 +54,12 @@ public class BoardView : MonoBehaviour
 
 	[SerializeField]
 	private LevelEditorButton m_removeButton;
+
+    [SerializeField]
+	private LevelEditorButton m_seperateButton;
+
+    [SerializeField]
+	private LevelEditorButton m_seperateAllButton;
 	
 	private List<LayerView> m_placedLayerObjects = new();
 
@@ -69,6 +77,8 @@ public class BoardView : MonoBehaviour
 		m_prevButton.OnSetup(() => parameter?.OnTakeStep?.Invoke(-1));
 		m_nextButton.OnSetup(() => parameter?.OnTakeStep?.Invoke(1));
 		m_removeButton.OnSetup("Remove", () => parameter?.OnRemove?.Invoke());
+        m_seperateButton.OnSetup("Seperate", () => parameter?.OnSeperate?.Invoke());
+        m_seperateAllButton.OnSetup("Seperate All", () => parameter?.OnSeperateAll?.Invoke());
 	}
 
 	public void OnUpdateBrushWidget(BrushMode mode, Vector2 localPosition, bool interactable)
@@ -81,6 +91,7 @@ public class BoardView : MonoBehaviour
 	{
 		m_boardIndexText.text = $"Current Board[{boardIndex}]";
 		m_removeButton.SetInteractable(boardCount > 1);
+        m_seperateButton.SetInteractable(boardCount > 1);
 		m_prevButton.SetInteractable(boardIndex > 0);
 		m_nextButton.UpdateUI(boardIndex + 1 >= boardCount? "+": ">>");
 	}

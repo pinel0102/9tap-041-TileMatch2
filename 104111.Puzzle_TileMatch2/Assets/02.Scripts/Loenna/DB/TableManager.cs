@@ -48,7 +48,7 @@ public class TableManager
 
 	public async UniTask<bool> LoadLevelData(bool editorMode)
 	{
-        Debug.Log(CodeManager.GetAsyncName());
+        Debug.Log(CodeManager.GetAsyncName() + string.Format("Editor Mode : {0}", editorMode));
 
 		string path = PlayerPrefs.GetString(Constant.Editor.DATA_PATH_KEY);
 

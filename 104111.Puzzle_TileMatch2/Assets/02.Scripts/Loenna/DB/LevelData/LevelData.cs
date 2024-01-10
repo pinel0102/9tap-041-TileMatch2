@@ -27,6 +27,8 @@ public record LevelData(
 
 	public static LevelData CreateData(int level)
 	{
+        //UnityEngine.Debug.Log(CodeManager.GetMethodName() + level);
+        
 		List<Board> boards = new();
 		List<Layer> layers = new();
 		layers.Add(new Layer());

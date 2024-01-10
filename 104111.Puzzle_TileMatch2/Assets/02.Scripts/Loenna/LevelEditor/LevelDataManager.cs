@@ -121,7 +121,7 @@ public class LevelDataManager : IDisposable
 		string fileName = GetLevelDataFileName(level);
 		string temporaryFileName = $"LevelData_{level}_Temp.json";
 
-		(bool saved, var data) = File.Exists(Path.Combine(m_folderPath, temporaryFileName))?
+        (bool saved, var data) = File.Exists(Path.Combine(m_folderPath, temporaryFileName))?
 			(
 				false, 
 				await LoadInternal(temporaryFileName, () => LevelData.CreateData(level))
@@ -185,6 +185,8 @@ public class LevelDataManager : IDisposable
 		string path = GetLevelDataFileName(level);
 		RemoveTemporaryLevelData(level);
 
+        //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0}</color>", path));
+
 		await UniTask.Create(
 			async () => {
 				await SaveInternal(GetLevelDataFileName(level), m_currentData);
@@ -239,6 +241,30 @@ public class LevelDataManager : IDisposable
 
 		m_saved.Value = false;
 		return true;
+	}
+
+    public bool TryCopyBoardData(int boardIndex, out int toLevel, out Board? boardToCopy)
+	{
+		if (!m_currentData?.Boards?.HasIndex(boardIndex) ?? false)
+		{
+            Debug.LogWarning(CodeManager.GetMethodName() + string.Format("Board [{0}] : Not Index", boardIndex));
+			toLevel = -1;
+            boardToCopy = null;
+			return false;
+		}
+
+        if (m_currentData?.Boards?[boardIndex]?.IsEmptyBoard ?? true)
+        {
+            Debug.LogWarning(CodeManager.GetMethodName() + string.Format("Board [{0}] : Board is Empty", boardIndex));
+            toLevel = -1;
+            boardToCopy = null;
+            return false;
+        }
+
+        toLevel = Config.LastLevel + 1;
+        boardToCopy = m_currentData.Boards[boardIndex];
+        
+        return true;
 	}
 
 	// index뒤에 추가
@@ -513,9 +539,12 @@ public class LevelDataManager : IDisposable
 		try
 		{
 			string path = Path.Combine(m_folderPath, fileName);
-			if (!File.Exists(path))
+            
+            //Debug.Log(CodeManager.GetMethodName() + path);
+			
+            if (!File.Exists(path))
 			{
-				return onCreateNew.Invoke();
+                return onCreateNew.Invoke();
 			}
 
 			using (FileStream fileStream = new FileStream(path: path, mode: FileMode.Open, access: FileAccess.Read))
@@ -548,14 +577,21 @@ public class LevelDataManager : IDisposable
 
 		string json = JsonConvert.SerializeObject(data, m_serializerSettings);
 		string path = Path.Combine(m_folderPath, fileName);
+        string backupFolder = Path.Combine(m_folderPath, "Backup");
+        string backupPath = Path.Combine(backupFolder, fileName);
+
+        Debug.Log(string.Format("backupPath : {0}", backupPath));
+
+        if (!Directory.Exists(backupFolder))
+            Directory.CreateDirectory(backupFolder);
 
 		if (File.Exists(path))
 		{
-			if (File.Exists($"{path}.backup"))
+			if (File.Exists($"{backupPath}.backup"))
 			{
-				File.Delete($"{path}.backup");
+				File.Delete($"{backupPath}.backup");
 			}
-			File.Move(path, $"{path}.backup");
+			File.Move(path, $"{backupPath}.backup");
 		}
 
 		using (FileStream fileStream = new FileStream(path: path, access: FileAccess.Write, mode: FileMode.OpenOrCreate))

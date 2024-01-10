@@ -60,13 +60,14 @@ public class MenuView : MonoBehaviour
 		//m_tileTypeContainer.OnUpdateUI(layers.Select((_, index) => index).ToArray());
     }
 
-	public void UpdateLevelInfoUI(int tileCountInBoard, int allTileCount, int missionCountInBoard, int missionCountInLevel)
+	public void UpdateLevelInfoUI(int boardCount, int tileCountInBoard, int allTileCount, int missionCountInBoard, int missionCountInLevel)
 	{
 		m_levelInfoContainer.OnUpdateUI(
-			(LevelInfoContainer.TILE_COUNT_IN_BOARD, tileCountInBoard), 
-			(LevelInfoContainer.TILE_COUNT_IN_LEVEL, allTileCount),
-			(LevelInfoContainer.MISSION_COUNT_IN_BOARD, missionCountInBoard),
-			(LevelInfoContainer.MISSION_COUNT_IN_LEVEL, missionCountInLevel)
+            (LevelInfoContainer.TILE_COUNT_IN_BOARD, tileCountInBoard.ToString()), 
+			(LevelInfoContainer.TILE_COUNT_IN_LEVEL, allTileCount.ToString()),
+			(LevelInfoContainer.MISSION_COUNT_IN_BOARD, missionCountInBoard.ToString()),
+			(LevelInfoContainer.MISSION_COUNT_IN_LEVEL, missionCountInLevel.ToString()),
+            (LevelInfoContainer.BOARD_COUNT_IN_LEVEL, boardCount.ToString())
 		);
 	}
 
