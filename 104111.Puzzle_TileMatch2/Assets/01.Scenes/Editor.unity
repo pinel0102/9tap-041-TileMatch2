@@ -5926,11 +5926,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2025599122}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 780, y: -50}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 550, y: -50}
   m_SizeDelta: {x: 960, y: 55}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &649365056
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5960,7 +5960,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 0.7868042, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -5973,7 +5973,7 @@ MonoBehaviour:
     m_BestFit: 1
     m_MinSize: 20
     m_MaxSize: 50
-    m_Alignment: 1
+    m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -11188,7 +11188,7 @@ MonoBehaviour:
   m_error: {fileID: 1105696976}
   m_revertButton: {fileID: 341895234}
   m_warning: {fileID: 649365054}
-  m_saveAlert: {fileID: 1502787801}
+  m_LogMessage: {fileID: 1502787801}
 --- !u!1 &1429952060
 GameObject:
   m_ObjectHideFlags: 0
@@ -11793,7 +11793,7 @@ GameObject:
   - component: {fileID: 1502787801}
   - component: {fileID: 1502787800}
   m_Layer: 5
-  m_Name: Alert_Save
+  m_Name: Log
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11813,11 +11813,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2025599122}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 780, y: -120}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 550, y: -120}
   m_SizeDelta: {x: 960, y: 55}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1502787800
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11847,7 +11847,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 0, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -11860,11 +11860,11 @@ MonoBehaviour:
     m_BestFit: 1
     m_MinSize: 20
     m_MaxSize: 50
-    m_Alignment: 1
+    m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: Level 0 Saved
 --- !u!222 &1502787802
@@ -16003,8 +16003,6 @@ MonoBehaviour:
   m_modeButton: {fileID: 93038977}
   m_swapInput: {fileID: 665606629}
   m_swapButton: {fileID: 128182908}
-  currentLevel: -1
-  lastLevel: -1
   swapLevel: -1
 --- !u!1 &2025599121
 GameObject:
@@ -16045,7 +16043,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 600, y: 420}
+  m_SizeDelta: {x: 500, y: 420}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2025599123
 MonoBehaviour:

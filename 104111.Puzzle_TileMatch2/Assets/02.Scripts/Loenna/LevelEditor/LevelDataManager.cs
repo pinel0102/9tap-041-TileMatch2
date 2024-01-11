@@ -176,7 +176,7 @@ public class LevelDataManager : IDisposable
 		await SaveInternal(path, m_currentData);
 	}
 
-	public async UniTask SaveLevelData()
+	public async UniTask SaveLevelData(bool showLog = true)
 	{
 		if (m_currentData == null)
 		{
@@ -187,9 +187,7 @@ public class LevelDataManager : IDisposable
 		string path = GetLevelDataFileName(level);
 		RemoveTemporaryLevelData(level);
 
-        //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0}</color>", path));
-
-		await UniTask.Create(
+        await UniTask.Create(
 			async () => {
 				await SaveInternal(GetLevelDataFileName(level), m_currentData);
 
@@ -210,7 +208,8 @@ public class LevelDataManager : IDisposable
 
 		m_saved.Value = true;
 
-        levelEditor.SetSaveAlert(true, string.Format("Level {0} Saved", level));
+        if (showLog)
+            levelEditor.SetLog(string.Format("Save Level {0}", level));
 	}
 
 	public void AddBoardData(out int count)
@@ -251,7 +250,7 @@ public class LevelDataManager : IDisposable
 	{
 		if (!m_currentData?.Boards?.HasIndex(boardIndex) ?? false)
 		{
-            Debug.LogWarning(CodeManager.GetMethodName() + string.Format("Board [{0}] : Not Index", boardIndex));
+            levelEditor.SetLog(string.Format("Board [{0}] : Not Index", boardIndex), true);
 			toLevel = -1;
             boardToCopy = null;
 			return false;
@@ -259,7 +258,7 @@ public class LevelDataManager : IDisposable
 
         if (m_currentData?.Boards?[boardIndex]?.IsEmptyBoard ?? true)
         {
-            Debug.LogWarning(CodeManager.GetMethodName() + string.Format("Board [{0}] : Board is Empty", boardIndex));
+            levelEditor.SetLog(string.Format("Board [{0}] : Board is Empty", boardIndex), true);
             toLevel = -1;
             boardToCopy = null;
             return false;
@@ -543,8 +542,6 @@ public class LevelDataManager : IDisposable
         if (m_currentData == null)
 			return false;
 		
-        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Swap Level : {0} <-> {1}</color>", fromLevel, toLevel));
-
         try {
             string fromFile = GetLevelDataFileName(fromLevel);
             string toFile = GetLevelDataFileName(toLevel);
@@ -564,18 +561,18 @@ public class LevelDataManager : IDisposable
                 await LoadLevelDataInternal(toLevel, true);
                 await LoadLevelDataInternal(fromLevel, true);
 
-                levelEditor.SetSaveAlert(true, string.Format("Swap Level {0} <-> {1}", fromLevel, toLevel));
+                levelEditor.SetLog(string.Format("Swap Level {0} <-> {1}", fromLevel, toLevel));
 
                 return true;
             }
             else
             {
-                Debug.LogWarning(CodeManager.GetMethodName() + string.Format("<color=yellow>Swap Level Failed : {0} Exists:{1} <-> {2} Exists:{3}</color>", fromLevel, File.Exists(fromPath), toLevel, File.Exists(toPath)));
+                levelEditor.SetLog(string.Format("Swap Level Failed : {0} Exists:{1} <-> {2} Exists:{3}", fromLevel, File.Exists(fromPath), toLevel, File.Exists(toPath)), true);
             }
         }
         catch(Exception ex)
         {
-            Debug.LogWarning(ex.ToString());
+            levelEditor.SetLog(ex.ToString(), true);
         }
 
         return false;

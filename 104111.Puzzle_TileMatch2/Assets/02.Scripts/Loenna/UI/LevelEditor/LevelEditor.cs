@@ -50,12 +50,13 @@ public partial class LevelEditor : MonoBehaviour
 	private GameObject m_warning;
 
     [SerializeField]
-	private Text m_saveAlert;
-    private Coroutine m_saveAlertCoroutine;
-    private WaitForSecondsRealtime m_saveAlertDelay = new WaitForSecondsRealtime(2f);
+	private Text m_LogMessage;
+    private Coroutine m_LogCoroutine;
+    private const float delayDelta = 0.1f;
+    private WaitForSecondsRealtime wDelayDelta = new WaitForSecondsRealtime(delayDelta);
 	
 	private TableManager m_tableManager;
-	private TimeManager m_timeManager;    
+	private TimeManager m_timeManager;
 
 	private void Awake()
 	{
@@ -64,7 +65,7 @@ public partial class LevelEditor : MonoBehaviour
 		m_loading.SetActive(false);
 		m_prevDim.alpha = 1f;
 
-        SetSaveAlert(false);
+        InitLog();
 	}
 
 	private void OnDestroy()
@@ -297,28 +298,41 @@ public partial class LevelEditor : MonoBehaviour
 		m_warning.SetActive(visible);
 	}
 
-    public void SetSaveAlert(bool visible, string str = null)
+    private void InitLog()
     {
-        if (m_saveAlertCoroutine != null)
-            StopCoroutine(m_saveAlertCoroutine);
-        
-        if (visible)
-        {   
-            m_saveAlertCoroutine = StartCoroutine(CO_SaveAlert(str));
-        }
-        else
-        {
-            m_saveAlert.gameObject.SetActive(false);
-        }
+        if (m_LogCoroutine != null)
+            StopCoroutine(m_LogCoroutine);
+
+        m_LogMessage.gameObject.SetActive(false);
     }
 
-    IEnumerator CO_SaveAlert(string str)
+    public void SetLog(string message, bool isWarning = false, bool showLog = true)
     {
-        m_saveAlert.text = str;
-        m_saveAlert.gameObject.SetActive(true);
+        if (showLog)
+        {
+            if (isWarning)
+                Debug.LogWarning(CodeManager.GetAsyncName(index:1) + string.Format("<color=yellow>{0}</color>", message));
+            else
+                Debug.Log(CodeManager.GetAsyncName(index:1) + string.Format("<color=yellow>{0}</color>", message));
+        }
 
-        yield return m_saveAlertDelay;
+        m_LogMessage.text = message;
+        m_LogMessage.gameObject.SetActive(true);
+        
+        if (m_LogCoroutine != null)
+            StopCoroutine(m_LogCoroutine);
 
-        m_saveAlert.gameObject.SetActive(false);
+        m_LogCoroutine = StartCoroutine(CO_WaitTime());
+    }
+
+    private IEnumerator CO_WaitTime(float logTime = 3f)
+    {
+        while (logTime > 0)
+        {
+            logTime -= delayDelta;
+            yield return wDelayDelta;
+        }
+
+        m_LogMessage.gameObject.SetActive(false);
     }
 }

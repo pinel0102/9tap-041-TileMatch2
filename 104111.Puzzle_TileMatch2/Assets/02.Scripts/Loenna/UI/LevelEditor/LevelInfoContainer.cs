@@ -10,8 +10,8 @@ public class LevelInfoContainer : MonoBehaviour
     public static readonly string BOARD_COUNT_IN_LEVEL = "Board Count";
 	public static readonly string TILE_COUNT_IN_BOARD = "Tiles on board";
 	public static readonly string TILE_COUNT_IN_LEVEL = "Tiles on level";
-	public static readonly string MISSION_COUNT_IN_BOARD = "<color=yellow>Mission tiles</color> on board";
-	public static readonly string MISSION_COUNT_IN_LEVEL = "<color=yellow>Mission tiles</color> on level";
+	public static readonly string MISSION_COUNT_IN_BOARD = "<color=yellow>M. Tiles</color> on board";
+	public static readonly string MISSION_COUNT_IN_LEVEL = "<color=yellow>M. Tiles</color> on level";
 
 	[SerializeField]
 	private Text m_textBox;

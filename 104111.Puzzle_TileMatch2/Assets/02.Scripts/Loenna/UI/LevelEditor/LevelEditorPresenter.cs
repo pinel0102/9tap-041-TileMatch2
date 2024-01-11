@@ -12,6 +12,7 @@ using Cysharp.Threading.Tasks.Linq;
 
 using static InputController.State;
 using static LevelEditor;
+using System.Text;
 
 public class LevelEditorPresenter : IDisposable
 {
@@ -131,18 +132,23 @@ public class LevelEditorPresenter : IDisposable
 	{
 		LevelData data = await m_dataManager.LoadConfig(path);
 		LoadLevelInternal(data);
+        m_view.SetLog(string.Format("Load Level {0}", data.Key));
 	}
 
-    public async UniTask LoadLevel(int level, bool forceLoad = false)
+    public async UniTask LoadLevel(int level, bool forceLoad = false, bool showLog = true)
 	{
 		LevelData data = await m_dataManager.LoadLevelData(level, forceLoad);
 		LoadLevelInternal(data);
+        
+        if (showLog)
+            m_view.SetLog(string.Format("Load Level {0}", data.Key));
 	}
 
 	public async UniTask LoadLevelByStep(int direction)
 	{
 		LevelData data = await m_dataManager.LoadLevelDataByStep(direction);
 		LoadLevelInternal(data);
+        m_view.SetLog(string.Format("Load Level {0}", data.Key));
 	}
 
 	private void LoadLevelInternal(LevelData levelData)
@@ -162,26 +168,22 @@ public class LevelEditorPresenter : IDisposable
 			InternalState.ToInternalInfo(levelData, m_dataManager.Config.LastLevel, size)
 		);
         
-        //Debug.Log(CodeManager.GetMethodName() + string.Format("Level {0} / BoardCount : {1}", levelData.Key, State.BoardCount));
-
-		ResetPlacedTilesInLayer(0);
+        ResetPlacedTilesInLayer(0);
 
 		m_invisibleLayerIndexes.Clear();
 		m_invisibleLayersBroker.Publish(Array.Empty<int>());
 	}
 
-    public async UniTask CreateLevel(int level, Board boardToCopy, bool forceLoad = false)
+    public async UniTask CreateLevel(int level, Board boardToCopy, bool forceLoad = false, bool showLog = true)
 	{
 		LevelData data = await m_dataManager.LoadLevelData(level, forceLoad);
         data.Boards.Clear();
         data.Boards.Add(boardToCopy);
 
-		await SaveLevel(data);
-
-        //LoadLevelInternal(data);
+		await SaveLevel(data, showLog);
 	}
 
-    public async UniTask SaveLevel(LevelData levelData)
+    public async UniTask SaveLevel(LevelData levelData, bool showLog = true)
 	{
         (_, float size, _) = m_brushInfo.Value;
 
@@ -189,13 +191,13 @@ public class LevelEditorPresenter : IDisposable
 			InternalState.ToInternalInfo(levelData, m_dataManager.Config.LastLevel, size)
 		);
 
-        await m_dataManager.SaveLevelData();
+        await m_dataManager.SaveLevelData(showLog);
 		m_internalState.Update(state => state with { UpdateType = UpdateType.NONE });
 	}
 
-	public async UniTask SaveLevel()
+	public async UniTask SaveLevel(bool showLog = true)
 	{
-		await m_dataManager.SaveLevelData();
+		await m_dataManager.SaveLevelData(showLog);
 		m_internalState.Update(state => state with { UpdateType = UpdateType.NONE });
 	}
 	#endregion
@@ -218,15 +220,7 @@ public class LevelEditorPresenter : IDisposable
 
 	public void RemoveBoard()
 	{
-		int removeIndex = State.BoardIndex;
-
-		if (m_dataManager.TryRemoveBoardData(removeIndex, out int boardCount))
-		{
-            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Level {0} : Remove Board [{1}]</color>", m_dataManager.CurrentLevelData.Key, removeIndex));
-
-			int index = removeIndex < boardCount? removeIndex : removeIndex - 1;
-			LoadBoardInternal(index, boardCount);
-		}
+        RemoveBoard(State.BoardIndex);
 	}
 
     public void RemoveBoard(int removeIndex)
@@ -240,33 +234,53 @@ public class LevelEditorPresenter : IDisposable
 		}
 	}
 
-    public async UniTask<bool> SeperateBoard()
+    public async UniTask<bool> SeperateBoard(List<int> outputLevels = default)
 	{
         if (State.BoardCount < 2)
         {
-            //Debug.LogWarning(CodeManager.GetMethodName() + string.Format("<color=yellow>Level {0} : Board Count : {1}</color>", m_dataManager.CurrentLevelData.Key, State.BoardCount));
+            ShowLog();
             return true;
         }
 
         int currentLevel = State.CurrentLevel;
         int boardIndex = 1; // Second Board
-		//int boardIndex = State.BoardIndex; // Current Showing Board
 
 		if (m_dataManager.TryCopyBoardData(boardIndex, out int toLevel, out Board boardToCopy))
 		{
-            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Level {0} : Seperate Board [{1}] -> Level {2}</color>", m_dataManager.CurrentLevelData.Key, boardIndex, toLevel));
-            
-            await CreateLevel(toLevel, boardToCopy);
-            await LoadLevel(currentLevel);
+            await CreateLevel(toLevel, boardToCopy, showLog:false);
+            await LoadLevel(currentLevel, showLog:false);
             RemoveBoard(boardIndex);
-            await SaveLevel();
+            await SaveLevel(showLog:false);
 
-            return await SeperateBoard();
+            if (outputLevels == default)
+                outputLevels = new List<int>();
+            outputLevels.Add(toLevel);
+
+            //m_view.SetLog(string.Format("Seperate Board -> Level {0}", toLevel));
+
+            return await SeperateBoard(outputLevels);
 		}
 
+        ShowLog();
         Debug.LogWarning(CodeManager.GetMethodName() + string.Format("<color=yellow>Level {0} : Seperate Board Failed</color>", m_dataManager.CurrentLevelData.Key));
-
+        
         return false;
+
+        void ShowLog()
+        {
+            if (outputLevels != default && outputLevels.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                for(int i=0; i < outputLevels.Count; i++)
+                {
+                    if (i > 0)
+                        sb.Append(", ");
+                    sb.Append(outputLevels[i]);
+                }
+                
+                m_view.SetLog(string.Format("Seperate Board -> Level {0}", sb.ToString()));
+            }
+        }
 	}
 
     public async UniTask SeperateBoardAll()
@@ -280,7 +294,7 @@ public class LevelEditorPresenter : IDisposable
         int completeCount = 0;
         for(int level=1; level <= lastLevel; level++)
         {
-            await LoadLevel(level);
+            await LoadLevel(level, showLog:false);
 
             if(await SeperateBoard())
                 completeCount++;
@@ -288,7 +302,7 @@ public class LevelEditorPresenter : IDisposable
 
         Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Seperate Complete ({0}/{1})</color>", completeCount, lastLevel));
 
-        await LoadLevel(currentLevel); 
+        await LoadLevel(currentLevel, showLog:false); 
 	}
 
 	private void LoadBoardInternal(int index, int boardCount)
@@ -318,7 +332,7 @@ public class LevelEditorPresenter : IDisposable
         if (IsEnableSwap(toLevel))
         {
             if (await m_dataManager.TrySwapLevel(fromLevel, toLevel))
-                await LoadLevel(fromLevel);
+                await LoadLevel(fromLevel, showLog:false);
         }
 
         bool IsEnableSwap(int level)
@@ -657,7 +671,7 @@ public class LevelEditorPresenter : IDisposable
 	{
 		int level = m_dataManager.CurrentLevelData.Key;
 		m_dataManager.RemoveTemporaryLevelData(level);
-		return LoadLevel(level, true);
+		return LoadLevel(level, true, showLog:false);
 	}
 
 	public void IncrementMissionCount(int increment)
