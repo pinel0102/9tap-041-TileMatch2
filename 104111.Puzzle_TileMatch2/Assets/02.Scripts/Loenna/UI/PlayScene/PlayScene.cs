@@ -13,6 +13,11 @@ using static UnityEngine.SceneManagement.SceneManager;
 
 public record PlaySceneParameter : DefaultParameterWithoutHUD;
 
+public record PlaySceneParameterCustom
+(
+    int Level
+) : PlaySceneParameter;
+
 [ResourcePath("UI/Scene/PlayScene")]
 public partial class PlayScene : UIScene
 {
@@ -199,7 +204,7 @@ public partial class PlayScene : UIScene
 			);
 		}
 
-        m_gameManager.LoadLevel(m_userManager.Current.Level, m_mainView.CachedRectTransform);
+        m_gameManager.LoadLevel(uiParameter is PlaySceneParameterCustom paramCustom ? paramCustom.Level : m_userManager.Current.Level, m_mainView.CachedRectTransform);
 	}
 
 	public void OnPause()

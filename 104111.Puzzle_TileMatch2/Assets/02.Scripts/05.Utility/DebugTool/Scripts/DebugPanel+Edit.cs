@@ -30,8 +30,9 @@ public partial class DebugPanel : MonoBehaviour
     {
         buttonActionList.Add(Debug_LevelClear);
         buttonActionList.Add(Debug_LevelFail);        
-        inputActionListInt.Add(Debug_LevelPlay);
         inputActionListInt.Add(Debug_SetLevel);
+        inputActionListInt.Add(Debug_LevelPlay);
+        inputActionListInt.Add(Debug_SetStar);
         inputActionListInt.Add(Debug_SetHeart);
         inputActionListInt.Add(Debug_SetCoin);
         inputActionListInt.Add(Debug_SetItem);
@@ -52,6 +53,15 @@ public partial class DebugPanel : MonoBehaviour
 
         m_userManager?.Update(level: level);
         UIManager.ShowSceneUI<MainScene>(new NineTap.Common.DefaultParameter());
+    }
+
+    private void Debug_SetStar(int count)
+    {
+        if (count < 0) return;
+
+        Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat2, "Set Star", count));
+
+        m_userManager?.Update(puzzle: count);
     }
 
     private void Debug_SetHeart(int count)
@@ -104,7 +114,7 @@ public partial class DebugPanel : MonoBehaviour
                 playScene.gameManager.LoadLevel(level, playScene.mainView.CachedRectTransform);
                 break;
             default:
-                UIManager.ShowSceneUI<PlayScene>(new PlaySceneParameter());
+                UIManager.ShowSceneUI<PlayScene>(new PlaySceneParameterCustom(Level:level));
                 break;
         }
     }
