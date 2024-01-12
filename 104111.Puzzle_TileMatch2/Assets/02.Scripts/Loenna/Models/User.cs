@@ -43,8 +43,8 @@ public record User
 		Level: 1,
 		ClearedPuzzleCollection: new(),
 		CurrentPlayingPuzzleIndex: 1001, //퍼즐 하나는 무조건 언락되어 있는 상태
-		UnlockedPuzzlePieceDic: new Dictionary<int, uint>(),
 		PlayingPuzzleCollection: new Dictionary<int, uint>{{1001, 0}}, //퍼즐 하나는 무조건 언락되어 있는 상태
+        UnlockedPuzzlePieceDic: new Dictionary<int, uint>(),
 		OwnSkillItems: new Dictionary<SkillItemType, int>{
 			{SkillItemType.Stash, 1},
 			{SkillItemType.Undo, 1},

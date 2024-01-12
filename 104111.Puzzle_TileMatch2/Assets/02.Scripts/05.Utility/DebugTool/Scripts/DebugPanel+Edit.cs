@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using static UnityEngine.SceneManagement.SceneManager;
 
 public partial class DebugPanel : MonoBehaviour
 {
@@ -29,7 +30,9 @@ public partial class DebugPanel : MonoBehaviour
     private void SetupButtonListeners()
     {
         buttonActionList.Add(Debug_LevelClear);
-        buttonActionList.Add(Debug_LevelFail);        
+        buttonActionList.Add(Debug_LevelFail);
+        buttonActionList.Add(Debug_ResetUser);
+        buttonActionList.Add(Debug_ResetPuzzle);
         inputActionListInt.Add(Debug_SetLevel);
         inputActionListInt.Add(Debug_LevelPlay);
         inputActionListInt.Add(Debug_SetStar);
@@ -99,6 +102,22 @@ public partial class DebugPanel : MonoBehaviour
         };
 
         m_userManager?.Update(ownSkillItems: OwnSkillItems);
+    }
+
+    private void Debug_ResetUser()
+    {
+        Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat, "Reset User"));
+
+        m_userManager?.ResetUser();
+        LoadScene("Game");
+    }
+
+    private void Debug_ResetPuzzle()
+    {
+        Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat, "Reset Puzzle"));
+
+        m_userManager?.ResetPuzzle();
+        LoadScene("Game");
     }
 
     #region Play Scene Only

@@ -337,4 +337,20 @@ public class UserManager : IDisposable
 
         m_user.Update(user => user.Update());
 	}
+
+    public void ResetUser()
+    {
+        m_user.Value = User.NewUser;
+        Save();
+    }
+
+    public void ResetPuzzle()
+    {
+        m_user.Value = m_user.Value with { 
+            CurrentPlayingPuzzleIndex = 1001,
+            ClearedPuzzleCollection = new(),
+            PlayingPuzzleCollection = new Dictionary<int, uint>{{1001, 0}},
+            UnlockedPuzzlePieceDic = new Dictionary<int, uint>() };
+        Save();
+    }
 }
