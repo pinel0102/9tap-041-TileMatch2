@@ -207,7 +207,7 @@ public class UserManager : IDisposable
 			user => user.Update(
 				level: level,
 				coin: user.Coin + GetValue(ProductType.Coin),
-				puzzle: user.Puzzle + GetValue(ProductType.PuzzlePiece),
+				puzzle: user.Puzzle + level > Constant.Game.LEVEL_PUZZLE_START ? GetValue(ProductType.PuzzlePiece) : 0,
 				ownSkillItems: user.OwnSkillItems.Select(
 					pair => {
 						int value = pair.Value + GetValue(pair.Key.GetProductType());

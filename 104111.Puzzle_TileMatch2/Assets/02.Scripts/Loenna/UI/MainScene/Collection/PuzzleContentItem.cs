@@ -7,7 +7,7 @@ using TMPro;
 
 public class PuzzleContentData
 {
-	public uint PlacedPiecesData;
+    public uint PlacedPiecesData;
 	public PuzzleData PuzzleData;
 	public Action onClick;
 }
@@ -35,8 +35,13 @@ public class PuzzleContentItem : UIButton
 	private PuzzleContentData m_puzzleContentData;
 	public PuzzleContentData ContentData => m_puzzleContentData;
 
-	private UserManager m_userManager;
+    private UserManager m_userManager;
 	private bool m_isInitialized = false;
+
+    private PuzzleData puzzleData;
+    private Texture2D texture;
+
+    public int Index;
 
 	public void OnSetup(UserManager userManager)
 	{
@@ -89,12 +94,16 @@ public class PuzzleContentItem : UIButton
 
 		onClick.AddListener(() => contentData?.onClick?.Invoke());
 		m_puzzleContentData = contentData;
-		PuzzleData puzzleData = contentData.PuzzleData;
-        var texture = Resources.Load<Texture2D>(puzzleData.GetImagePath());
+		puzzleData = contentData.PuzzleData;
+        Index = puzzleData.Index;
+        
+        texture = Resources.Load<Texture2D>(puzzleData.GetImagePath());
 		m_thumbnail.texture = texture;
 		m_nameText.text = puzzleData.Name;
 
-		var puzzlePieces = PuzzlePieceMaker.CreatePieceSources(
+        RefreshPuzzle(contentData.PlacedPiecesData);
+
+		/*var puzzlePieces = PuzzlePieceMaker.CreatePieceSources(
 			texture, 
 			Constant.Puzzle.MAX_ROW_COUNT, 
 			Constant.Puzzle.MAX_COLUMN_COUNT, 
@@ -102,7 +111,39 @@ public class PuzzleContentItem : UIButton
 			contentData.PlacedPiecesData
 		);
 
-		float completed = puzzlePieces.Length >= PuzzlePieceMaker.MAX_PUZZLE_PIECE_COUNT? 1f : 0f;
+        float completed = puzzlePieces.Length >= PuzzlePieceMaker.MAX_PUZZLE_PIECE_COUNT? 1f : 0f;
+
+		m_viewButtonObject.alpha = completed;
+		m_gaugeBar.Alpha = 1f - completed;
+		m_gaugeBar.OnUpdateUI(puzzlePieces.Length, PuzzlePieceMaker.MAX_PUZZLE_PIECE_COUNT);
+
+		Array.ForEach(
+			puzzlePieces, 
+			puzzlePiece => {
+				var (index, position, sprite, _) = puzzlePiece;
+				GameObject pieceGameObject = new GameObject($"piece[{index}]");
+				Image image = pieceGameObject.AddComponent<Image>();
+				RectTransform pieceTransform = image.rectTransform;
+				pieceTransform.SetParentReset(m_pieceParent);
+				image.sprite = sprite;
+				image.SetNativeSize();
+				pieceTransform.anchoredPosition = position;
+			}
+		);*/
+	}
+
+    // TODO: 여기 최적화 필요.
+    public void RefreshPuzzle(uint placedPiecesData)
+    {
+        var puzzlePieces = PuzzlePieceMaker.CreatePieceSources(
+			texture, 
+			Constant.Puzzle.MAX_ROW_COUNT, 
+			Constant.Puzzle.MAX_COLUMN_COUNT, 
+			puzzleData.Pieces,
+			placedPiecesData
+		);
+
+        float completed = puzzlePieces.Length >= PuzzlePieceMaker.MAX_PUZZLE_PIECE_COUNT? 1f : 0f;
 
 		m_viewButtonObject.alpha = completed;
 		m_gaugeBar.Alpha = 1f - completed;
@@ -121,7 +162,7 @@ public class PuzzleContentItem : UIButton
 				pieceTransform.anchoredPosition = position;
 			}
 		);
-	}
+    }
 
 	protected override void DoStateTransition(SelectionState state, bool instant)
 	{

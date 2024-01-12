@@ -28,4 +28,9 @@ public class PuzzlePlayPieceScrollView : CachedBehaviour
 	{
 		m_infiniteScroll.ClearData();
 	}
+
+    public bool IsEmpty()
+    {
+        return m_infiniteScroll.GetItemCount() == 0;
+    }
 }

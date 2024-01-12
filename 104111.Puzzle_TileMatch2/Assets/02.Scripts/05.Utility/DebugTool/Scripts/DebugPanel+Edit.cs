@@ -107,10 +107,11 @@ public partial class DebugPanel : MonoBehaviour
     private void Debug_ResetUser()
     {
         if (GlobalData.Instance.isLevelEditor) return;
-        
+
         Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat, "Reset User"));
 
         m_userManager?.ResetUser();
+        
         LoadScene("Game");
     }
 
@@ -121,6 +122,7 @@ public partial class DebugPanel : MonoBehaviour
         Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat, "Reset Puzzle"));
 
         m_userManager?.ResetPuzzle();
+        
         LoadScene("Game");
     }
 

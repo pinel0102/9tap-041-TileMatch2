@@ -15,6 +15,7 @@
         private int needItemNumber = -1;
         private int madeItemNumber = 0;
         private List<InfiniteScrollItem> items = new List<InfiniteScrollItem>();
+        public List<InfiniteScrollItem> Items => items;
 
         private InfiniteScrollItem CreateItem()
         {

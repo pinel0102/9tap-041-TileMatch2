@@ -445,6 +445,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainScene: {fileID: 0}
   fragmentHome: {fileID: 0}
+  fragmentCollection: {fileID: 0}
+  fragmentPuzzle: {fileID: 0}
+  fragmentStore: {fileID: 0}
+  fragmentSettings: {fileID: 0}
   oldCoin: 0
   oldPuzzlePiece: 0
   oldGoldPiece: 0
@@ -663,6 +667,22 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4301562220225993953, guid: d11fb9ccb8c37457aa1ebc5ad722e1bc, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4649230909218935022, guid: d11fb9ccb8c37457aa1ebc5ad722e1bc, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4649230909218935022, guid: d11fb9ccb8c37457aa1ebc5ad722e1bc, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4649230909218935022, guid: d11fb9ccb8c37457aa1ebc5ad722e1bc, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4649230909218935022, guid: d11fb9ccb8c37457aa1ebc5ad722e1bc, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}

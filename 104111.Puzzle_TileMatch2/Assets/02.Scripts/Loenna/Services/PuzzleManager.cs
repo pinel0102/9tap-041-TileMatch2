@@ -14,6 +14,7 @@ public class PuzzleManager : IDisposable
 	private int m_puzzleIndex = 0;
     private uint m_placedPieces = 0;
 	private uint m_unlockedPieces = 0;
+    public int PuzzleIndex => m_puzzleIndex;
 
 	private Texture2D m_background;
 	public Texture2D Background => m_background;
@@ -46,6 +47,7 @@ public class PuzzleManager : IDisposable
 		);
 
 		m_currentPlayingPuzzle = new CurrentPlayingPuzzleContent(
+            CountryCode: puzzleData.CountryCode,
 			PieceSources: puzzleData.Orders.Select(index => puzzlePieces[index]).ToArray(),
 			PlacedPieces: placedPieces,
 			UnlockedPieces: unlockedPieces,
@@ -59,9 +61,9 @@ public class PuzzleManager : IDisposable
 	
 	public void AddPlacedList(int index)
 	{
-		var piece = PuzzlePieceMaker.CHECKER << index;
+        var piece = PuzzlePieceMaker.CHECKER << index;
 		m_placedPieces |= piece;
-		m_userManager.Update(playingPuzzle: (m_puzzleIndex, m_placedPieces));
+        m_userManager.Update(playingPuzzle: (m_puzzleIndex, m_placedPieces));
 	}
 
 	public bool TryUnlockPiece(int index)

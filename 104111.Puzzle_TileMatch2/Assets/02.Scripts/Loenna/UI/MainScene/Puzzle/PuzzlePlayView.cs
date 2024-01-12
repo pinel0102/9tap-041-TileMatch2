@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 
 using NineTap.Common;
+using System.Runtime.InteropServices;
 
 public class PuzzlePlayView : CachedBehaviour
 {
@@ -195,11 +196,25 @@ public class PuzzlePlayView : CachedBehaviour
 		piece.CachedTransform.SetParentReset(CachedTransform);
 		piece.CachedTransform.position = position;
 		
-		piece.OnSetup(itemData);        
-        m_pieceSlotContainer.MoveToSlot(itemData, piece, m_puzzleManager.AddPlacedList);
+		piece.OnSetup(itemData);
+        m_pieceSlotContainer.MoveToSlot(itemData, piece, (index) => {
+            m_puzzleManager.AddPlacedList(index);
+            m_pieceScrollView.RemoveItem(itemData);
 
-		m_pieceScrollView.RemoveItem(itemData);
+            //Debug.Log(CodeManager.GetMethodName() + string.Format("PuzzleIndex : {0}", m_puzzleManager.PuzzleIndex));
+            GlobalData.Instance.fragmentCollection.RefreshState(m_puzzleManager.CurrentPlayingPuzzle.CountryCode, m_puzzleManager.PuzzleIndex);
+
+            CheckPuzzleComplete();
+        });
 	}
+
+    private void CheckPuzzleComplete()
+    {
+        if (m_pieceScrollView.IsEmpty())
+        {
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Puzzle {0} Complete!!</color>", m_puzzleManager.PuzzleIndex));
+        }
+    }
 
     /*private void OnMovePiece(PuzzlePieceItemData itemData, PointerEventData eventData)
 	{

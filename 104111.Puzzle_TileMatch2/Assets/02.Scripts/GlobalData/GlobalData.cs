@@ -3,11 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 using NineTap.Common;
+using Unity.VisualScripting;
+using System.CodeDom;
+using System;
+using System.Reflection;
 
 public partial class GlobalData : SingletonMono<GlobalData>
 {
-    public MainScene mainScene = default;
-    public MainSceneFragmentContent_Home fragmentHome = default;
+    [HideInInspector] public MainScene mainScene = default;
+    [HideInInspector] public MainSceneFragmentContent_Home fragmentHome = default;
+    [HideInInspector] public MainSceneFragmentContent_Collection fragmentCollection = default;
+    [HideInInspector] public MainSceneFragmentContent_Puzzle fragmentPuzzle = default;
+    [HideInInspector] public MainSceneFragmentContent_Store fragmentStore = default;
+    [HideInInspector] public MainSceneFragmentContent_Settings fragmentSettings = default;
+
     public UserManager userManager => Game.Inst?.Get<UserManager>();
     public SoundManager soundManager => Game.Inst?.Get<SoundManager>();
     public HUD HUD => Game.Inst.Get<HUD>();

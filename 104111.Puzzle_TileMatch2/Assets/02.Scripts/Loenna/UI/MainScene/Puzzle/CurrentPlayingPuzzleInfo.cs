@@ -12,14 +12,15 @@ public record PuzzleInfo(PuzzleData PuzzleData, uint PlacedPieces, uint Unlocked
 	}
 }
 
-public record CurrentPlayingPuzzleContent(PuzzlePieceSource[] PieceSources, uint PlacedPieces, uint UnlockedPieces, int PieceCost)
+public record CurrentPlayingPuzzleContent(PuzzlePieceSource[] PieceSources, uint PlacedPieces, uint UnlockedPieces, int PieceCost, string CountryCode)
 {
-	public void Deconstruct(out PuzzlePieceSource[] pieceSources, out uint placedPieces, out uint unlockedPieces, out int pieceCost)
+	public void Deconstruct(out PuzzlePieceSource[] pieceSources, out uint placedPieces, out uint unlockedPieces, out int pieceCost, out string countryCode)
 	{
 		pieceSources = PieceSources;
 		placedPieces = PlacedPieces;
 		unlockedPieces = UnlockedPieces;
         pieceCost = PieceCost;
+        countryCode = CountryCode;
 	}
 
 	public List<int> GetPlacedPieceList()

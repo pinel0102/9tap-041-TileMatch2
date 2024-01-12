@@ -199,6 +199,10 @@ public class MainScene : UIScene
 
         GlobalData.Instance.mainScene = this;
         GlobalData.Instance.fragmentHome = m_scrollView.Contents[(int)MainMenuType.HOME] as MainSceneFragmentContent_Home;
+        GlobalData.Instance.fragmentCollection = m_scrollView.Contents[(int)MainMenuType.COLLECTION] as MainSceneFragmentContent_Collection;
+        GlobalData.Instance.fragmentPuzzle = m_scrollView.Contents[(int)MainMenuType.JIGSAW_PUZZLE] as MainSceneFragmentContent_Puzzle;
+        GlobalData.Instance.fragmentStore = m_scrollView.Contents[(int)MainMenuType.STORE] as MainSceneFragmentContent_Store;
+        GlobalData.Instance.fragmentSettings = m_scrollView.Contents[(int)MainMenuType.SETTINGS] as MainSceneFragmentContent_Settings;
 
         void OpenBuyHeartPopup(int itemIndex)
         {
