@@ -36,11 +36,11 @@ public class PuzzleManager : IDisposable
 		m_userManager.Update(currentPlayingPuzzleIndex: puzzleData.Index);
 
 		var req = Resources.LoadAsync<Texture2D>(puzzleData.GetImagePath());
-
 		m_background = await req.ToUniTask(cancellationToken: m_cancellationTokenSource.Token) as Texture2D;
 
-		var puzzlePieces = PuzzlePieceMaker.CreatePieceSources(
-			source: m_background, 
+		var puzzlePieces = PuzzlePieceMaker.LoadPieceSources(
+			//source: m_background, 
+            puzzleIndex: m_puzzleIndex,
 			rowCount: Constant.Puzzle.MAX_ROW_COUNT, 
 			columnCount: Constant.Puzzle.MAX_COLUMN_COUNT, 
 			pieceDatas: puzzleData.Pieces

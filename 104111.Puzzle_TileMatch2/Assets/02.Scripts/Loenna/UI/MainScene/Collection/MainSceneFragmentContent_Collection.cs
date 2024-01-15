@@ -44,7 +44,7 @@ public class MainSceneFragmentContent_Collection : ScrollViewFragmentContent
                                     PlacedPiecesData = GetPlacedPieces(puzzleData.Key),
 									PuzzleData = puzzleData,
 									onClick = () => {
-										UIManager.ShowLoading();
+										//UIManager.ShowLoading();
 										try
 										{
 											if (parameter.MoveToPuzzle == null)
@@ -92,7 +92,7 @@ public class MainSceneFragmentContent_Collection : ScrollViewFragmentContent
     public void RefreshLockState()
     {
         Debug.Log(CodeManager.GetMethodName());
-        
+
         for(int i=0; i < ContainerList.Count; i++)
         {
             ContainerList[i].RefreshLockState();

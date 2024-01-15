@@ -128,8 +128,9 @@ public class PuzzleContentItem : UIButton
     public void CreatePuzzle(uint placedPiecesData)
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("[Start] {0}", DateTime.Now));
-        var puzzlePieces = PuzzlePieceMaker.CreatePieceSources(
-			texture, 
+        var puzzlePieces = PuzzlePieceMaker.LoadPieceSources(
+			//texture, 
+            Index,
 			Constant.Puzzle.MAX_ROW_COUNT, 
 			Constant.Puzzle.MAX_COLUMN_COUNT, 
 			puzzleData.Pieces,
