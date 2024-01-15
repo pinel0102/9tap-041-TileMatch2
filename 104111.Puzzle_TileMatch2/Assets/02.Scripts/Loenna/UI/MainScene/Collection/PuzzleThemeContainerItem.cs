@@ -8,6 +8,7 @@ using TMPro;
 
 public class PuzzleThemeContainerItemData : InfiniteScrollData
 {
+    public string CountryCode;
     public string CountryName;
 	public List<PuzzleContentData> ContentDatas;
 }
@@ -20,6 +21,7 @@ public class PuzzleThemeContainerItem : NestedInfiniteScrollItem
 	[SerializeField]
 	private List<PuzzleContentItem> m_contents;
     public List<PuzzleContentItem> Contents => m_contents;
+    public string CountryCode;
     public string CountryName;
 
 	public override void UpdateData(InfiniteScrollData scrollData)
@@ -29,6 +31,7 @@ public class PuzzleThemeContainerItem : NestedInfiniteScrollItem
 
 		if (scrollData is PuzzleThemeContainerItemData itemData)
 		{
+            CountryCode = itemData.CountryCode;
             CountryName = itemData.CountryName;
 			m_title.text = itemData.CountryName;
 
@@ -47,4 +50,12 @@ public class PuzzleThemeContainerItem : NestedInfiniteScrollItem
 			}
 		}
 	}
+
+    public void RefreshLockState()
+    {
+        for(int i=0; i < m_contents.Count; i++)
+        {
+            m_contents[i].RefreshLockState();
+        }
+    }
 }

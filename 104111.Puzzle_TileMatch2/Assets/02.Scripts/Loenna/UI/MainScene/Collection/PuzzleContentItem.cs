@@ -4,6 +4,8 @@ using UnityEngine.UI;
 using System;
 
 using TMPro;
+using System.Linq;
+using System.Collections.Generic;
 
 public class PuzzleContentData
 {
@@ -42,7 +44,10 @@ public class PuzzleContentItem : UIButton
     private Texture2D texture;
 
     public int Index;
-
+    public bool isActivePuzzle;
+    public string puzzleName;
+    public List<GameObject> pieceObject = new();
+    
 	public void OnSetup(UserManager userManager)
 	{
 		if(m_isInitialized)
@@ -50,9 +55,10 @@ public class PuzzleContentItem : UIButton
 			return;
 		}
 
-		m_isInitialized = true;
+        isActivePuzzle = false;
 		m_userManager = userManager;
 		m_userManager.OnUpdated += LevelCheck;
+        m_isInitialized = true;
 	}
 
 	protected override void OnDestroy()
@@ -85,56 +91,43 @@ public class PuzzleContentItem : UIButton
 
 	public void UpdateUI(PuzzleContentData contentData)
 	{
-		onClick.RemoveAllListeners();
-		if (SetLocked(m_userManager.Current.Level, contentData.PuzzleData.Level))
-		{
-			m_nameText.text = NineTap.Constant.Text.LOCKED;
-			return;
-		}
-
-		onClick.AddListener(() => contentData?.onClick?.Invoke());
-		m_puzzleContentData = contentData;
-		puzzleData = contentData.PuzzleData;
+        m_puzzleContentData = contentData;
+        puzzleData = contentData.PuzzleData;
+        puzzleName = puzzleData.Name;
         Index = puzzleData.Index;
-        
         texture = Resources.Load<Texture2D>(puzzleData.GetImagePath());
 		m_thumbnail.texture = texture;
-		m_nameText.text = puzzleData.Name;
 
-        RefreshPuzzle(contentData.PlacedPiecesData);
+        RefreshLockState();
 
-		/*var puzzlePieces = PuzzlePieceMaker.CreatePieceSources(
-			texture, 
-			Constant.Puzzle.MAX_ROW_COUNT, 
-			Constant.Puzzle.MAX_COLUMN_COUNT, 
-			puzzleData.Pieces,
-			contentData.PlacedPiecesData
-		);
-
-        float completed = puzzlePieces.Length >= PuzzlePieceMaker.MAX_PUZZLE_PIECE_COUNT? 1f : 0f;
-
-		m_viewButtonObject.alpha = completed;
-		m_gaugeBar.Alpha = 1f - completed;
-		m_gaugeBar.OnUpdateUI(puzzlePieces.Length, PuzzlePieceMaker.MAX_PUZZLE_PIECE_COUNT);
-
-		Array.ForEach(
-			puzzlePieces, 
-			puzzlePiece => {
-				var (index, position, sprite, _) = puzzlePiece;
-				GameObject pieceGameObject = new GameObject($"piece[{index}]");
-				Image image = pieceGameObject.AddComponent<Image>();
-				RectTransform pieceTransform = image.rectTransform;
-				pieceTransform.SetParentReset(m_pieceParent);
-				image.sprite = sprite;
-				image.SetNativeSize();
-				pieceTransform.anchoredPosition = position;
-			}
-		);*/
+		CreatePuzzle(contentData.PlacedPiecesData);
 	}
 
-    // TODO: 여기 최적화 필요.
-    public void RefreshPuzzle(uint placedPiecesData)
+    public void RefreshLockState()
     {
+        if(!isActivePuzzle)
+            onClick.RemoveAllListeners();
+        
+		if (SetLocked(m_userManager.Current.Level, m_puzzleContentData.PuzzleData.Level))
+		{
+            m_nameText.text = NineTap.Constant.Text.LOCKED;
+            isActivePuzzle = false;
+			//return;
+		}
+        else
+        {   
+            if(!isActivePuzzle)
+            {
+                m_nameText.text = puzzleName;
+                onClick.AddListener(() => m_puzzleContentData?.onClick?.Invoke());
+                isActivePuzzle = true;
+            }
+        }
+    }
+
+    public void CreatePuzzle(uint placedPiecesData)
+    {
+        Debug.Log(CodeManager.GetMethodName() + string.Format("[Start] {0}", DateTime.Now));
         var puzzlePieces = PuzzlePieceMaker.CreatePieceSources(
 			texture, 
 			Constant.Puzzle.MAX_ROW_COUNT, 
@@ -142,17 +135,20 @@ public class PuzzleContentItem : UIButton
 			puzzleData.Pieces,
 			placedPiecesData
 		);
+        Debug.Log(CodeManager.GetMethodName() + string.Format("[End] {0}", DateTime.Now));
 
-        float completed = puzzlePieces.Length >= PuzzlePieceMaker.MAX_PUZZLE_PIECE_COUNT? 1f : 0f;
+        int attachedCount = puzzlePieces.Select(item => item.Attached).Count();
+        float completed = attachedCount >= PuzzlePieceMaker.MAX_PUZZLE_PIECE_COUNT? 1f : 0f;
 
 		m_viewButtonObject.alpha = completed;
 		m_gaugeBar.Alpha = 1f - completed;
-		m_gaugeBar.OnUpdateUI(puzzlePieces.Length, PuzzlePieceMaker.MAX_PUZZLE_PIECE_COUNT);
+		m_gaugeBar.OnUpdateUI(attachedCount, PuzzlePieceMaker.MAX_PUZZLE_PIECE_COUNT);
+        pieceObject.Clear();
 
 		Array.ForEach(
 			puzzlePieces, 
 			puzzlePiece => {
-				var (index, position, sprite, _) = puzzlePiece;
+				var (index, position, sprite, _, attached) = puzzlePiece;
 				GameObject pieceGameObject = new GameObject($"piece[{index}]");
 				Image image = pieceGameObject.AddComponent<Image>();
 				RectTransform pieceTransform = image.rectTransform;
@@ -160,8 +156,16 @@ public class PuzzleContentItem : UIButton
 				image.sprite = sprite;
 				image.SetNativeSize();
 				pieceTransform.anchoredPosition = position;
+                pieceGameObject.SetActive(attached);
+                pieceObject.Add(pieceGameObject);
 			}
 		);
+    }
+
+    public void RefreshPiece(int pieceIndex, bool attached)
+    {
+        //Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : {1}", pieceIndex, attached));        
+        pieceObject[pieceIndex].SetActive(attached);
     }
 
 	protected override void DoStateTransition(SelectionState state, bool instant)

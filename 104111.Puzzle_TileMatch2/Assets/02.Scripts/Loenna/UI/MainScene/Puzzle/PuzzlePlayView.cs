@@ -127,7 +127,7 @@ public class PuzzlePlayView : CachedBehaviour
 		m_pieceScrollView.UpdateUI(pieceScrollDatas.ToArray());
 	}
 
-	private void OnTryUnlock(PuzzlePieceItemData itemData, Vector2 position)
+	private void OnTryUnlock(PuzzlePieceItemData itemData, Vector2 position, Action onComplete=null)
 	{
         Debug.Log(CodeManager.GetMethodName() + itemData.Index);
 
@@ -140,7 +140,7 @@ public class PuzzlePlayView : CachedBehaviour
 			itemData.IsLocked = false;
 			m_pieceScrollView.UpdateUI(itemData);
 
-            itemData.MovePiece?.Invoke(itemData, position);
+            itemData.MovePiece?.Invoke(itemData, position, onComplete);
 		}
         else
         {
@@ -180,10 +180,12 @@ public class PuzzlePlayView : CachedBehaviour
 				AllPressToClose: true,
 				HUDTypes: HUDType.ALL
 			));
+
+            onComplete?.Invoke();
         }
 	}
 
-    private void MovePiece(PuzzlePieceItemData itemData, Vector2 position)
+    private void MovePiece(PuzzlePieceItemData itemData, Vector2 position, Action onComplete=null)
 	{
         Debug.Log(CodeManager.GetMethodName() + itemData.Index);
 
@@ -195,17 +197,20 @@ public class PuzzlePlayView : CachedBehaviour
 		piece.name = $"piece[{itemData.Index}]";
 		piece.CachedTransform.SetParentReset(CachedTransform);
 		piece.CachedTransform.position = position;
-		
 		piece.OnSetup(itemData);
+        
+        m_pieceScrollView.RemoveItem(itemData);
         m_pieceSlotContainer.MoveToSlot(itemData, piece, (index) => {
             m_puzzleManager.AddPlacedList(index);
-            m_pieceScrollView.RemoveItem(itemData);
+            //m_pieceScrollView.RemoveItem(itemData);
 
             //Debug.Log(CodeManager.GetMethodName() + string.Format("PuzzleIndex : {0}", m_puzzleManager.PuzzleIndex));
-            GlobalData.Instance.fragmentCollection.RefreshState(m_puzzleManager.CurrentPlayingPuzzle.CountryCode, m_puzzleManager.PuzzleIndex);
+            GlobalData.Instance.fragmentCollection.RefreshPieceState(m_puzzleManager.CurrentPlayingPuzzle.CountryCode, m_puzzleManager.PuzzleIndex, itemData.Index, true);
 
             CheckPuzzleComplete();
         });
+
+        onComplete?.Invoke();
 	}
 
     private void CheckPuzzleComplete()
@@ -213,6 +218,8 @@ public class PuzzlePlayView : CachedBehaviour
         if (m_pieceScrollView.IsEmpty())
         {
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Puzzle {0} Complete!!</color>", m_puzzleManager.PuzzleIndex));
+
+            GlobalData.Instance.fragmentCollection.RefreshLockState();
         }
     }
 

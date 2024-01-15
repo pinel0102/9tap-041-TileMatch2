@@ -18,8 +18,8 @@ public class PuzzlePieceItemData : InfiniteScrollData
 	public bool IsLocked;
 
     //public Action<PuzzlePieceItemData, PointerEventData> OnMovePiece;
-	public Action<PuzzlePieceItemData, Vector2> OnTryUnlock;
-    public Action<PuzzlePieceItemData, Vector2> MovePiece;
+	public Action<PuzzlePieceItemData, Vector2, Action> OnTryUnlock;
+    public Action<PuzzlePieceItemData, Vector2, Action> MovePiece;
 }
 
 public class PuzzlePieceScrollItem : InfiniteScrollItem, IBeginDragHandler, IDragHandler, IEndDragHandler
@@ -41,6 +41,7 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem, IBeginDragHandler, IDra
 
 	private ScrollRect m_scrollRect;
 
+    private bool m_moving = false;
 	private bool m_dragging = false;
 	private bool m_scrolling = false;
 
@@ -49,6 +50,7 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem, IBeginDragHandler, IDra
 		base.Initalize(scroll, itemIndex);
 		
 		m_scrollRect = scroll.GetComponent<ScrollRect>();
+        m_moving = false;
 	}
 
 	public override void UpdateData(InfiniteScrollData scrollData)
@@ -79,20 +81,33 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem, IBeginDragHandler, IDra
         {
             if (itemData.IsLocked)
             {
-                itemData.OnTryUnlock?.Invoke(itemData, m_image.transform.position);
+                itemData.OnTryUnlock?.Invoke(itemData, m_image.transform.position, MoveComplete);
+                MoveStart();
             }
             else
             {
                 //Select Piece
-                itemData.MovePiece?.Invoke(itemData, m_image.transform.position);
+                itemData.MovePiece?.Invoke(itemData, m_image.transform.position, MoveComplete);
+                MoveStart();
             }
         }
     }
 
+    private void MoveStart()
+    {
+        //m_scrollRect.StopMovement();
+        m_moving = true;
+    }
+
+    private void MoveComplete()
+    {
+        m_moving = false;
+    }
+
     public void OnPointerUp()
     {
-        if (m_dragging)
-            return;
+        //if (m_dragging)
+        //    return;
 
         m_dragging = false;
 		m_scrolling = false;
@@ -109,8 +124,7 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem, IBeginDragHandler, IDra
     public void OnBeginDrag(PointerEventData eventData)
 	{
         //Debug.Log(CodeManager.GetMethodName() + gameObject.name);
-
-		m_dragging = false;
+        m_dragging = false;
 		m_scrolling = false;
 
 		m_scrollRect?.OnBeginDrag(eventData);
@@ -119,8 +133,7 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem, IBeginDragHandler, IDra
 	public void OnDrag(PointerEventData eventData)
 	{
         //Debug.Log(CodeManager.GetMethodName() + gameObject.name);
-
-		var (x, y) = eventData.delta.normalized;
+        var (x, y) = eventData.delta.normalized;
 
 		if (m_dragging)
 		{
@@ -154,7 +167,7 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem, IBeginDragHandler, IDra
 	public void OnEndDrag(PointerEventData eventData)
 	{
         //Debug.Log(CodeManager.GetMethodName() + gameObject.name);
-
+        
 		if (m_dragging && m_scrolling)
 		{		
 			m_scrollRect?.OnEndDrag(eventData);

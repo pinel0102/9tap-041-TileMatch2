@@ -93,7 +93,7 @@ public class MainScene : UIScene
 						typeof(MainSceneFragmentContent_Collection),
 						new MainSceneFragmentContentParameter_Collection{
 							MoveToPuzzle = (puzzleData, placedPieces, unlockedPieces) => {
-								m_lobbyManager.OnSelectPuzzle(puzzleData, placedPieces, unlockedPieces);
+                                m_lobbyManager.OnSelectPuzzle(puzzleData, placedPieces, unlockedPieces);
 								m_scrollView.MoveTo((int)MainMenuType.JIGSAW_PUZZLE);
 							}
 						}
@@ -191,6 +191,8 @@ public class MainScene : UIScene
 		m_navigationView.OnSetup(
 			new MainSceneNavigationViewParameter{
 				OnClickTab = type => {  soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
+                                        if (type == MainMenuType.COLLECTION)
+                                            GlobalData.Instance.fragmentCollection.RefreshLockState();
                                         m_scrollView.MoveTo((int)type);}
 			}
 		);
