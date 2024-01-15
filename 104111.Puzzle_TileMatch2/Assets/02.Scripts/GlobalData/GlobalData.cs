@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 using NineTap.Common;
-using Unity.VisualScripting;
-using System.CodeDom;
-using System;
-using System.Reflection;
 
 public partial class GlobalData : SingletonMono<GlobalData>
 {
@@ -19,7 +15,8 @@ public partial class GlobalData : SingletonMono<GlobalData>
 
     public UserManager userManager => Game.Inst?.Get<UserManager>();
     public SoundManager soundManager => Game.Inst?.Get<SoundManager>();
-    public HUD HUD => Game.Inst.Get<HUD>();
+    public TableManager tableManager => Game.Inst?.Get<TableManager>();
+    public HUD HUD => Game.Inst?.Get<HUD>();
     public bool isLevelEditor => PlayerPrefs.GetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, Constant.Scene.CLIENT) == Constant.Scene.EDITOR;
 
     public long oldCoin = 0;
@@ -59,6 +56,6 @@ public partial class GlobalData : SingletonMono<GlobalData>
 
     public int GetGoldPiece_NextLevel()
     {
-        return 100;
+        return 999;
     }
 }

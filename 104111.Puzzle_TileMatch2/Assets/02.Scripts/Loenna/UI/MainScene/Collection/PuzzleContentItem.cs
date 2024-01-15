@@ -127,17 +127,14 @@ public class PuzzleContentItem : UIButton
 
     public void CreatePuzzle(uint placedPiecesData)
     {
-        Debug.Log(CodeManager.GetMethodName() + string.Format("[Start] {0}", DateTime.Now));
         var puzzlePieces = PuzzlePieceMaker.LoadPieceSources(
-			//texture, 
-            Index,
+			Index,
 			Constant.Puzzle.MAX_ROW_COUNT, 
 			Constant.Puzzle.MAX_COLUMN_COUNT, 
 			puzzleData.Pieces,
 			placedPiecesData
 		);
-        Debug.Log(CodeManager.GetMethodName() + string.Format("[End] {0}", DateTime.Now));
-
+        
         int attachedCount = puzzlePieces.Select(item => item.Attached).Count();
         float completed = attachedCount >= PuzzlePieceMaker.MAX_PUZZLE_PIECE_COUNT? 1f : 0f;
 

@@ -114,21 +114,6 @@ public partial class GameManager : IDisposable
 								if (finished.Result is CurrentPlayState.Finished.State.CLEAR)
 								{
                                     CheckClearRewards();
-
-									/*RewardDataTable rewardDataTable = tableManager.RewardDataTable;
-									Dictionary<ProductType, long> collectRewardAll = new Dictionary<ProductType, long>();
-
-									RewardData rewardData = rewardDataTable.GetDefaultReward(BoardInfo.HardMode);
-									AddRewards(collectRewardAll, rewardData.Rewards);
-
-									bool existChestReward = rewardDataTable.TryPreparedChestReward(CurrentLevel, out var chestRewardData);
-
-									if (chestRewardData != null && CurrentLevel >= chestRewardData.Level!)
-									{
-										AddRewards(collectRewardAll, chestRewardData.Rewards);
-									}
-
-									userManager.Update(level: CurrentLevel + 1, collectRewardAll);*/
 								}
 							}
 							break;
@@ -139,18 +124,6 @@ public partial class GameManager : IDisposable
 
 		m_receiver = new PlaySceneCommandReceiver(this);
 		m_commandInvoker = new Command.Invoker();
-
-		/*void AddRewards(Dictionary<ProductType, long> dict, List<IReward> rewards)
-		{
-			foreach (var reward in rewards)
-			{
-				if (!dict.ContainsKey(reward.Type))
-				{
-					dict.Add(reward.Type, 0);
-				}
-				dict[reward.Type] += reward.GetAmount();
-			}
-		}*/
 	}
 
     public void CheckClearRewards()
@@ -176,7 +149,7 @@ public partial class GameManager : IDisposable
             AddRewards(collectRewardAll, chestRewardData.Rewards);
         }
 
-        m_userManager.Update(level: CurrentLevel + 1, collectRewardAll);
+        m_userManager.Update(level: Mathf.Min(CurrentLevel + 1, GlobalData.Instance.tableManager.LastLevel), collectRewardAll);
     }
 
     void AddRewards(Dictionary<ProductType, long> dict, List<IReward> rewards)

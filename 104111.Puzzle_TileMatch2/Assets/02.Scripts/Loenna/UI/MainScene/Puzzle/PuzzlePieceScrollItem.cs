@@ -38,9 +38,10 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem, IBeginDragHandler, IDra
 	[SerializeField]
 	private TMP_Text m_text;
     private int cost;
-
 	private ScrollRect m_scrollRect;
-
+    public int Index;
+    public CanvasGroup canvasGroup;
+    private bool m_interacteble = false;
     private bool m_moving = false;
 	private bool m_dragging = false;
 	private bool m_scrolling = false;
@@ -60,21 +61,38 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem, IBeginDragHandler, IDra
 
 		if (scrollData is PuzzlePieceItemData itemData)
 		{
+            Index = itemData.Index;
             cost = itemData.Cost;
             m_text.text = itemData.IsLocked ? cost.ToString() : string.Empty;
 			m_locked.SetActive(itemData.IsLocked);
 			m_image.sprite = itemData.Sprite;
 			m_image.rectTransform.SetSize(itemData.Size * RESIZE_RATIO);
             m_ssuImage.sprite = itemData.Sprite;
+            
+            ShowItem();
 			return;
 		}
 
 		m_image.color = Color.clear;
 	}
 
+    public void ShowItem()
+    {
+        //Debug.Log(CodeManager.GetMethodName() + Index);
+        canvasGroup.alpha = 1f;
+        m_interacteble = true;
+    }
+
+    public void HideItem()
+    {
+        //Debug.Log(CodeManager.GetMethodName() + Index);
+        canvasGroup.alpha = 0.3f;
+        m_interacteble = false;
+    }
+
     public void OnPointerDown()
     {
-        if (m_dragging || m_scrolling)
+        if (!m_interacteble || m_dragging || m_scrolling)
             return;
         
         if (scrollData is PuzzlePieceItemData itemData)

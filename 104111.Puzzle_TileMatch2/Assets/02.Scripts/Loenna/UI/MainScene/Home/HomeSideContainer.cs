@@ -1,9 +1,8 @@
 using UnityEngine;
-
 using System.Collections.Generic;
-
 using NineTap.Common;
 
+#pragma warning disable 8321
 public class HomeSideContainer : CachedBehaviour
 {
 	public enum Direction
@@ -35,11 +34,11 @@ public class HomeSideContainer : CachedBehaviour
         switch (m_direction)
 		{
 			case Direction.LEFT:
-				CreateIcon(20301);
+				//CreateIcon(20301); // Piggy Bank
 				break;
 			case Direction.RIGHT:
-				CreateIcon(20207);
-				CreateIcon(20211);
+				//CreateIcon(20207); // Beginner
+				//CreateIcon(20211); // Weekend
 				break;
 		}
 

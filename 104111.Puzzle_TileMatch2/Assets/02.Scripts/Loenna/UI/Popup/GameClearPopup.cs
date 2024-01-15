@@ -106,7 +106,7 @@ public class GameClearPopup : UIPopup
 			{
                 UIManager.ShowSceneUI<MainScene>(new MainSceneRewardParameter(
                     rewardCoin:rewardData.Coin,
-                    rewardPuzzlePiece:parameter.Level >= Constant.Game.LEVEL_PUZZLE_START ? rewardData.PuzzlePiece : 0,
+                    rewardPuzzlePiece:rewardData.PuzzlePiece,
                     rewardGoldPiece:goldPieceCount
                 ));
                 

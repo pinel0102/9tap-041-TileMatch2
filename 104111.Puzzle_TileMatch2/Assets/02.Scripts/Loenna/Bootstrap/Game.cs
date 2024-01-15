@@ -46,7 +46,7 @@ public class Game : MonoBehaviour
 
 		PaymentService paymentService = new PaymentService(new CoinService(m_userManager), new IAPService());
 
-		UIManager.Initialize(m_serviceRegistry, m_userManager);
+        UIManager.Initialize(m_serviceRegistry, m_userManager);
         GlobalData.Instance.Initialize();
 
 		// 필요한 서비스들을 초기화 후 등록

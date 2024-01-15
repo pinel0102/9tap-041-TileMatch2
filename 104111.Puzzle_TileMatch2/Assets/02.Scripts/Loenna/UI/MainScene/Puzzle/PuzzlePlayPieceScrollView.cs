@@ -8,6 +8,7 @@ public class PuzzlePlayPieceScrollView : CachedBehaviour
 {
 	[SerializeField]
 	private InfiniteScroll m_infiniteScroll;
+    public InfiniteScroll Scroll => m_infiniteScroll;
 
 	public void UpdateUI(PuzzlePieceItemData[] itemDatas)
 	{

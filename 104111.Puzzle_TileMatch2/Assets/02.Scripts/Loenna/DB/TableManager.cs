@@ -29,6 +29,9 @@ public class TableManager
 	private ProductDataTable m_productDataTable = new("DB/GameDataTable/ProductDataTable");
 	public ProductDataTable ProductDataTable => m_productDataTable;
 
+    public int LastLevel => lastLevel;
+    private int lastLevel;
+
 	public async UniTask<bool> LoadGameData()
 	{
         Debug.Log(CodeManager.GetAsyncName());
@@ -48,9 +51,7 @@ public class TableManager
 
 	public async UniTask<bool> LoadLevelData(bool editorMode)
 	{
-        Debug.Log(CodeManager.GetAsyncName() + string.Format("Editor Mode : {0}", editorMode));
-
-		string path = PlayerPrefs.GetString(Constant.Editor.DATA_PATH_KEY);
+        string path = PlayerPrefs.GetString(Constant.Editor.DATA_PATH_KEY);
 
 		if (editorMode && PlayerPrefs.HasKey(Constant.Editor.LATEST_LEVEL_KEY))
 		{
@@ -60,7 +61,7 @@ public class TableManager
 
 			string[] files = allFile?.Where(path => !path.Contains("_Temp"))?.ToArray();
 			string[] temporaryFiles = allFile?.Where(path => path.Contains("_Temp"))?.ToArray();
-
+            
 			if (files?.Length > 0)
 			{
 				List<string> datas = new();
@@ -106,6 +107,10 @@ public class TableManager
 
 		TextAsset[] levelDataAssets = Resources.LoadAll<TextAsset>("DB/LevelDatas");
 		await UniTask.Defer(() => LevelDataTable.LoadAsync(levelDataAssets.Select(asset => asset.text).ToArray()));
+
+        lastLevel = LevelDataTable.Dic.Count - 1;
+
+        Debug.Log(CodeManager.GetAsyncName() + string.Format("<color=yellow>Last Level : {0}</color>", lastLevel));
 
 		return true;
 	}

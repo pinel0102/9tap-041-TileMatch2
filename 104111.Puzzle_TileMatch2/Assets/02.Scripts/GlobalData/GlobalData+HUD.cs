@@ -51,6 +51,9 @@ public partial class GlobalData
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("{0} / {1} / {2}", _getCoin, _getPuzzlePiece, _getGoldPiece));
 
+        // TODO: 수집 이벤트 구현시 사용.
+        bool isGoldPieceActivated = false;
+
         long _oldCoin = oldCoin;
         int _oldPuzzle = oldPuzzlePiece;
         int _oldGoldPiece = oldGoldPiece;
@@ -59,8 +62,11 @@ public partial class GlobalData
             HUD?.behaviour.Fields[0].SetIncreaseText(_oldPuzzle);
         if(_getCoin > 0)
             HUD?.behaviour.Fields[2].SetIncreaseText(_oldCoin);
-        if(_getGoldPiece > 0)
-            fragmentHome.RefreshGoldPiece(_oldGoldPiece, GetGoldPiece_NextLevel());
+        if(isGoldPieceActivated)
+        {
+            if(_getGoldPiece > 0)
+                fragmentHome.RefreshGoldPiece(_oldGoldPiece, GetGoldPiece_NextLevel());
+        }
         
         float _startDelay = 0.5f;
         float _fxDuration = 1f;
@@ -95,15 +101,18 @@ public partial class GlobalData
                     await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
                 }
 
-                if(_getGoldPiece > 0)
+                if(isGoldPieceActivated)
                 {
-                    Debug.Log(CodeManager.GetMethodName() + string.Format("[GoldPiece] {0} + {1} = {2}", _oldGoldPiece, _getGoldPiece, _oldGoldPiece + _getGoldPiece));
-                    
-                    CreateEffect("UI_Icon_GoldPuzzle_Big", fragmentHome.rewardPosition_goldPiece, _fxDuration, () => {
-                        fragmentHome.IncreaseGoldPiece(_oldGoldPiece, _getGoldPiece, GetGoldPiece_NextLevel());
-                    });
+                    if(_getGoldPiece > 0)
+                    {
+                        Debug.Log(CodeManager.GetMethodName() + string.Format("[GoldPiece] {0} + {1} = {2}", _oldGoldPiece, _getGoldPiece, _oldGoldPiece + _getGoldPiece));
+                        
+                        CreateEffect("UI_Icon_GoldPuzzle_Big", fragmentHome.rewardPosition_goldPiece, _fxDuration, () => {
+                            fragmentHome.IncreaseGoldPiece(_oldGoldPiece, _getGoldPiece, GetGoldPiece_NextLevel());
+                        });
 
-                    await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
+                        await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
+                    }
                 }
 
                 mainScene.m_block.SetActive(false);

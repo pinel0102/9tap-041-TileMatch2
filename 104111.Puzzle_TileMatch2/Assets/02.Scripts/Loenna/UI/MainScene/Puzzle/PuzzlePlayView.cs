@@ -1,14 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
-
 using System;
 using System.Collections.Generic;
-
 using Cysharp.Threading.Tasks;
-
 using NineTap.Common;
-using System.Runtime.InteropServices;
 
 public class PuzzlePlayView : CachedBehaviour
 {
@@ -29,7 +24,7 @@ public class PuzzlePlayView : CachedBehaviour
 
     private JigsawPuzzlePiece m_piecePrefab;
 	private PuzzleManager m_puzzleManager;
-
+    
 	public void OnSetup(PuzzleManager puzzleManager, Action onClickButton)
 	{
 		m_puzzleManager = puzzleManager;
@@ -129,7 +124,7 @@ public class PuzzlePlayView : CachedBehaviour
 
 	private void OnTryUnlock(PuzzlePieceItemData itemData, Vector2 position, Action onComplete=null)
 	{
-        Debug.Log(CodeManager.GetMethodName() + itemData.Index);
+        //Debug.Log(CodeManager.GetMethodName() + itemData.Index);
 
 		if (m_puzzleManager.TryUnlockPiece(itemData.Index))
 		{
@@ -187,7 +182,7 @@ public class PuzzlePlayView : CachedBehaviour
 
     private void MovePiece(PuzzlePieceItemData itemData, Vector2 position, Action onComplete=null)
 	{
-        Debug.Log(CodeManager.GetMethodName() + itemData.Index);
+        //Debug.Log(CodeManager.GetMethodName() + itemData.Index);
 
         SoundManager soundManager = Game.Inst?.Get<SoundManager>();
         soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
@@ -199,10 +194,17 @@ public class PuzzlePlayView : CachedBehaviour
 		piece.CachedTransform.position = position;
 		piece.OnSetup(itemData);
         
-        m_pieceScrollView.RemoveItem(itemData);
+        //m_pieceScrollView.RemoveItem(itemData);
+        
+        var pieceItem = (PuzzlePieceScrollItem)m_pieceScrollView.Scroll.Items?.Find(item => ((PuzzlePieceScrollItem)item).Index.Equals(itemData.Index));
+        if(pieceItem != null)
+        {
+            pieceItem.HideItem();
+        }
+
         m_pieceSlotContainer.MoveToSlot(itemData, piece, (index) => {
             m_puzzleManager.AddPlacedList(index);
-            //m_pieceScrollView.RemoveItem(itemData);
+            m_pieceScrollView.RemoveItem(itemData);
 
             //Debug.Log(CodeManager.GetMethodName() + string.Format("PuzzleIndex : {0}", m_puzzleManager.PuzzleIndex));
             GlobalData.Instance.fragmentCollection.RefreshPieceState(m_puzzleManager.CurrentPlayingPuzzle.CountryCode, m_puzzleManager.PuzzleIndex, itemData.Index, true);
