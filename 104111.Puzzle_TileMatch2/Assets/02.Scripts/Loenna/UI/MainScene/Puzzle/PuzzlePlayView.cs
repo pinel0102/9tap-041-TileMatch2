@@ -102,7 +102,7 @@ public class PuzzlePlayView : CachedBehaviour
 				IsLocked = !unlockedList.Contains(realIndex),
 				//OnMovePiece = OnMovePiece,
 				OnTryUnlock = OnTryUnlock,
-                MovePiece = MovePiece,
+                MovePiece = MovePiece
 			};
 
 			if (placedList.Contains(realIndex))
@@ -122,7 +122,7 @@ public class PuzzlePlayView : CachedBehaviour
 		m_pieceScrollView.UpdateUI(pieceScrollDatas.ToArray());
 	}
 
-	private void OnTryUnlock(PuzzlePieceItemData itemData, Vector2 position, Action onComplete=null)
+	private void OnTryUnlock(PuzzlePieceItemData itemData, Vector2 position, Action<bool> onComplete=null)
 	{
         //Debug.Log(CodeManager.GetMethodName() + itemData.Index);
 
@@ -173,14 +173,15 @@ public class PuzzlePlayView : CachedBehaviour
 					}
 				},
 				AllPressToClose: true,
-				HUDTypes: HUDType.ALL
+				HUDTypes: HUDType.ALL,
+                OnComplete: () => { onComplete?.Invoke(true); }
 			));
 
-            onComplete?.Invoke();
+            //onComplete?.Invoke();
         }
 	}
 
-    private void MovePiece(PuzzlePieceItemData itemData, Vector2 position, Action onComplete=null)
+    private void MovePiece(PuzzlePieceItemData itemData, Vector2 position, Action<bool> onComplete=null)
 	{
         //Debug.Log(CodeManager.GetMethodName() + itemData.Index);
 
@@ -210,9 +211,9 @@ public class PuzzlePlayView : CachedBehaviour
             GlobalData.Instance.fragmentCollection.RefreshPieceState(m_puzzleManager.CurrentPlayingPuzzle.CountryCode, m_puzzleManager.PuzzleIndex, itemData.Index, true);
 
             CheckPuzzleComplete();
+            
+            onComplete?.Invoke(true);
         });
-
-        onComplete?.Invoke();
 	}
 
     private void CheckPuzzleComplete()

@@ -14,6 +14,7 @@ public record ReadyPopupParameter
 	ExitBaseParameter ExitParameter,
 	UITextButtonParameter BaseButtonParameter,
 	bool AllPressToClose,
+    Action OnComplete,
 	params HUDType[] HUDTypes
 ) : PopupBaseParameter(
 	Text.Popup.Title.GET_STARS, 
@@ -36,6 +37,8 @@ public class ReadyPopup : PopupBase
 	[SerializeField]
 	private TMP_Text m_tileCountText;
 
+    private Action onComplete;
+
 	public override void OnSetup(UIParameter uiParameter)
 	{
 		base.OnSetup(uiParameter);
@@ -46,6 +49,9 @@ public class ReadyPopup : PopupBase
 			return;
 		}
 
+        onComplete = parameter.OnComplete;
+        m_hardMark.SetActive(false);
+
 		LevelDataTable levelDataTable = Game.Inst.Get<TableManager>().LevelDataTable;
 
 		if (!levelDataTable.TryGetValue(parameter.Level, out LevelData levelData))
@@ -54,11 +60,12 @@ public class ReadyPopup : PopupBase
 			OnClickClose();
 			return;
 		}
-
-        m_hardMark.SetActive(false);
-
-		//m_hardMark.SetActive(levelData.HardMode);
-		//m_tileCountText.text = levelData.TileCountAll.ToString();
-		//m_uiImages.ForEach(image => image.ChangeSprite(Text.LevelModeText(levelData.HardMode)));
 	}
+
+    public override void OnHide()
+    {
+        base.OnHide();
+
+        onComplete?.Invoke();
+    }
 }

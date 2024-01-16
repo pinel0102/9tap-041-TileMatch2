@@ -26,7 +26,7 @@ public class HomeSideContainer : CachedBehaviour
 		m_iconPrefab = ResourcePathAttribute.GetResource<EventCircleIcon>();
 		m_cachedIcons = new List<EventCircleIcon>();
 
-		OnTest();
+		//OnTest();
 	}
 
 	public void OnTest()
