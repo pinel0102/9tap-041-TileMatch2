@@ -12,24 +12,27 @@ public record PuzzlePieceSource(
     bool Attached,
 	Vector2 Position, 
 	Sprite Sprite, 
+    Sprite SpriteAttached, 
 	IReadOnlyList<PuzzleCurveType> PuzzleCurveTypes
 )
 {
-	public void Deconstruct(out int index, out Vector2 position, out Sprite sprite, out IReadOnlyList<PuzzleCurveType> curveTypes, out bool attached)
+	public void Deconstruct(out int index, out Vector2 position, out Sprite sprite, out Sprite spriteAttached, out IReadOnlyList<PuzzleCurveType> curveTypes, out bool attached)
 	{
 		index = Index;
 		position = Position;
 		sprite = Sprite;
+        spriteAttached = SpriteAttached;
 		curveTypes = PuzzleCurveTypes;
         attached = Attached;
 	}
 
-	public void Deconstruct(out int row, out int column, out Vector2 position, out Sprite sprite, out IReadOnlyList<PuzzleCurveType> curveTypes, out bool attached)
+	public void Deconstruct(out int row, out int column, out Vector2 position, out Sprite sprite, out Sprite spriteAttached, out IReadOnlyList<PuzzleCurveType> curveTypes, out bool attached)
 	{
 		row = Row;
 		column = Column;
 		position = Position;
 		sprite = Sprite;
+        spriteAttached = SpriteAttached;
 		curveTypes = PuzzleCurveTypes;
         attached = Attached;
 	}
@@ -119,6 +122,7 @@ public static class PuzzlePieceMaker
 
 				Vector2 position = new Vector2(x * pieceSize, y * pieceSize);
 				PieceData pieceData = GetPieceData(x, y, pieces);
+                Sprite _sprite = GetSprite(pieceData);
 
 				results.Add(
 					new PuzzlePieceSource(
@@ -127,7 +131,8 @@ public static class PuzzlePieceMaker
 						y, 
                         places[index],
 						position, 
-						GetSprite(pieceData), 
+						_sprite, 
+                        _sprite, 
 						pieceData.PuzzleCurveTypes
 					)
 				);
@@ -235,10 +240,12 @@ public static class PuzzlePieceMaker
 			pieces.AddRange(pieceDatas);
 		}
 
-        string path = Path.Combine("Images/Puzzle/Piece/", puzzleIndex.ToString());
+        string path = Path.Combine("Images/Puzzle/PieceDefault/", puzzleIndex.ToString());
+        string pathAttached = Path.Combine("Images/Puzzle/PieceAttached/", puzzleIndex.ToString());
         Debug.Log(CodeManager.GetMethodName() + path);
 
         var sprites = GetSprites(path);
+        var spritesAttached = GetSprites(pathAttached);
 
 		bool[] places = new bool[rowCount * columnCount];
 		for (int x = 0; x < rowCount * columnCount; x++)
@@ -271,6 +278,7 @@ public static class PuzzlePieceMaker
                         places[index],
 						position, 
 						sprites[index], 
+                        spritesAttached[index], 
 						pieceData.PuzzleCurveTypes
 					)
 				);

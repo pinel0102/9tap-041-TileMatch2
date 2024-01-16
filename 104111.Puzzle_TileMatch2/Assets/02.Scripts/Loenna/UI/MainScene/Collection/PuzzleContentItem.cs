@@ -146,12 +146,12 @@ public class PuzzleContentItem : UIButton
 		Array.ForEach(
 			puzzlePieces, 
 			puzzlePiece => {
-				var (index, position, sprite, _, attached) = puzzlePiece;
+				var (index, position, sprite, spriteAttached, _, attached) = puzzlePiece;
 				GameObject pieceGameObject = new GameObject($"piece[{index}]");
 				Image image = pieceGameObject.AddComponent<Image>();
 				RectTransform pieceTransform = image.rectTransform;
 				pieceTransform.SetParentReset(m_pieceParent);
-				image.sprite = sprite;
+				image.sprite = spriteAttached;
 				image.SetNativeSize();
 				pieceTransform.anchoredPosition = position;
                 pieceGameObject.SetActive(attached);

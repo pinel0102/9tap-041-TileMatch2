@@ -120,26 +120,44 @@ public partial class GlobalData
             },
 			this.GetCancellationTokenOnDestroy()
         );
+    }
 
-        void CreateEffect(string spriteName, Transform target, float duration = 1f, Action onComplete = null)
-        {
-            var parent = fragmentHome.objectPool;
+    public void CreateEffect(string spriteName, Transform target, float duration = 1f, Action onComplete = null)
+    {
+        var parent = fragmentHome.objectPool;
 
-            MissionCollectedFx fx = m_particlePool.Get();
-            fx.SetImage(spriteName);
-            fx.CachedRectTransform.SetParentReset(parent, true);
-            
-            Vector2 worldPosition = parent.TransformPoint(Vector2.zero);
-            Vector2 position = parent.InverseTransformPoint(worldPosition) / UIManager.SceneCanvas.scaleFactor;
-            Vector2 direction = parent.InverseTransformPoint(target.position);
-            
-            fx.Play(position, direction, duration, () => {
-                    soundManager?.PlayFx(Constant.Sound.SFX_GOLD_PIECE);
-                    m_particlePool.Release(fx);
-                    onComplete?.Invoke();
-                }
-            );
-        }
+        MissionCollectedFx fx = m_particlePool.Get();
+        fx.SetImage(spriteName);
+        fx.CachedRectTransform.SetParentReset(parent, true);
+        
+        Vector2 worldPosition = parent.TransformPoint(Vector2.zero);
+        Vector2 position = parent.InverseTransformPoint(worldPosition) / UIManager.SceneCanvas.scaleFactor;
+        Vector2 direction = parent.InverseTransformPoint(target.position);
+        
+        fx.Play(position, direction, duration, () => {
+                soundManager?.PlayFx(Constant.Sound.SFX_GOLD_PIECE);
+                m_particlePool.Release(fx);
+                onComplete?.Invoke();
+            }
+        );
+    }
+
+    public void CreateEffect(string spriteName, Transform from, Transform target, float duration = 1f, Action onComplete = null)
+    {
+        MissionCollectedFx fx = m_particlePool.Get();
+        fx.SetImage(spriteName);
+        fx.CachedRectTransform.SetParentReset(from, true);
+        
+        Vector2 worldPosition = from.TransformPoint(Vector2.zero);
+        Vector2 position = from.InverseTransformPoint(worldPosition) / UIManager.SceneCanvas.scaleFactor;
+        Vector2 direction = from.InverseTransformPoint(target.position);
+        
+        fx.Play(position, direction, duration, () => {
+                soundManager?.PlayFx(Constant.Sound.SFX_GOLD_PIECE);
+                m_particlePool.Release(fx);
+                onComplete?.Invoke();
+            }
+        );
     }
 
     public void CheckPuzzleOpen(int openPuzzleIndex)

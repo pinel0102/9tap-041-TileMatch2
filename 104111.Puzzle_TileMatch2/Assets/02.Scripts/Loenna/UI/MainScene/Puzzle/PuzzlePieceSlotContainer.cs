@@ -90,11 +90,21 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
 		m_slots[index] = Slot.AttachPiece(slot, pieceObject);
 	}
 
+    public void MoveToSlot(JigsawPuzzlePiece piece, Transform tr, Action<int> onAttach)
+	{
+        int index = piece.Index;
+		Vector2 slotPosition = m_slots[index].Transform.position;
+
+        tr.DOMove(slotPosition, Constant.Game.TWEENTIME_JIGSAW_MOVE, false)
+            .OnComplete(() => {
+                Check(index, piece, onAttach);
+            });
+	}
+
     public void MoveToSlot(PuzzlePieceItemData itemData, JigsawPuzzlePiece piece, Action<int> onAttach)
 	{
         int index = itemData.Index;
 		Vector2 slotPosition = m_slots[index].Transform.position;
-		Vector2 piecePosition = piece.CachedTransform.position;
 
         piece.transform.DOMove(slotPosition, Constant.Game.TWEENTIME_JIGSAW_MOVE, false)
             .OnComplete(() => {

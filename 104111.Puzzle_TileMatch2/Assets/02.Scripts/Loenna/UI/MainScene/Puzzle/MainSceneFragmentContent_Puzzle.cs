@@ -11,6 +11,8 @@ public class MainSceneFragmentContent_Puzzle : ScrollViewFragmentContent
 	[SerializeField]
 	private PuzzlePlayView m_puzzlePlayView;
 
+    public RectTransform objectPool;
+
 	public override void OnSetup(ScrollViewFragmentContentParameter contentParameter)
 	{
 		if (contentParameter is MainSceneFragmentContentParameter_Puzzle parameter)

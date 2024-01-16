@@ -98,6 +98,7 @@ public class PuzzlePlayView : CachedBehaviour
 				Index = realIndex,
                 Cost = pieceCost,
 				Sprite = pieceSources[index].Sprite,
+                SpriteAttached = pieceSources[index].SpriteAttached,
 				Size = JigsawPuzzleSetting.Instance.PieceSizeWithPadding * ratio,
 				IsLocked = !unlockedList.Contains(realIndex),
 				//OnMovePiece = OnMovePiece,
@@ -105,24 +106,26 @@ public class PuzzlePlayView : CachedBehaviour
                 MovePiece = MovePiece
 			};
 
-			if (placedList.Contains(realIndex))
+			//if (placedList.Contains(realIndex))
 			{
+                bool attached = placedList.Contains(realIndex);
+
 				JigsawPuzzlePiece piece = Instantiate(m_piecePrefab);
 				piece.name = $"piece[{realIndex}]";
-				piece.OnSetup(pieceData);
-				m_pieceSlotContainer.UpdateSlot(realIndex, piece.CachedGameObject);
+				piece.OnSetup(pieceData, attached);
+                m_pieceSlotContainer.UpdateSlot(realIndex, piece.CachedGameObject);
 			}
-			else
+			/*else
 			{
 				pieceScrollDatas.Add(pieceData);
-			}
+			}*/
 
 		}
 
 		m_pieceScrollView.UpdateUI(pieceScrollDatas.ToArray());
 	}
 
-	private void OnTryUnlock(PuzzlePieceItemData itemData, Vector2 position, Action<bool> onComplete=null)
+	private void OnTryUnlock(JigsawPuzzlePiece piece, PuzzlePieceItemData itemData, Vector2 position, Action<bool> onComplete=null)
 	{
         //Debug.Log(CodeManager.GetMethodName() + itemData.Index);
 
@@ -133,9 +136,9 @@ public class PuzzlePlayView : CachedBehaviour
             GlobalData.Instance.fragmentHome?.RefreshPuzzleBadge(GlobalData.Instance.userManager.Current.Puzzle);
 
 			itemData.IsLocked = false;
-			m_pieceScrollView.UpdateUI(itemData);
+			//m_pieceScrollView.UpdateUI(itemData);
 
-            itemData.MovePiece?.Invoke(itemData, position, onComplete);
+            itemData.MovePiece?.Invoke(piece, itemData, position, onComplete);
 		}
         else
         {
@@ -174,14 +177,62 @@ public class PuzzlePlayView : CachedBehaviour
 				},
 				AllPressToClose: true,
 				HUDTypes: HUDType.ALL,
-                OnComplete: () => { onComplete?.Invoke(true); }
+                OnComplete: () => { onComplete?.Invoke(false); }
 			));
 
             //onComplete?.Invoke();
         }
 	}
 
-    private void MovePiece(PuzzlePieceItemData itemData, Vector2 position, Action<bool> onComplete=null)
+    private void MovePiece(JigsawPuzzlePiece piece, PuzzlePieceItemData itemData, Vector2 position, Action<bool> onComplete=null)
+	{
+        //Debug.Log(CodeManager.GetMethodName() + itemData.Index);
+
+        SoundManager soundManager = Game.Inst?.Get<SoundManager>();
+        soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
+
+        GlobalData.Instance.CreateEffect("UI_Icon_GoldPuzzle_Big", 
+            GlobalData.Instance.HUD.behaviour.Fields[0].AttractorTarget,
+            piece.transform, 
+            Constant.Game.TWEENTIME_JIGSAW_MOVE,
+            () => {
+                m_pieceSlotContainer.Check(piece.Index, piece, null);
+                m_puzzleManager.AddPlacedList(piece.Index);
+                GlobalData.Instance.fragmentCollection.RefreshPieceState(m_puzzleManager.CurrentPlayingPuzzle.CountryCode, m_puzzleManager.PuzzleIndex, itemData.Index, true);
+                CheckPuzzleComplete();  
+
+                onComplete?.Invoke(true);
+            });
+        
+		//JigsawPuzzlePiece piece = Instantiate(m_piecePrefab);
+
+		/*piece.name = $"piece[{itemData.Index}]";
+		piece.CachedTransform.SetParentReset(CachedTransform);
+		piece.CachedTransform.position = position;
+		piece.OnSetup(itemData, true);*/
+        
+        //m_pieceScrollView.RemoveItem(itemData);
+        
+        /*var pieceItem = (PuzzlePieceScrollItem)m_pieceScrollView.Scroll.Items?.Find(item => ((PuzzlePieceScrollItem)item).Index.Equals(itemData.Index));
+        if(pieceItem != null)
+        {
+            pieceItem.HideItem();
+        }*/
+
+        /*m_pieceSlotContainer.MoveToSlot(itemData, piece, (index) => {
+            m_puzzleManager.AddPlacedList(index);
+            m_pieceScrollView.RemoveItem(itemData);
+
+            //Debug.Log(CodeManager.GetMethodName() + string.Format("PuzzleIndex : {0}", m_puzzleManager.PuzzleIndex));
+            GlobalData.Instance.fragmentCollection.RefreshPieceState(m_puzzleManager.CurrentPlayingPuzzle.CountryCode, m_puzzleManager.PuzzleIndex, itemData.Index, true);
+
+            CheckPuzzleComplete();
+            
+            onComplete?.Invoke(true);
+        });*/
+	}
+
+    /*private void MovePiece(PuzzlePieceItemData itemData, Vector2 position, Action<bool> onComplete=null)
 	{
         //Debug.Log(CodeManager.GetMethodName() + itemData.Index);
 
@@ -214,7 +265,7 @@ public class PuzzlePlayView : CachedBehaviour
             
             onComplete?.Invoke(true);
         });
-	}
+	}*/
 
     private void CheckPuzzleComplete()
     {

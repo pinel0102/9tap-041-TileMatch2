@@ -86,7 +86,7 @@ public class PuzzlePieceGenerator : MonoBehaviour
 		Array.ForEach(
 			puzzlePieces, 
 			puzzlePiece => {
-				var (row, column, position, sprite, curveTypes, _) = puzzlePiece;
+				var (row, column, position, sprite, spriteAttached, curveTypes, _) = puzzlePiece;
 
 				GameObject go = new GameObject($"piece[{row}, {column}]");
 				Image image = go.AddComponent<Image>();

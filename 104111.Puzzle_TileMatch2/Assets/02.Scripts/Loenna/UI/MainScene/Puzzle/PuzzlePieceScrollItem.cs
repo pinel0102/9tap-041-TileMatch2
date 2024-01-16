@@ -7,16 +7,18 @@ using System;
 using Gpm.Ui;
 
 using TMPro;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 
 public class PuzzlePieceItemData : InfiniteScrollData
 {
 	public int Index;
     public int Cost;
 	public Sprite Sprite;
+    public Sprite SpriteAttached;
 	public float Size;
 	public bool IsLocked;
-    public Action<PuzzlePieceItemData, Vector2, Action<bool>> OnTryUnlock;
-    public Action<PuzzlePieceItemData, Vector2, Action<bool>> MovePiece;
+    public Action<JigsawPuzzlePiece, PuzzlePieceItemData, Vector2, Action<bool>> OnTryUnlock;
+    public Action<JigsawPuzzlePiece, PuzzlePieceItemData, Vector2, Action<bool>> MovePiece;
 }
 
 public class PuzzlePieceScrollItem : InfiniteScrollItem
@@ -98,12 +100,12 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem
 
             if (itemData.IsLocked)
             {
-                itemData.OnTryUnlock?.Invoke(itemData, m_image.transform.position, SetInteractable);
+                itemData.OnTryUnlock?.Invoke(null, itemData, m_image.transform.position, SetInteractable);
             }
             else
             {
                 //Select Piece
-                itemData.MovePiece?.Invoke(itemData, m_image.transform.position, SetInteractable);
+                itemData.MovePiece?.Invoke(null, itemData, m_image.transform.position, SetInteractable);
             }
         }
     }
