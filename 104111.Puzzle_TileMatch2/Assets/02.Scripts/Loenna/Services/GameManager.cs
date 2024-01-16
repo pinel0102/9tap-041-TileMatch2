@@ -149,7 +149,7 @@ public partial class GameManager : IDisposable
             AddRewards(collectRewardAll, chestRewardData.Rewards);
         }
 
-        m_userManager.Update(level: Mathf.Min(CurrentLevel + 1, GlobalData.Instance.tableManager.LastLevel), collectRewardAll);
+        m_userManager.Update(level: CurrentLevel + 1, collectRewardAll);
     }
 
     void AddRewards(Dictionary<ProductType, long> dict, List<IReward> rewards)

@@ -22,8 +22,7 @@ public class PuzzlePieceItemData : InfiniteScrollData
 public class PuzzlePieceScrollItem : InfiniteScrollItem
 {
 	private const float RESIZE_RATIO = 0.8f;
-	private const float THRESHOLD = 0.25f;
-
+	
 	[SerializeField]
 	private Image m_image;
     [SerializeField]
@@ -72,19 +71,19 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem
     {
         //Debug.Log(CodeManager.GetMethodName() + Index);
         canvasGroup.alpha = 1f;
-        m_interacteble = true;
+        SetInteractable(true);
     }
 
     public void HideItem()
     {
         //Debug.Log(CodeManager.GetMethodName() + Index);
         canvasGroup.alpha = 0.3f;
-        m_interacteble = false;
+        SetInteractable(false);
     }
 
     public void SetInteractable(bool interactable)
     {
-        Debug.Log(CodeManager.GetMethodName() + interactable);
+        //Debug.Log(CodeManager.GetMethodName() + interactable);
         m_interacteble = interactable;
     }
 

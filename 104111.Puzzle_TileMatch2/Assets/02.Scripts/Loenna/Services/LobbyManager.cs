@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Cysharp.Threading.Tasks;
 
 using NineTap.Constant;
@@ -16,26 +17,19 @@ public class LobbyManager : IDisposable
 
 	public LobbyManager(UserManager userManager, TableManager tableManager)
 	{
-		m_userManager = userManager;
+        m_userManager = userManager;
 		m_tableManager = tableManager;
 
 		User user = m_userManager.Current;
 
 		LevelDataTable levelDataTable = m_tableManager.LevelDataTable;
 		LevelData levelData = levelDataTable.FirstOrDefault(level => level == user.Level);
-		//UnityEngine.Debug.Log(levelData);
-
-		m_currentLevel = new AsyncReactiveProperty<string>(levelData.GetMainButtonText()).WithDispatcher();
+        m_currentLevel = new AsyncReactiveProperty<string>(user.Level > tableManager.LastLevel ? Text.Button.COMING_SOON : levelData?.GetMainButtonText()).WithDispatcher();
 		m_onUpdatePuzzle = new AsyncReactiveProperty<PuzzleInfo>(null).WithDispatcher();
 
 		m_userManager.OnUpdated += user => {
-			var levelData = levelDataTable.FirstOrDefault(index => index == user.Level);
-			if (levelData == null)
-			{
-				return;
-			}
-
-			m_currentLevel.Value = levelData.GetMainButtonText();
+            var levelData = levelDataTable.FirstOrDefault(index => index == user.Level);
+			m_currentLevel.Value = user.Level > tableManager.LastLevel ? Text.Button.COMING_SOON : levelData?.GetMainButtonText();
 		};
 	}
 

@@ -1,10 +1,10 @@
 using UnityEngine;
-
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
-
+using System;
 using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
 
 public class TableManager
 {
@@ -29,19 +29,35 @@ public class TableManager
 	private ProductDataTable m_productDataTable = new("DB/GameDataTable/ProductDataTable");
 	public ProductDataTable ProductDataTable => m_productDataTable;
 
-    public int LastLevel => lastLevel;
-    private int lastLevel;
+    public int LastLevel => m_gameConfig.LastLevel;
+    private GameConfig m_gameConfig = new(1, 3);
+
+    [Serializable]
+	public record GameConfig(int LastLevel, int RequiredMultiples)
+	{
+		public static GameConfig Init = new(LastLevel: 1, RequiredMultiples: 3);
+	}
+
+    public TableManager()
+    {
+        Initialize();
+    }
+
+    private void Initialize()
+    {
+        LoadGameConfig();
+    }
 
 	public async UniTask<bool> LoadGameData()
 	{
         Debug.Log(CodeManager.GetAsyncName());
 
-		CountryCodeDataTable.Load();
+        CountryCodeDataTable.Load();
 		TileDataTable.Load();
 		PuzzleDataTable.Load();
 		RewardDataTable.Load();
 		ItemDataTable.Load();
-		ProductDataTable.Load();
+		ProductDataTable.Load();        
 
 		TextAsset[] piecesDataAssets = Resources.LoadAll<TextAsset>("DB/GameDataTable/PuzzlePieceDatas");
 		await UniTask.Defer(() => PuzzleDataTable.LoadAsync(piecesDataAssets.Select(asset => asset.text).ToArray()));
@@ -108,10 +124,28 @@ public class TableManager
 		TextAsset[] levelDataAssets = Resources.LoadAll<TextAsset>("DB/LevelDatas");
 		await UniTask.Defer(() => LevelDataTable.LoadAsync(levelDataAssets.Select(asset => asset.text).ToArray()));
 
-        lastLevel = LevelDataTable.Dic.Count - 1;
+        return true;
+	}
 
-        Debug.Log(CodeManager.GetAsyncName() + string.Format("<color=yellow>Last Level : {0}</color>", lastLevel));
+    private void LoadGameConfig()
+    {
+        TextAsset config = Resources.Load<TextAsset>("DB/LevelDatas/GameConfig");
+        string json = config.text;
+        m_gameConfig = LoadJson(json, () => GameConfig.Init) ?? GameConfig.Init;
 
-		return true;
+        Debug.Log(CodeManager.GetAsyncName() + string.Format("<color=yellow>Last Level : {0}</color>", m_gameConfig.LastLevel));
+    }
+
+    private T LoadJson<T>(string jsonString, Func<T> onCreateNew)
+	{
+		try
+		{
+			return JsonConvert.DeserializeObject<T>(jsonString);
+		}
+		catch (Exception ex)
+		{
+			Debug.LogError(ex.ToString());
+			return onCreateNew.Invoke();
+		}
 	}
 }

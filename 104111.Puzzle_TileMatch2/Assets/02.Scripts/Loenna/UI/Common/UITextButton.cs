@@ -53,6 +53,11 @@ public class UITextButton : UIImageButton
 		m_textField.text = string.Empty;
 	}
 
+    public void SetInteractable(bool interactable)
+    {
+        SetInteractable(this, interactable);
+    }
+
 	protected override void SetInteractable(Button button, bool interactable)
 	{
 		base.SetInteractable(button, interactable);

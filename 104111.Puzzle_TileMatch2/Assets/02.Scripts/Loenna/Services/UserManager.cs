@@ -205,7 +205,7 @@ public class UserManager : IDisposable
 
 		m_user.Update(
 			user => user.Update(
-				level: level,
+				level: GlobalData.Instance.GetEnableLevel(level),
 				coin: user.Coin + GetValue(ProductType.Coin),
 				puzzle: user.Puzzle + GetValue(ProductType.PuzzlePiece),
 				ownSkillItems: user.OwnSkillItems.Select(

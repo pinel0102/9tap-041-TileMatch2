@@ -44,17 +44,25 @@ public class MainSceneFragmentContent_Home : ScrollViewFragmentContent
 
 		m_puzzleButton.OnSetup(parameter.PuzzleButtonParam);
 		m_playButton.OnSetup(parameter.PlayButtonParam);
-
-		m_sideContainers.ForEach(container => container.OnSetup());
+        m_sideContainers.ForEach(container => container.OnSetup());
 
         RefreshGoldPiece(GlobalData.Instance.userManager.Current.GoldPiece, GlobalData.Instance.GetGoldPiece_NextLevel());
         RefreshPuzzleBadge(GlobalData.Instance.userManager.Current.Puzzle);
+        RefreshPlayButton();
 	}
 
 	public override void OnUpdateUI(User user)
 	{
 		m_puzzleButton.OnUpdateUI(user);
+        RefreshPlayButton();
 	}
+
+    public void RefreshPlayButton()
+    {
+        bool isPlayable = GlobalData.Instance.userManager.Current.Level <= GlobalData.Instance.tableManager.LastLevel;
+
+        m_playButton.SetInteractable(isPlayable);
+    }
 
     public void RefreshPuzzleBadge(long count)
     {

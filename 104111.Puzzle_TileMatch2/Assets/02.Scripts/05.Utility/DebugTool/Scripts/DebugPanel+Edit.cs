@@ -52,6 +52,7 @@ public partial class DebugPanel : MonoBehaviour
     {
         if (level < 1) return;
 
+        level = GlobalData.Instance.GetEnableLevel(level);
         Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat2, "Set Level", level));
 
         m_userManager?.Update(level: level);

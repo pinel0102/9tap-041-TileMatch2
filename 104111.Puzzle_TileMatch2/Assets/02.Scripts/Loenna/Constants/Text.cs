@@ -15,6 +15,7 @@ namespace NineTap.Constant
             public const string NO_THANKS = "No Thanks";
             public const string SURE = "Sure";
             public const string OK = "OK";
+            public const string COMING_SOON = "Coming Soon";
 		}
 
 		public static class Popup

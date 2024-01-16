@@ -281,37 +281,10 @@ partial class PlayScene
 				if (result is CurrentPlayState.Finished.State.OVER)
 				{
                     LevelFail();
-
-					/*UIManager.ShowPopupUI<PlayEndPopup>(
-						new PlayEndPopupParameter(
-							State: result,
-							ContinueButtonParameter: new UITextButtonParameter {
-								OnClick = () => OnContinue(coinAmount, itemTypes),
-								ButtonText = Text.Button.PLAY_ON,
-								SubWidgetBuilder = () => {
-									var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
-									widget.OnSetup("UI_Icon_Coin", $"{coinAmount}");
-									return widget.CachedGameObject;
-								}
-							},
-							OnQuit: () => ShowNext(result, coinAmount, () => OnContinue(coinAmount, itemTypes))
-						)
-					);*/
 				}
 				else
 				{
                     LevelClear();
-
-                    /*SoundManager soundManager = Game.Inst?.Get<SoundManager>();
-                    soundManager?.PlayFx(Constant.Sound.SFX_TILE_MATCH_FINISH);
-
-					m_canvasGroup.alpha = 0f;
-					UIManager.ShowPopupUI<GameClearPopup>(
-						new GameClearPopupParameter(
-							m_gameManager.CurrentLevel, 
-							OnContinue: level => m_gameManager.LoadLevel(level, m_mainView.CachedRectTransform)
-						)
-					);*/
 				}
 				--m_progressId;
 				break;

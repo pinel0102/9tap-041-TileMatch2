@@ -54,6 +54,14 @@ public partial class GlobalData : SingletonMono<GlobalData>
         oldGoldPiece = _goldPiece;
     }
 
+    public int GetEnableLevel(int level)
+    {
+        if (tableManager != null)
+            return Mathf.Clamp(level, 1, tableManager.LastLevel + 1);
+        
+        return Mathf.Min(1, level);
+    }
+
     public int GetGoldPiece_NextLevel()
     {
         return 999;
