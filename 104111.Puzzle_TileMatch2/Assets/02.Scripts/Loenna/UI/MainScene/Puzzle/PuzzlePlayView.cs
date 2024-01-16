@@ -223,6 +223,8 @@ public class PuzzlePlayView : CachedBehaviour
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Puzzle {0} Complete!!</color>", m_puzzleManager.PuzzleIndex));
 
             GlobalData.Instance.fragmentCollection.RefreshLockState();
+
+            // TODO: 퍼즐 완성 연출.
         }
     }
 

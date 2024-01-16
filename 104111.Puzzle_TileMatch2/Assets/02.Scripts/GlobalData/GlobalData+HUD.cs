@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System;
+using System.Linq;
 
 public partial class GlobalData
 {
@@ -47,9 +48,9 @@ public partial class GlobalData
         );
     }
 
-    public void HUD_LateUpdate_MainSceneReward(int _getCoin, int _getPuzzlePiece, int _getGoldPiece)
+    public void HUD_LateUpdate_MainSceneReward(int _clearedLevel, int _openPuzzleIndex, int _getCoin, int _getPuzzlePiece, int _getGoldPiece)
     {
-        Debug.Log(CodeManager.GetMethodName() + string.Format("{0} / {1} / {2}", _getCoin, _getPuzzlePiece, _getGoldPiece));
+        Debug.Log(CodeManager.GetMethodName() + string.Format("Level {0} : {1} / {2} / {3} / {4}", _clearedLevel, _openPuzzleIndex, _getCoin, _getPuzzlePiece, _getGoldPiece));
 
         // TODO: 수집 이벤트 구현시 사용.
         bool isGoldPieceActivated = false;
@@ -82,8 +83,8 @@ public partial class GlobalData
                     if (_startDelay > 0)
                         await UniTask.Delay(TimeSpan.FromSeconds(_startDelay));
 
-                    CreateEffect("UI_Icon_Star", fragmentHome.rewardPosition_puzzlePiece, _fxDuration);
-                    CreateEffect("UI_Icon_Star", HUD.behaviour.Fields[0].AttractorTarget, _fxDuration, () => { 
+                    CreateEffect("UI_Icon_GoldPuzzle_Big", fragmentHome.rewardPosition_puzzlePiece, _fxDuration);
+                    CreateEffect("UI_Icon_GoldPuzzle_Big", HUD.behaviour.Fields[0].AttractorTarget, _fxDuration, () => { 
                         HUD?.behaviour.Fields[0].IncreaseText(_oldPuzzle, _getPuzzlePiece, onUpdate:fragmentHome.RefreshPuzzleBadge);
                     });
 
@@ -115,7 +116,7 @@ public partial class GlobalData
                     }
                 }
 
-                mainScene.m_block.SetActive(false);
+                CheckPuzzleOpen(_openPuzzleIndex);
             },
 			this.GetCancellationTokenOnDestroy()
         );
@@ -139,6 +140,31 @@ public partial class GlobalData
                 }
             );
         }
+    }
+
+    public void CheckPuzzleOpen(int openPuzzleIndex)
+    {   
+        if (openPuzzleIndex < 0)
+        {
+            mainScene.m_block.SetActive(false);
+            return;
+        }
+
+        if (openPuzzleIndex == 1001)
+        {
+            // TODO: Tutorial : 직소 퍼즐.
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Open Puzzle {0}</color>", openPuzzleIndex));
+
+            //
+        }
+
+        mainScene.m_block.SetActive(false);
+    }
+
+    public int GetOpenedPuzzleIndex(int clearedLevel)
+    {
+        var puzzle = tableManager.PuzzleDataTable.Dic.FirstOrDefault(item => item.Value.Level == clearedLevel+1).Value;
+        return puzzle?.Index ?? -1;
     }
 
     public void HUD_Show(params HUDType[] types)

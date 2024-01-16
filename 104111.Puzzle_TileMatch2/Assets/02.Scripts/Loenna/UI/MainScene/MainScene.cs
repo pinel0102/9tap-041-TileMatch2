@@ -10,6 +10,8 @@ public record MainSceneParameter(
     ) : DefaultParameter();
 
 public record MainSceneRewardParameter(
+    int clearedLevel = 0,
+    int openPuzzleIndex = 0,
     int rewardCoin = 0,
     int rewardPuzzlePiece = 0,
     int rewardGoldPiece = 0
@@ -260,7 +262,7 @@ public class MainScene : UIScene
         if (CachedParameter is MainSceneRewardParameter rewardParameter)
         {
             Debug.Log(CodeManager.GetMethodName() + string.Format("[Get Reward] {0} / {1} / {2}", rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardGoldPiece));
-            GlobalData.Instance.HUD_LateUpdate_MainSceneReward(rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardGoldPiece);
+            GlobalData.Instance.HUD_LateUpdate_MainSceneReward(rewardParameter.clearedLevel, rewardParameter.openPuzzleIndex, rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardGoldPiece);
         }
 
 		m_scrollView.MoveTo((int)parameter.ShowMenuType);

@@ -9,6 +9,7 @@ using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using Text = NineTap.Constant.Text;
 using NineTap.Common;
+using TMPro;
 
 using static UnityEngine.SceneManagement.SceneManager;
 
@@ -38,9 +39,38 @@ public class GameClearPopup : UIPopup
     [SerializeField]
 	private CanvasGroup m_clearStarHalo = default!;
 
+    [SerializeField]
+    private GameObject m_landmarkObject = default!;
+
+    [SerializeField]
+    private GameObject m_resultObject = default!;
+
+    [SerializeField]
+    private GameObject m_openPuzzleObject = default!;
+
+    [SerializeField]
+	private CanvasGroup m_openPuzzleStarCanvasGroup = default!;
+
+    [SerializeField]
+	private CanvasGroup m_openPuzzleHalo = default!;
+
+    [SerializeField]
+	private CanvasGroup m_layoutResult = default!;
+
+    [SerializeField]
+	private CanvasGroup m_layoutPuzzle = default!;
+    
+    [SerializeField]
+    private TMP_Text m_openPuzzleText = default!;
+
 	private LevelData? m_levelData;	
 	private RewardData? m_chestRewardData;
+    
+    public bool isInteractable;
+    public int openPuzzleIndex;
 
+    private const string format_openPuzzle = "You have unlocked\n{0}!";
+    
     public override void OnSetup(UIParameter uiParameter)
     {
         base.OnSetup(uiParameter);
@@ -55,7 +85,8 @@ public class GameClearPopup : UIPopup
 		RewardDataTable rewardDataTable = tableManager.RewardDataTable;
 		LevelDataTable levelDataTable = tableManager.LevelDataTable;
 
-        int goldPieceCount = GlobalData.Instance.missionCollected;                
+        int goldPieceCount = GlobalData.Instance.missionCollected;    
+        openPuzzleIndex = GlobalData.Instance.GetOpenedPuzzleIndex(parameter.Level);            
 
 		if (!levelDataTable.TryGetValue(parameter.Level, out m_levelData))
 		{
@@ -63,6 +94,7 @@ public class GameClearPopup : UIPopup
 			return;
 		}
 
+        SetInteractable(false);
 		bool existNextLevel = levelDataTable.TryGetValue(parameter.Level + 1, out var nextLevelData);
 		RewardData rewardData = rewardDataTable.GetDefaultReward(m_levelData.HardMode);
 		
@@ -86,8 +118,11 @@ public class GameClearPopup : UIPopup
 			new UITextButtonParameter {
 				ButtonText = existNextLevel? Text.Button.CONTINUE : Text.Button.HOME,
 				OnClick = () => {
-					OnClickClose();
-					OnExit();
+                    if (isInteractable)
+                    {
+					    OnClickClose();
+					    OnExit();
+                    }
 				}
 			}
 		);
@@ -97,6 +132,10 @@ public class GameClearPopup : UIPopup
 		m_clearRewardContainer.Alpha = 0f;
 		m_headLineImage.transform.localScale = Vector3.zero;
         m_BgEffect.SetLocalScale(0);
+        m_landmarkObject.SetActive(openPuzzleIndex > 0);
+
+        m_resultObject.SetActive(true);
+        m_openPuzzleObject.SetActive(false);
 
 		void OnExit()
 		{
@@ -105,6 +144,8 @@ public class GameClearPopup : UIPopup
 			if (mode == Constant.Scene.CLIENT)
 			{
                 UIManager.ShowSceneUI<MainScene>(new MainSceneRewardParameter(
+                    clearedLevel:parameter.Level,
+                    openPuzzleIndex:openPuzzleIndex,
                     rewardCoin:rewardData.Coin,
                     rewardPuzzlePiece:rewardData.PuzzlePiece,
                     rewardGoldPiece:goldPieceCount
@@ -135,7 +176,7 @@ public class GameClearPopup : UIPopup
 					await UniTask.Delay(TimeSpan.FromSeconds(0.25f));
 				}
 
-                await PlayHaloAsync(token);
+                await PlayHaloAsync(m_clearStarHalo, m_clearStarCanvasGroup, token);
                 await UniTask.Delay(TimeSpan.FromSeconds(0.25f));
 
 				if (!ObjectUtility.IsNullOrDestroyed(m_clearRewardContainer))
@@ -164,28 +205,90 @@ public class GameClearPopup : UIPopup
 					}
 				}
 
-				await DOTween.To(
-					getter: () => 0f,
-					setter: alpha => {
-						if (!ObjectUtility.IsNullOrDestroyed(m_confirmButton))
-						{
-							m_confirmButton.Alpha = alpha;
-						}
-					},
-					endValue: 1f,
-					0.1f
-				)
-				.ToUniTask()
-				.SuppressCancellationThrow();
+                if (openPuzzleIndex > 0)
+                {   
+                    if(GlobalData.Instance.tableManager.PuzzleDataTable.TryGetValue(openPuzzleIndex, out PuzzleData puzzleData))
+                    {
+                        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Open Puzzle {0}</color>", openPuzzleIndex));
 
+                        await SetPopupOpenPuzzle(puzzleData, token);
+                    }
+                }
+                else
+                {
+                    await ShowContinueButton();
+                }
 			},
 			this.GetCancellationTokenOnDestroy()
 		);
     }
 
-    public async UniTask PlayHaloAsync(CancellationToken token)
+    public async UniTask ShowContinueButton()
+    {
+        await DOTween.To(
+            getter: () => 0f,
+            setter: alpha => {
+                if (!ObjectUtility.IsNullOrDestroyed(m_confirmButton))
+                {
+                    m_confirmButton.Alpha = alpha;
+                }
+            },
+            endValue: 1f,
+            0.1f
+        )
+        .ToUniTask()
+        .SuppressCancellationThrow();
+
+        SetInteractable(true);
+    }
+
+    private async UniTask SetPopupOpenPuzzle(PuzzleData puzzleData, CancellationToken token)
+    {
+        m_openPuzzleText.SetText(string.Format(format_openPuzzle, puzzleData.Name));
+        
+        await PlayHaloAsync(m_openPuzzleHalo, m_openPuzzleStarCanvasGroup, token);
+
+        m_layoutPuzzle.alpha = 0;
+
+        /*await m_layoutResult
+            .DOFade(0, 0.25f)
+            .ToUniTask()
+			.SuppressCancellationThrow();*/
+
+        m_resultObject.SetActive(false);
+        m_openPuzzleObject.SetActive(true);
+
+        await m_layoutPuzzle
+            .DOFade(1f, 0.5f)
+            .ToUniTask()
+			.SuppressCancellationThrow();
+    }
+
+    public async void SetPopupResult()
+    {
+        m_layoutResult.alpha = 0;
+
+        /*await m_layoutPuzzle
+            .DOFade(0, 0.25f)
+            .ToUniTask()
+			.SuppressCancellationThrow();*/
+
+        m_resultObject.SetActive(true);
+        m_openPuzzleObject.SetActive(false);
+
+        /*await m_layoutResult
+            .DOFade(1f, 0.25f)
+            .ToUniTask()
+			.SuppressCancellationThrow();*/
+
+        m_layoutResult.alpha = 1;
+
+        await ShowContinueButton();
+    }
+
+    public async UniTask PlayHaloAsync(CanvasGroup halo, CanvasGroup container, CancellationToken token)
 	{
-		await m_clearStarCanvasGroup
+		await container
 			.DOFade(1f, 0.25f)
 			.ToUniTask()
 			.SuppressCancellationThrow();
@@ -199,8 +302,14 @@ public class GameClearPopup : UIPopup
 						return;
 					}
 
-					ObjectUtility.GetRawObject(m_clearStarHalo)?.transform.Rotate(Vector3.forward * 0.1f);
+					ObjectUtility.GetRawObject(halo)?.transform.Rotate(Vector3.forward * 0.1f);
 				}
 			).Forget();
 	}
+
+    private void SetInteractable(bool interactable)
+    {
+        isInteractable = interactable;
+        Debug.Log(CodeManager.GetMethodName() + isInteractable);
+    }
 }

@@ -69,6 +69,16 @@ public class Table<KeyT, T> where T: TableRowData<KeyT>
 		return m_rowDataDic?.FirstOrDefault().Value ?? default(T);
 	}
 
+    public T LastOrDefault(Func<KeyT, bool> predicate = null)
+	{
+		if (predicate != null)
+		{
+			return m_rowDataDic?.LastOrDefault(pair => predicate.Invoke(pair.Key)).Value ?? m_rowDataDic?.LastOrDefault().Value ?? default(T);
+		}
+		
+		return m_rowDataDic?.LastOrDefault().Value ?? default(T);
+	}
+
 	public virtual async UniTask LoadAsync(string[] array, string index = "")
 	{
 		T[] datas = await m_importer.ImportAsync(array, index);

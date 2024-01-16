@@ -35,7 +35,7 @@ public partial class DebugPanel : MonoBehaviour
         buttonActionList.Add(Debug_ResetPuzzle);
         inputActionListInt.Add(Debug_SetLevel);
         inputActionListInt.Add(Debug_LevelPlay);
-        inputActionListInt.Add(Debug_SetStar);
+        inputActionListInt.Add(Debug_SetPuzzle);
         inputActionListInt.Add(Debug_SetHeart);
         inputActionListInt.Add(Debug_SetCoin);
         inputActionListInt.Add(Debug_SetItem);
@@ -59,11 +59,11 @@ public partial class DebugPanel : MonoBehaviour
         UIManager.ShowSceneUI<MainScene>(new NineTap.Common.DefaultParameter());
     }
 
-    private void Debug_SetStar(int count)
+    private void Debug_SetPuzzle(int count)
     {
         if (count < 0) return;
 
-        Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat2, "Set Star", count));
+        Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat2, "Set Puzzle", count));
 
         m_userManager?.Update(puzzle: count);
     }

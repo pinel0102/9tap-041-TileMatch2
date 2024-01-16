@@ -25,7 +25,7 @@ public static class ProductTypeExtensions
 	{
 		return type switch {
 			ProductType.Coin => "UI_Icon_Coin",
-			ProductType.PuzzlePiece => "UI_Icon_Star",
+			ProductType.PuzzlePiece => "UI_Icon_GoldPuzzle_Big",
 			ProductType.StashItem => "UI_Shop_Icon_Hint",
 			ProductType.UndoItem => "UI_Btn_Undo",
 			ProductType.ShuffleItem => "UI_Shop_Icon_Shuffle",
