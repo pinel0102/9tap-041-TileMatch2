@@ -63,10 +63,17 @@ public class GameClearPopup : UIPopup
     [SerializeField]
     private TMP_Text m_openPuzzleText = default!;
 
+    [SerializeField]
+	private GameObject m_openPuzzleContinue = default!;
+
+    [SerializeField]
+	private GameObject m_effect = default!;
+
 	private LevelData? m_levelData;	
 	private RewardData? m_chestRewardData;
     
-    public bool isInteractable;
+    public bool isButtonInteractable;
+    public bool isPuzzleInteractable;
     public int openPuzzleIndex;
 
     private const string format_openPuzzle = "You have unlocked\n{0}!";
@@ -94,7 +101,10 @@ public class GameClearPopup : UIPopup
 			return;
 		}
 
-        SetInteractable(false);
+        SetButtonInteractable(false);
+        SetPuzzleInteractable(false);
+        m_openPuzzleContinue.SetActive(false);
+        
 		bool existNextLevel = levelDataTable.TryGetValue(parameter.Level + 1, out var nextLevelData);
 		RewardData rewardData = rewardDataTable.GetDefaultReward(m_levelData.HardMode);
 		
@@ -118,7 +128,7 @@ public class GameClearPopup : UIPopup
 			new UITextButtonParameter {
 				ButtonText = existNextLevel? Text.Button.CONTINUE : Text.Button.HOME,
 				OnClick = () => {
-                    if (isInteractable)
+                    if (isButtonInteractable)
                     {
 					    OnClickClose();
 					    OnExit();
@@ -136,6 +146,7 @@ public class GameClearPopup : UIPopup
 
         m_resultObject.SetActive(true);
         m_openPuzzleObject.SetActive(false);
+        m_effect.SetActive(false);
 
 		void OnExit()
 		{
@@ -170,11 +181,9 @@ public class GameClearPopup : UIPopup
 		UniTask.Void(
 			async token => {
                 
-                if (!ObjectUtility.IsNullOrDestroyed(m_headLineImage))
-				{   
-					await m_headLineImage.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
-					await UniTask.Delay(TimeSpan.FromSeconds(0.25f));
-				}
+                await m_headLineImage.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
+                m_effect.SetActive(true);
+                await UniTask.Delay(TimeSpan.FromSeconds(0.25f));
 
                 await PlayHaloAsync(m_clearStarHalo, m_clearStarCanvasGroup, token);
                 await UniTask.Delay(TimeSpan.FromSeconds(0.25f));
@@ -210,7 +219,6 @@ public class GameClearPopup : UIPopup
                     if(GlobalData.Instance.tableManager.PuzzleDataTable.TryGetValue(openPuzzleIndex, out PuzzleData puzzleData))
                     {
                         Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Open Puzzle {0}</color>", openPuzzleIndex));
-
                         await SetPopupOpenPuzzle(puzzleData, token);
                     }
                 }
@@ -239,13 +247,15 @@ public class GameClearPopup : UIPopup
         .ToUniTask()
         .SuppressCancellationThrow();
 
-        SetInteractable(true);
+        SetButtonInteractable(true);
     }
 
     private async UniTask SetPopupOpenPuzzle(PuzzleData puzzleData, CancellationToken token)
     {
         m_openPuzzleText.SetText(string.Format(format_openPuzzle, puzzleData.Name));
-        
+        m_openPuzzleContinue.SetActive(false);
+
+        await UniTask.Delay(TimeSpan.FromSeconds(1f));
         await PlayHaloAsync(m_openPuzzleHalo, m_openPuzzleStarCanvasGroup, token);
 
         m_layoutPuzzle.alpha = 0;
@@ -262,10 +272,17 @@ public class GameClearPopup : UIPopup
             .DOFade(1f, 0.5f)
             .ToUniTask()
 			.SuppressCancellationThrow();
+
+        await UniTask.Delay(TimeSpan.FromSeconds(1f));
+
+        m_openPuzzleContinue.SetActive(true);
+        SetPuzzleInteractable(true);
     }
 
     public async void SetPopupResult()
     {
+        if (!isPuzzleInteractable) return;
+
         m_layoutResult.alpha = 0;
 
         /*await m_layoutPuzzle
@@ -307,9 +324,15 @@ public class GameClearPopup : UIPopup
 			).Forget();
 	}
 
-    private void SetInteractable(bool interactable)
+    private void SetButtonInteractable(bool interactable)
     {
-        isInteractable = interactable;
-        Debug.Log(CodeManager.GetMethodName() + isInteractable);
+        isButtonInteractable = interactable;
+        Debug.Log(CodeManager.GetMethodName() + isButtonInteractable);
+    }
+
+    private void SetPuzzleInteractable(bool interactable)
+    {
+        isPuzzleInteractable = interactable;
+        Debug.Log(CodeManager.GetMethodName() + isPuzzleInteractable);
     }
 }
