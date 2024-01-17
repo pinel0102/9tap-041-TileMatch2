@@ -1,11 +1,8 @@
 #nullable enable
 
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
-
 using System;
-
 using NineTap.Common;
 using Coffee.UIEffects;
 
@@ -23,89 +20,53 @@ public class JigsawPuzzlePiece : CachedBehaviour
     [SerializeField]
 	private Image m_attachedSsuImage = null!;
     [SerializeField]
-	private GameObject m_touchLock = null!;
-    public UIShiny shiny = null!;
+    private UIShiny shiny = null!;
+    private Action<JigsawPuzzlePiece, Action> OnTryUnlock = null!;
 
     public int Index;
-    public bool isAttached = false;
-
-    private PuzzlePieceItemData itemData = null!;
-	private bool m_draggable = false;
-	private Action<Vector2> m_onCheck = null!;
-
-	public void OnSetup(PuzzlePieceItemData _itemData, bool _isAttached)
+    public bool Placed = false;
+    
+    public void OnSetup(PuzzlePieceItemData _itemData, bool _placed)
 	{
-        itemData = _itemData;
-        Index = itemData.Index;
-        isAttached = _isAttached;
+        Index = _itemData.Index;
+        Placed = _placed;
 
-		m_image.sprite = itemData.Sprite;
-		m_ssuImage.sprite = itemData.Sprite;
-        m_attachedImage.sprite = itemData.SpriteAttached;
-        m_attachedSsuImage.sprite = itemData.SpriteAttached;
+        OnTryUnlock = _itemData.OnTryUnlock;
 
-        m_image.rectTransform.SetSize(itemData.Size);
-        m_attachedImage.rectTransform.SetSize(itemData.Size);
-        m_draggable = false;
+		m_image.sprite = _itemData.Sprite;
+		m_ssuImage.sprite = _itemData.Sprite;
+        m_attachedImage.sprite = _itemData.SpriteAttached;
+        m_attachedSsuImage.sprite = _itemData.SpriteAttached;
+
+        m_image.rectTransform.SetSize(_itemData.Size);
+        m_attachedImage.rectTransform.SetSize(_itemData.Size);
         shiny.Stop();
 
-        RefreshAttached();
+        RefreshState();
 	}
 
-    public void SetAttached(bool attached)
+    public void RefreshState()
     {
-        isAttached = attached;
-        RefreshAttached();
+        //Debug.Log(CodeManager.GetMethodName() + string.Format("{0:00} : {1}", Index, Placed));
+        m_attachedImage.gameObject.SetActive(Placed);
     }
 
-    public void RefreshAttached()
+    public void Attached()
+	{
+        //Debug.Log(CodeManager.GetMethodName() + Index);
+        Placed = true;
+	}
+
+    public void PlayEffect()
     {
-        m_touchLock.SetActive(isAttached);
-        m_attachedImage.gameObject.SetActive(isAttached);
+        shiny.Play();
     }
 
     public void OnClick_Unlock()
     {
-        if (itemData.IsLocked)
-        {
-            itemData.OnTryUnlock?.Invoke(this, itemData, m_image.transform.position, SetAttached);
-        }
-        else
-        {
-            //Select Piece
-            itemData.MovePiece?.Invoke(this, itemData, m_image.transform.position, SetAttached);
-        }
+        if(Placed) return;
+
+        //Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : {1}", Index, Placed));
+        OnTryUnlock?.Invoke(this, RefreshState);
     }
-
-    /*public void OnSetup(PuzzlePieceItemData itemData, PointerEventData eventData, Action onCheck)
-	{
-		m_image.sprite = itemData.Sprite;
-		m_image.rectTransform.SetSize(itemData.Size);
-		m_draggable = true;
-		m_onCheck = pos => onCheck?.Invoke();
-		eventData.pointerDrag = CachedGameObject;
-
-		OnDrag(eventData);
-	}
-
-    public void OnDrag(PointerEventData eventData)
-	{
-		if (m_draggable && UIManager.SceneCanvas != null)
-		{	
-			if (CachedRectTransform == null)
-			{
-				return;
-			}
-
-			float factor = UIManager.SceneCanvas.scaleFactor;
-			CachedRectTransform.anchoredPosition += eventData.delta / factor;
-			m_onCheck?.Invoke(CachedRectTransform.position);
-		}
-	}*/
-
-	public void Attached()
-	{
-		m_draggable = false;
-        shiny.Play();
-	}
 }

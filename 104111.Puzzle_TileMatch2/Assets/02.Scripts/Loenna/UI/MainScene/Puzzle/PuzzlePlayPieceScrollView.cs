@@ -1,7 +1,7 @@
+#region Deprecated
+
 using UnityEngine;
-
 using Gpm.Ui;
-
 using NineTap.Common;
 
 public class PuzzlePlayPieceScrollView : CachedBehaviour
@@ -9,7 +9,7 @@ public class PuzzlePlayPieceScrollView : CachedBehaviour
 	[SerializeField]
 	private InfiniteScroll m_infiniteScroll;
     public InfiniteScroll Scroll => m_infiniteScroll;
-
+/*
 	public void UpdateUI(PuzzlePieceItemData[] itemDatas)
 	{
 		m_infiniteScroll.InsertData(itemDatas);
@@ -34,4 +34,7 @@ public class PuzzlePlayPieceScrollView : CachedBehaviour
     {
         return m_infiniteScroll.GetItemCount() == 0;
     }
+*/
 }
+
+#endregion Deprecated

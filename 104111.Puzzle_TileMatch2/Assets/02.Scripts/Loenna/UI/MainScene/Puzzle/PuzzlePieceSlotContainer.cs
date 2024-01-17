@@ -35,8 +35,15 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
 		public static Slot AttachPiece(Slot slot, GameObject piece)
 		{
 			piece.transform.SetParentReset(slot.Transform);
-			
-			return slot with { HasPiece = true };
+
+            return slot with { HasPiece = true };
+		}
+
+        public static Slot AttachPiece(Slot slot, GameObject piece, bool placed)
+		{
+			piece.transform.SetParentReset(slot.Transform);
+
+            return slot with { HasPiece = placed };
 		}
 
 		public static Slot DetachPiece(Slot slot)
@@ -57,7 +64,7 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
 
 	public void OnSetup()
 	{
-		for (int i = 0; i < 25; i++)
+        for (int i = 0; i < 25; i++)
 		{
 			m_slots.Add(Slot.Create(i, CachedTransform));
 		}
@@ -73,7 +80,7 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
 		}
 	}
 
-	public void UpdateSlot(int index, GameObject pieceObject)
+	public void UpdateSlot(int index, GameObject pieceObject, bool placed)
 	{
 		if (index < 0 || index >= 25)
 		{
@@ -87,19 +94,14 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
 			return;
 		}
 
-		m_slots[index] = Slot.AttachPiece(slot, pieceObject);
+		m_slots[index] = Slot.AttachPiece(slot, pieceObject, placed);
 	}
 
-    public void MoveToSlot(JigsawPuzzlePiece piece, Transform tr, Action<int> onAttach)
-	{
-        int index = piece.Index;
-		Vector2 slotPosition = m_slots[index].Transform.position;
-
-        tr.DOMove(slotPosition, Constant.Game.TWEENTIME_JIGSAW_MOVE, false)
-            .OnComplete(() => {
-                Check(index, piece, onAttach);
-            });
-	}
+    public bool IsPuzzleComplete()
+    {
+        Debug.Log(CodeManager.GetMethodName() + string.Format("Completed {0}/{1}", m_slots.FindAll(slot => slot.HasPiece).Count, m_slots.Count));
+        return m_slots.FindAll(slot => !slot.HasPiece).Count == 0;
+    }
 
     public void MoveToSlot(PuzzlePieceItemData itemData, JigsawPuzzlePiece piece, Action<int> onAttach)
 	{
@@ -126,10 +128,11 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
             SoundManager soundManager = Game.Inst?.Get<SoundManager>();
             soundManager?.PlayFx(Constant.Sound.SFX_TILE_MATCH);
 
-			piece.Attached();
+            piece.Attached();
+			piece.PlayEffect();
             CrossPieceEffect(CrossPieceList(index));
 
-			UpdateSlot(index, piece.CachedGameObject);
+			UpdateSlot(index, piece.CachedGameObject, true);
 			onAttach?.Invoke(index);
 		}
 	}
@@ -141,7 +144,7 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
             if (crossSlots[i].HasPiece)
             {
                 JigsawPuzzlePiece piece = crossSlots[i].Transform.GetComponentInChildren<JigsawPuzzlePiece>();
-                piece.Attached();
+                piece.PlayEffect();
             }
         }
     }

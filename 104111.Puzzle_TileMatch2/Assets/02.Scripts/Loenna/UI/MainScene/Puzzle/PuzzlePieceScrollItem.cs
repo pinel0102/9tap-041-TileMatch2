@@ -1,15 +1,12 @@
+#region Deprecated
+
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
-
 using System;
-
 using Gpm.Ui;
-
 using TMPro;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 
-public class PuzzlePieceItemData : InfiniteScrollData
+/*public class PuzzlePieceItemData : InfiniteScrollData
 {
 	public int Index;
     public int Cost;
@@ -17,9 +14,9 @@ public class PuzzlePieceItemData : InfiniteScrollData
     public Sprite SpriteAttached;
 	public float Size;
 	public bool IsLocked;
-    public Action<JigsawPuzzlePiece, PuzzlePieceItemData, Vector2, Action<bool>> OnTryUnlock;
-    public Action<JigsawPuzzlePiece, PuzzlePieceItemData, Vector2, Action<bool>> MovePiece;
-}
+    public Action<JigsawPuzzlePiece, Action> OnTryUnlock;
+    public Action<JigsawPuzzlePiece, Action> MovePiece;
+}*/
 
 public class PuzzlePieceScrollItem : InfiniteScrollItem
 {
@@ -29,17 +26,17 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem
 	private Image m_image;
     [SerializeField]
 	private Image m_ssuImage;
-
 	[SerializeField]
 	private GameObject m_locked;
-
 	[SerializeField]
 	private TMP_Text m_text;
+    [SerializeField]
+    private CanvasGroup canvasGroup;
+    public int Index;
     private int cost;
-	public int Index;
-    public CanvasGroup canvasGroup;
     private bool m_interacteble = false;
 
+/*
 	public override void Initalize(InfiniteScroll scroll, int itemIndex)
 	{
 		base.Initalize(scroll, itemIndex);
@@ -100,12 +97,12 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem
 
             if (itemData.IsLocked)
             {
-                itemData.OnTryUnlock?.Invoke(null, itemData, m_image.transform.position, SetInteractable);
+                //itemData.OnTryUnlock?.Invoke(null, itemData, m_image.transform.position, SetInteractable);
             }
             else
             {
                 //Select Piece
-                itemData.MovePiece?.Invoke(null, itemData, m_image.transform.position, SetInteractable);
+                //itemData.MovePiece?.Invoke(null, itemData, m_image.transform.position, SetInteractable);
             }
         }
     }
@@ -115,4 +112,7 @@ public class PuzzlePieceScrollItem : InfiniteScrollItem
         //m_dragging = false;
 		//m_scrolling = false;
     }
+*/
 }
+
+#endregion Deprecated

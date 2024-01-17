@@ -59,6 +59,9 @@ public static partial class UIManager
 
 	public static void ReturnBackUI()
 	{
+        if (GlobalData.Instance.IsTouchLockNow()) 
+            return;
+        
 		// 먼저 팝업 닫기 시도
 		bool closedPopup = s_implementation?.PopupManager?.ClosePopupUI() ?? false;
 

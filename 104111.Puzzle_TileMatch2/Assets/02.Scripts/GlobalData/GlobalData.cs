@@ -45,6 +45,16 @@ public partial class GlobalData : SingletonMono<GlobalData>
 		);
     }
 
+    public void SetTouchLock_MainScene(bool active)
+    {
+        mainScene.m_block.SetActive(active);
+    }
+
+    public bool IsTouchLockNow()
+    {
+        return mainScene.m_block.activeInHierarchy;
+    }
+
     public void SetOldItems(long _coin, int _puzzlePiece, int _goldPiece)
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("{0} / {1} / {2}", _coin, _puzzlePiece, _goldPiece));

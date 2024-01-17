@@ -73,7 +73,7 @@ public class MainSceneFragmentContent_Collection : ScrollViewFragmentContent
 
     public void RefreshPieceState(string countryCode, int puzzleIndex, int pieceIndex, bool attached)
     {
-        Debug.Log(CodeManager.GetMethodName() + string.Format("[{0}-{1}] {2} : {3}", countryCode, puzzleIndex, pieceIndex, attached));
+        Debug.Log(CodeManager.GetMethodName() + string.Format("[{0}-{1}] {2:00} : {3}", countryCode, puzzleIndex, pieceIndex, attached));
         
         //var container = (PuzzleThemeContainerItem)m_scrollView.Items?.Find(item => ((PuzzleThemeContainerItem)item).CountryCode.Equals(countryCode));
         var container = ContainerList?.Find(item => item.CountryCode.Equals(countryCode));

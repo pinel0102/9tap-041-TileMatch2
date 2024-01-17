@@ -52,7 +52,7 @@ public partial class GlobalData
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("Level {0} : {1} / {2} / {3} / {4}", _clearedLevel, _openPuzzleIndex, _getCoin, _getPuzzlePiece, _getGoldPiece));
 
-        // TODO: 수집 이벤트 구현시 사용.
+        // [TODO] 수집 이벤트 구현시 사용.
         bool isGoldPieceActivated = false;
 
         long _oldCoin = oldCoin;
@@ -74,7 +74,7 @@ public partial class GlobalData
 
         UniTask.Void(
 			async token => {
-                mainScene.m_block.SetActive(true);
+                SetTouchLock_MainScene(true);
 
                 if(_getPuzzlePiece > 0)
                 {
@@ -83,8 +83,8 @@ public partial class GlobalData
                     if (_startDelay > 0)
                         await UniTask.Delay(TimeSpan.FromSeconds(_startDelay));
 
-                    CreateEffect("UI_Icon_GoldPuzzle_Big", fragmentHome.rewardPosition_puzzlePiece, _fxDuration);
-                    CreateEffect("UI_Icon_GoldPuzzle_Big", HUD.behaviour.Fields[0].AttractorTarget, _fxDuration, () => { 
+                    CreateEffect("UI_Icon_GoldPuzzle_Big", fragmentHome.objectPool, fragmentHome.rewardPosition_puzzlePiece, _fxDuration);
+                    CreateEffect("UI_Icon_GoldPuzzle_Big", fragmentHome.objectPool, HUD.behaviour.Fields[0].AttractorTarget, _fxDuration, () => { 
                         HUD?.behaviour.Fields[0].IncreaseText(_oldPuzzle, _getPuzzlePiece, onUpdate:fragmentHome.RefreshPuzzleBadge);
                     });
 
@@ -95,7 +95,7 @@ public partial class GlobalData
                 {
                     Debug.Log(CodeManager.GetMethodName() + string.Format("[Coin] {0} + {1} = {2}", _oldCoin, _getCoin, _oldCoin + _getCoin));
                     
-                    CreateEffect("UI_Icon_Coin", HUD.behaviour.Fields[2].AttractorTarget, _fxDuration, () => {
+                    CreateEffect("UI_Icon_Coin", fragmentHome.objectPool, HUD.behaviour.Fields[2].AttractorTarget, _fxDuration, () => {
                         HUD?.behaviour.Fields[2].IncreaseText(_oldCoin, _getCoin);
                     });
 
@@ -108,7 +108,7 @@ public partial class GlobalData
                     {
                         Debug.Log(CodeManager.GetMethodName() + string.Format("[GoldPiece] {0} + {1} = {2}", _oldGoldPiece, _getGoldPiece, _oldGoldPiece + _getGoldPiece));
                         
-                        CreateEffect("UI_Icon_GoldPuzzle_Big", fragmentHome.rewardPosition_goldPiece, _fxDuration, () => {
+                        CreateEffect("UI_Icon_GoldPuzzle_Big", fragmentHome.objectPool, fragmentHome.rewardPosition_goldPiece, _fxDuration, () => {
                             fragmentHome.IncreaseGoldPiece(_oldGoldPiece, _getGoldPiece, GetGoldPiece_NextLevel());
                         });
 
@@ -122,27 +122,7 @@ public partial class GlobalData
         );
     }
 
-    public void CreateEffect(string spriteName, Transform target, float duration = 1f, Action onComplete = null)
-    {
-        var parent = fragmentHome.objectPool;
-
-        MissionCollectedFx fx = m_particlePool.Get();
-        fx.SetImage(spriteName);
-        fx.CachedRectTransform.SetParentReset(parent, true);
-        
-        Vector2 worldPosition = parent.TransformPoint(Vector2.zero);
-        Vector2 position = parent.InverseTransformPoint(worldPosition) / UIManager.SceneCanvas.scaleFactor;
-        Vector2 direction = parent.InverseTransformPoint(target.position);
-        
-        fx.Play(position, direction, duration, () => {
-                soundManager?.PlayFx(Constant.Sound.SFX_GOLD_PIECE);
-                m_particlePool.Release(fx);
-                onComplete?.Invoke();
-            }
-        );
-    }
-
-    public void CreateEffect(string spriteName, Transform from, Transform target, float duration = 1f, Action onComplete = null)
+    public void CreateEffect(string spriteName, Transform from, Transform to, float duration = 1f, Action onComplete = null, float sizeFrom = 70f, float sizeTo = 82f)
     {
         MissionCollectedFx fx = m_particlePool.Get();
         fx.SetImage(spriteName);
@@ -150,13 +130,13 @@ public partial class GlobalData
         
         Vector2 worldPosition = from.TransformPoint(Vector2.zero);
         Vector2 position = from.InverseTransformPoint(worldPosition) / UIManager.SceneCanvas.scaleFactor;
-        Vector2 direction = from.InverseTransformPoint(target.position);
+        Vector2 direction = from.InverseTransformPoint(to.position);
         
         fx.Play(position, direction, duration, () => {
                 soundManager?.PlayFx(Constant.Sound.SFX_GOLD_PIECE);
                 m_particlePool.Release(fx);
                 onComplete?.Invoke();
-            }
+            }, sizeFrom, sizeTo
         );
     }
 
@@ -164,19 +144,19 @@ public partial class GlobalData
     {   
         if (openPuzzleIndex < 0)
         {
-            mainScene.m_block.SetActive(false);
+            SetTouchLock_MainScene(false);
             return;
         }
 
         if (openPuzzleIndex == 1001)
         {
-            // TODO: Tutorial : 직소 퍼즐.
+            // [TODO] Tutorial : 직소 퍼즐.
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Open Puzzle {0}</color>", openPuzzleIndex));
 
             //
         }
 
-        mainScene.m_block.SetActive(false);
+        SetTouchLock_MainScene(false);
     }
 
     public int GetOpenedPuzzleIndex(int clearedLevel)
