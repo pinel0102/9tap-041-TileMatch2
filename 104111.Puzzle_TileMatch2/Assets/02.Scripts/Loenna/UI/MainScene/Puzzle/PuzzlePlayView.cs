@@ -147,11 +147,12 @@ public class PuzzlePlayView : CachedBehaviour
             piece.transform, 
             Constant.Game.TWEENTIME_JIGSAW_MOVE,
             () => {
-                m_pieceSlotContainer.Check(piece.Index, piece, null);
+                GlobalData.Instance.fragmentCollection.RefreshPieceState(m_puzzleManager.CurrentPlayingPuzzle.CountryCode, m_puzzleManager.PuzzleIndex, piece.Index, true);
                 m_puzzleManager.AddPlacedList(piece.Index);
-                GlobalData.Instance.fragmentCollection.RefreshPieceState(m_puzzleManager.CurrentPlayingPuzzle.CountryCode, m_puzzleManager.PuzzleIndex, piece.Index, true);                
-                CheckPuzzleComplete();
-                onComplete?.Invoke();
+                m_pieceSlotContainer.Check(piece.Index, piece, () => {
+                    CheckPuzzleComplete();
+                    onComplete?.Invoke();
+                });
             }, 82f, 120f);
 	}
 

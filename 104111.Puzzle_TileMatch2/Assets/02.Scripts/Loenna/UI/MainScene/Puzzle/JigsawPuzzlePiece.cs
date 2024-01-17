@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System;
 using NineTap.Common;
 using Coffee.UIEffects;
+using DG.Tweening;
 
 [ResourcePath("UI/Widgets/JigsawPuzzlePiece")]
 public class JigsawPuzzlePiece : CachedBehaviour
@@ -21,6 +22,8 @@ public class JigsawPuzzlePiece : CachedBehaviour
 	private Image m_attachedSsuImage = null!;
     [SerializeField]
     private UIShiny shiny = null!;
+    //[SerializeField]
+	//private GameObject m_placeEffect = null!;
     private Action<JigsawPuzzlePiece, Action> OnTryUnlock = null!;
 
     public int Index;
@@ -40,7 +43,9 @@ public class JigsawPuzzlePiece : CachedBehaviour
 
         m_image.rectTransform.SetSize(_itemData.Size);
         m_attachedImage.rectTransform.SetSize(_itemData.Size);
+
         shiny.Stop();
+        //m_placeEffect.SetActive(false);
 
         RefreshState();
 	}
@@ -48,6 +53,7 @@ public class JigsawPuzzlePiece : CachedBehaviour
     public void RefreshState()
     {
         //Debug.Log(CodeManager.GetMethodName() + string.Format("{0:00} : {1}", Index, Placed));
+        m_attachedImage.transform.SetLocalScale(1f);
         m_attachedImage.gameObject.SetActive(Placed);
     }
 
@@ -57,7 +63,20 @@ public class JigsawPuzzlePiece : CachedBehaviour
         Placed = true;
 	}
 
-    public void PlayEffect()
+    public void PlaceEffect(Action onComplete)
+    {
+        //m_placeEffect.SetActive(true);
+
+        m_attachedImage.transform.SetLocalScale(0.5f);
+        m_attachedImage.gameObject.SetActive(true);
+        m_attachedImage.transform.DOScale(1f, 0.3f)
+            .SetEase(Ease.OutBack)
+            .OnComplete(() => {
+                onComplete?.Invoke();
+            });
+    }
+
+    public void ShinyEffect()
     {
         shiny.Play();
     }
@@ -67,6 +86,6 @@ public class JigsawPuzzlePiece : CachedBehaviour
         if(Placed) return;
 
         //Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : {1}", Index, Placed));
-        OnTryUnlock?.Invoke(this, RefreshState);
+        OnTryUnlock?.Invoke(this, () => {});
     }
 }

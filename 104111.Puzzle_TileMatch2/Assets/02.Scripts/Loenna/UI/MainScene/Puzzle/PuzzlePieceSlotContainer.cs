@@ -1,15 +1,15 @@
 using UnityEngine;
 using UnityEngine.UI;
-
 using System;
 using System.Collections.Generic;
-
 using NineTap.Common;
-using DG.Tweening;
 
 public class PuzzlePieceSlotContainer : CachedBehaviour
 {
+    [SerializeField]
+	private GameObject m_placeEffect;
 	private const float CHECK_OFFSET = 15f;
+
 	private record Slot
 	(
 		int Index,
@@ -103,18 +103,7 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
         return m_slots.FindAll(slot => !slot.HasPiece).Count == 0;
     }
 
-    public void MoveToSlot(PuzzlePieceItemData itemData, JigsawPuzzlePiece piece, Action<int> onAttach)
-	{
-        int index = itemData.Index;
-		Vector2 slotPosition = m_slots[index].Transform.position;
-
-        piece.transform.DOMove(slotPosition, Constant.Game.TWEENTIME_JIGSAW_MOVE, false)
-            .OnComplete(() => {
-                Check(index, piece, onAttach);
-            });
-	}
-
-	public void Check(int index, JigsawPuzzlePiece piece, Action<int> onAttach)
+	public void Check(int index, JigsawPuzzlePiece piece, Action onComplete)
 	{
 		Vector2 slotPosition = m_slots[index].Transform.position;
 		Vector2 piecePosition = piece.CachedTransform.position;
@@ -129,13 +118,26 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
             soundManager?.PlayFx(Constant.Sound.SFX_TILE_MATCH);
 
             piece.Attached();
-			piece.PlayEffect();
-            CrossPieceEffect(CrossPieceList(index));
+            UpdateSlot(index, piece.CachedGameObject, true);
 
-			UpdateSlot(index, piece.CachedGameObject, true);
-			onAttach?.Invoke(index);
+            PlaceEffect(piece.transform.position);
+
+            piece.PlaceEffect(() => {
+                piece.RefreshState();
+                piece.ShinyEffect();
+                CrossPieceEffect(CrossPieceList(index));
+                //PlaceEffect(piece.transform.position);
+                onComplete?.Invoke();
+            });
 		}
 	}
+
+    private void PlaceEffect(Vector3 position)
+    {
+        m_placeEffect.SetActive(false);
+        m_placeEffect.transform.position = position;
+        m_placeEffect.SetActive(true);
+    }
 
     private void CrossPieceEffect(List<Slot> crossSlots)
     {
@@ -144,7 +146,7 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
             if (crossSlots[i].HasPiece)
             {
                 JigsawPuzzlePiece piece = crossSlots[i].Transform.GetComponentInChildren<JigsawPuzzlePiece>();
-                piece.PlayEffect();
+                piece.ShinyEffect();
             }
         }
     }
@@ -180,4 +182,20 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
     {
         return index >= 0 && index < 25;
     }
+
+
+#region Deprecated
+
+    /*public void MoveToSlot(PuzzlePieceItemData itemData, JigsawPuzzlePiece piece, Action<int> onAttach)
+	{
+        int index = itemData.Index;
+		Vector2 slotPosition = m_slots[index].Transform.position;
+
+        piece.transform.DOMove(slotPosition, Constant.Game.TWEENTIME_JIGSAW_MOVE, false)
+            .OnComplete(() => {
+                Check(index, piece, onAttach);
+            });
+	}*/
+
+#endregion Deprecated
 }
