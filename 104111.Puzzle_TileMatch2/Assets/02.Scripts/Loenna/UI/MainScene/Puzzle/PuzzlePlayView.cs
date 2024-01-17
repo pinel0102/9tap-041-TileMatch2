@@ -164,6 +164,8 @@ public class PuzzlePlayView : CachedBehaviour
             GlobalData.Instance.fragmentCollection.RefreshLockState();
 
             // [TODO] 퍼즐 완성 연출.
+
+            GlobalData.Instance.SetTouchLock_MainScene(false);
         }
         else
         {
