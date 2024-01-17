@@ -99,12 +99,12 @@ public class MainSceneFragmentContent_Collection : ScrollViewFragmentContent
         }
     }
 
-    uint GetPlacedPieces(int Key)
+    public uint GetPlacedPieces(int Key)
     {
         return user.PlayingPuzzleCollection.TryGetValue(Key, out uint result)? result : 0;
     }
 
-    uint GetUnlockedPieces(int Key)
+    public uint GetUnlockedPieces(int Key)
     {
         return user.UnlockedPuzzlePieceDic == null? 0 : 
             user.UnlockedPuzzlePieceDic.TryGetValue(Key, out uint result2)? 

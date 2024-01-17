@@ -15,7 +15,8 @@ public class PuzzleManager : IDisposable
     private uint m_placedPieces = 0;
 	private uint m_unlockedPieces = 0;
     public int PuzzleIndex => m_puzzleIndex;
-
+    private string m_puzzleName;
+    public string PuzzleName => m_puzzleName;
 	private Texture2D m_background;
 	public Texture2D Background => m_background;
 
@@ -31,6 +32,7 @@ public class PuzzleManager : IDisposable
 	public async UniTask<bool> LoadAsync(PuzzleData puzzleData, uint placedPieces, uint unlockedPieces)
 	{
 		m_puzzleIndex = puzzleData.Index;
+        m_puzzleName = puzzleData.Name;
 		m_placedPieces = placedPieces;
 
 		m_userManager.Update(currentPlayingPuzzleIndex: puzzleData.Index);

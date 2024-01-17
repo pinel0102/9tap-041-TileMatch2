@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using NineTap.Common;
+using Unity.VisualScripting;
+using System.Linq;
 
 public class PuzzlePieceItemData
 {
@@ -165,13 +167,56 @@ public class PuzzlePlayView : CachedBehaviour
             GlobalData.Instance.fragmentCollection.RefreshLockState();
 
             // [TODO] 퍼즐 완성 연출.
-
-            GlobalData.Instance.SetTouchLock_MainScene(false);
+            UIManager.ShowPopupUI<PuzzleCompletePopup>(new PuzzleCompletePopupParameter(
+                Index: m_puzzleManager.PuzzleIndex,
+                PuzzleName: m_puzzleManager.PuzzleName,
+                Background: m_puzzleManager.Background,
+                OnContinue: () => {
+                    MoveToOtherPuzzle();
+                    GlobalData.Instance.SetTouchLock_MainScene(false); 
+                }
+            ));
         }
         else
         {
             GlobalData.Instance.SetTouchLock_MainScene(false);
         }
+    }
+
+    private void MoveToOtherPuzzle()
+    {   
+        int currentIndex = m_puzzleManager.PuzzleIndex;
+        User user = GlobalData.Instance.userManager.Current;
+        PuzzleDataTable puzzleDataTable = GlobalData.Instance.tableManager.PuzzleDataTable;
+        PuzzleData puzzleData = puzzleDataTable.Dic.FirstOrDefault(item => (item.Value.Level <= user.Level) && (item.Value.Index > currentIndex)).Value;
+        if (puzzleData != null)
+        {
+            MoveToPuzzle(puzzleData);
+        }
+        else
+        {
+            puzzleData = puzzleDataTable.Dic.LastOrDefault(item => (item.Value.Level <= user.Level) && (item.Value.Index < currentIndex)).Value;
+            if (puzzleData != null)
+            {
+                MoveToPuzzle(puzzleData);
+            }
+            else
+            {
+                Debug.LogWarning(CodeManager.GetMethodName() + string.Format("No Other Playable Puzzle"));
+            }
+        }
+    }
+
+    private void MoveToPuzzle(PuzzleData puzzleData)
+    {
+        User user = GlobalData.Instance.userManager.Current;
+        int newIndex = puzzleData.Index;
+        uint placedPieces = user.PlayingPuzzleCollection.TryGetValue(newIndex, out uint result)? result : 0;
+        uint unlockedPieces = user.UnlockedPuzzlePieceDic == null? 0 : 
+            user.UnlockedPuzzlePieceDic.TryGetValue(puzzleData.Key, out uint result2)? 
+            result2 : 0;
+        
+        GlobalData.Instance.mainScene.lobbyManager.OnSelectPuzzle(puzzleData, placedPieces, unlockedPieces);
     }
 
 	public void OnHide()
