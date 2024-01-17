@@ -39,4 +39,10 @@ public class MainSceneFragmentContent_Puzzle : ScrollViewFragmentContent
 		await m_puzzlePlayView.OnShowAsync(data, placePieces, unlockedPieces);
 		UIManager.HideLoading();
 	}
+
+    public override void OnUpdateUI(User user)
+	{ 
+        base.OnUpdateUI(user);
+        m_puzzlePlayView.CheckUserLevel(user.Level);
+	}
 }

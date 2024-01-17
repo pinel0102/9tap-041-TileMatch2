@@ -33,6 +33,9 @@ public class PuzzlePlayView : CachedBehaviour
 
 	[SerializeField]
 	private UIImageButton m_backButton;
+    
+    [SerializeField]
+	private GameObject m_lockedObject;
 
     private JigsawPuzzlePiece m_piecePrefab;
 	private PuzzleManager m_puzzleManager;
@@ -48,6 +51,8 @@ public class PuzzlePlayView : CachedBehaviour
 				OnClick = () => onClickButton?.Invoke()
 			}
 		);
+        
+        CheckUserLevel();
 	}
 
 	private void OnDestroy()
@@ -55,9 +60,19 @@ public class PuzzlePlayView : CachedBehaviour
 		m_puzzleManager?.Dispose();
 	}
 
+    public void CheckUserLevel()
+    {
+        CheckUserLevel(GlobalData.Instance.userManager.Current.Level);
+    }
+
+    public void CheckUserLevel(int level)
+    {
+        m_lockedObject.SetActive(level < Constant.Game.LEVEL_PUZZLE_START);
+    }
+
 	public async UniTask OnShowAsync(PuzzleData puzzleData, uint placedPieces, uint unlockedPieces)
 	{
-		if (puzzleData == null)
+        if (puzzleData == null)
 		{
 			return;
 		}

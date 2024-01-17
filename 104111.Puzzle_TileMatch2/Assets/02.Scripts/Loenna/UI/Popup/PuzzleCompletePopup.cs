@@ -37,7 +37,7 @@ public class PuzzleCompletePopup : UIPopup
 	private GameObject m_touchLock = default!;
 
     public int PuzzleIndex;
-    public string PuzzleName;
+    public string PuzzleName = string.Empty;
 
     public override void OnSetup(UIParameter uiParameter)
     {
@@ -73,7 +73,7 @@ public class PuzzleCompletePopup : UIPopup
     {
         OnClickClose();        
         UIManager.HUD?.Show(HUDType.ALL);
-        
+
         onComplete?.Invoke();
     }
 

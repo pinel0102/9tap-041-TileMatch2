@@ -91,7 +91,7 @@ public class MainSceneFragmentContent_Collection : ScrollViewFragmentContent
 
     public void RefreshLockState()
     {
-        Debug.Log(CodeManager.GetMethodName());
+        //Debug.Log(CodeManager.GetMethodName());
 
         for(int i=0; i < ContainerList.Count; i++)
         {
