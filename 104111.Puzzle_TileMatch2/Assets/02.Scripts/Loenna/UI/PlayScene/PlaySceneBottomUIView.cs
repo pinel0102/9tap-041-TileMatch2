@@ -4,7 +4,7 @@ using NineTap.Common;
 
 public class PlaySceneBottomUIViewParameter
 {
-	public UIImageButtonParameter Stash;
+    public UIImageButtonParameter Stash;
 	public UIImageButtonParameter Undo;
 	public UIImageButtonParameter Shuffle;
 	public UIImageButtonParameter Pause;
@@ -28,4 +28,9 @@ public class PlaySceneBottomUIView : CachedBehaviour
 	{
 		m_buttonsView.OnSetup(parameter);
 	}
+
+    public void RefreshSkillLocked(int level)
+    {
+        m_buttonsView.RefreshSkillLocked(level);
+    }
 }

@@ -148,12 +148,11 @@ public partial class GlobalData
             return;
         }
 
-        if (openPuzzleIndex == 1001)
-        {
-            // [TODO] Tutorial : 직소 퍼즐.
-            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Open Puzzle {0}</color>", openPuzzleIndex));
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Open Puzzle {0}</color>", openPuzzleIndex));
 
-            //
+        if (GlobalDefine.IsTutorialPuzzle(openPuzzleIndex))
+        {
+            ShowTutorial_Puzzle();
         }
 
         SetTouchLock_MainScene(false);

@@ -181,7 +181,6 @@ public class PuzzlePlayView : CachedBehaviour
 
             GlobalData.Instance.fragmentCollection.RefreshLockState();
 
-            // [TODO] 퍼즐 완성 연출.
             UIManager.ShowPopupUI<PuzzleCompletePopup>(new PuzzleCompletePopupParameter(
                 Index: m_puzzleManager.PuzzleIndex,
                 PuzzleName: m_puzzleManager.PuzzleName,

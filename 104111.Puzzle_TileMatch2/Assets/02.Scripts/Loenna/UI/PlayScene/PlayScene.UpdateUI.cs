@@ -188,7 +188,14 @@ partial class PlayScene
 				m_topView.UpdateMissionCount(0, includedMission);
 				await m_mainView.OnUpdateAll(current.LayerCount, m_tileItems);
 				tileItems.ForEach(tileItem => tileItem.OnUpdateUI(tileItem.Current, false, out _));
-				m_block.SetActive(false);
+				
+                if (GlobalDefine.IsTutorialLevel(level))
+                {
+                    GlobalData.Instance.ShowTutorial(level);
+                }
+
+                m_block.SetActive(false);
+
 				break;
 			case CurrentPlayState.CurrentUpdated { SelectedTiles: var selectedTiles, CurrentBoard: var board, Basket: var basket, Stash: var stashes }:
 				UniTask.Void(

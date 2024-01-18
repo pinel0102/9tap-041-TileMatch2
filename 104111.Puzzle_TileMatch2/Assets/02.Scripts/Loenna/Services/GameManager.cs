@@ -180,6 +180,7 @@ public partial class GameManager : IDisposable
         Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0}</color>", level));
 
         GlobalData.Instance.SetOldItems(m_userManager.Current.Coin, m_userManager.Current.Puzzle, m_userManager.Current.GoldPiece);
+        GlobalData.Instance.playScene.bottomView.RefreshSkillLocked(level);
 
         m_continueCount = 0;
 		m_boardInfo.Update(info => InternalState.Empty);

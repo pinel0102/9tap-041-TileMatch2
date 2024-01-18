@@ -40,6 +40,7 @@ public partial class PlayScene : UIScene
 
     public GameManager gameManager => m_gameManager;
     public PlaySceneBoardView mainView => m_mainView;
+    public PlaySceneBottomUIView bottomView => m_bottomView;
 
 	private void OnDestroy()
 	{
@@ -57,6 +58,8 @@ public partial class PlayScene : UIScene
 			Debug.LogError(new InvalidCastException(nameof(PlaySceneParameter)));
 			return;
 		}
+
+        GlobalData.Instance.playScene = this;
 
 		TableManager tableManager = Game.Inst.Get<TableManager>();
 		m_userManager = Game.Inst.Get<UserManager>();
@@ -81,10 +84,12 @@ public partial class PlayScene : UIScene
 			skillDic.TryAdd(skill.Key, eachCount);
 		}
 
+        int Level = uiParameter is PlaySceneParameterCustom paramCustom ? paramCustom.Level : m_userManager.Current.Level;
+
 		m_bottomView.OnSetup(
 			new PlaySceneBottomUIViewParameter
 			{
-				Stash = new UIImageButtonParameter
+                Stash = new UIImageButtonParameter
 				{
 					Binder = m_gameManager.BasketNotEmpty,
 					OnClick = () => m_gameManager.UseSkillItem(SkillItemType.Stash, true, OpenBuyItemPopup),
@@ -204,7 +209,7 @@ public partial class PlayScene : UIScene
 			);
 		}
 
-        m_gameManager.LoadLevel(uiParameter is PlaySceneParameterCustom paramCustom ? paramCustom.Level : m_userManager.Current.Level, m_mainView.CachedRectTransform);
+        m_gameManager.LoadLevel(Level, m_mainView.CachedRectTransform);
 	}
 
 	public void OnPause()
