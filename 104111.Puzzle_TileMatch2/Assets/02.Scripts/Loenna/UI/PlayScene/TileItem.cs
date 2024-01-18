@@ -26,17 +26,17 @@ public class TileItem : CachedBehaviour
 	public struct TweenContext : IDisposable
 	{
 		private readonly Tweener m_tweener;
-		private CancellationTokenSource m_tokenSource;
+        private CancellationTokenSource m_tokenSource;
 
 		public TweenContext(Tweener tweener)
 		{
 			m_tweener = tweener;
-			m_tokenSource = new();
+            m_tokenSource = new();
 		}
 
 		public UniTask OnChangeValue(Vector3 value, float duration)
 		{
-			m_tweener
+            m_tweener
 				.ChangeEndValue(value, duration, true)
 				.Restart();
 
@@ -295,8 +295,13 @@ public class TileItem : CachedBehaviour
         }
 
         return (location, Current != null) switch {
-			(LocationType.STASH or LocationType.BASKET, _) => m_positionTween?.OnChangeValue(direction, duration) ?? UniTask.CompletedTask,
-			(LocationType.BOARD, true) => m_positionTween?.OnChangeValue(m_originWorldPosition, duration) ?? UniTask.CompletedTask,
+			(LocationType.STASH or LocationType.BASKET, _) => 
+                //m_positionTween?.OnChangeValue(direction, duration) 
+                TileJump(location, direction, duration)
+                ?? UniTask.CompletedTask,
+			(LocationType.BOARD, true) => 
+                m_positionTween?.OnChangeValue(m_originWorldPosition, duration) 
+                ?? UniTask.CompletedTask,
 			(LocationType.POOL, _) => m_scaleTween?.OnChangeValue(Vector3.zero, 0.15f, () => {
                     m_disappearEffect.gameObject.SetActive(true);
                     m_view.SetLocalScale(0);
@@ -304,6 +309,15 @@ public class TileItem : CachedBehaviour
 			_ => UniTask.CompletedTask
 		};
 	}
+
+    private UniTask? TileJump(LocationType location, Vector3 value, float duration)
+    {
+        Debug.Log(location);
+        return ObjectUtility.GetRawObject(CachedTransform)?
+            .DOJump(value, 0.5f, 1, duration)
+            .AsyncWaitForCompletion()
+            .AsUniTask();
+    }
 
 	private async UniTask SetInteractable(LocationType location, bool overlapped, bool invisibleIcon = false, bool ignoreInvisible = false)
 	{

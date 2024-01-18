@@ -52,7 +52,7 @@ public class MissionCollectedFx : CachedBehaviour
 		DOTween.Kill(m_moveRectTransform, true);
 		DOTween.Kill(m_rotateRectTransform, true);
 
-		m_moveRectTransform.SetLocalPosition(startPosition * UIManager.SceneCanvas.scaleFactor);
+        m_moveRectTransform.SetLocalPosition(startPosition * UIManager.SceneCanvas.scaleFactor);
 		m_rotateRectTransform.SetSize(sizeFrom);
 		m_rotateRectTransform.SetRotation(Quaternion.identity);
 		
@@ -80,7 +80,8 @@ public class MissionCollectedFx : CachedBehaviour
 							.SetEase(Ease.OutExpo)
 							.ToUniTask(),
 						m_moveRectTransform
-							.DOLocalMove(direction, duration)
+							//.DOLocalMove(direction, duration)
+                            .DOLocalJump(direction, 0.5f, 1, duration)
 							.SetDelay(0.25f)
 							.SetEase(Ease.OutExpo)
 							.ToUniTask(),
@@ -112,4 +113,16 @@ public class MissionCollectedFx : CachedBehaviour
 	{
 		m_cancellationTokenSource?.Dispose();
 	}
+
+    public Quaternion GetRotation(Vector2 from, Vector2 to)
+    {
+        float angle = GetAngle(from, to);
+        return Quaternion.Euler(new Vector3(0, 0, angle - 180f));
+    }
+
+    public float GetAngle(Vector2 from, Vector2 to)
+    {
+        Vector2 offset = to - from;
+        return Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;
+    }
 }
