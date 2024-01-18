@@ -1,17 +1,13 @@
 using UnityEngine;
 
 using NineTap.Common;
+using System.Collections.Generic;
 
 public class PlaySceneButtonContainer : CachedBehaviour
 {
-	[SerializeField]
-	private UIImageButton m_stashButton;
-
-	[SerializeField]
-	private UIImageButton m_undoButton;
-
-	[SerializeField]
-	private UIImageButton m_shuffleButton;
+	public UIImageButton m_stashButton;
+	public UIImageButton m_undoButton;
+	public UIImageButton m_shuffleButton;
 
     [SerializeField]
 	private GameObject m_stashLocked;

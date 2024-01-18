@@ -312,7 +312,7 @@ public class TileItem : CachedBehaviour
 
     private UniTask? TileJump(LocationType location, Vector3 value, float duration)
     {
-        Debug.Log(location);
+        //Debug.Log(location);
         return ObjectUtility.GetRawObject(CachedTransform)?
             .DOJump(value, 0.5f, 1, duration)
             .AsyncWaitForCompletion()

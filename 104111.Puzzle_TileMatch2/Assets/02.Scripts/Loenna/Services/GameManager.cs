@@ -415,6 +415,7 @@ public partial class GameManager : IDisposable
 
 		void UseSkill()
 		{
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Use Item : {0}</color>", skillItemType));
             SoundManager soundManager = Game.Inst?.Get<SoundManager>();
             
 			switch(skillItemType)

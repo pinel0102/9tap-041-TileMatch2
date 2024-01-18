@@ -188,10 +188,16 @@ partial class PlayScene
 				m_topView.UpdateMissionCount(0, includedMission);
 				await m_mainView.OnUpdateAll(current.LayerCount, m_tileItems);
 				tileItems.ForEach(tileItem => tileItem.OnUpdateUI(tileItem.Current, false, out _));
+                
+                m_bottomView.BasketView.level = level;
+                m_bottomView.BasketView.isTutorialLevel = GlobalDefine.IsTutorialLevel(level);
+                m_bottomView.BasketView.isTutorialShowed = false;
+                m_bottomView.BasketView.tutorialCheckCount = 0;
 				
-                if (GlobalDefine.IsTutorialLevel(level))
+                if (m_bottomView.BasketView.isTutorialLevel)
                 {
-                    GlobalData.Instance.ShowTutorial(level);
+                    m_bottomView.BasketView.tutorialCheckCount = GlobalDefine.GetTutorialCheckCount(level);
+                    m_bottomView.BasketView.CheckTutorialBasket();
                 }
 
                 m_block.SetActive(false);
@@ -241,6 +247,9 @@ partial class PlayScene
 						}
 
 						await UniTask.Defer(() => m_bottomView.BasketView.OnRemoveItemUI(board.Tiles, basket));
+                        
+                        m_bottomView.BasketView.CheckTutorialBasket();
+
 						--m_progressId;
 					},
 					this.GetCancellationTokenOnDestroy()

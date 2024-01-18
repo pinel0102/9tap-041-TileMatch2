@@ -16,7 +16,12 @@ public class PlaySceneBasketView : CachedBehaviour
 	private LayoutGroup m_parent;
 
 	private List<TileItem> m_tileItems = new();
-
+    
+    public int level;
+    public bool isTutorialLevel;
+    public bool isTutorialShowed;
+    public int tutorialCheckCount;
+    
 	public void Clear()
 	{
 		m_tileItems.Clear();
@@ -35,6 +40,8 @@ public class PlaySceneBasketView : CachedBehaviour
 
 		var insertIndex = index < 0? m_tileItems.Count : index + 1;
 		m_tileItems.Insert(insertIndex, tileItem);
+
+        //Debug.Log(CodeManager.GetMethodName() + string.Format("m_tileItems.Count : {0}", m_tileItems.Count));
 
 		return UniTask.Create(
 			async () => {
@@ -116,6 +123,26 @@ public class PlaySceneBasketView : CachedBehaviour
 			}
 		);
 
+        //Debug.Log(CodeManager.GetMethodName() + string.Format("m_tileItems.Count : {0}", m_tileItems.Count));
+
 		return task;	
 	}
+
+    public void CheckTutorialBasket()
+    {
+        if(isTutorialLevel && !isTutorialShowed)
+        {
+            if(m_tileItems.Count >= tutorialCheckCount)
+            {
+                Debug.Log(CodeManager.GetMethodName() + string.Format("m_tileItems.Count : {0}", m_tileItems.Count));
+                GlobalData.Instance.ShowTutorial_Play(level);
+                isTutorialShowed = true;
+            }
+        }
+    }
+
+    public Vector3 GetSecondTilePosition(Vector3 defaultPosition)
+    {
+        return m_parent.transform.childCount > 1 ? m_parent.transform.GetChild(1).position : defaultPosition;
+    }
 }

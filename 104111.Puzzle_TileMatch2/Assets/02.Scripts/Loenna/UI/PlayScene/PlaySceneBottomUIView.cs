@@ -23,6 +23,7 @@ public class PlaySceneBottomUIView : CachedBehaviour
 
 	public PlaySceneBasketView BasketView => m_basketView;
 	public PlaySceneStashContainer StashView => m_stashContainser;
+    public PlaySceneButtonContainer ButtonsView => m_buttonsView;
 
 	public void OnSetup(PlaySceneBottomUIViewParameter parameter)
 	{
