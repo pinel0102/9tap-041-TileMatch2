@@ -14,7 +14,6 @@ public class PlaySceneBasketView : CachedBehaviour
 {
 	[SerializeField]
 	private LayoutGroup m_parent;
-
 	private List<TileItem> m_tileItems = new();
     
     public int level;
@@ -141,8 +140,15 @@ public class PlaySceneBasketView : CachedBehaviour
         }
     }
 
-    public Vector3 GetSecondTilePosition(Vector3 defaultPosition)
+    public Vector3 GetBasketAnchorPosition()
     {
-        return m_parent.transform.childCount > 1 ? m_parent.transform.GetChild(1).position : defaultPosition;
+        RectTransform rt = (RectTransform)m_parent.transform;
+        Vector3[] v = new Vector3[4];
+        rt.GetWorldCorners(v);
+        Vector3 result = (v[0] + v[1]) * 0.5f;
+
+        //Debug.Log(CodeManager.GetMethodName() + result);
+
+        return result;
     }
 }

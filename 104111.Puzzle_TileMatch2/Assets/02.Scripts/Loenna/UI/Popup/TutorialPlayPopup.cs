@@ -59,6 +59,8 @@ public class TutorialPlayPopup : UIPopup
     [SerializeField]
     private List<TransitionEffect> m_tutorialEffect = default!;
 
+    private PlaySceneBottomUIView bottomView => GlobalData.Instance.playScene.bottomView;
+
     public int Level;
     public int TutorialIndex;
     public int ItemIndex;
@@ -131,6 +133,9 @@ public class TutorialPlayPopup : UIPopup
 			async token => {                
                 if(itemExists)
                 {
+                    SoundManager soundManager = Game.Inst.Get<SoundManager>();
+                    soundManager?.PlayFx(Constant.Sound.SFX_REWARD_OPEN);
+
                     await m_headLineImage.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
                     await UniTask.Delay(TimeSpan.FromSeconds(0.25f));
 
@@ -207,15 +212,15 @@ public class TutorialPlayPopup : UIPopup
         switch (index)
         {
             case 1: // Undo
-                m_tutorialPanel[index].position = GlobalData.Instance.playScene.bottomView.ButtonsView.m_undoButton.transform.position;
+                m_tutorialPanel[index].position = bottomView.ButtonsView.m_undoButton.transform.position;
                 break;
             case 2: // Return
-                m_tutorialPanel[index].position = GlobalData.Instance.playScene.bottomView.ButtonsView.m_stashButton.transform.position;
-                //m_unmask.position = GlobalData.Instance.playScene.bottomView.BasketView.GetSecondTilePosition(m_unmask.position);
+                m_tutorialPanel[index].position = bottomView.ButtonsView.m_stashButton.transform.position;
+                m_unmask.position = bottomView.BasketView.GetBasketAnchorPosition();
                 m_unmask.gameObject.SetActive(true);                
                 break;
             case 3: // Shuffle
-                m_tutorialPanel[index].position = GlobalData.Instance.playScene.bottomView.ButtonsView.m_shuffleButton.transform.position;
+                m_tutorialPanel[index].position = bottomView.ButtonsView.m_shuffleButton.transform.position;
                 break;
             default:
                 break;
