@@ -4,15 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Threading;
+using System.Collections.Generic;
 using DG.Tweening;
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using Text = NineTap.Constant.Text;
 using NineTap.Common;
 using TMPro;
-using System.Collections.Generic;
-using System.Collections;
-using Coffee.UIExtensions;
 
 public record TutorialPlayPopupParameter(
     int Level,

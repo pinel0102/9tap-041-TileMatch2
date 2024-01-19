@@ -31,6 +31,7 @@ public partial class GlobalData
 
     public void ShowTutorialPuzzlePopup(Action onComplete = null)
     {
-        //
+        UIManager.ShowPopupUI<TutorialPuzzlePopup>(
+        new TutorialPuzzlePopupParameter());
     }
 }

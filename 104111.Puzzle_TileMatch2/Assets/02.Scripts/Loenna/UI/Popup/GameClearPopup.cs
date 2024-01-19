@@ -138,6 +138,7 @@ public class GameClearPopup : UIPopup
 		);
 
 		m_confirmButton.Alpha = 0f;
+        m_confirmButton.interactable = false;
 		m_gaugeBar.Alpha = 0f;
 		m_clearRewardContainer.Alpha = 0f;
 		m_headLineImage.transform.localScale = Vector3.zero;
@@ -244,6 +245,7 @@ public class GameClearPopup : UIPopup
             endValue: 1f,
             0.1f
         )
+        .OnComplete(() => { m_confirmButton.interactable = true;})
         .ToUniTask()
         .SuppressCancellationThrow();
 
@@ -267,6 +269,9 @@ public class GameClearPopup : UIPopup
 
         m_resultObject.SetActive(false);
         m_openPuzzleObject.SetActive(true);
+
+        SoundManager soundManager = Game.Inst.Get<SoundManager>();
+        soundManager?.PlayFx(Constant.Sound.SFX_REWARD_OPEN);
 
         await m_layoutPuzzle
             .DOFade(1f, 0.5f)
@@ -327,12 +332,12 @@ public class GameClearPopup : UIPopup
     private void SetButtonInteractable(bool interactable)
     {
         isButtonInteractable = interactable;
-        Debug.Log(CodeManager.GetMethodName() + isButtonInteractable);
+        //Debug.Log(CodeManager.GetMethodName() + isButtonInteractable);
     }
 
     private void SetPuzzleInteractable(bool interactable)
     {
         isPuzzleInteractable = interactable;
-        Debug.Log(CodeManager.GetMethodName() + isPuzzleInteractable);
+        //Debug.Log(CodeManager.GetMethodName() + isPuzzleInteractable);
     }
 }

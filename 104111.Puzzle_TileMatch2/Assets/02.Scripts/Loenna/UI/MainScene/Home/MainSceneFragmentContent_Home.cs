@@ -20,6 +20,7 @@ public class MainSceneFragmentContent_Home : ScrollViewFragmentContent
 
 	[SerializeField]
 	private HomeFragmentLargeButton m_puzzleButton;
+    public Transform PuzzleButton => m_puzzleButton.transform;
 
 	[SerializeField]
 	private UITextButton m_playButton;

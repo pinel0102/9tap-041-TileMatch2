@@ -183,6 +183,15 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
         return index >= 0 && index < 25;
     }
 
+    public Transform GetSlotTransform(int index)
+    {
+        return IsEnableIndex(index) ? m_slots[index].Transform : null;
+    }
+
+    public JigsawPuzzlePiece GetSlotPiece(int index)
+    {
+        return IsEnableIndex(index) ? m_slots[index].Transform.GetComponentInChildren<JigsawPuzzlePiece>() : null;
+    }
 
 #region Deprecated
 

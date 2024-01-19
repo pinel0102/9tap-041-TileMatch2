@@ -83,9 +83,14 @@ public class JigsawPuzzlePiece : CachedBehaviour
 
     public void OnClick_Unlock()
     {
+        OnClick_Unlock(onComplete: () => {});
+    }
+
+    public void OnClick_Unlock(Action onComplete)
+    {
         if(Placed) return;
 
         //Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : {1}", Index, Placed));
-        OnTryUnlock?.Invoke(this, () => {});
+        OnTryUnlock?.Invoke(this, onComplete);
     }
 }

@@ -33,6 +33,8 @@ public class MainSceneNavigationView : CachedBehaviour
 			return;
 		}
 
+        GlobalData.Instance.currentTab = type;
+
 		toggle.SetIsOnWithoutNotify(true);
 	}
 }

@@ -45,4 +45,14 @@ public class MainSceneFragmentContent_Puzzle : ScrollViewFragmentContent
         base.OnUpdateUI(user);
         m_puzzlePlayView.CheckUserLevel(user.Level);
 	}
+
+    public Transform GetSlotTransform(int index)
+    {
+        return m_puzzlePlayView.GetSlotTransform(index);
+    }
+
+    public JigsawPuzzlePiece GetSlotPiece(int index)
+    {
+        return m_puzzlePlayView.GetSlotPiece(index);
+    }
 }

@@ -251,6 +251,16 @@ public class PuzzlePlayView : CachedBehaviour
 		CachedGameObject.SetActive(false);
 	}
 
+    public Transform GetSlotTransform(int index)
+    {
+        return m_pieceSlotContainer.GetSlotTransform(index);
+    }
+
+    public JigsawPuzzlePiece GetSlotPiece(int index)
+    {
+        return m_pieceSlotContainer.GetSlotPiece(index);
+    }
+
 #region Deprecated
     
     /*public void OnLoadUI(CurrentPlayingPuzzleContent content)

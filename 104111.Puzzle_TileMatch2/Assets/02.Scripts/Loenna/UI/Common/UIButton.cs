@@ -47,7 +47,7 @@ public abstract class UIButton : Button
 		SoundManager soundManager = Game.Inst?.Get<SoundManager>();
 		transition = Transition.None;
 		onClick.AddListener(() => {
-				soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
+                soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
 				buttonParameter?.OnClick?.Invoke();
 			}
 		);
