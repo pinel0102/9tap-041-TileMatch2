@@ -1,13 +1,112 @@
 {
-  "Guid": "04850c27-5a4a-4b71-9162-62a2bdf40088",
+  "Guid": "b8ad38cb-83c2-456c-b75f-20051ff17121",
   "Boards": [
     {
-      "NumberOfTileTypes": 4,
+      "NumberOfTileTypes": 8,
       "Layers": [
         {
           "Tiles": [
             {
-              "Guid": "08d1f8e9-c56d-45d4-8b70-c48a621775c3",
+              "Guid": "0b73bfbd-90c3-46e4-bf75-ae6cbf301ef2",
+              "Type": 0,
+              "Position": {
+                "x": -80.0,
+                "y": 480.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "8453b8f7-f45d-406a-b0f2-a09b8d7999e0",
+              "Type": 0,
+              "Position": {
+                "x": 80.0,
+                "y": 480.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "3477fe25-f2b3-454b-adc7-d96a515ed992",
+              "Type": 0,
+              "Position": {
+                "x": 0.0,
+                "y": 320.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "d83fd1f1-6935-47d2-8ee2-258a737e283a",
+              "Type": 0,
+              "Position": {
+                "x": 160.0,
+                "y": 320.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "c15cd88b-d6bf-4d5e-a2d4-56cd5b5056ad",
+              "Type": 0,
+              "Position": {
+                "x": -160.0,
+                "y": 320.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "a1247ab7-8d92-4228-8780-27d90a85d7ab",
+              "Type": 0,
+              "Position": {
+                "x": -320.0,
+                "y": 160.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "ff4fc6fb-331b-4ea4-b716-571748f4473c",
+              "Type": 0,
+              "Position": {
+                "x": -160.0,
+                "y": 160.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "4b8251b5-709a-4df5-8074-63c8784e677f",
+              "Type": 0,
+              "Position": {
+                "x": 160.0,
+                "y": 160.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "58877681-16e4-4566-b925-12c9d9f0fc38",
+              "Type": 0,
+              "Position": {
+                "x": 320.0,
+                "y": 160.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "d48c58eb-efe5-436c-b39a-1af4d29c383c",
+              "Type": 0,
+              "Position": {
+                "x": 320.0,
+                "y": 0.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "4f272ace-c25f-4727-aa97-3a49e1e1ca93",
+              "Type": 0,
+              "Position": {
+                "x": 160.0,
+                "y": 0.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "94094114-d706-4483-87e5-b314bc22da7e",
               "Type": 0,
               "Position": {
                 "x": 0.0,
@@ -16,180 +115,65 @@
               "IncludeMission": false
             },
             {
-              "Guid": "a1ffcab6-f914-4e38-97d6-dc70d5cb3b6d",
-              "Type": 0,
-              "Position": {
-                "x": -240.0,
-                "y": -240.0
-              },
-              "IncludeMission": false
-            },
-            {
-              "Guid": "c635f0e6-4d00-46a9-8e11-3947fe034d08",
-              "Type": 0,
-              "Position": {
-                "x": 240.0,
-                "y": -240.0
-              },
-              "IncludeMission": false
-            }
-          ]
-        },
-        {
-          "Tiles": [
-            {
-              "Guid": "8686b9c1-0ce0-46c9-812f-8c9ea7b0ac21",
-              "Type": 0,
-              "Position": {
-                "x": 80.0,
-                "y": 80.0
-              },
-              "IncludeMission": false
-            },
-            {
-              "Guid": "7577c41d-3c8e-4ce3-991d-9c3cb86cb536",
-              "Type": 0,
-              "Position": {
-                "x": -80.0,
-                "y": 80.0
-              },
-              "IncludeMission": false
-            },
-            {
-              "Guid": "aa5edb62-fb59-4ba5-85d3-0a61a65b60d8",
-              "Type": 0,
-              "Position": {
-                "x": -220.0,
-                "y": -240.0
-              },
-              "IncludeMission": false
-            },
-            {
-              "Guid": "af75c6da-4755-4cd2-9604-a3215f525b18",
-              "Type": 0,
-              "Position": {
-                "x": 220.0,
-                "y": -240.0
-              },
-              "IncludeMission": false
-            }
-          ]
-        },
-        {
-          "Tiles": [
-            {
-              "Guid": "d316e120-8c62-46a5-9a3b-1a92e265be66",
-              "Type": 0,
-              "Position": {
-                "x": 160.0,
-                "y": 160.0
-              },
-              "IncludeMission": false
-            },
-            {
-              "Guid": "8f7d3c14-fcab-4869-8b81-ccb62d839665",
+              "Guid": "f764fe73-b1c4-4c36-8151-39b84447e1c4",
               "Type": 0,
               "Position": {
                 "x": -160.0,
-                "y": 160.0
+                "y": 0.0
               },
               "IncludeMission": false
             },
             {
-              "Guid": "7318abf4-a028-4958-97b5-1c7b0495488e",
-              "Type": 0,
-              "Position": {
-                "x": -200.0,
-                "y": -240.0
-              },
-              "IncludeMission": false
-            },
-            {
-              "Guid": "1a8959ba-ff7a-4206-a558-a38b6ccf1644",
-              "Type": 0,
-              "Position": {
-                "x": 200.0,
-                "y": -240.0
-              },
-              "IncludeMission": false
-            }
-          ]
-        },
-        {
-          "Tiles": [
-            {
-              "Guid": "1ef4911c-e12b-42c5-a093-8e518648473a",
-              "Type": 0,
-              "Position": {
-                "x": 240.0,
-                "y": 240.0
-              },
-              "IncludeMission": false
-            },
-            {
-              "Guid": "cc2bf85e-f12d-475e-aacd-0c42cb0d5aee",
-              "Type": 0,
-              "Position": {
-                "x": -240.0,
-                "y": 240.0
-              },
-              "IncludeMission": false
-            },
-            {
-              "Guid": "09c5e317-0bce-4699-8b80-c88656a44339",
-              "Type": 0,
-              "Position": {
-                "x": -180.0,
-                "y": -240.0
-              },
-              "IncludeMission": false
-            },
-            {
-              "Guid": "70dcafc6-5500-4f2d-9289-4ed0a395bdd9",
-              "Type": 0,
-              "Position": {
-                "x": 180.0,
-                "y": -240.0
-              },
-              "IncludeMission": false
-            }
-          ]
-        },
-        {
-          "Tiles": [
-            {
-              "Guid": "a3e674f5-d8a7-4839-8584-1033856960d4",
+              "Guid": "6abf2a53-3026-4ae8-af39-df359aa0cecc",
               "Type": 0,
               "Position": {
                 "x": -320.0,
-                "y": 320.0
+                "y": 0.0
               },
               "IncludeMission": false
             },
             {
-              "Guid": "5c6e9743-772a-41e1-9227-a13914484805",
-              "Type": 0,
-              "Position": {
-                "x": 320.0,
-                "y": 320.0
-              },
-              "IncludeMission": false
-            },
-            {
-              "Guid": "f0b9979e-36d6-4f24-ade3-4ca5aece75d2",
+              "Guid": "a65d70a5-e5a0-4320-b800-e939c9ba4b9b",
               "Type": 0,
               "Position": {
                 "x": -160.0,
-                "y": -240.0
+                "y": -160.0
               },
               "IncludeMission": false
             },
             {
-              "Guid": "15663c9d-5729-4eb2-a264-89f1c433d7fb",
+              "Guid": "d6779f30-3712-4da3-ae8f-398fc4f2514e",
+              "Type": 0,
+              "Position": {
+                "x": 0.0,
+                "y": -160.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "5cb16dcc-e734-4483-89ab-b4843f4f2f45",
               "Type": 0,
               "Position": {
                 "x": 160.0,
-                "y": -240.0
+                "y": -160.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "66b3eb28-0a39-4540-bcc2-1c9aaa23b7c3",
+              "Type": 0,
+              "Position": {
+                "x": -400.0,
+                "y": -320.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "9402b882-c463-4639-b0c0-e2af6b00105d",
+              "Type": 0,
+              "Position": {
+                "x": 400.0,
+                "y": -320.0
               },
               "IncludeMission": false
             }
@@ -198,82 +182,372 @@
         {
           "Tiles": [
             {
-              "Guid": "5344be93-c972-4be1-a224-6a839cefe004",
+              "Guid": "6eba3cae-10c8-42ef-b175-48df5b876305",
+              "Type": 0,
+              "Position": {
+                "x": -160.0,
+                "y": 400.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "e2fbe894-6cc6-4b2b-a28d-fd748dffd2cb",
+              "Type": 0,
+              "Position": {
+                "x": 0.0,
+                "y": 400.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "6998c39d-8b49-428f-9399-af86172a4ed4",
+              "Type": 0,
+              "Position": {
+                "x": 160.0,
+                "y": 400.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "bcfcd2cc-8e5b-44ae-b04c-c8ff9ad8b169",
               "Type": 0,
               "Position": {
                 "x": 240.0,
-                "y": 400.0
+                "y": 240.0
               },
               "IncludeMission": false
             },
             {
-              "Guid": "ce3effb2-86a1-4584-b344-5ef79ad88786",
+              "Guid": "c659209c-9e25-4143-a268-75472756f45a",
+              "Type": 0,
+              "Position": {
+                "x": 240.0,
+                "y": 80.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "6d24fdf2-99e7-4337-b7f6-bdbc77790b16",
+              "Type": 0,
+              "Position": {
+                "x": 240.0,
+                "y": -80.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "cb21246e-dce4-4ddb-abf0-d93a48103a7a",
               "Type": 0,
               "Position": {
                 "x": -240.0,
-                "y": 400.0
+                "y": 240.0
               },
               "IncludeMission": false
             },
             {
-              "Guid": "5070ec95-fc8c-45c4-8c93-5764b7dbcd2e",
+              "Guid": "6acc90c5-de55-4c15-aa14-5bb943e5a4ef",
               "Type": 0,
               "Position": {
-                "x": -140.0,
-                "y": -240.0
+                "x": -240.0,
+                "y": 80.0
               },
               "IncludeMission": false
             },
             {
-              "Guid": "02993b48-bc47-4748-aeec-37fc68cd4d88",
+              "Guid": "be464d4a-a223-4780-ba96-46d87de46684",
               "Type": 0,
               "Position": {
-                "x": 140.0,
-                "y": -240.0
-              },
-              "IncludeMission": false
-            }
-          ]
-        },
-        {
-          "Tiles": [
-            {
-              "Guid": "1fa80847-b5a2-4a43-831d-930f6356c3c9",
-              "Type": 0,
-              "Position": {
-                "x": -160.0,
-                "y": 400.0
+                "x": -240.0,
+                "y": -80.0
               },
               "IncludeMission": false
             },
             {
-              "Guid": "341ea9fe-5996-4f2c-893f-c5a6a0a2a831",
-              "Type": 0,
-              "Position": {
-                "x": 160.0,
-                "y": 400.0
-              },
-              "IncludeMission": false
-            }
-          ]
-        },
-        {
-          "Tiles": [
-            {
-              "Guid": "1bf103f9-7bf4-4c3f-b237-b93eb7a29a7f",
-              "Type": 0,
-              "Position": {
-                "x": 80.0,
-                "y": 400.0
-              },
-              "IncludeMission": false
-            },
-            {
-              "Guid": "9e45e5cc-2e13-42ec-bd22-b5902da64567",
+              "Guid": "f613ab82-1607-4baa-8185-bbe204a6cf2f",
               "Type": 0,
               "Position": {
                 "x": -80.0,
+                "y": -80.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "86bf9be2-ef32-4b9f-a468-b906886032e3",
+              "Type": 0,
+              "Position": {
+                "x": 80.0,
+                "y": -80.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "f9733f4e-e2d0-430d-a027-a0c287f46b91",
+              "Type": 0,
+              "Position": {
+                "x": 0.0,
+                "y": -240.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "fb7bf2a3-cddd-4701-9268-43fef38150bd",
+              "Type": 0,
+              "Position": {
+                "x": -400.0,
+                "y": -340.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "b19dd866-42d6-4579-8d64-1b8ea1fc98f0",
+              "Type": 0,
+              "Position": {
+                "x": 400.0,
+                "y": -340.0
+              },
+              "IncludeMission": false
+            }
+          ]
+        },
+        {
+          "Tiles": [
+            {
+              "Guid": "20ccc54b-8f0f-477b-b465-2c7807f3a163",
+              "Type": 0,
+              "Position": {
+                "x": 0.0,
                 "y": 400.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "ed9127d8-7ac9-42e9-a623-a46b41a2290a",
+              "Type": 0,
+              "Position": {
+                "x": -160.0,
+                "y": 320.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "53adedfa-30eb-4e1f-b811-97e95c5b6a7a",
+              "Type": 0,
+              "Position": {
+                "x": 160.0,
+                "y": 320.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "d76a37de-08ce-43c6-9e8d-bd7e7727e290",
+              "Type": 0,
+              "Position": {
+                "x": 320.0,
+                "y": 160.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "a00b9553-1623-4293-9f3b-4190ab638fe7",
+              "Type": 0,
+              "Position": {
+                "x": 320.0,
+                "y": 0.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "3648ef0c-daf9-4bda-a677-7a4661dc5a8e",
+              "Type": 0,
+              "Position": {
+                "x": -320.0,
+                "y": 160.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "905adca8-837d-4d9e-a83c-0303def6a8da",
+              "Type": 0,
+              "Position": {
+                "x": -320.0,
+                "y": 0.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "265ac1dd-6fb8-493b-b377-e314e81bc010",
+              "Type": 0,
+              "Position": {
+                "x": -160.0,
+                "y": -160.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "29f93fb3-a3ae-439e-b4d7-acd9040244ef",
+              "Type": 0,
+              "Position": {
+                "x": 0.0,
+                "y": -240.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "80a599cf-95ce-4e78-b994-d68539306dc0",
+              "Type": 0,
+              "Position": {
+                "x": 160.0,
+                "y": -160.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "0b5a1c61-7979-4786-90f4-a988284ca7ea",
+              "Type": 0,
+              "Position": {
+                "x": -400.0,
+                "y": -360.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "efd61564-4a4f-44b3-9e86-c05107ef21dd",
+              "Type": 0,
+              "Position": {
+                "x": 400.0,
+                "y": -360.0
+              },
+              "IncludeMission": false
+            }
+          ]
+        },
+        {
+          "Tiles": [
+            {
+              "Guid": "24a49aa3-aaa6-4027-90d6-8f593c6f840f",
+              "Type": 0,
+              "Position": {
+                "x": -400.0,
+                "y": -380.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "49d31999-7f09-40a9-ae47-491998c0d738",
+              "Type": 0,
+              "Position": {
+                "x": 400.0,
+                "y": -380.0
+              },
+              "IncludeMission": false
+            }
+          ]
+        },
+        {
+          "Tiles": [
+            {
+              "Guid": "34ec0898-1d43-4080-b5fa-be19a1f75587",
+              "Type": 0,
+              "Position": {
+                "x": -400.0,
+                "y": -400.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "b8e2db15-4bee-4067-b837-59a13c89b846",
+              "Type": 0,
+              "Position": {
+                "x": 400.0,
+                "y": -400.0
+              },
+              "IncludeMission": false
+            }
+          ]
+        },
+        {
+          "Tiles": [
+            {
+              "Guid": "c7504e34-0e97-4576-9ab5-a462d5adcd58",
+              "Type": 0,
+              "Position": {
+                "x": -400.0,
+                "y": -420.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "2d34efff-1e0b-4c0a-8fd4-236b33bae884",
+              "Type": 0,
+              "Position": {
+                "x": 400.0,
+                "y": -420.0
+              },
+              "IncludeMission": false
+            }
+          ]
+        },
+        {
+          "Tiles": [
+            {
+              "Guid": "ee7568f3-446c-4513-bc21-bb2f24226ed9",
+              "Type": 0,
+              "Position": {
+                "x": -400.0,
+                "y": -440.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "3a1802fe-6424-466d-bdee-a7948d836c32",
+              "Type": 0,
+              "Position": {
+                "x": 400.0,
+                "y": -440.0
+              },
+              "IncludeMission": false
+            }
+          ]
+        },
+        {
+          "Tiles": [
+            {
+              "Guid": "ed955525-b54f-4c9e-9831-f28fc873d2da",
+              "Type": 0,
+              "Position": {
+                "x": -400.0,
+                "y": -460.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "de44db3a-0a5a-4a59-9802-5f64eb2df85e",
+              "Type": 0,
+              "Position": {
+                "x": 400.0,
+                "y": -460.0
+              },
+              "IncludeMission": false
+            }
+          ]
+        },
+        {
+          "Tiles": [
+            {
+              "Guid": "86bf02a1-5d4e-44d6-b47d-0eabb5f5ab6f",
+              "Type": 0,
+              "Position": {
+                "x": -400.0,
+                "y": -480.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "d544e028-2d1c-482f-95a4-469f9d5e86ee",
+              "Type": 0,
+              "Position": {
+                "x": 400.0,
+                "y": -480.0
               },
               "IncludeMission": false
             }
@@ -282,7 +556,7 @@
       ],
       "Difficult": 1,
       "MissionTileCount": 0,
-      "GoldTileIcon": -1
+      "GoldTileIcon": 11
     }
   ],
   "HardMode": false,

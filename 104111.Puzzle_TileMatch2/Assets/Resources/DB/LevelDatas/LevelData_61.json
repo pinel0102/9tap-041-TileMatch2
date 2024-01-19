@@ -2,7 +2,7 @@
   "Guid": "11b19601-f4b2-476f-ab78-42ef79a0ccec",
   "Boards": [
     {
-      "NumberOfTileTypes": 4,
+      "NumberOfTileTypes": 5,
       "Layers": [
         {
           "Tiles": [
@@ -74,6 +74,15 @@
               "Type": 0,
               "Position": {
                 "x": 160.0,
+                "y": -320.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "5da5b537-0e4e-486e-a8a8-8b0f3e33e864",
+              "Type": 0,
+              "Position": {
+                "x": 0.0,
                 "y": -320.0
               },
               "IncludeMission": false
@@ -212,11 +221,76 @@
               "IncludeMission": false
             }
           ]
+        },
+        {
+          "Tiles": [
+            {
+              "Guid": "543563ca-554b-4d1c-8cc3-216debb4641f",
+              "Type": 0,
+              "Position": {
+                "x": 0.0,
+                "y": -300.0
+              },
+              "IncludeMission": false
+            }
+          ]
+        },
+        {
+          "Tiles": [
+            {
+              "Guid": "11e4565f-15b7-4e73-8498-59da8c9d56eb",
+              "Type": 0,
+              "Position": {
+                "x": 0.0,
+                "y": -280.0
+              },
+              "IncludeMission": false
+            }
+          ]
+        },
+        {
+          "Tiles": [
+            {
+              "Guid": "2cc3e1d6-9518-46c4-8dbe-458c2b3abbb8",
+              "Type": 0,
+              "Position": {
+                "x": 0.0,
+                "y": -260.0
+              },
+              "IncludeMission": false
+            }
+          ]
+        },
+        {
+          "Tiles": [
+            {
+              "Guid": "85093cb8-630e-4f5c-ba7b-f52f3a1f3acd",
+              "Type": 0,
+              "Position": {
+                "x": 0.0,
+                "y": -240.0
+              },
+              "IncludeMission": false
+            }
+          ]
+        },
+        {
+          "Tiles": [
+            {
+              "Guid": "18b827d9-61b6-40a4-add1-2a441cd9f544",
+              "Type": 0,
+              "Position": {
+                "x": 0.0,
+                "y": -220.0
+              },
+              "IncludeMission": false
+            }
+          ]
         }
       ],
       "Difficult": 1,
       "MissionTileCount": 0,
-      "GoldTileIcon": -1
+      "GoldTileIcon": 11
     }
   ],
   "HardMode": false,

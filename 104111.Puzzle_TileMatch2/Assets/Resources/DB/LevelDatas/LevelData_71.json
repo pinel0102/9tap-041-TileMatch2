@@ -2,7 +2,7 @@
   "Guid": "975be105-9178-472c-83f3-e30213cdd9c8",
   "Boards": [
     {
-      "NumberOfTileTypes": 4,
+      "NumberOfTileTypes": 6,
       "Layers": [
         {
           "Tiles": [
@@ -68,6 +68,24 @@
                 "y": -240.0
               },
               "IncludeMission": false
+            },
+            {
+              "Guid": "be74bf92-a54d-4b1c-8a0e-daebb0a35a1c",
+              "Type": 0,
+              "Position": {
+                "x": -400.0,
+                "y": -80.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "161da183-f1e7-4346-b154-1d8f4ff8b9fd",
+              "Type": 0,
+              "Position": {
+                "x": 400.0,
+                "y": -80.0
+              },
+              "IncludeMission": false
             }
           ]
         },
@@ -126,6 +144,24 @@
                 "y": -260.0
               },
               "IncludeMission": false
+            },
+            {
+              "Guid": "f30fb458-0ce8-4cf2-9c35-57ca589fca81",
+              "Type": 0,
+              "Position": {
+                "x": 400.0,
+                "y": -160.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "208dc352-b8e9-4be2-bbca-9604618d42c9",
+              "Type": 0,
+              "Position": {
+                "x": -400.0,
+                "y": -160.0
+              },
+              "IncludeMission": false
             }
           ]
         },
@@ -173,6 +209,24 @@
               "Position": {
                 "x": 80.0,
                 "y": -280.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "8a31a4f1-22cc-4431-88e9-454db8cbbc34",
+              "Type": 0,
+              "Position": {
+                "x": -400.0,
+                "y": -240.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "96eb06d7-d1af-47d2-87d6-e598bb1f0d97",
+              "Type": 0,
+              "Position": {
+                "x": 400.0,
+                "y": -240.0
               },
               "IncludeMission": false
             }
@@ -274,7 +328,7 @@
       ],
       "Difficult": 1,
       "MissionTileCount": 0,
-      "GoldTileIcon": -1
+      "GoldTileIcon": 11
     }
   ],
   "HardMode": false,

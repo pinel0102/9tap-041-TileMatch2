@@ -2,7 +2,7 @@
   "Guid": "450546b7-4a0b-400b-ac48-2ef338b5547f",
   "Boards": [
     {
-      "NumberOfTileTypes": 4,
+      "NumberOfTileTypes": 7,
       "Layers": [
         {
           "Tiles": [
@@ -224,6 +224,42 @@
                 "y": -380.0
               },
               "IncludeMission": false
+            },
+            {
+              "Guid": "bf6fb106-ac0c-4fcd-96e8-6d8f0980156c",
+              "Type": 0,
+              "Position": {
+                "x": -400.0,
+                "y": 400.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "4fca6bdb-91e6-41f2-b2bf-240e604f7cbf",
+              "Type": 0,
+              "Position": {
+                "x": 400.0,
+                "y": 400.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "50ebd4d8-fcc1-4e2b-b5f4-ce513a1d5b38",
+              "Type": 0,
+              "Position": {
+                "x": 400.0,
+                "y": -240.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "a9258451-3caf-402c-b78a-0c065bc5406e",
+              "Type": 0,
+              "Position": {
+                "x": -400.0,
+                "y": -240.0
+              },
+              "IncludeMission": false
             }
           ]
         },
@@ -244,6 +280,24 @@
               "Position": {
                 "x": 80.0,
                 "y": -400.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "57ad4735-09f9-4c6f-a241-215e9a22299e",
+              "Type": 0,
+              "Position": {
+                "x": -480.0,
+                "y": -320.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "6b81f8d2-8dd8-40f3-bc41-3afd76eec63f",
+              "Type": 0,
+              "Position": {
+                "x": 480.0,
+                "y": -320.0
               },
               "IncludeMission": false
             }
@@ -274,7 +328,7 @@
       ],
       "Difficult": 1,
       "MissionTileCount": 0,
-      "GoldTileIcon": -1
+      "GoldTileIcon": 11
     }
   ],
   "HardMode": false,
