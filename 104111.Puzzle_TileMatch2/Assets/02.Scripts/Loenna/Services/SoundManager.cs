@@ -94,6 +94,7 @@ public class SoundManager
 
 		if (m_audioClipDic.TryGetValue(clipName, out var clip))
 		{
+            //Debug.Log(CodeManager.GetMethodName() + clipName);
 			m_audioSource.PlayOneShot(clip);
 		}
 	}

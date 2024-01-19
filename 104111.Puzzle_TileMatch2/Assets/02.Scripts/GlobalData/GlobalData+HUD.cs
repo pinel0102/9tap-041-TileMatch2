@@ -83,8 +83,8 @@ public partial class GlobalData
                     if (_startDelay > 0)
                         await UniTask.Delay(TimeSpan.FromSeconds(_startDelay));
 
-                    CreateEffect("UI_Icon_GoldPuzzle_Big", fragmentHome.objectPool, fragmentHome.rewardPosition_puzzlePiece, _fxDuration);
-                    CreateEffect("UI_Icon_GoldPuzzle_Big", fragmentHome.objectPool, HUD.behaviour.Fields[0].AttractorTarget, _fxDuration, () => { 
+                    CreateEffect("UI_Icon_GoldPuzzle_Big", Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, fragmentHome.rewardPosition_puzzlePiece, _fxDuration);
+                    CreateEffect("UI_Icon_GoldPuzzle_Big", Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, HUD.behaviour.Fields[0].AttractorTarget, _fxDuration, () => { 
                         HUD?.behaviour.Fields[0].IncreaseText(_oldPuzzle, _getPuzzlePiece, onUpdate:fragmentHome.RefreshPuzzleBadge);
                     });
 
@@ -95,7 +95,7 @@ public partial class GlobalData
                 {
                     Debug.Log(CodeManager.GetMethodName() + string.Format("[Coin] {0} + {1} = {2}", _oldCoin, _getCoin, _oldCoin + _getCoin));
                     
-                    CreateEffect("UI_Icon_Coin", fragmentHome.objectPool, HUD.behaviour.Fields[2].AttractorTarget, _fxDuration, () => {
+                    CreateEffect("UI_Icon_Coin", Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, HUD.behaviour.Fields[2].AttractorTarget, _fxDuration, () => {
                         HUD?.behaviour.Fields[2].IncreaseText(_oldCoin, _getCoin);
                     });
 
@@ -108,7 +108,7 @@ public partial class GlobalData
                     {
                         Debug.Log(CodeManager.GetMethodName() + string.Format("[GoldPiece] {0} + {1} = {2}", _oldGoldPiece, _getGoldPiece, _oldGoldPiece + _getGoldPiece));
                         
-                        CreateEffect("UI_Icon_GoldPuzzle_Big", fragmentHome.objectPool, fragmentHome.rewardPosition_goldPiece, _fxDuration, () => {
+                        CreateEffect("UI_Icon_GoldPuzzle_Big", Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, fragmentHome.rewardPosition_goldPiece, _fxDuration, () => {
                             fragmentHome.IncreaseGoldPiece(_oldGoldPiece, _getGoldPiece, GetGoldPiece_NextLevel());
                         });
 
@@ -122,7 +122,7 @@ public partial class GlobalData
         );
     }
 
-    public void CreateEffect(string spriteName, Transform from, Transform to, float duration = 1f, Action onComplete = null, float sizeFrom = 70f, float sizeTo = 82f)
+    public void CreateEffect(string spriteName, string soundClip, Transform from, Transform to, float duration = 1f, Action onComplete = null, float sizeFrom = 70f, float sizeTo = 82f)
     {
         MissionCollectedFx fx = m_particlePool.Get();
         fx.SetImage(spriteName);
@@ -133,7 +133,7 @@ public partial class GlobalData
         Vector2 direction = from.InverseTransformPoint(to.position);
         
         fx.Play(position, direction, duration, () => {
-                soundManager?.PlayFx(Constant.Sound.SFX_GOLD_PIECE);
+                soundManager?.PlayFx(soundClip);
                 m_particlePool.Release(fx);
                 onComplete?.Invoke();
             }, sizeFrom, sizeTo

@@ -268,7 +268,7 @@ public class TutorialPlayPopup : UIPopup
     private void SetButtonInteractable(bool interactable)
     {
         isButtonInteractable = interactable;
-        Debug.Log(CodeManager.GetMethodName() + isButtonInteractable);
+        //Debug.Log(CodeManager.GetMethodName() + isButtonInteractable);
     }
 
     public void OnClick_TutorialClose(int index)

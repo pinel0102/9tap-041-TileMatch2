@@ -113,10 +113,7 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
 		if (distance < CHECK_OFFSET)
 		{
             //Debug.Log(CodeManager.GetMethodName() + index);
-
-            SoundManager soundManager = Game.Inst?.Get<SoundManager>();
-            soundManager?.PlayFx(Constant.Sound.SFX_TILE_MATCH);
-
+            
             piece.Attached();
             UpdateSlot(index, piece.CachedGameObject, true);
 
@@ -126,7 +123,6 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
                 piece.RefreshState();
                 piece.ShinyEffect();
                 CrossPieceEffect(CrossPieceList(index));
-                //PlaceEffect(piece.transform.position);
                 onComplete?.Invoke();
             });
 		}
