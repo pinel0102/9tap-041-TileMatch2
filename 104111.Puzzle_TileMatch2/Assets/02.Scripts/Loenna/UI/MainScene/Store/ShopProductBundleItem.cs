@@ -71,18 +71,13 @@ public class ShopProductBundleItem : CachedBehaviour
 
 		IPaymentService paymentService = Game.Inst.Get<IPaymentService>();
 
+        m_button.onClick.RemoveAllListeners();
 		m_button.OnSetup(
 			new UITextButtonParameter {
 				ButtonText = product.GetPriceString(),
-				OnClick = () => paymentService?.Request(
-					product, 
-					onSuccess: result => {
-
-					},
-					onError: error => {
-
-					}
-				)
+				OnClick = () => {
+                    GlobalDefine.Purchase(product);
+                }
 			}
 		);
 

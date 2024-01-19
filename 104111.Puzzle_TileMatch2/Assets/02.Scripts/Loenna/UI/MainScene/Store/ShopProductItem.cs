@@ -1,5 +1,6 @@
 using UnityEngine;
 
+using NineTap.Payment;
 using NineTap.Common;
 
 public class ShopProductItem : CachedBehaviour
@@ -14,16 +15,16 @@ public class ShopProductItem : CachedBehaviour
 	{
 		m_valueWidget.UpdateUI(product.UIType, product.GetShopItemImagePath(), $"{product.Coin} Gold");
 
+        IPaymentService paymentService = Game.Inst.Get<IPaymentService>();
+
+        m_button.onClick.RemoveAllListeners();
 		m_button.OnSetup(
 			new UITextButtonParameter {
 				ButtonText = product.GetPriceString(),
-				OnClick = () => Purchase(product)
+				OnClick = () => {
+                    GlobalDefine.Purchase(product);
+                }
 			}
 		);
-	}
-
-	private void Purchase(ProductData product)
-	{
-		
 	}
 }
