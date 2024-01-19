@@ -223,7 +223,7 @@ public class MainScene : UIScene
                     BaseButtonParameter: new UITextButtonParameter {
 						OnClick = () => {
 							Debug.Log(CodeManager.GetMethodName() + "Request AD");                            
-                            GetItem_Life(1);
+                            //GetItem_Life(1);
 						},
 						ButtonText = "Watch",
 						SubWidgetBuilder = () => {
