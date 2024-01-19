@@ -431,9 +431,30 @@ public partial class GameManager : IDisposable
 				case SkillItemType.Shuffle: // 섞기
                     soundManager?.PlayFx(Constant.Sound.SFX_ITEM_SHUFFLE);
 					Shuffle();
+                    ShuffleEffect();
 					break;
 			}
 		}
+
+        void ShuffleEffect()
+        {
+            GlobalData.Instance.SetTouchLock_PlayScene(true);
+
+            var boardTiles = GlobalData.Instance.playScene.TileItems
+                .Where(tileItem => tileItem.Current.Location is LocationType.BOARD).ToList();
+
+            boardTiles.ForEach(tile => tile.ShuffleStart(GlobalData.Instance.shuffleRadiusMin, GlobalData.Instance.shuffleRadiusMax, GlobalData.Instance.shuffleSpeed));
+
+            UniTask.Void(
+                async () =>
+                {
+                    await UniTask.Delay(TimeSpan.FromSeconds(GlobalData.Instance.shuffleTime));
+                    boardTiles.ForEach(tile => tile.ShuffleStop());
+                    await UniTask.Delay(TimeSpan.FromSeconds(0.3f));
+                    GlobalData.Instance.SetTouchLock_PlayScene(false);
+                }
+            );
+        }
 	}
 
 	private class TilePositionComparer : IComparer<Vector2>

@@ -25,7 +25,7 @@ public partial class PlayScene : UIScene
 	[SerializeField]	private PlaySceneTopUIView m_topView;
 	[SerializeField]	private PlaySceneBoardView m_mainView;
 	[SerializeField]	private PlaySceneBottomUIView m_bottomView;
-	[SerializeField]	private GameObject m_block;
+	[SerializeField]	public GameObject m_block;
 	[SerializeField]	private Transform m_particleParent;
     [SerializeField]	private GameObject bg_default;
     [SerializeField]	private GameObject bg_puzzle;
@@ -375,5 +375,4 @@ public partial class PlayScene : UIScene
 			LoadScene(Constant.Scene.EDITOR);
 		}
 	}
-
 }

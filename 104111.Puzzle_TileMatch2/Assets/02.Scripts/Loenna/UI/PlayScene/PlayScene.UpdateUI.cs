@@ -18,6 +18,7 @@ partial class PlayScene
 	private IObjectPool<TileItem> m_tileItemPool;
 	private IObjectPool<MissionCollectedFx> m_particlePool;
 	private List<TileItem> m_tileItems;
+    public List<TileItem> TileItems => m_tileItems;
     private PuzzleData m_puzzleData;
 
 	private int m_progressId = 0;

@@ -59,7 +59,7 @@ public static partial class UIManager
 
 	public static void ReturnBackUI()
 	{
-        if (GlobalData.Instance.IsTouchLockNow()) 
+        if (GlobalData.Instance.IsTouchLockNow_MainScene() || GlobalData.Instance.IsTouchLockNow_PlayScene()) 
             return;
         
 		// 먼저 팝업 닫기 시도

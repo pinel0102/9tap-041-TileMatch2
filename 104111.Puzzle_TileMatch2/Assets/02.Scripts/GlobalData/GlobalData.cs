@@ -21,10 +21,18 @@ public partial class GlobalData : SingletonMono<GlobalData>
     public bool isLevelEditor => PlayerPrefs.GetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, Constant.Scene.CLIENT) == Constant.Scene.EDITOR;
 
     public MainMenuType currentTab;
+
+    [Header("★ [Settings] Old Items")]
     public long oldCoin = 0;
     public int oldPuzzlePiece = 0;
     public int oldGoldPiece = 0;
     public int missionCollected = 0;
+
+    [Header("★ [Settings] Shuffle")]
+    public float shuffleRadiusMin = 200;
+    public float shuffleRadiusMax = 350;
+    public float shuffleSpeed = 15;
+    public float shuffleTime = 1;
     
     private IObjectPool<MissionCollectedFx> m_particlePool;
 
@@ -49,12 +57,22 @@ public partial class GlobalData : SingletonMono<GlobalData>
 
     public void SetTouchLock_MainScene(bool active)
     {
-        mainScene.m_block.SetActive(active);
+        mainScene?.m_block.SetActive(active);
     }
 
-    public bool IsTouchLockNow()
+    public void SetTouchLock_PlayScene(bool active)
     {
-        return mainScene.m_block.activeInHierarchy;
+        playScene?.m_block.SetActive(active);
+    }
+
+    public bool IsTouchLockNow_MainScene()
+    {
+        return (mainScene != null) && mainScene.m_block.activeInHierarchy;
+    }
+
+    public bool IsTouchLockNow_PlayScene()
+    {
+        return (playScene != null) && playScene.m_block.activeInHierarchy;
     }
 
     public void SetOldItems(long _coin, int _puzzlePiece, int _goldPiece)

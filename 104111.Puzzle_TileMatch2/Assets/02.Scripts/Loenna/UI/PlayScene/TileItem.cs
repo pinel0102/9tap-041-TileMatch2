@@ -128,6 +128,55 @@ public class TileItem : CachedBehaviour
 	private Vector3 m_originWorldPosition;
     private bool isScaling;
 
+    private bool ShuffleMove;
+    private float _shuffleAngle;
+    private float _shuffleRadius;
+    private float _shuffleSpeed;
+    private Transform _shuffleCenter;
+    private Vector3 _myPosition;
+
+    private void Update()
+    {
+        if (ShuffleMove)
+            CircleMove();
+    }
+
+    public void ShuffleStart(float radiusMin, float radiusMax, float speed)
+    {
+        _myPosition = transform.position;
+        _shuffleAngle = UnityEngine.Random.Range(0, 360);
+        _shuffleRadius = UnityEngine.Random.Range(radiusMin, radiusMax);
+        _shuffleSpeed = speed;
+        ShuffleMove = true;
+    }
+
+    public void ShuffleStop()
+    {
+        ShuffleMove = false;
+
+        UniTask.Void(
+            async () =>
+            {
+                await transform
+                    .DOMove(_myPosition, 0.25f)
+                    .OnComplete(() => {
+                        transform.position = _myPosition;
+                    })
+                    .ToUniTask()
+                    .AttachExternalCancellation(this.GetCancellationTokenOnDestroy())
+                    .SuppressCancellationThrow();
+            }
+        );
+    }
+
+    private void CircleMove()
+    {    
+        _shuffleAngle -= _shuffleSpeed * Time.deltaTime;
+    
+        var offset = new Vector3(Mathf.Sin(_shuffleAngle), Mathf.Cos(_shuffleAngle)) * _shuffleRadius;
+        transform.position = _shuffleCenter.position + offset;
+    }
+
 	private void OnDestroy()
 	{
 		m_positionTween?.Dispose();
@@ -206,6 +255,8 @@ public class TileItem : CachedBehaviour
 
 		ObjectUtility.GetRawObject(m_missionTile)?.SetVisible(false);
 
+        _shuffleCenter = GlobalData.Instance.playScene.mainView.transform;
+
         UniTask OnTriggerCallback(EventTriggerType type, BaseEventData eventData)
 		{
 			if (!m_interactable)
@@ -237,8 +288,8 @@ public class TileItem : CachedBehaviour
 	public bool OnUpdateUI(TileItemModel item, bool ignoreInvisible, out LocationType changeLocation)
 	{
 		changeLocation = item?.Location ?? LocationType.POOL;
-		
-		if (m_current == null)
+
+        if (m_current == null)
 		{
 			CachedRectTransform.SetLocalPosition(item.Position);
 			if (item?.Location == LocationType.POOL)
@@ -274,6 +325,8 @@ public class TileItem : CachedBehaviour
 		m_missionTile.OnUpdateUI(sprite, item.Location is LocationType.BOARD? item.GoldPuzzleCount : -1);
 
         gameObject.name = tileName;
+        
+        ShuffleMove = false;
         //Debug.Log(CodeManager.GetMethodName() + gameObject.name);
 
 		return currentType != item.Location;

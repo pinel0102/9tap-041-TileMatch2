@@ -280,6 +280,6 @@ public class MainScene : UIScene
 
     private bool IsEnableShowPopup()
     {
-        return transform.root.childCount < 2 && !GlobalData.Instance.IsTouchLockNow();
+        return transform.root.childCount < 2 && !GlobalData.Instance.IsTouchLockNow_MainScene();
     }
 }
