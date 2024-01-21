@@ -15,7 +15,7 @@ Puzzle - TileMatch2 클라이언트 프로젝트
 ---
 + UnityPackage Version
    - External Dependency Manager : 1.2.178
-   - //AppsFlyer : 6.12.21
+   - AppsFlyer : 6.12.22
    - //Firebase : 11.4.0
    - //Facebook : 16.0.2
    - //IronSource : 7.5.1
