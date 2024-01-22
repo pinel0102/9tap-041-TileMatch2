@@ -18,7 +18,7 @@ Puzzle - TileMatch2 클라이언트 프로젝트
    - AppsFlyer : 6.12.22
    - Firebase : 11.6.0
    - Facebook : 16.0.2
-   - //IronSource : 7.5.1
+   - IronSource : 7.7.0
    - In App Purchasing : 4.10.0
 
 </details>
