@@ -10,7 +10,20 @@ using NineTap.Common;
 [Serializable]
 public record User
 (
-	// 재화
+    // Log
+    string InstallDate,
+    string UserGroup,
+    int AppOpenCount,
+    int InterstitalViewCount,
+    int RewardViewCount,
+    int FailedLevel,
+    int FailedCount,
+    bool NoAD,
+    bool SendAppOpenCount,
+    bool SendInterstitalViewCount,
+    bool SendRewardViewCount,
+
+    // 재화
 	long Coin, // 보유 코인
 	int Life, // 보유 하트
 	int Puzzle, // 보유 미션조각
@@ -19,16 +32,15 @@ public record User
 	long ExpiredLifeBoosterTime, // 하트 부스터 끝나는 시간
 	long EndChargeLifeTime, // 하트가 모두 충전되는 시간
 
-    bool IsRated,    
-
-	// 게임 현황
+    bool IsRated,
+    
+    // 게임 현황
 	int Level, // 플레이할 레벨
 	int CurrentPlayingPuzzleIndex, // 플레이 중인 퍼즐
 	List<int> ClearedPuzzleCollection, // 완료한 퍼즐
 	Dictionary<int, uint> PlayingPuzzleCollection, // 진행중인 퍼즐
 	Dictionary<int, uint> UnlockedPuzzlePieceDic, // 별조각으로 언락한 조각들
 	Dictionary<SkillItemType, int> OwnSkillItems, // 가지고 있는 스킬 아이템
-
 	Dictionary<SettingsType, bool> Settings
 )
 {	
@@ -40,7 +52,7 @@ public record User
 		ExpiredLifeBoosterTime: 0L,
 		EndChargeLifeTime: 0L,
         IsRated: false,
-		Level: 1,
+        Level: 1,
 		ClearedPuzzleCollection: new(),
 		CurrentPlayingPuzzleIndex: 1001, //퍼즐 하나는 무조건 언락되어 있는 상태
 		PlayingPuzzleCollection: new Dictionary<int, uint>{{1001, 0}}, //퍼즐 하나는 무조건 언락되어 있는 상태
@@ -55,7 +67,18 @@ public record User
 			{SettingsType.Bgm, true},
 			{SettingsType.Vibration, true},
             {SettingsType.Notification, true},
-		}
+		},
+        InstallDate: SDKManager.dateDefault,
+        UserGroup: "A",
+        AppOpenCount: 0,
+        InterstitalViewCount: 0,
+        RewardViewCount: 0,
+        FailedLevel: 0,
+        FailedCount: 0,
+        NoAD: false,
+        SendAppOpenCount: false,
+        SendInterstitalViewCount: false,
+        SendRewardViewCount: false
 	);
 
 	[JsonIgnore]
@@ -73,12 +96,23 @@ public record User
 		in Optional<DateTimeOffset> endChargeLifeAt = default,
         in Optional<int> level = default,
         in Optional<bool> isRated = default,
-		in Optional<int> currentPlayingPuzzleIndex = default,
+        in Optional<int> currentPlayingPuzzleIndex = default,
 		in Optional<(int, uint)> unlockedPuzzlePiece = default,
 		in Optional<List<int>> clearedPuzzleCollection = default,
 		in Optional<(int, uint)> playingPuzzle = default,
 		in Optional<Dictionary<SkillItemType, int>> ownSkillItems = default,
-		in Optional<Dictionary<SettingsType, bool>> settings = default
+		in Optional<Dictionary<SettingsType, bool>> settings = default,
+        in Optional<string> installDate = default,
+        in Optional<string> userGroup = default,
+        in Optional<int> appOpenCount = default,
+        in Optional<int> interstitalViewCount = default,
+        in Optional<int> rewardViewCount = default,
+        in Optional<int> failedLevel = default,
+        in Optional<int> failedCount = default,
+        in Optional<bool> noAD = default,
+        in Optional<bool> sendAppOpenCount = default,
+        in Optional<bool> sendInterstitalViewCount = default,
+        in Optional<bool> sendRewardViewCount = default
 	)
 	{
         DateTimeOffset now = DateTimeOffset.Now;
@@ -123,12 +157,23 @@ public record User
 			EndChargeLifeTime: endChargeLifeAt.GetValueOrDefault(EndChargeLifeAt).ToUnixTimeMilliseconds(),
             Level: level.GetValueOrDefault(Level),
             IsRated: isRated.GetValueOrDefault(IsRated),
-			CurrentPlayingPuzzleIndex: currentPlayingPuzzleIndex.GetValueOrDefault(CurrentPlayingPuzzleIndex),
+            CurrentPlayingPuzzleIndex: currentPlayingPuzzleIndex.GetValueOrDefault(CurrentPlayingPuzzleIndex),
 			UnlockedPuzzlePieceDic: unlockedPuzzlePieceDic,
 			PlayingPuzzleCollection: currentPlayingCollection,
 			ClearedPuzzleCollection: clearedPuzzleCollection.GetValueOrDefault(ClearedPuzzleCollection),
 			OwnSkillItems: ownSkillItems.GetValueOrDefault(OwnSkillItems),
-			Settings: settings.GetValueOrDefault(Settings)
+			Settings: settings.GetValueOrDefault(Settings),
+            InstallDate: installDate.GetValueOrDefault(InstallDate),
+            UserGroup: userGroup.GetValueOrDefault(UserGroup),
+            AppOpenCount: appOpenCount.GetValueOrDefault(AppOpenCount),
+            InterstitalViewCount: interstitalViewCount.GetValueOrDefault(InterstitalViewCount),
+            RewardViewCount: rewardViewCount.GetValueOrDefault(RewardViewCount),
+            FailedLevel: failedLevel.GetValueOrDefault(FailedLevel),
+            FailedCount: failedCount.GetValueOrDefault(FailedCount),
+            NoAD: noAD.GetValueOrDefault(NoAD),
+            SendAppOpenCount: sendAppOpenCount.GetValueOrDefault(SendAppOpenCount),
+            SendInterstitalViewCount: sendInterstitalViewCount.GetValueOrDefault(SendInterstitalViewCount),
+            SendRewardViewCount: sendRewardViewCount.GetValueOrDefault(SendRewardViewCount)
 		);
 
         //Debug.Log(CodeManager.GetMethodName() + string.Format("Life : {0} / EndChargeLifeAt : {1}", user.Life, user.EndChargeLifeAt.LocalDateTime));

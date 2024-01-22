@@ -46,10 +46,12 @@ public class LobbyManager : IDisposable
 
         if (!valid)
         {
+            SDKManager.SendAnalytics_C_Scene(Text.Button.STORE);
             GlobalData.Instance.ShowHeartBuyPopup(onMoveShop);
             return;
         }
 
+        SDKManager.SendAnalytics_C_Scene(Text.Button.PLAY);
         UIManager.ShowSceneUI<PlayScene>(new PlaySceneParameter());
 	}
 

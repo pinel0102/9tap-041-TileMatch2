@@ -20,8 +20,6 @@ public partial class GlobalData : SingletonMono<GlobalData>
     public HUD HUD => Game.Inst?.Get<HUD>();
     public bool isLevelEditor => PlayerPrefs.GetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, Constant.Scene.CLIENT) == Constant.Scene.EDITOR;
 
-    public MainMenuType currentTab;
-
     [Header("★ [Settings] Old Items")]
     public long oldCoin = 0;
     public int oldPuzzlePiece = 0;

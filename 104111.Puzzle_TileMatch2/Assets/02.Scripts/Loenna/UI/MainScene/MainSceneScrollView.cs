@@ -49,6 +49,15 @@ public class MainSceneScrollView : CachedBehaviour
 	public void MoveTo(int type)
 	{
 		m_pagedRect.SetCurrentPage(type + 1);
+
+        switch((MainMenuType)type)
+        {
+            case MainMenuType.HOME:             GlobalData.Instance.CURRENT_SCENE = GlobalDefine.SCENE_MAIN;        break;
+            case MainMenuType.COLLECTION:       GlobalData.Instance.CURRENT_SCENE = GlobalDefine.SCENE_COLLECTION;  break;
+            case MainMenuType.JIGSAW_PUZZLE:    GlobalData.Instance.CURRENT_SCENE = GlobalDefine.SCENE_PUZZLE;      break;
+            case MainMenuType.STORE:            GlobalData.Instance.CURRENT_SCENE = GlobalDefine.SCENE_STORE;       break;
+            case MainMenuType.SETTINGS:         GlobalData.Instance.CURRENT_SCENE = GlobalDefine.SCENE_SETTINGS;    break;
+        }
 	}
 
 	public void OnUpdateUI(User user)

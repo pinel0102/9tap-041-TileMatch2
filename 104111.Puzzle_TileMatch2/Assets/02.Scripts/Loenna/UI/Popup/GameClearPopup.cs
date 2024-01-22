@@ -130,7 +130,7 @@ public class GameClearPopup : UIPopup
 				OnClick = () => {
                     if (isButtonInteractable)
                     {
-					    OnClickClose();
+                        OnClickClose();
 					    OnExit();
                     }
 				}
@@ -155,6 +155,8 @@ public class GameClearPopup : UIPopup
 
 			if (mode == Constant.Scene.CLIENT)
 			{
+                SDKManager.SendAnalytics_C_Scene_Clear(existNextLevel? Text.Button.CONTINUE : Text.Button.HOME);
+                
                 UIManager.ShowSceneUI<MainScene>(new MainSceneRewardParameter(
                     clearedLevel:parameter.Level,
                     openPuzzleIndex:openPuzzleIndex,

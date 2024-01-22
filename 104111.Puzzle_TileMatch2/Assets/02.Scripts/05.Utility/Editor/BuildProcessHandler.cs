@@ -45,6 +45,7 @@ public class BuildProcssHandler {
 #if UNITY_IOS
 
         string attString = "∙ Advertisements that match your interests\n∙ An improved personalized experience over time";
+        string adReportEndPoint = "https://appsflyer-skadnetwork.com/";
 
         var oAdsNetworkIDs = new string[] {
             
@@ -206,6 +207,7 @@ public class BuildProcssHandler {
                 
                 oDocument.root.SetBoolean("ITSAppUsesNonExemptEncryption", false);
                 oDocument.root.SetString("NSUserTrackingUsageDescription", attString);
+                oDocument.root.SetString("NSAdvertisingAttributionReportEndpoint", adReportEndPoint);
                 oDocument.root.SetString("GADApplicationIdentifier", ProjectManager.ironSource_Admob_AppID_iOS);
                 
                 // [ks.kim] UIRequiredDeviceCapabilities array 삭제.

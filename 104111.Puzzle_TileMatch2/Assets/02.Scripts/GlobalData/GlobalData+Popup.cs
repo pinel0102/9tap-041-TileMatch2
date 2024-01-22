@@ -21,9 +21,13 @@ public partial class GlobalData
 
                     if (!valid)
                     {
-                        ShowHeartBuyPopup(() => mainScene.scrollView.MoveTo((int)MainMenuType.STORE));
+                        ShowHeartBuyPopup(() => {
+                            SDKManager.SendAnalytics_C_Scene(NineTap.Constant.Text.Button.STORE);
+                            mainScene.scrollView.MoveTo((int)MainMenuType.STORE);}
+                        );
                         return;
                     }
+                    SDKManager.SendAnalytics_C_Scene(NineTap.Constant.Text.Button.PLAY);
                     UIManager.ShowSceneUI<PlayScene>(new PlaySceneParameter());
                 }
             },

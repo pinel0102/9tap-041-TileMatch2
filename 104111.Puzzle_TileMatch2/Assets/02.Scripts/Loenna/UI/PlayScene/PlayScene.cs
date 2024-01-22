@@ -51,7 +51,7 @@ public partial class PlayScene : UIScene
 	{
 		base.OnSetup(uiParameter);
 
-        Debug.Log(CodeManager.GetMethodName());
+        //Debug.Log(CodeManager.GetMethodName());
 
 		if (uiParameter is not PlaySceneParameter parameter)
 		{
@@ -214,6 +214,8 @@ public partial class PlayScene : UIScene
 
 	public void OnPause()
 	{
+        SDKManager.SendAnalytics_C_Scene(Text.PAUSE);
+
 		UIManager.ShowPopupUI<PausePopup>(
 			new PausePopupParameter(
 				Title: Text.PAUSE,
@@ -248,6 +250,8 @@ public partial class PlayScene : UIScene
                         }
                         else
                         {
+                            SDKManager.SendAnalytics_C_Scene(Text.Button.REPLAY);
+
                             ShowGiveUpPopup(
                                 new UITextButtonParameter
                                 {
@@ -276,6 +280,8 @@ public partial class PlayScene : UIScene
                         }
                         else
                         {
+                            SDKManager.SendAnalytics_C_Scene(Text.Button.HOME);
+
                             ShowGiveUpPopup(
                                 new UITextButtonParameter
                                 {
@@ -348,11 +354,17 @@ public partial class PlayScene : UIScene
                     Message: "Purchase Life",
                     ignoreBackKey: true,
                     ExitParameter: new ExitBaseParameter(
-                        onExit: () => OnExit(false)
+                        onExit: () => {
+                            SDKManager.SendAnalytics_C_Scene(Text.Button.CLOSE);
+                            OnExit(false);
+                        }
                     ),
                     BaseButtonParameter: new UITextButtonParameter {
                         ButtonText = "Go to Shop",
-                        OnClick = () =>OnExit(true)
+                        OnClick = () => {
+                            SDKManager.SendAnalytics_C_Scene(Text.Button.STORE);
+                            OnExit(true);
+                        }
                     }
                 )
             );

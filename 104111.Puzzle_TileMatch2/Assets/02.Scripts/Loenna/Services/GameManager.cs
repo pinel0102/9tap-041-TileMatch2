@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
+using Unity.VisualScripting;
 
 public partial class GameManager : IDisposable
 {
@@ -150,6 +151,7 @@ public partial class GameManager : IDisposable
         }
 
         m_userManager.Update(level: CurrentLevel + 1, collectRewardAll);
+        GlobalData.Instance.CURRENT_LEVEL = m_userManager.Current.Level;
     }
 
     void AddRewards(Dictionary<ProductType, long> dict, List<IReward> rewards)
@@ -181,6 +183,8 @@ public partial class GameManager : IDisposable
 
         GlobalData.Instance.SetOldItems(m_userManager.Current.Coin, m_userManager.Current.Puzzle, m_userManager.Current.GoldPiece);
         GlobalData.Instance.playScene.bottomView.RefreshSkillLocked(level);
+        GlobalData.Instance.CURRENT_SCENE = GlobalDefine.SCENE_PLAY;
+        GlobalData.Instance.CURRENT_LEVEL = level;
 
         m_continueCount = 0;
 		m_boardInfo.Update(info => InternalState.Empty);
@@ -247,6 +251,8 @@ public partial class GameManager : IDisposable
 				Basket: new()
 			)
 		);
+
+        SDKManager.SendAnalytics_I_Scene_Play();
 
         #region Local Functions
 		List<TileItemModel> CreateTileItemModels(int level, string countryCode, Board board)
@@ -422,14 +428,17 @@ public partial class GameManager : IDisposable
 			{
 				case SkillItemType.Stash: // 바구니에 있는 타일 3개를 보드에 둔다
                     soundManager?.PlayFx(Constant.Sound.SFX_ITEM_STASH);
+                    SDKManager.SendAnalytics_C_Item_Use("Return", 1);
 					UseStash();
 					break;
 				case SkillItemType.Undo: // 되돌리기
                     soundManager?.PlayFx(Constant.Sound.SFX_ITEM_UNDO);
+                    SDKManager.SendAnalytics_C_Item_Use("Undo", 1);
 					m_commandInvoker.UnExecute();
 					break;
 				case SkillItemType.Shuffle: // 섞기
                     soundManager?.PlayFx(Constant.Sound.SFX_ITEM_SHUFFLE);
+                    SDKManager.SendAnalytics_C_Item_Use("Shuffle", 1);
 					Shuffle();
                     ShuffleEffect();
 					break;

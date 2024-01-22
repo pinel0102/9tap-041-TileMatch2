@@ -57,12 +57,29 @@ public class UserManager : IDisposable
 					m_user.Value = JsonConvert.DeserializeObject<User>(json);
 				}
 			}
-
 		}
 		else
 		{
 			m_user.Value = User.NewUser;
 		}
+
+        if(Current.AppOpenCount == 0)
+        {
+            UpdateLog(installDate: SDKManager.TimeToString(DateTime.Now));
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>First Open : {0}</color>", Current.InstallDate));
+        }
+
+        if(string.IsNullOrEmpty(Current.UserGroup))
+        {
+            UpdateLog(userGroup: GlobalDefine.GetNewUserGroup());
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>User Group : {0}</color>", Current.UserGroup));
+        }
+
+        UpdateLog(appOpenCount: Current.AppOpenCount + 1);
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>App Open Count : {0}</color>", Current.AppOpenCount));
+
+        GlobalData.Instance.CURRENT_SCENE = GlobalDefine.SCENE_MAIN;
+        GlobalData.Instance.CURRENT_LEVEL = Current.Level;
 
         LogUserData();
 
@@ -93,7 +110,18 @@ public class UserManager : IDisposable
 					{SettingsType.Bgm, true},
 					{SettingsType.Vibration, true},
                     {SettingsType.Notification, true},
-				}
+				},
+                InstallDate: SDKManager.dateDefault,
+                UserGroup: "A",
+                AppOpenCount: 1,
+                InterstitalViewCount: 0,
+                RewardViewCount: 0,
+                FailedLevel: 0,
+                FailedCount: 0,
+                NoAD: false,
+                SendAppOpenCount: false,
+                SendInterstitalViewCount: false,
+                SendRewardViewCount: false
 			);
 		}
 	}
@@ -267,6 +295,43 @@ public class UserManager : IDisposable
 				clearedPuzzleCollection: clearedPuzzleCollection,
 				playingPuzzle: playingPuzzle,
 				ownSkillItems: ownSkillItems
+			)
+		);
+	}
+
+    public void UpdateLog
+	(
+	 	Optional<string> installDate = default, 
+        Optional<string> userGroup = default, 
+		Optional<int> appOpenCount = default,
+		Optional<int> interstitalViewCount = default,
+        Optional<int> rewardViewCount = default,
+        Optional<int> failedLevel = default,
+        Optional<int> failedCount = default,
+        Optional<bool> noAD = default,
+        Optional<bool> sendAppOpenCount = default,
+        Optional<bool> sendInterstitalViewCount = default,
+        Optional<bool> sendRewardViewCount = default
+	)
+	{
+		if (m_user?.Value == null)
+		{
+			return;
+		}
+
+		m_user.Update(
+			user => user.Update(
+				installDate: installDate,
+                userGroup: userGroup,
+                appOpenCount: appOpenCount,
+                interstitalViewCount: interstitalViewCount,
+                rewardViewCount: rewardViewCount,
+                failedLevel: failedLevel,
+                failedCount: failedCount,
+                noAD: noAD,
+                sendAppOpenCount: sendAppOpenCount,
+                sendInterstitalViewCount: sendInterstitalViewCount,
+                sendRewardViewCount: sendRewardViewCount
 			)
 		);
 	}

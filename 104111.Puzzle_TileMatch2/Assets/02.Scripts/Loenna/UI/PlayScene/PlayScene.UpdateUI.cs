@@ -87,7 +87,9 @@ partial class PlayScene
 	{
 		if (m_userManager.TryUpdate(requireCoin: coinAmount))
 		{
-			foreach (var itemType in itemTypes)
+            SDKManager.SendAnalytics_C_Scene(Text.Button.CONTINUE);
+            
+            foreach (var itemType in itemTypes)
 			{
 				if (itemType is SkillItemType.Stash)
 				{
@@ -123,6 +125,7 @@ partial class PlayScene
                 ExitParameter: new ExitBaseParameter(
                     includeBackground: false,
                     onExit: () => {
+                        SDKManager.SendAnalytics_C_Scene_Fail(Text.Button.GIVE_UP);
                         m_userManager.TryUpdate(requireLife: true);
                         OnExit(false);
                     }
@@ -130,6 +133,7 @@ partial class PlayScene
                 BaseButtonParameter: new UITextButtonParameter {
                     ButtonText = "Go to Shop",
                     OnClick = () => {
+                        SDKManager.SendAnalytics_C_Scene_Fail(Text.Button.STORE);
                         m_userManager.TryUpdate(requireLife: true);
                         OnExit(true);
                     }
@@ -363,6 +367,9 @@ partial class PlayScene
         soundManager?.PlayFx(Constant.Sound.SFX_TILE_MATCH_FINISH);
 
         m_canvasGroup.alpha = 0f;
+
+        SDKManager.SendAnalytics_I_Scene_Clear();
+
         UIManager.ShowPopupUI<GameClearPopup>(
             new GameClearPopupParameter(
                 m_gameManager.CurrentLevel, 
@@ -377,6 +384,8 @@ partial class PlayScene
 
         CurrentPlayState.Finished.State result = CurrentPlayState.Finished.State.OVER;
         int coinAmount = m_gameManager.GetSkillPackageCoin(out var itemTypes);
+
+        SDKManager.SendAnalytics_I_Scene_Fail();
 
         UIManager.ShowPopupUI<PlayEndPopup>(
             new PlayEndPopupParameter(

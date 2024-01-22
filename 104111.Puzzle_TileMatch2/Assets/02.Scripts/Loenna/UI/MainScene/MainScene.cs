@@ -51,7 +51,7 @@ public class MainScene : UIScene
         GlobalData.Instance.fragmentStore = m_scrollView.Contents[(int)MainMenuType.STORE] as MainSceneFragmentContent_Store;
         GlobalData.Instance.fragmentSettings = m_scrollView.Contents[(int)MainMenuType.SETTINGS] as MainSceneFragmentContent_Settings;
 
-		m_userManager = Game.Inst.Get<UserManager>();
+        m_userManager = Game.Inst.Get<UserManager>();
 		m_lobbyManager = new LobbyManager(
 			m_userManager,
 			tableManager: Game.Inst.Get<TableManager>()
@@ -87,6 +87,7 @@ public class MainScene : UIScene
                     if (IsEnableShowPopup()) 
                     {
                         soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
+                        SDKManager.SendAnalytics_C_Scene(NineTap.Constant.Text.Button.STORE);
                         m_scrollView.MoveTo((int)MainMenuType.STORE); 
                     }
                 }
@@ -208,6 +209,8 @@ public class MainScene : UIScene
 
 		m_userManager.OnUpdated += OnUpdateUI;
 
+        SDKManager.Instance.SDKStart();
+
         void OpenBuyHeartPopup(int itemIndex)
         {
             if (!m_itemDataTable.TryGetValue(itemIndex, out var itemData))
@@ -259,6 +262,8 @@ public class MainScene : UIScene
 			return;
 		}
 
+        GlobalData.Instance.CURRENT_LEVEL = m_userManager.Current.Level;
+
         if (CachedParameter is MainSceneRewardParameter rewardParameter)
         {
             Debug.Log(CodeManager.GetMethodName() + string.Format("[Get Reward] {0} / {1} / {2}", rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardGoldPiece));
@@ -266,6 +271,8 @@ public class MainScene : UIScene
         }
 
 		m_scrollView.MoveTo((int)parameter.ShowMenuType);
+
+        SDKManager.SendAnalytics_I_Scene();
 	}
 
 	private void OnDestroy()
