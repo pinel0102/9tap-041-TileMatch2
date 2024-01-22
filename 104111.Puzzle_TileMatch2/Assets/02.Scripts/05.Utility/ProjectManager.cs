@@ -45,10 +45,6 @@ public static class ProjectManager
     // AppsFlyerManager.cs : 추가 작업 필요 없음.
     public const string appsflyer_dev_key = "J7eXAem8sBRuHTr3iX58d5";
 
-    // FlurryManager.cs : 추가 작업 필요 없음.
-    public const string flurry_Api_Key_AOS = "YC4WCMG4SNM3XVQKYJ6Q";
-    public const string flurry_Api_Key_iOS = "ZNZRZK6CGVB5QVNG8664";
-
 #endregion SDK Keys
 
 #region Company Info
