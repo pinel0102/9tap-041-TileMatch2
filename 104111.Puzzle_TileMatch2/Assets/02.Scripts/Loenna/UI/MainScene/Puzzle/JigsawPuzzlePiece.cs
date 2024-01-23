@@ -93,4 +93,16 @@ public class JigsawPuzzlePiece : CachedBehaviour
         //Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : {1}", Index, Placed));
         OnTryUnlock?.Invoke(this, onComplete);
     }
+
+    public void OnClick_Unlock_MustCallback(Action onComplete)
+    {
+        if(Placed) 
+        {
+            onComplete.Invoke();
+            return;
+        }
+
+        //Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : {1}", Index, Placed));
+        OnTryUnlock?.Invoke(this, onComplete);
+    }
 }

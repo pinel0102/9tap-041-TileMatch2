@@ -40,7 +40,7 @@ public class PuzzleCompletePopup : UIPopup
     private CurrentPlayingPuzzleContent m_content;
 
     public int PuzzleIndex;
-    public string PuzzleName = string.Empty;    
+    public string PuzzleName = string.Empty;
 
     public override void OnSetup(UIParameter uiParameter)
     {
