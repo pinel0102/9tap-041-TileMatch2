@@ -36,7 +36,7 @@ namespace NineTap.Constant
 				public const string GIVE_UP = "You lose one life";
                 public const string REVIEW_1 = "Are you enjoying\nTile Match! World Tours?";
                 public const string REVIEW_2 = "Thanks for your love!";
-                public const string GET_STARS = "Beat levels to earn stars!";
+                public const string GET_STARS = "Beat levels to earn jigsaw piece!";
 			}
 		}
 

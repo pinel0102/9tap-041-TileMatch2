@@ -18,64 +18,41 @@ public record GameClearPopupParameter(int Level, Action<int> OnContinue): Defaul
 [ResourcePath("UI/Popup/GameClearPopup")]
 public class GameClearPopup : UIPopup
 {
-	[SerializeField]
-	private Image m_headLineImage = default!;
-
-    [SerializeField]
-	private RectTransform m_BgEffect = default!;
-
-	[SerializeField]
-	private ClearRewardListContainer m_clearRewardContainer = default!;
-
-	[SerializeField]
-	private UIGaugeBar m_gaugeBar = default!;
-
-	[SerializeField]
-	private UITextButton m_confirmButton = default!;
-
-    [SerializeField]
-	private CanvasGroup m_clearStarCanvasGroup = default!;
-
-    [SerializeField]
-	private CanvasGroup m_clearStarHalo = default!;
-
-    [SerializeField]
-    private GameObject m_landmarkObject = default!;
-
-    [SerializeField]
-    private GameObject m_resultObject = default!;
-
-    [SerializeField]
-    private GameObject m_openPuzzleObject = default!;
-
-    [SerializeField]
-	private CanvasGroup m_openPuzzleStarCanvasGroup = default!;
-
-    [SerializeField]
-	private CanvasGroup m_openPuzzleHalo = default!;
-
-    [SerializeField]
-	private CanvasGroup m_layoutResult = default!;
-
-    [SerializeField]
-	private CanvasGroup m_layoutPuzzle = default!;
-    
-    [SerializeField]
-    private TMP_Text m_openPuzzleText = default!;
-
-    [SerializeField]
-	private GameObject m_openPuzzleContinue = default!;
-
-    [SerializeField]
-	private GameObject m_effect = default!;
+	[SerializeField]	private Image m_headLineImage = default!;
+    [SerializeField]	private RectTransform m_BgEffect = default!;
+	[SerializeField]	private ClearRewardListContainer m_clearRewardContainer = default!;
+	[SerializeField]	private UIGaugeBar m_gaugeBar = default!;
+	[SerializeField]	private UITextButton m_confirmButton = default!;
+    [SerializeField]	private CanvasGroup m_clearStarCanvasGroup = default!;
+    [SerializeField]	private CanvasGroup m_clearStarHalo = default!;
+    [SerializeField]    private GameObject m_landmarkObject = default!;
+    [SerializeField]    private GameObject m_resultObject = default!;
+    [SerializeField]    private GameObject m_openPuzzleObject = default!;
+    [SerializeField]	private CanvasGroup m_openPuzzleStarCanvasGroup = default!;
+    [SerializeField]	private CanvasGroup m_openPuzzleHalo = default!;
+    [SerializeField]	private CanvasGroup m_layoutResult = default!;
+    [SerializeField]	private CanvasGroup m_layoutPuzzle = default!;
+    [SerializeField]    private TMP_Text m_rewardRibbonText = default!;
+    [SerializeField]    private TMP_Text m_openPuzzleText = default!;
+    [SerializeField]	private GameObject m_openPuzzleContinue = default!;
+    [SerializeField]	private GameObject m_rewardChest = default!;
+    [SerializeField]	private GameObject m_rewardLandmark = default!;
+    [SerializeField]	private GameObject m_effect = default!;
 
 	private LevelData? m_levelData;	
 	private RewardData? m_chestRewardData;
     
     public bool isButtonInteractable;
     public bool isPuzzleInteractable;
+    public int clearedLevel;
     public int openPuzzleIndex;
+    private int gageFrom;
+    private int gageTo;
+    private int gageMax;
 
+    private const string string_reward_default = "Gift for you";
+    private const string string_reward_landmark = "New Landmark";
+    private const string string_reward_default_landmark = "New Landmark & Reward";    
     private const string format_openPuzzle = "You have unlocked\n{0}!";
     
     public override void OnSetup(UIParameter uiParameter)
@@ -92,8 +69,10 @@ public class GameClearPopup : UIPopup
 		RewardDataTable rewardDataTable = tableManager.RewardDataTable;
 		LevelDataTable levelDataTable = tableManager.LevelDataTable;
 
+        clearedLevel = parameter.Level;
+
         int goldPieceCount = GlobalData.Instance.missionCollected;    
-        openPuzzleIndex = GlobalData.Instance.GetOpenedPuzzleIndex(parameter.Level);            
+        openPuzzleIndex = GlobalData.Instance.GetOpenedPuzzleIndex(clearedLevel);            
 
 		if (!levelDataTable.TryGetValue(parameter.Level, out m_levelData))
 		{
@@ -105,23 +84,33 @@ public class GameClearPopup : UIPopup
         SetPuzzleInteractable(false);
         m_openPuzzleContinue.SetActive(false);
         
-		bool existNextLevel = levelDataTable.TryGetValue(parameter.Level + 1, out var nextLevelData);
+		bool existNextLevel = levelDataTable.TryGetValue(clearedLevel + 1, out var nextLevelData);
 		RewardData rewardData = rewardDataTable.GetDefaultReward(m_levelData.HardMode);
 		
         m_clearStarCanvasGroup.alpha = 0;
 		m_clearRewardContainer.OnSetup(rewardData);
 
-		bool existChestReward = rewardDataTable.TryPreparedChestReward(parameter.Level, out m_chestRewardData);
-        //bool existChestReward = rewardDataTable.TryPreparedChestReward(10, out m_chestRewardData);
-
-		if (existChestReward)
+		bool existChestTarget = rewardDataTable.TryPreparedChestReward(clearedLevel, out m_chestRewardData);
+        bool existChestReward = false;
+        
+		if (existChestTarget)
 		{
+            rewardDataTable.TryPreviousChestReward(clearedLevel, out var m_previousReward);
+
+            int prevChestLevel = m_previousReward?.Level ?? (clearedLevel > Constant.Game.LEVEL_PUZZLE_START ? Constant.Game.LEVEL_PUZZLE_START : 0);
+            
+            gageMax = clearedLevel > Constant.Game.LEVEL_PUZZLE_START ? m_chestRewardData.Level - prevChestLevel : Constant.Game.LEVEL_PUZZLE_START;
+            gageTo = clearedLevel - prevChestLevel;
+            gageFrom = gageTo - 1;
+
 			m_gaugeBar.OnSetup(
 				new UIGaugeBarParameter {
-					CurrentNumber = Mathf.Max(0, parameter.Level - 1),
-					MaxNumber = m_chestRewardData?.Level ?? 0
+					CurrentNumber = gageFrom,
+					MaxNumber = gageMax
 				}
 			);
+
+            existChestReward = clearedLevel >= m_chestRewardData.Level;
 		}
 
 		m_confirmButton.OnSetup(
@@ -137,13 +126,18 @@ public class GameClearPopup : UIPopup
 			}
 		);
 
-		m_confirmButton.Alpha = 0f;
+        m_confirmButton.Alpha = 0f;
         m_confirmButton.interactable = false;
 		m_gaugeBar.Alpha = 0f;
 		m_clearRewardContainer.Alpha = 0f;
 		m_headLineImage.transform.localScale = Vector3.zero;
         m_BgEffect.SetLocalScale(0);
-        m_landmarkObject.SetActive(openPuzzleIndex > 0);
+        m_rewardLandmark.SetActive(clearedLevel <= Constant.Game.LEVEL_PUZZLE_START);
+        m_rewardChest.SetActive(clearedLevel > Constant.Game.LEVEL_PUZZLE_START);
+        m_rewardRibbonText.SetText(openPuzzleIndex > 0 ? 
+                                    (existChestReward ? string_reward_default_landmark : string_reward_landmark) : 
+                                    string_reward_default);
+        m_landmarkObject.SetActive(openPuzzleIndex > 0 || existChestReward);
 
         m_resultObject.SetActive(true);
         m_openPuzzleObject.SetActive(false);
@@ -201,9 +195,7 @@ public class GameClearPopup : UIPopup
                     SoundManager soundManager = Game.Inst.Get<SoundManager>();
                     soundManager?.PlayFx(Constant.Sound.SFX_PROGRESS);
 
-					int level = m_levelData?.Key ?? 0;
-					int prev = Mathf.Max(level - 1, 0);                    
-					await m_gaugeBar.OnUpdateUIAsync(prev, m_levelData?.Key ?? 0, m_chestRewardData?.Level ?? 0);
+					await m_gaugeBar.OnUpdateUIAsync(gageFrom, gageTo, gageMax);
 
 					if (m_levelData?.Key! >= m_chestRewardData?.Level!)
 					{
