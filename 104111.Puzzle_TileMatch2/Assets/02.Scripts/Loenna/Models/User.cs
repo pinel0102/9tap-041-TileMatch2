@@ -96,8 +96,7 @@ public record User
 		in Optional<DateTimeOffset> endChargeLifeAt = default,
         in Optional<int> level = default,
         in Optional<bool> isRated = default,
-        in Optional<int> currentPlayingPuzzleIndex = default,
-		in Optional<(int, uint)> unlockedPuzzlePiece = default,
+        in Optional<(int, uint)> unlockedPuzzlePiece = default,
 		in Optional<List<int>> clearedPuzzleCollection = default,
 		in Optional<(int, uint)> playingPuzzle = default,
 		in Optional<Dictionary<SkillItemType, int>> ownSkillItems = default,
@@ -129,7 +128,7 @@ public record User
 		var currentPlayingCollection = PlayingPuzzleCollection ?? new();
 		var unlockedPuzzlePieceDic = UnlockedPuzzlePieceDic ?? new();
 
-		if (playingPuzzleIndex > 0)
+        if (playingPuzzleIndex > 0)
 		{
 			if (!currentPlayingCollection.ContainsKey(playingPuzzleIndex))
 			{
@@ -157,7 +156,7 @@ public record User
 			EndChargeLifeTime: endChargeLifeAt.GetValueOrDefault(EndChargeLifeAt).ToUnixTimeMilliseconds(),
             Level: level.GetValueOrDefault(Level),
             IsRated: isRated.GetValueOrDefault(IsRated),
-            CurrentPlayingPuzzleIndex: currentPlayingPuzzleIndex.GetValueOrDefault(CurrentPlayingPuzzleIndex),
+            CurrentPlayingPuzzleIndex: playingPuzzleIndex > 0 ? playingPuzzleIndex : CurrentPlayingPuzzleIndex,
 			UnlockedPuzzlePieceDic: unlockedPuzzlePieceDic,
 			PlayingPuzzleCollection: currentPlayingCollection,
 			ClearedPuzzleCollection: clearedPuzzleCollection.GetValueOrDefault(ClearedPuzzleCollection),

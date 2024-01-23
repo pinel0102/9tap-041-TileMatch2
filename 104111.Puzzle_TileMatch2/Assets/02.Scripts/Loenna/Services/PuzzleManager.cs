@@ -35,7 +35,7 @@ public class PuzzleManager : IDisposable
         m_puzzleName = puzzleData.Name;
 		m_placedPieces = placedPieces;
 
-		m_userManager.Update(currentPlayingPuzzleIndex: puzzleData.Index);
+		m_userManager.Update(playingPuzzle: (m_puzzleIndex, m_placedPieces));
 
 		var req = Resources.LoadAsync<Texture2D>(puzzleData.GetImagePath());
 		m_background = await req.ToUniTask(cancellationToken: m_cancellationTokenSource.Token) as Texture2D;

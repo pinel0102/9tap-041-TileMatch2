@@ -64,7 +64,7 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
 
 	public void OnSetup()
 	{
-        for (int i = 0; i < 25; i++)
+        for (int i = 0; i < PuzzlePieceMaker.MAX_PUZZLE_PIECE_COUNT; i++)
 		{
 			m_slots.Add(Slot.Create(i, CachedTransform));
 		}

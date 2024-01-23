@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using NineTap.Common;
-using Unity.VisualScripting;
 using System.Linq;
 
 public class PuzzlePieceItemData
@@ -185,6 +184,7 @@ public class PuzzlePlayView : CachedBehaviour
                 Index: m_puzzleManager.PuzzleIndex,
                 PuzzleName: m_puzzleManager.PuzzleName,
                 Background: m_puzzleManager.Background,
+                Content: m_puzzleManager.CurrentPlayingPuzzle,
                 OnContinue: () => {
                     MoveToOtherPuzzle();
                     GlobalData.Instance.SetTouchLock_MainScene(false); 

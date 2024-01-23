@@ -1,11 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
-
 using System;
-
 using TMPro;
 using System.Linq;
 using System.Collections.Generic;
+using NineTap.Common;
 
 public class PuzzleContentData
 {
@@ -39,14 +38,15 @@ public class PuzzleContentItem : UIButton
 
     private UserManager m_userManager;
 	private bool m_isInitialized = false;
-
     private PuzzleData puzzleData;
     private Texture2D texture;
+    private JigsawCollectionPiece piecePrefab;
+    private List<JigsawCollectionPiece> pieceList = new();
 
-    public int Index;
     public bool isActivePuzzle;
+    public int Index;
     public string puzzleName;
-    public List<GameObject> pieceObject = new();
+    public int attachedCount;
     
 	public void OnSetup(UserManager userManager)
 	{
@@ -58,7 +58,8 @@ public class PuzzleContentItem : UIButton
         isActivePuzzle = false;
 		m_userManager = userManager;
 		m_userManager.OnUpdated += LevelCheck;
-        m_isInitialized = true;
+        piecePrefab = ResourcePathAttribute.GetResource<JigsawCollectionPiece>();
+        m_isInitialized = true;        
 	}
 
 	protected override void OnDestroy()
@@ -112,7 +113,6 @@ public class PuzzleContentItem : UIButton
 		{
             m_nameText.text = NineTap.Constant.Text.LOCKED;
             isActivePuzzle = false;
-			//return;
 		}
         else
         {   
@@ -134,36 +134,45 @@ public class PuzzleContentItem : UIButton
 			puzzleData.Pieces,
 			placedPiecesData
 		);
-        
-        int attachedCount = puzzlePieces.Select(item => item.Attached).Count();
+
+        pieceList.Clear();
+        Array.ForEach(
+			puzzlePieces, 
+			puzzlePiece => {
+				var (index, position, sprite, spriteAttached, _, attached) = puzzlePiece;
+                var piece = Instantiate(piecePrefab, m_pieceParent);
+                piece.OnSetup(index, spriteAttached, attached, position);
+                pieceList.Add(piece);
+			}
+		);
+
+        RefreshGage();
+    }
+
+    public void RefreshPiece(int pieceIndex, bool attached)
+    {
+        pieceList[pieceIndex].RefreshAttached(attached);
+        RefreshGage();
+    }
+
+    private void RefreshGage()
+    {
+        attachedCount = GetAttachedCount();
         float completed = attachedCount >= PuzzlePieceMaker.MAX_PUZZLE_PIECE_COUNT? 1f : 0f;
 
 		m_viewButtonObject.alpha = completed;
 		m_gaugeBar.Alpha = 1f - completed;
 		m_gaugeBar.OnUpdateUI(attachedCount, PuzzlePieceMaker.MAX_PUZZLE_PIECE_COUNT);
-        pieceObject.Clear();
-
-		Array.ForEach(
-			puzzlePieces, 
-			puzzlePiece => {
-				var (index, position, sprite, spriteAttached, _, attached) = puzzlePiece;
-				GameObject pieceGameObject = new GameObject($"piece[{index}]");
-				Image image = pieceGameObject.AddComponent<Image>();
-				RectTransform pieceTransform = image.rectTransform;
-				pieceTransform.SetParentReset(m_pieceParent);
-				image.sprite = spriteAttached;
-				image.SetNativeSize();
-				pieceTransform.anchoredPosition = position;
-                pieceGameObject.SetActive(attached);
-                pieceObject.Add(pieceGameObject);
-			}
-		);
     }
 
-    public void RefreshPiece(int pieceIndex, bool attached)
+    private int GetAttachedCount()
     {
-        //Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : {1}", pieceIndex, attached));        
-        pieceObject[pieceIndex].SetActive(attached);
+        return pieceList.Where(item => item.IsAttached).Count();
+    }
+
+    public uint GetPlacedPieces(int Key)
+    {
+        return GlobalData.Instance.userManager.Current.PlayingPuzzleCollection.TryGetValue(Key, out uint result)? result : 0;
     }
 
 	protected override void DoStateTransition(SelectionState state, bool instant)
