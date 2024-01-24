@@ -11,6 +11,7 @@ using Cysharp.Threading.Tasks.Linq;
 using Text = NineTap.Constant.Text;
 using NineTap.Common;
 using TMPro;
+using System.Linq;
 
 public record TutorialPlayPopupParameter(
     int Level,
@@ -21,49 +22,37 @@ public record TutorialPlayPopupParameter(
 [ResourcePath("UI/Popup/TutorialPlayPopup")]
 public class TutorialPlayPopup : UIPopup
 {
-    [SerializeField]
-	private Image m_headLineImage = default!;
+    [Header("★ [Reference] UI")]
+    [SerializeField]	private CanvasGroup m_viewGroup = default!;
+    [SerializeField]	private Image m_headLineImage = default!;
+    [SerializeField]	private UITextButton m_confirmButton = default!;
+    [SerializeField]    private Image m_unlockedItemImage = default!;    
+    [SerializeField]    private TMP_Text m_unlockedItemText = default!;
+    [SerializeField]	private CanvasGroup m_clearStarCanvasGroup = default!;
+    [SerializeField]	private CanvasGroup m_clearStarHalo = default!;
+    [SerializeField]    private GameObject m_touchLock = default!;
 
-    [SerializeField]
-	private UITextButton m_confirmButton = default!;
+    [Header("★ [Reference] Tutorial")]
+    [SerializeField]    private GameObject m_popupObject = default!;
+    [SerializeField]    private GameObject m_unlockedObject = default!;
+    [SerializeField]    private List<GameObject> m_tutorialObject = default!;
+    [SerializeField]    private List<CanvasGroup> m_tutorialCanvasGroup = default!;
+    [SerializeField]    private List<RectTransform> m_tutorialPanel = default!;
+    [SerializeField]    private List<TransitionEffect> m_tutorialEffect = default!;
 
-    [SerializeField]
-    private Image m_unlockedItemImage = default!;
-    
-    [SerializeField]
-    private TMP_Text m_unlockedItemText = default!;
-
-    [SerializeField]
-	private CanvasGroup m_clearStarCanvasGroup = default!;
-
-    [SerializeField]
-	private CanvasGroup m_clearStarHalo = default!;
-
-    [SerializeField]
-    private RectTransform m_unmask = default!;
-
-    [SerializeField]
-    private GameObject m_unlockedObject = default!;
-
-    [SerializeField]
-    private List<GameObject> m_tutorialObject = default!;
-
-    [SerializeField]
-    private List<CanvasGroup> m_tutorialCanvasGroup = default!;
-
-    [SerializeField]
-    private List<RectTransform> m_tutorialPanel = default!;
-
-    [SerializeField]
-    private List<TransitionEffect> m_tutorialEffect = default!;
+    [Header("★ [Reference] Unmask")]
+    [SerializeField]    private List<RectTransform> m_unmask = default!;
+    [SerializeField]    private List<GameObject> m_unmaskBasketTiles = default!;
 
     private PlaySceneBottomUIView bottomView => GlobalData.Instance.playScene.bottomView;
 
+    [Header("★ [Live] Tutorial Play")]
     public int Level;
     public int TutorialIndex;
     public int ItemIndex;
     public bool itemExists;
-    public bool isButtonInteractable;
+    private bool isButtonInteractable;
+    private int firstTargetIndex = 3;
 
     public override void OnSetup(UIParameter uiParameter)
     {
@@ -96,7 +85,8 @@ public class TutorialPlayPopup : UIPopup
         m_clearStarCanvasGroup.alpha = 0;
         m_confirmButton.Alpha = 0f;
 		m_headLineImage.transform.localScale = Vector3.zero;
-        m_unmask.gameObject.SetActive(false);
+        m_unmask.ForEach(unmask => unmask.gameObject.SetActive(false));
+        m_unmaskBasketTiles.ForEach(unmask => unmask.SetActive(false));
 
         ItemDataTable m_itemDataTable = GlobalData.Instance.tableManager.ItemDataTable;
         if (m_itemDataTable.TryGetValue(ItemIndex, out var itemData))
@@ -104,23 +94,20 @@ public class TutorialPlayPopup : UIPopup
             itemExists = true;
             m_unlockedItemImage.sprite = SpriteManager.GetSprite(itemData.ImagePath);
             m_unlockedItemText.SetText(itemData.Name);
-
             m_unlockedObject.SetActive(true);
-            for(int i=0; i < m_tutorialObject.Count; i++)
-            {
-                m_tutorialObject[i].SetActive(false);
-            }
         }
         else
         {
             itemExists = false;
-
             m_unlockedObject.SetActive(false);
-            for(int i=0; i < m_tutorialObject.Count; i++)
-            {
-                m_tutorialObject[i].SetActive(false);
-            }
         }
+
+        for(int i=0; i < m_tutorialObject.Count; i++)
+        {
+            m_tutorialObject[i].SetActive(false);
+        }
+
+        m_viewGroup.alpha = 1f;
     }
 
     public override void OnShow()
@@ -144,7 +131,6 @@ public class TutorialPlayPopup : UIPopup
                 }
                 else
                 {
-                    SetButtonInteractable(true);
                     OpenTutorial(TutorialIndex);
                 }
 			},
@@ -154,6 +140,8 @@ public class TutorialPlayPopup : UIPopup
 
     private void OpenTutorial(int index)
     {
+        m_viewGroup.alpha = 1f;
+
         SetPanelPosition(index);
 
         m_unlockedObject.SetActive(false);
@@ -201,6 +189,8 @@ public class TutorialPlayPopup : UIPopup
                 }
 
                 await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
+
+                SetButtonInteractable(true);
             }
         );
     }
@@ -209,13 +199,23 @@ public class TutorialPlayPopup : UIPopup
     {
         switch (index)
         {
+            case 0: // 3 Tiles
+                m_popupObject.SetActive(true);
+                m_tutorialPanel[index].gameObject.SetActive(false);
+
+                m_unmaskBasketTiles.ForEach(unmask => unmask.SetActive(false));
+                m_unmask[1].position = bottomView.BasketView.GetBasketAnchorPosition();
+                m_unmask[1].gameObject.SetActive(true);
+                break;
             case 1: // Undo
                 m_tutorialPanel[index].position = bottomView.ButtonsView.m_undoButton.transform.position;
                 break;
             case 2: // Return
                 m_tutorialPanel[index].position = bottomView.ButtonsView.m_stashButton.transform.position;
-                m_unmask.position = bottomView.BasketView.GetBasketAnchorPosition();
-                m_unmask.gameObject.SetActive(true);                
+                
+                m_unmaskBasketTiles.ForEach(unmask => unmask.SetActive(true));
+                m_unmask[1].position = bottomView.BasketView.GetBasketAnchorPosition();
+                m_unmask[1].gameObject.SetActive(true);
                 break;
             case 3: // Shuffle
                 m_tutorialPanel[index].position = bottomView.ButtonsView.m_shuffleButton.transform.position;
@@ -265,29 +265,108 @@ public class TutorialPlayPopup : UIPopup
 			).Forget();
 	}
 
-    private void SetButtonInteractable(bool interactable)
+    private void StartTileAnchor()
     {
-        isButtonInteractable = interactable;
-        //Debug.Log(CodeManager.GetMethodName() + isButtonInteractable);
+        if (GlobalData.Instance.playScene.TileItems.Count <= firstTargetIndex)
+        {
+            Debug.LogWarning(CodeManager.GetMethodName() + string.Format("TileItems.Count ({0}) < firstTargetIndex ({1})", GlobalData.Instance.playScene.TileItems.Count, firstTargetIndex));
+            OnClickClose();
+            return;
+        }
+
+        var firstTile = GlobalData.Instance.playScene.TileItems[firstTargetIndex];
+        var otherTiles = GlobalData.Instance.playScene.TileItems.Where(item => item != firstTile && item.Current.Icon == firstTile.Current.Icon);
+        
+        //Debug.Log(CodeManager.GetMethodName() + string.Format("otherTiles.Count : {0}", otherTiles.Count()));
+        
+        if (firstTile == null || otherTiles.Count() < 2)
+        {
+            Debug.LogWarning(CodeManager.GetMethodName() + string.Format("firstTile == null : {0} / otherTiles.Count : {1}", firstTile == null, otherTiles.Count()));
+            OnClickClose();
+            return;
+        }
+
+        var enumerator = otherTiles.GetEnumerator();
+        
+        FitToTile(firstTile, () => {
+            m_unmaskBasketTiles[0].SetActive(true);
+            enumerator.MoveNext();
+            
+            FitToTile(enumerator.Current, () => {
+                m_unmaskBasketTiles[1].SetActive(true);
+                enumerator.MoveNext();
+                
+                FitToTile(enumerator.Current, () => {
+                    OnClickClose();
+                });
+            });
+        });
     }
 
-    public void OnClick_TutorialClose(int index)
+    private void FitToTile(TileItem target, Action onComplete)
     {
-        switch (index)
+        UniTask.Void(
+            async () =>
+            {
+                //Debug.Log(CodeManager.GetMethodName() + string.Format("Current Tile : {0} ({1})", target.Current.Icon, target.Current.Guid));
+
+                m_tutorialPanel[TutorialIndex].position = target.CachedRectTransform?.position ?? Vector2.zero;
+                m_tutorialPanel[TutorialIndex].gameObject.SetActive(true);
+                m_unmask[0].position = target.CachedRectTransform?.position ?? Vector2.zero;
+                m_unmask[0].gameObject.SetActive(true);
+                //m_tutorialCanvasGroup[TutorialIndex].alpha = 1f;
+
+                await UniTask.WaitUntil(
+                    () => target.Current.Location != LocationType.BOARD
+                );
+
+                m_unmask[0].gameObject.SetActive(false);
+                //m_tutorialCanvasGroup[TutorialIndex].alpha = 0;
+
+                await UniTask.WaitUntil(
+                    () => !target.IsMoving
+                );
+
+                await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);
+
+                onComplete?.Invoke();
+            }
+        );
+    }
+
+    public void OnClick_TutorialClose()
+    {
+        if (!isButtonInteractable) 
+            return;
+
+        switch (TutorialIndex)
         {
+            case 0: // 3 Tiles
+                m_popupObject.SetActive(false);
+                StartTileAnchor();
+                break;
             case 1: // Sample Undo
                 GlobalData.Instance.playScene.gameManager.UseSkillItem(SkillItemType.Undo, false);
+                OnClickClose();
                 break;
             case 2: // Sample Return
                 GlobalData.Instance.playScene.gameManager.UseSkillItem(SkillItemType.Stash, false);
+                OnClickClose();
                 break;
             case 3: // Sample Shuffle
                 GlobalData.Instance.playScene.gameManager.UseSkillItem(SkillItemType.Shuffle, false);
+                OnClickClose();
                 break;
             default:
+                OnClickClose();
                 break;
         }
+    }
 
-        OnClickClose();
+    private void SetButtonInteractable(bool interactable)
+    {
+        isButtonInteractable = interactable;
+        m_touchLock.SetActive(!isButtonInteractable);
+        //Debug.Log(CodeManager.GetMethodName() + isButtonInteractable);
     }
 }

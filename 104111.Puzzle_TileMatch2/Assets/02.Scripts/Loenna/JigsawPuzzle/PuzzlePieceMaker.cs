@@ -242,7 +242,8 @@ public static class PuzzlePieceMaker
 
         string path = Path.Combine("Images/Puzzle/PieceDefault/", puzzleIndex.ToString());
         string pathAttached = Path.Combine("Images/Puzzle/PieceAttached/", puzzleIndex.ToString());
-        Debug.Log(CodeManager.GetMethodName() + path);
+        
+        //Debug.Log(CodeManager.GetMethodName() + path);
 
         var sprites = GetSprites(path);
         var spritesAttached = GetSprites(pathAttached);

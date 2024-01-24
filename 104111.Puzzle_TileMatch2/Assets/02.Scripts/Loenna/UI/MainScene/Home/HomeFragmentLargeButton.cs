@@ -29,7 +29,8 @@ public class HomeFragmentLargeButton : UITextButton
 	public void OnUpdateUI(User user)
 	{
 		int index = user.CurrentPlayingPuzzleIndex;
-        UnityEngine.Debug.Log(CodeManager.GetMethodName() + index);
+        //UnityEngine.Debug.Log(CodeManager.GetMethodName() + index);
+        
 		PuzzleData puzzleData = m_puzzleDataTable?.FirstOrDefault(key => key == index);
 		
 		if (puzzleData == null || !user.PlayingPuzzleCollection.TryGetValue(index, out uint placedPieces))

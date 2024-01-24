@@ -56,6 +56,7 @@ public partial class DebugPanel : MonoBehaviour
         Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat2, "Set Level", level));
 
         m_userManager?.Update(level: level);
+        UIManager.ClosePopupUI_ForceAll();
         UIManager.ShowSceneUI<MainScene>(new NineTap.Common.DefaultParameter());
     }
 
@@ -137,9 +138,11 @@ public partial class DebugPanel : MonoBehaviour
         {
             case PlayScene playScene:
                 Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat2, "Level Play", level));
+                UIManager.ClosePopupUI_ForceAll();
                 playScene.gameManager.LoadLevel(level, playScene.mainView.CachedRectTransform);
                 break;
             default:
+                UIManager.ClosePopupUI_ForceAll();
                 UIManager.ShowSceneUI<PlayScene>(new PlaySceneParameterCustom(Level:level));
                 break;
         }
@@ -151,6 +154,7 @@ public partial class DebugPanel : MonoBehaviour
         {
             case PlayScene playScene:
                 Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat, "Level Clear"));
+                UIManager.ClosePopupUI_ForceAll();
                 playScene.LevelClear();
                 playScene.gameManager.CheckClearRewards();
                 break;
@@ -163,6 +167,7 @@ public partial class DebugPanel : MonoBehaviour
         {
             case PlayScene playScene:
                 Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat, "Level Fail"));
+                UIManager.ClosePopupUI_ForceAll();
                 playScene.LevelFail();
                 break;
         }

@@ -108,7 +108,7 @@ public class TileItem : CachedBehaviour
 	[SerializeField]
 	private CanvasGroup m_dim;
 
-	[SerializeField]
+    [SerializeField]
 	private Text m_tmpText; //이미지가 없을 경우 텍스트로
 
 	[SerializeField]
@@ -127,6 +127,8 @@ public class TileItem : CachedBehaviour
 
 	private Vector3 m_originWorldPosition;
     private bool isScaling;
+    public bool isMoving;
+    public bool IsMoving => isMoving;
 
     private bool ShuffleMove;
     private float _shuffleAngle;
@@ -190,6 +192,7 @@ public class TileItem : CachedBehaviour
         //Debug.Log(CodeManager.GetMethodName() + gameObject.name);
 
         isScaling = false;
+        isMoving = false;
         m_disappearEffect.gameObject.SetActive(false);
 		m_scaleTween?.OnChangeValue(Vector3.one, 0f).Forget();
 		m_iconAlphaTween?.OnChangeValue(Color.white, -1f).Forget();
@@ -209,12 +212,16 @@ public class TileItem : CachedBehaviour
 	public void OnSetup(TileItemParameter parameter)
 	{
         isScaling = false;
+        isMoving = false;
 		m_tileDataTable = Game.Inst.Get<TableManager>().TileDataTable;
 		SoundManager soundManager = Game.Inst.Get<SoundManager>();
 
         m_positionTween = new TweenContext(
 			tweener: ObjectUtility.GetRawObject(CachedTransform)?
                 .DOMove(Vector2.zero, Constant.Game.TWEENTIME_TILE_DEFAULT)
+                .OnComplete(() => {
+                    isMoving = false;
+                })
                 .Pause()
 				.SetAutoKill(false)
 		);
@@ -238,8 +245,8 @@ public class TileItem : CachedBehaviour
 		);
 
 		List<EventTrigger.Entry> entries = new List<EventTrigger.Entry> {
-			new EventTrigger.Entry { eventID = EventTriggerType.PointerDown },
-			new EventTrigger.Entry { eventID = EventTriggerType.PointerUp }
+			new EventTrigger.Entry { eventID = EventTriggerType.PointerDown }
+			//new EventTrigger.Entry { eventID = EventTriggerType.PointerUp }
 		};
 
 		foreach (var entry in entries)
@@ -270,6 +277,7 @@ public class TileItem : CachedBehaviour
 				soundManager?.PlayFx(Constant.Sound.SFX_TILE_SELECT);
                 m_interactable = false;
                 isScaling = true;
+                isMoving = true;
 				
                 m_scaleTween?.OnChangeValue(Vector3.one * 1.3f, Constant.Game.TWEENTIME_TILE_SCALE, () => {
                     if (isScaling)
@@ -345,6 +353,7 @@ public class TileItem : CachedBehaviour
         {
             //Debug.Log(CodeManager.GetMethodName() + string.Format("[m_disappearEffect] {0}", CachedGameObject.name));
             isScaling = false;
+            isMoving = false;
         }
 
         return (location, Current != null) switch {
@@ -368,6 +377,9 @@ public class TileItem : CachedBehaviour
         //Debug.Log(location);
         return ObjectUtility.GetRawObject(CachedTransform)?
             .DOJump(value, 0.5f, 1, duration)
+            .OnComplete(() => {
+                isMoving = false;
+            })
             .AsyncWaitForCompletion()
             .AsUniTask();
     }

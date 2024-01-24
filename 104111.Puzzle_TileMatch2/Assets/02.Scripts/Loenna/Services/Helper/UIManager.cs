@@ -67,7 +67,7 @@ public static partial class UIManager
 
         if(closedPopup)
         {
-            Debug.Log(CodeManager.GetMethodName() + closedPopup);
+            Debug.Log(CodeManager.GetMethodName() + "Close Popup");
             return;
         }    
 		else
@@ -125,6 +125,11 @@ public static partial class UIManager
             }
 		}
 	}
+
+    public static void ClosePopupUI_ForceAll()
+    {
+        s_implementation?.PopupManager?.ClosePopupUI_ForceAll();
+    }
 
     public static void ClosePopupUI()
 	{
