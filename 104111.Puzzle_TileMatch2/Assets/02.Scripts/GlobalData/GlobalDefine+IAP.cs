@@ -35,7 +35,7 @@ public static partial class GlobalDefine
         // [TODO] IAP Result
 
         //product.Coin
-        //product.Contents
+        //product.Contents.GetValueOrDefault(key, 0)
         // [1] : Return
         // [2] : Undo
         // [3] : Shuffle
