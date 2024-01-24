@@ -101,6 +101,7 @@ public record ProductData
 	string Description,
 	ProductExposingType Required,
 	int Coin,
+    bool Consumable, 
 	IReadOnlyDictionary<int, long> Contents
 ) : TableRowData<int>(Index)
 {

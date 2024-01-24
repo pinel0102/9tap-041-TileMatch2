@@ -258,7 +258,9 @@ public class PopupManager
         if(lastPopup.ignoreBackKey)
             return true;
 
-		ClosePopup(lastPopup);
+        Debug.Log(CodeManager.GetMethodName() + string.Format("Close Popup : {0}", lastPopup.name));		
+        ClosePopup(lastPopup);
+
 		return true;
 	}
 
@@ -270,8 +272,9 @@ public class PopupManager
 			return;
 		}
 
-        for(int i=0; i < m_popups.Count; i++)
+        for(int i = m_popups.Count - 1; i >= 0; i--)
         {
+            Debug.Log(CodeManager.GetMethodName() + string.Format("Close Popup : {0}", m_popups.Last().name));
             ClosePopup(m_popups.Last());
         }
 	}

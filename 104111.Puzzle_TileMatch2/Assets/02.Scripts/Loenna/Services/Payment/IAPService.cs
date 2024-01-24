@@ -1,21 +1,22 @@
 #define IAP_DEBUG_LOG
+//#define USE_FAKE_STORE
 
 using UnityEngine;
 using UnityEngine.Purchasing;
 using UnityEngine.Purchasing.Security;
 using UnityEngine.Purchasing.Extension;
-
 using System;
 using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
-
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
-
 using NineTap.Common;
 using static NineTap.Common.ResultUtility;
 using static NineTap.Common.ResultTag;
+
+using Unity.Services.Core;
+using Unity.Services.Core.Environments;
 
 namespace NineTap.Payment
 {
@@ -40,46 +41,95 @@ namespace NineTap.Payment
 		public PaymentType PaymentType => PaymentType.IAP;
 		#endregion
 
+        private const string environment = "production";
+
 		#region Constructors
 		public IAPService()
 		{
 			m_purchaseResult = new AsyncReactiveProperty<IPaymentResult>(new IAPResult.Nothing())
 				.WithDispatcher()
 				.WithAfterSetValue(value => m_onConfirmPendingPurchase?.Invoke(value));
+
+            UniTask.Void(
+                async () => {
+                    try {
+                        var options = new InitializationOptions()
+                            .SetEnvironmentName(environment);
+            
+                        await UnityServices.InitializeAsync(options);
+                    }
+                    catch (Exception exception) {
+                        // An error occurred during initialization.
+                        Debug.LogWarning(CodeManager.GetMethodName() + exception);
+                    }
+                }
+            );
 		}
 
 		~IAPService()
 		{
 			m_purchaseResult.Dispose();
+            m_storeController = null;
+            m_storeExtensionProvider = null;
 		}
 		#endregion
 
 		#region IPaymentService Interface
 		public UniTask<bool> LoadProducts(ProductDataTable productDataTable)
 		{
-			//#if UNITY_EDITOR && IAP_DEBUG_LOG
-			//m_purchasingModule = StandardPurchasingModule.Instance(AppStore.fake);
-			//m_purchasingModule.useFakeStoreUIMode = FakeStoreUIMode.StandardUser;
-			//#else
-			//m_purchasingModule = StandardPurchasingModule.Instance();
-			//#endif
+#if UNITY_STANDALONE
+            return UniTask.FromResult(true);
+#endif
 
-			//ConfigurationBuilder builder = ConfigurationBuilder.Instance(m_purchasingModule);
-			//#if UNITY_IOS
-			////상품 추가
-			////builder.AddProduct
-			//#else
-			////상품 추가
-			////builder.AddProduct
-			//#endif
-			//UnityPurchasing.Initialize(this, builder);
+            if (IsInitialized())
+                return UniTask.FromResult(true);
+
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>IAP Initialize</color>"));
+
+#if UNITY_EDITOR && USE_FAKE_STORE
+			m_purchasingModule = StandardPurchasingModule.Instance(AppStore.fake);
+			m_purchasingModule.useFakeStoreUIMode = FakeStoreUIMode.StandardUser;
+#else
+			m_purchasingModule = StandardPurchasingModule.Instance();
+#endif
+
+            ConfigurationBuilder builder = ConfigurationBuilder.Instance(m_purchasingModule);
+
+			//상품 추가
+			var productList = productDataTable.GetProducts(PaymentType.IAP).Where(item => !string.IsNullOrEmpty(item.ProductId)).ToList();
+            productList.ForEach(productData => {
+                var productID = productData.ProductId;
+                var type = productData.Consumable ? UnityEngine.Purchasing.ProductType.Consumable : UnityEngine.Purchasing.ProductType.NonConsumable;
+                
+                Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} ({1})</color>", productID, type));
+                
+                AddProductToBuilder(ref builder, productID, type);
+            });
+
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Available Product : {0}</color>", productList.Count));
+
+			UnityPurchasing.Initialize(this, builder);
 
 			return UniTask.FromResult(true);
 		}
 
+        private bool IsInitialized()
+        {
+            return m_storeController != null && m_storeExtensionProvider != null;
+        }
+
+        private void AddProductToBuilder(ref ConfigurationBuilder _builder, string id, UnityEngine.Purchasing.ProductType type)
+        {
+            _builder.AddProduct(id, type, new IDs
+            {
+                { id, AppleAppStore.Name },
+                { id, GooglePlay.Name },
+            });
+        }
+
 		public void Request(ProductData productData, Action<IPaymentResult.Success> onSuccess, Action<IPaymentResult.Error> onError)
 		{
-			if (m_purchaseResult?.Value is IAPResult.Purchasing)
+            if (m_purchaseResult?.Value is IAPResult.Purchasing)
 			{
 				onError?.Invoke(Error(PurchaseFailureReason.ExistingPurchasePending));
 				return;
@@ -88,9 +138,11 @@ namespace NineTap.Payment
 			Product product = m_storeController?.products?.all?.FirstOrDefault(product => product.definition.id == productData.ProductId) ?? null;
 			if (product == null)
 			{
-				onError?.Invoke(new IAPResult.Error(""));
+				onError?.Invoke(new IAPResult.Error("product is null"));
 				return;
 			}
+
+            SDKManager.SendAnalytics_IAP_Purchase(product);
 
 			m_purchaseResult.Update(value => value = new IAPResult.Nothing());
 
@@ -127,23 +179,23 @@ namespace NineTap.Payment
 			if (IsCurrentStoreSupportedByValidator())
 			{
 				// Tangle Data 추가
-				//#if UNITY_EDITOR
-				//m_validator = new CrossPlatformValidator(
-				//	GooglePlayTangle.Data(),
-				//	AppleStoreKitTestTangle.Data(),
-				//	Application.identifier
-				//);
-				//#else
-				//m_validator = new CrossPlatformValidator(
-				//	GooglePlayTangle.Data(),
-				//	AppleTangle.Data(),
-				//	Application.identifier
-				//);
-				//#endif
+				#if UNITY_EDITOR
+				m_validator = new CrossPlatformValidator(
+					GooglePlayTangle.Data(),
+					AppleStoreKitTestTangle.Data(),
+					Application.identifier
+				);
+				#else
+				m_validator = new CrossPlatformValidator(
+					GooglePlayTangle.Data(),
+					AppleTangle.Data(),
+					Application.identifier
+				);
+				#endif
 			}
 			else
 			{
-				#if IAP_DEBUG_LOG
+				#if UNITY_EDITOR && USE_FAKE_STORE
 				Debug.LogWarning(WarnInvalidStoreMessage(m_purchasingModule.appStore));
 
 				#region Local Functions
@@ -260,9 +312,7 @@ namespace NineTap.Payment
 				//If the purchase is deemed invalid, the validator throws an IAPSecurityException.
 				catch (IAPSecurityException reason)
 				{
-#if IAP_DEBUG_LOG
-					Debug.Log($"Invalid receipt: {reason}");
-#endif
+					Debug.LogWarning($"Invalid receipt: {reason}");
 					return false;
 				}
 			}

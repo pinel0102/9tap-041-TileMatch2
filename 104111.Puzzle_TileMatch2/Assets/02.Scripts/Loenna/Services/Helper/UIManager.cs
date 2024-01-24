@@ -67,7 +67,7 @@ public static partial class UIManager
 
         if(closedPopup)
         {
-            Debug.Log(CodeManager.GetMethodName() + "Close Popup");
+            //Debug.Log(CodeManager.GetMethodName() + "Close Popup");
             return;
         }    
 		else

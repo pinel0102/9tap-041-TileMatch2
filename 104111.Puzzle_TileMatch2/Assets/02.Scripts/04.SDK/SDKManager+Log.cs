@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Unity.VisualScripting;
 using UnityEngine;
 
 #pragma warning disable 162, 219
@@ -11,12 +12,17 @@ public partial class SDKManager
 
     public static bool showLogParams = false;
 
+    private const string logColor = "yellow";
+    private readonly static string logFormat0 = $"<color={logColor}>{{0}}</color>";
+    private readonly static string logFormat1 = $"<color={logColor}>{{0}} {{1}}</color>";
+    private readonly static string logFormat2 = $"<color={logColor}>{{0}} {{1}} ({{2}})</color>";
+
 #region 분석
 
     ///<Summary>앱 기동시 유저 정보를 보낸다.</Summary>
     public static void SendAnalytics_User_App_Open()
     {
-        Debug.Log(CodeManager.GetMethodName());
+        Debug.Log(string.Format(logFormat0, CodeManager.GetMethodName()));
 
         string eventName = "user_app_open";
         var logParams = CreateParams(eventName);
@@ -34,7 +40,7 @@ public partial class SDKManager
     ///<Summary>게임 시작시 관련 정보를 보낸다.</Summary>
     public static void SendAnalytics_I_Scene_Play()
     {
-        Debug.Log(CodeManager.GetMethodName());
+        Debug.Log(string.Format(logFormat0, CodeManager.GetMethodName()));
         
         string eventName = "i_scene_play";
         var logParams = CreateParams(eventName);
@@ -45,7 +51,7 @@ public partial class SDKManager
     ///<Summary>게임 성공시 관련 정보를 보낸다.</Summary>
     public static void SendAnalytics_I_Scene_Clear()
     {
-        Debug.Log(CodeManager.GetMethodName());
+        Debug.Log(string.Format(logFormat0, CodeManager.GetMethodName()));
 
         userManager.UpdateLog(failedLevel: 0, failedCount: 0);
 
@@ -58,7 +64,7 @@ public partial class SDKManager
     ///<Summary>게임 실패시 관련 정보를 보낸다.</Summary>
     public static void SendAnalytics_I_Scene_Fail()
     {
-        Debug.Log(CodeManager.GetMethodName());
+        Debug.Log(string.Format(logFormat0, CodeManager.GetMethodName()));
 
         userManager.UpdateLog(failedLevel: globalData.CURRENT_LEVEL, failedCount: userManager.Current.FailedCount + 1);
 
@@ -72,7 +78,7 @@ public partial class SDKManager
     ///<Summary>기타 씬 시작시 관련 정보를 보낸다.</Summary>
     public static void SendAnalytics_I_Scene()
     {
-        Debug.Log(CodeManager.GetMethodName() + GlobalData.Instance.CURRENT_SCENE);
+        Debug.Log(string.Format(logFormat1, CodeManager.GetMethodName(), GlobalData.Instance.CURRENT_SCENE));
         
         string eventName = "i_scene";
         var logParams = CreateParams(eventName);
@@ -83,7 +89,7 @@ public partial class SDKManager
     ///<Summary>게임 클리어 이후 유저 클릭 정보를 보낸다.</Summary>
     public static void SendAnalytics_C_Scene_Clear(string action)
     {
-        Debug.Log(CodeManager.GetMethodName() + action);
+        Debug.Log(string.Format(logFormat1, CodeManager.GetMethodName(), action));
 
         string eventName = "c_scene_clear";
         var logParams = CreateParams(eventName);
@@ -95,7 +101,7 @@ public partial class SDKManager
     ///<Summary>게임 실패 이후 유저 클릭 정보를 보낸다.</Summary>
     public static void SendAnalytics_C_Scene_Fail(string action)
     {
-        Debug.Log(CodeManager.GetMethodName() + action);
+        Debug.Log(string.Format(logFormat1, CodeManager.GetMethodName(), action));
 
         string eventName = "c_scene_fail";
         var logParams = CreateParams(eventName);
@@ -107,7 +113,7 @@ public partial class SDKManager
     ///<Summary>게임 중 유저 클릭 정보를 보낸다.</Summary>
     public static void SendAnalytics_C_Scene(string action)
     {
-        Debug.Log(CodeManager.GetMethodName() + action);
+        Debug.Log(string.Format(logFormat1, CodeManager.GetMethodName(), action));
 
         string eventName = "c_scene";
         var logParams = CreateParams(eventName);
@@ -119,7 +125,7 @@ public partial class SDKManager
     ///<Summary>유저 클릭으로 아이템 획득시 관련 정보를 보낸다.</Summary>
     public static void SendAnalytics_C_Item_Get(string item_name, int count)
     {
-        Debug.Log(CodeManager.GetMethodName() + item_name);
+        Debug.Log(string.Format(logFormat2, CodeManager.GetMethodName(), item_name, count));
 
         string eventName = "c_item_get";
         var logParams = CreateParams(eventName);
@@ -132,7 +138,7 @@ public partial class SDKManager
     ///<Summary>유저 클릭으로 아이템 사용시 관련 정보를 보낸다.</Summary>
     public static void SendAnalytics_C_Item_Use(string item_name, int count)
     {
-        Debug.Log(CodeManager.GetMethodName() + item_name);
+        Debug.Log(string.Format(logFormat2, CodeManager.GetMethodName(), item_name, count));
 
         string eventName = "c_item_use";
         var logParams = CreateParams(eventName);
@@ -146,7 +152,7 @@ public partial class SDKManager
     ///<Summary>전면 광고 시청 시작시 관련 정보를 보낸다.</Summary>
     public static void SendAnalytics_Interstitial_Ads_Show()
     {
-        Debug.Log(CodeManager.GetMethodName());
+        Debug.Log(string.Format(logFormat0, CodeManager.GetMethodName()));
 
         string eventName = "Interstitial_Ads_Show";
         var logParams = CreateParams(eventName);
@@ -165,7 +171,7 @@ public partial class SDKManager
     ///<Summary>리워드 광고 시청 시작시 관련 정보를 보낸다.</Summary>
     public static void SendAnalytics_Video_Ads_Show()
     {
-        Debug.Log(CodeManager.GetMethodName());
+        Debug.Log(string.Format(logFormat0, CodeManager.GetMethodName()));
 
         string eventName = "Video_Ads_Show";
         var logParams = CreateParams(eventName);
@@ -184,7 +190,7 @@ public partial class SDKManager
     ///<Summary>리워드 광고 시청 완료시 관련 정보를 보낸다.</Summary>
     public static void SendAnalytics_Video_Ads_Reward()
     {
-        Debug.Log(CodeManager.GetMethodName());
+        Debug.Log(string.Format(logFormat0, CodeManager.GetMethodName()));
 
         string eventName = "Video_Ads_Reward";
         var logParams = CreateParams(eventName);
@@ -195,7 +201,7 @@ public partial class SDKManager
     ///<Summary>인앱 결제시 관련 정보를 보낸다.</Summary>
     public static void SendAnalytics_IAP_Purchase(UnityEngine.Purchasing.Product product)
     {
-        Debug.Log(CodeManager.GetMethodName());
+        Debug.Log(string.Format(logFormat2, CodeManager.GetMethodName(), product.definition.id, product.metadata.localizedPriceString));
 
         string eventName = "IAP_Purchase";
 
@@ -213,7 +219,7 @@ public partial class SDKManager
     ///<Summary>누적 횟수 달성 정보를 보낸다.</Summary>
     private static void SendAnalytics_Accumulated(string eventName)
     {
-        Debug.Log(CodeManager.GetMethodName() + eventName);
+        Debug.Log(string.Format(logFormat1, CodeManager.GetMethodName(), eventName));
         
         var logParams = CreateParams(eventName);
 

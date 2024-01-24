@@ -69,9 +69,7 @@ public class ShopProductBundleItem : CachedBehaviour
 
 		m_goldWidget.UpdateUI(product.UIType, "UI_Shop_Icon_Coins", $"{product.Coin} Gold");
 
-		IPaymentService paymentService = Game.Inst.Get<IPaymentService>();
-
-        m_button.onClick.RemoveAllListeners();
+		m_button.onClick.RemoveAllListeners();
 		m_button.OnSetup(
 			new UITextButtonParameter {
 				ButtonText = product.GetPriceString(),
