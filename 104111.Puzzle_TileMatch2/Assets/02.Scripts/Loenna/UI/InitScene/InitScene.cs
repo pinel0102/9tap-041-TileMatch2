@@ -135,7 +135,7 @@ public class InitScene : UIScene
 						await puzzleManager.LoadAsync(puzzleData, placedPieces, unlockedPieces);
 						m_puzzleManager.Value = puzzleManager;
 
-                        SDKManager.Instance.Initialize(user.InstallDate, user.UserGroup);
+                        SDKManager.Instance.Initialize(user.AppOpenCount, user.InstallDate, user.UserGroup, user.NoAD);
 
 						return true;
 					}

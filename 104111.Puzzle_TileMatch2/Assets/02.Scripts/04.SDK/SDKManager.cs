@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Cysharp.Threading.Tasks;
 
 public partial class SDKManager : SingletonMono<SDKManager>
 {
@@ -9,6 +10,7 @@ public partial class SDKManager : SingletonMono<SDKManager>
 
     [Header("★ [Live] SDK Manager")]
     public static string deviceID;
+    public static int appOpenCount = 0;
     public static string installDate = dateDefault;
     public static string userGroup = "user_A_set";
 
@@ -18,18 +20,19 @@ public partial class SDKManager : SingletonMono<SDKManager>
     private WaitForSecondsRealtime delay_2sec = new WaitForSecondsRealtime(2);
 
     ///<Summary>SDK 초기화. Awake()에서 사용.</Summary>
-    public void Initialize(string _installDate = dateDefault, string _userGroup = "A")
+    public void Initialize(int _appOpenCount = 0, string _installDate = dateDefault, string _userGroup = "A", bool _isADFreeUser = false)
     {
-        Debug.Log(CodeManager.GetMethodName() + string.Format("InstallDate : {0} / UserGroup : {1}", _installDate, _userGroup));
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>appOpenCount : {0} / InstallDate : {1} / UserGroup : {2} / IsADFreeUser = {3}</color>", _appOpenCount, _installDate, _userGroup, _isADFreeUser));
 
         deviceID = SystemInfo.deviceUniqueIdentifier;
+        appOpenCount = _appOpenCount;
         installDate = _installDate;
         userGroup = string.Format(formatUserGroup, _userGroup);
 
         Initialize_AppsFlyer(ProjectManager.appsflyer_dev_key, ProjectManager.appStoreConnectId);     
         Initialize_Facebook();
         Initialize_Firebase();
-        Initialize_IronSource(ProjectManager.ironSource_AppKey_AOS, ProjectManager.ironSource_AppKey_iOS);
+        Initialize_IronSource(ProjectManager.ironSource_AppKey_AOS, ProjectManager.ironSource_AppKey_iOS, _isADFreeUser);
     }
 
     ///<Summary>SDK 사용 시작. 초기 씬이 완료되면 사용.</Summary>
@@ -37,20 +40,15 @@ public partial class SDKManager : SingletonMono<SDKManager>
     {
         Debug.Log(CodeManager.GetMethodName());
 
-        StopAllCoroutines();
-        StartCoroutine(CO_SDKStart(true));
+        UniTask.Void(
+            async () => {
+                await UniTask.Delay(TimeSpan.FromSeconds(2f));
+                Start_Facebook();
+                await UniTask.Delay(TimeSpan.FromSeconds(1f));
+                Start_IronSource();
+
+                SendAnalytics_User_App_Open();
+            }
+        );
     }
-
-    private IEnumerator CO_SDKStart(bool sendUserAppOpen)
-    {
-        yield return delay_2sec;
-        Start_Facebook();
-        yield return delay_1sec;
-        Start_IronSource();
-
-        if (sendUserAppOpen)
-            SendAnalytics_User_App_Open();
-    }
-
-    
 }

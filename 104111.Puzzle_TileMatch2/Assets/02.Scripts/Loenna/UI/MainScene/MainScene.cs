@@ -225,8 +225,7 @@ public class MainScene : UIScene
 					ExitParameter: ExitBaseParameter.CancelParam,
                     BaseButtonParameter: new UITextButtonParameter {
 						OnClick = () => {
-							Debug.Log(CodeManager.GetMethodName() + "Request AD");                            
-                            //GetItem_Life(1);
+                            GlobalDefine.RequestAD_RewardVideo(0);
 						},
 						ButtonText = "Watch",
 						SubWidgetBuilder = () => {
@@ -244,11 +243,6 @@ public class MainScene : UIScene
     public void MoveTo(MainMenuType type)
     {
         m_scrollView.MoveTo((int)type);
-    }
-
-    public void GetItem_Life(int addCount)
-    {
-        m_userManager.GetItem_Life(addCount);
     }
 
 	public override void Show()

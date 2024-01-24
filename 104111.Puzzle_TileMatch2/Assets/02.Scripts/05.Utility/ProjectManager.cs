@@ -40,7 +40,7 @@ public static class ProjectManager
     public const string ironSource_AppKey_AOS = "1a359167d";
     public const string ironSource_AppKey_iOS = "1a3595005";
     public const string ironSource_Admob_AppID_AOS = "ca-app-pub-9834260879045639~8860985658";
-    public const string ironSource_Admob_AppID_iOS = "ca-app-pub-9834260879045639~3680811169";    
+    public const string ironSource_Admob_AppID_iOS = "ca-app-pub-9834260879045639~3680811169";
 
     // AppsFlyerManager.cs : 추가 작업 필요 없음.
     public const string appsflyer_dev_key = "J7eXAem8sBRuHTr3iX58d5";

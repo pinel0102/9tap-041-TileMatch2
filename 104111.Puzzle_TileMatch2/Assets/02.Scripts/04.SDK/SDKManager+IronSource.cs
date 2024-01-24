@@ -9,10 +9,11 @@ using System;
 public partial class SDKManager
 {
     [Header("★ [Settings] IronSource")]
-    public bool bIsEnableFullscreenAds = true;
-    /// <Summary>최초 설치시 광고 비표시 기간 (클리어 레벨).</Summary>
+    public bool m_isAdFreeUser;
+
+    /// <Summary>최초 설치시 광고 비표시 기간 (전면) (클리어 레벨).</Summary>
     public int firstAdsFreeLevel = 20;
-    /// <Summary>최초 설치시 광고 비표시 기간 (초).</Summary>
+    /// <Summary>최초 설치시 광고 비표시 기간 (배너, 전면) (초).</Summary>
     public int firstAdsFreeDelay = 180;
     /// <Summary>전면 광고 주기 (초).</Summary>
     public int interstitialDelay = 120;
@@ -20,21 +21,21 @@ public partial class SDKManager
     public int rewardNum;
 
     /// <Summary>현재 타임 카운트 (초).</Summary>///
-    private int currentTimeCount;
-    private bool isBannerOn;
-    private bool openRemoveAdsPopup;
+    private static int currentTimeCount;
+    private static bool isBannerOn;
+    private static bool openRemoveAdsPopup;
     private static string ironSource_appKey;
-    private static bool isInitialized_IronSource = false;
-    
+    private static bool isInitialized_IronSource = false;    
     private WaitForSecondsRealtime wUpdateDelay = new WaitForSecondsRealtime(4f);
     private WaitForSecondsRealtime wOneSecond = new WaitForSecondsRealtime(1f);
 
 
 #region Initialize
 
-    private void Initialize_IronSource(string appKey_AOS, string appKey_iOS)
+    private void Initialize_IronSource(string appKey_AOS, string appKey_iOS, bool isADFreeUser = false)
     {
         isInitialized_IronSource = false;
+        SetAdFreeUser(isADFreeUser);
 
 #if ENABLE_IRONSOURCE
 
@@ -49,7 +50,6 @@ public partial class SDKManager
 #endif
         Debug.Log(CodeManager.GetMethodName() + string.Format("<color=#EC46EB>IronSource [{0}] {1}</color>", IronSource.pluginVersion(), ironSource_appKey));
 
-        bIsEnableFullscreenAds = true;
         currentTimeCount = 0;
 
         IronSourceConfig.Instance.setClientSideCallbacks(true);
@@ -95,53 +95,11 @@ public partial class SDKManager
 
             if (!isBannerOn)
             {
-                //if (!sdkManager.gameManager.noAds)
-                {
-                    ShowBanner();
-                }
+                ShowBanner();
             }
 
             yield return wUpdateDelay;
         }
-#endif
-    }
-
-    private void LoadInterstitial()
-    {
-#if ENABLE_IRONSOURCE
-
-#if DEBUG || DEVELOPMENT_BUILD
-		IronSource.Agent.loadInterstitial();
-#else
-		bool bIsFirstStart = ObscuredPrefs.GetBool("IS_FIRST_START", true);
-
-		// 처음 시작 일 경우
-		if(bIsFirstStart) 
-        {
-			string oStartTime = ObscuredPrefs.GetString("FIRST_START_TIME", string.Empty);
-
-			// 시작 시간이 없을 경우
-			if(oStartTime == null || oStartTime.Length <= 0) {
-				oStartTime = GlobalDefine.TimeToString(DateTime.Now, GlobalDefine.dateFormat_HHmmss);
-				//ObscuredPrefs.SetString("FIRST_START_TIME", oStartTime);
-			}
-
-			var stStartTime = GlobalDefine.ToDateTime(oStartTime, GlobalDefine.dateFormat_HHmmss);
-			var stDeltaTime = DateTime.Now.Subtract(stStartTime);
-			
-			// 최초 딜레이 간격이 지났을 경우
-			if(stDeltaTime.TotalSeconds >= firstAdsFreeDelay) 
-            {
-				//ObscuredPrefs.GetBool("IS_FIRST_START", false);
-				IronSource.Agent.loadInterstitial();	
-			}
-		}
-        else
-        {
-			IronSource.Agent.loadInterstitial();
-		}
-#endif
-
 #endif
     }
 
@@ -154,14 +112,17 @@ public partial class SDKManager
         
         Debug.Log(CodeManager.GetMethodName() + "OnApplicationPause = " + isPaused);
 
-        IronSource.Agent.onApplicationPause(isPaused);
+        IronSource.Agent.onApplicationPause(isPaused);        
         
-        //if (!sdkManager.gameManager.noAds)
-        {
-            ShowBanner();
-        }
-
+        ShowBanner();
 #endif
+    }
+
+    public void SetAdFreeUser(bool isAdFreeUser)
+    {
+        m_isAdFreeUser = isAdFreeUser;
+
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=#EC46EB>isAdFreeUser : {0}</color>", m_isAdFreeUser));
     }
 
 #endregion Initialize
@@ -169,40 +130,46 @@ public partial class SDKManager
 
 #region Handle AD
 
+    private void LoadInterstitial()
+    {
+#if ENABLE_IRONSOURCE
+
+		if (appOpenCount <= 1) 
+        {
+			var stStartTime = ToDateTime(installDate);
+			var stDeltaTime = DateTime.Now.Subtract(stStartTime);
+			
+			// 최초 설치 딜레이 적용.
+			if(stDeltaTime.TotalSeconds >= firstAdsFreeDelay) 
+            {
+				IronSource.Agent.loadInterstitial();	
+			}
+		}
+        else
+        {
+			IronSource.Agent.loadInterstitial();
+		}
+#endif
+    }
+
     public void ShowBanner()
     {
 #if ENABLE_IRONSOURCE
 
-        //Debug.Log("noAds " + sdkManager.gameManager.noAds);
+        if (m_isAdFreeUser) return;
 
-        //if (sdkManager.gameManager.noAds) return;
-
-		// 2020.10.27 sd.lee (최초 광고 호출 시간 적용) {
-		//bool bIsFirstStart = ObscuredPrefs.GetBool("IS_FIRST_START", true);
-
-		// 처음 시작 일 경우
-		//if(bIsFirstStart) 
+		if (appOpenCount <= 1)
         {
-			//string oStartTime = ObscuredPrefs.GetString("FIRST_START_TIME", string.Empty);
+			var stStartTime = ToDateTime(installDate);
+			var stDeltaTime = DateTime.Now.Subtract(stStartTime);
 
-			// 시작 시간이 없을 경우
-			//if(oStartTime == null || oStartTime.Length <= 0) 
+			// 최초 설치 딜레이 적용.
+			if(stDeltaTime.TotalSeconds >= firstAdsFreeDelay) 
             {
-                //oStartTime = GlobalDefine.TimeToString(DateTime.Now, GlobalDefine.dateFormat_HHmmss);
-				//ObscuredPrefs.SetString("FIRST_START_TIME", oStartTime);
-			}
-
-            //var stStartTime = ToDateTime(oStartTime, dateFormat_HHmmss);
-			//var stDeltaTime = DateTime.Now.Subtract(stStartTime);
-
-			// 최초 딜레이 간격이 지났을 경우
-			//if(stDeltaTime.TotalSeconds >= firstAdsFreeDelay) 
-            {
-				//ObscuredPrefs.GetBool("IS_FIRST_START", false);
 				IronSource.Agent.loadBanner(IronSourceBannerSize.SMART, IronSourceBannerPosition.BOTTOM);
 			}
 		}
-        //else
+        else
         {
 			IronSource.Agent.loadBanner(IronSourceBannerSize.SMART, IronSourceBannerPosition.BOTTOM);
 		}
@@ -220,9 +187,9 @@ public partial class SDKManager
     {
 #if ENABLE_IRONSOURCE
 
-        //if (sdkManager.gameManager.showDebugUI) return;
+        if (m_isAdFreeUser) return;
 
-        //if (!sdkManager.gameManager.noAds && bIsEnableFullscreenAds && ObscuredPrefs.GetInt(GlobalDefine.KEY_CLEAR_LEVEL, 0) >= firstAdsFreeLevel)
+        if (globalData.CURRENT_LEVEL >= firstAdsFreeLevel)
         {
             if(currentTimeCount > interstitialDelay)
             {
@@ -232,6 +199,7 @@ public partial class SDKManager
 
 #if UNITY_EDITOR
                 Interstitial_OnAdClosedEvent(null);
+                currentTimeCount = 0;
 #else
                 if (IronSource.Agent.isInterstitialReady())
                 {
@@ -247,9 +215,6 @@ public partial class SDKManager
 #endif
             }
         }
-
-		// 2020.11.30 sd.lee (전면 광고 관련 로직 수정)
-		bIsEnableFullscreenAds = true;
 
 #endif
     }
@@ -270,11 +235,11 @@ public partial class SDKManager
 
             SendAnalytics_Video_Ads_Show();        
         }
-#endif
 
 #if UNITY_EDITOR
         rewardNum = num;
         GetReward();
+#endif
 #endif
     }
 
@@ -282,8 +247,8 @@ public partial class SDKManager
     {
         Debug.Log(CodeManager.GetMethodName() + "Get Reward : " + rewardNum);
 
-        //rewardButton[rewardNum].onClick.Invoke();
-        SendAnalytics_Video_Ads_Reward();
+        GlobalDefine.GetReward_FromVideo(rewardNum);
+        SendAnalytics_Video_Ads_Reward(rewardNum);
     }
 
 #endregion Reward AD
@@ -387,8 +352,8 @@ public partial class SDKManager
 
         LoadInterstitial();
 
-        //if (openRemoveAdsPopup)
-        //    UIManager.Instance.Open_Remove_Ads_Popup();
+        if (openRemoveAdsPopup)
+            globalData.ShowRemoveAdsPopup();
     }
 
     private void Interstitial_OnAdShowSucceededEvent(IronSourceAdInfo adInfo)

@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using Unity.VisualScripting;
 using UnityEngine;
 
 #pragma warning disable 162, 219
@@ -188,12 +187,13 @@ public partial class SDKManager
     }
 
     ///<Summary>리워드 광고 시청 완료시 관련 정보를 보낸다.</Summary>
-    public static void SendAnalytics_Video_Ads_Reward()
+    public static void SendAnalytics_Video_Ads_Reward(int rewardNum)
     {
-        Debug.Log(string.Format(logFormat0, CodeManager.GetMethodName()));
+        Debug.Log(string.Format(logFormat1, CodeManager.GetMethodName(), rewardNum));
 
         string eventName = "Video_Ads_Reward";
         var logParams = CreateParams(eventName);
+        logParams["option11"] = rewardNum.ToString();
 
         SendEvent(eventName, logParams);
     }

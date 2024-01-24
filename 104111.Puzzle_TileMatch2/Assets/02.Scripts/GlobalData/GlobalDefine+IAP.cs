@@ -48,6 +48,19 @@ public static partial class GlobalDefine
                 HUDType.COIN
             )
         );*/
+
+        Dictionary<SkillItemType, int> addItems = new()
+        {
+            { SkillItemType.Stash,      (int)product.Contents.GetValueOrDefault(1, 0) },
+            { SkillItemType.Undo,       (int)product.Contents.GetValueOrDefault(2, 0) },
+            { SkillItemType.Shuffle,    (int)product.Contents.GetValueOrDefault(3, 0) }
+        };
+
+        float addBooster = product.Contents.GetValueOrDefault(4, 0);
+
+        GetItems(product.Coin, addItems, addBooster);
+
+        SetADFreeUser();
     }
 
     public static void ShowIAPResult_Fail(ProductData product, IPaymentResult.Error error)
@@ -55,5 +68,14 @@ public static partial class GlobalDefine
         Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : ERROR : {1}", product.ProductId, error.ToString()));
 
         //
+    }
+
+    private static void SetADFreeUser()
+    {
+        SDKManager.Instance.SetAdFreeUser(true);
+        RequestAD_HideBanner();
+
+        if(!GlobalData.Instance.userManager.Current.NoAD)
+            GlobalData.Instance.userManager.UpdateLog(noAD: true);
     }
 }

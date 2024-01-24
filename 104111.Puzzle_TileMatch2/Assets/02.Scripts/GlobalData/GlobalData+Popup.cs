@@ -53,4 +53,21 @@ public partial class GlobalData
             )
         );
     }
+
+    public void ShowRemoveAdsPopup(Action onClick = null)
+    {
+        UIManager.ShowPopupUI<GiveupPopup>(
+            new GiveupPopupParameter(
+                Title: "Purchase",
+                Message: "Purchase Life",
+                ignoreBackKey: false,
+                ExitParameter: ExitBaseParameter.CancelParam,
+                BaseButtonParameter: new UITextButtonParameter {
+                    ButtonText = "Go to Shop",
+                    OnClick = onClick
+                },
+                HUDTypes: HUDType.ALL
+            )
+        );
+    }
 }

@@ -226,9 +226,9 @@ public class UserManager : IDisposable
 
 		TimeSpan booster = TimeSpan.Zero;
 
-		if (rewards.TryGetValue(ProductType.HeartBooster, out var seconds))
+		if (rewards.TryGetValue(ProductType.HeartBooster, out var minutes))
 		{
-			booster = TimeSpan.FromSeconds(seconds);
+			booster = TimeSpan.FromMinutes(minutes);
 		}
 
 		m_user.Update(
@@ -330,6 +330,35 @@ public class UserManager : IDisposable
                 sendAppOpenCount: sendAppOpenCount,
                 sendInterstitalViewCount: sendInterstitalViewCount,
                 sendRewardViewCount: sendRewardViewCount
+			)
+		);
+	}
+
+    public void GetItems
+	(
+	 	Optional<long> addCoin = default, 
+		Optional<Dictionary<SkillItemType, int>> addSkillItems = default,
+        Optional<float> addBooster = default
+	)
+	{
+		if (m_user?.Value == null)
+		{
+			return;
+		}
+        
+        m_user.Update(
+			user => user.Update(
+				coin: user.Coin + addCoin.GetValueOrDefault(0),
+				ownSkillItems: 
+                    addSkillItems.HasValue ?
+                    user.OwnSkillItems.Select(
+                        pair => {
+                            int value = pair.Value + (addSkillItems.Value.ContainsKey(pair.Key) ? addSkillItems.Value[pair.Key] : 0);
+                            return KeyValuePair.Create(pair.Key, value);
+                        }
+                    )
+                    .ToDictionary(keySelector: pair => pair.Key, elementSelector: pair => pair.Value) : user.OwnSkillItems,
+                expiredLifeBoosterAt: user.ExpiredLifeBoosterAt + TimeSpan.FromMinutes(addBooster.GetValueOrDefault(0))
 			)
 		);
 	}
