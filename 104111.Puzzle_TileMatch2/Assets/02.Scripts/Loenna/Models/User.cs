@@ -189,12 +189,17 @@ public record User
 		return 
 		(
 			coin: Coin >= requireCoin.GetValueOrDefault(0),
-			life: DateTimeOffset.FromUnixTimeMilliseconds(ExpiredLifeBoosterTime) - DateTimeOffset.Now > TimeSpan.FromSeconds(0) || Life > 0,
+			life: ExpiredLifeBoosterAt - DateTimeOffset.Now > TimeSpan.FromSeconds(0) || Life > 0,
 			puzzle: Puzzle >= requirePuzzle.GetValueOrDefault(0)
 		);
 	}
 
 	public bool IsFullLife() => Life >= Constant.User.MAX_LIFE_COUNT;
+    public bool IsBoosterTime() => GetBoosterStatus().Item1;
+
+    private const string timeFormat_hhmmss = @"hh\:mm\:ss";
+    private const string timeFormat_hmmss = @"h\:mm\:ss";
+    private const string timeFormat_mmss = @"mm\:ss";
 
     /// <summary>
     /// 라이프 상태를 갱신한다.
@@ -224,12 +229,13 @@ public record User
             }
             else
             {
-                DateTimeOffset endChargeLifeAt = DateTimeOffset.FromUnixTimeMilliseconds(EndChargeLifeTime);
-
-                TimeSpan chargeTimeSpan = endChargeLifeAt - DateTime.Now;
+                TimeSpan chargeTimeSpan = EndChargeLifeAt - DateTime.Now;
                 var millionSec = Math.Max(0, chargeTimeSpan.TotalMilliseconds % Constant.User.REQUIRE_CHARGE_LIFE_MILLISECONDS);
+                TimeSpan span = TimeSpan.FromMilliseconds(millionSec);
 
-                timeString = TimeSpan.FromMilliseconds(millionSec).ToString(@"mm\:ss");
+                timeString = span.Hours > 9 ? span.ToString(timeFormat_hhmmss)
+                           : span.Hours > 0 ? span.ToString(timeFormat_hmmss)
+                           : span.ToString(timeFormat_mmss);
             }
         }
 
@@ -238,65 +244,17 @@ public record User
 
     private (bool, string) GetBoosterStatus()
     {
-        DateTimeOffset expiredLifeBoosterAt = DateTimeOffset.FromUnixTimeMilliseconds(ExpiredLifeBoosterTime);
-        if (DateTime.Now <= expiredLifeBoosterAt)
+        if (DateTime.Now <= ExpiredLifeBoosterAt)
         {
-            TimeSpan span = expiredLifeBoosterAt - DateTime.Now;
-            return (true, span.ToString(@"mm\:ss"));
+            TimeSpan span = ExpiredLifeBoosterAt - DateTime.Now;
+            return (true, span.Days > 0 ? string.Format("{0}d {1}", span.Days, span.ToString(timeFormat_hhmmss)) 
+                        : span.Hours > 9 ? span.ToString(timeFormat_hhmmss) 
+                        : span.Hours > 0 ? span.ToString(timeFormat_hmmss)
+                        : span.ToString(timeFormat_mmss));
         }
         else
         {
             return (false, string.Empty);
         }
     }
-
-    /*public string GetLifeString()
-	{
-		if (IsBoosterTime())
-		{
-            return string.Empty;
-		}
-
-        return Mathf.Max(0, Life).ToString();
-	}
-
-    public string GetLifeRemainTime()
-    {
-        if (IsBoosterTime())
-		{
-			return GetBoosterRemainTime();
-		}
-
-		if (IsFullLife())
-		{
-			return Constant.User.MAX_LIFE_TEXT;
-		}
-        else
-        {
-            DateTimeOffset endChargeLifeAt = DateTimeOffset.FromUnixTimeMilliseconds(EndChargeLifeTime);
-
-            TimeSpan chargeTimeSpan = endChargeLifeAt - DateTime.Now;
-            var millionSec = Math.Max(0, chargeTimeSpan.TotalMilliseconds % Constant.User.REQUIRE_CHARGE_LIFE_MILLISECONDS);
-
-            return TimeSpan.FromMilliseconds(millionSec).ToString(@"mm\:ss");
-        }
-    }
-
-    public bool IsBoosterTime()
-    {
-        DateTimeOffset expiredLifeBoosterAt = DateTimeOffset.FromUnixTimeMilliseconds(ExpiredLifeBoosterTime);
-        return DateTime.Now <= expiredLifeBoosterAt;
-    }
-
-    public string GetBoosterRemainTime()
-    {
-        if (IsBoosterTime())
-        {
-            DateTimeOffset expiredLifeBoosterAt = DateTimeOffset.FromUnixTimeMilliseconds(ExpiredLifeBoosterTime);
-            TimeSpan span = expiredLifeBoosterAt - DateTime.Now;
-            return span.ToString(@"mm\:ss");
-        }
-
-        return string.Empty;
-    }*/
 }

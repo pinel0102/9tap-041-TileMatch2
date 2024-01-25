@@ -56,7 +56,7 @@ public static partial class GlobalDefine
             { SkillItemType.Shuffle,    (int)product.Contents.GetValueOrDefault(3, 0) }
         };
 
-        float addBooster = product.Contents.GetValueOrDefault(4, 0);
+        long addBooster = product.Contents.GetValueOrDefault(4, 0);
 
         GetItems(product.Coin, addItems, addBooster);
 

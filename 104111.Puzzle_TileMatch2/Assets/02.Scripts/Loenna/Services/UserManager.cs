@@ -190,7 +190,7 @@ public class UserManager : IDisposable
 			return false;
 		}
 
-		bool onBooster = DateTimeOffset.FromUnixTimeMilliseconds(Current.ExpiredLifeBoosterTime) - DateTimeOffset.Now >= TimeSpan.FromSeconds(0);
+		bool onBooster = Current.IsBoosterTime();
         int oldLife = Current.Life;
         int newLife = onBooster ? Current.Life : Current.Life - 1;
 
@@ -264,7 +264,7 @@ public class UserManager : IDisposable
 		Optional<int> life = default,
 		Optional<int> puzzle = default,
         Optional<int> goldPiece = default,
-		Optional<DateTimeOffset> expiredLifeBoosterAt = default,
+		//Optional<DateTimeOffset> expiredLifeBoosterAt = default,
         Optional<DateTimeOffset> endChargeLifeAt = default,
         Optional<int> level = default,
         Optional<bool> isRated = default,
@@ -285,7 +285,7 @@ public class UserManager : IDisposable
 				life: life,
 				puzzle: puzzle,
                 goldPiece: goldPiece,
-				expiredLifeBoosterAt: expiredLifeBoosterAt,
+				//expiredLifeBoosterAt: expiredLifeBoosterAt,
                 endChargeLifeAt: endChargeLifeAt,
 				level: level,
                 isRated: isRated,
@@ -338,13 +338,15 @@ public class UserManager : IDisposable
 	(
 	 	Optional<long> addCoin = default, 
 		Optional<Dictionary<SkillItemType, int>> addSkillItems = default,
-        Optional<float> addBooster = default
+        Optional<long> addBooster = default
 	)
 	{
 		if (m_user?.Value == null)
 		{
 			return;
 		}
+
+        var (isBoosterTime, _, _) = Current.GetLifeStatus();
         
         m_user.Update(
 			user => user.Update(
@@ -358,7 +360,8 @@ public class UserManager : IDisposable
                         }
                     )
                     .ToDictionary(keySelector: pair => pair.Key, elementSelector: pair => pair.Value) : user.OwnSkillItems,
-                expiredLifeBoosterAt: user.ExpiredLifeBoosterAt + TimeSpan.FromMinutes(addBooster.GetValueOrDefault(0))
+                expiredLifeBoosterAt: isBoosterTime ? user.ExpiredLifeBoosterAt + TimeSpan.FromMinutes(addBooster.GetValueOrDefault(0))
+                                                    : DateTimeOffset.Now + TimeSpan.FromMinutes(addBooster.GetValueOrDefault(0))
 			)
 		);
 	}
@@ -422,12 +425,10 @@ public class UserManager : IDisposable
 
 	private void OnUpdateEverySecond(TimeSpan second)
 	{
-		if (Current.IsFullLife())
+		if (!Current.IsFullLife() || Current.IsBoosterTime())
 		{
-			return;
+			m_user.Update(user => user.Update());
 		}
-
-        m_user.Update(user => user.Update());
 	}
 
     public void ResetUser()
