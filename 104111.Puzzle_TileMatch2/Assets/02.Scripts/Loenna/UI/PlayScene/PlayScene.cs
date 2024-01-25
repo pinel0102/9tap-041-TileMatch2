@@ -373,6 +373,14 @@ public partial class PlayScene : UIScene
         m_gameManager.LoadLevel(level, m_mainView.CachedRectTransform);
 	}
 
+    public override void Show()
+    {
+        base.Show();
+
+        SDKManager.SendAnalytics_I_Scene();
+        GlobalDefine.RequestAD_ShowBanner();
+    }
+
 	private void OnExit(bool onJumpStore)
 	{
 		UIManager.ClosePopupUI();

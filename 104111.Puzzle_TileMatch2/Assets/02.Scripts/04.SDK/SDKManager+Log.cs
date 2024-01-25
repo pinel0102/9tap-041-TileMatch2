@@ -251,10 +251,11 @@ public partial class SDKManager
         logParams["event_name"] = eventName;
         logParams["install_date"] = installDate;
         logParams["log_date"] = GetCurrentTime();
+        logParams["purchased_user"] = userManager.Current.NoAD ? "1" : "0";
         logParams["option1"] = userGroup;
         logParams["option2"] = globalData.CURRENT_SCENE;
         logParams["option3"] = globalData.CURRENT_LEVEL.ToString();
-        logParams["option4"] = userManager.Current.IsBoosterTime().ToString();
+        logParams["option4"] = userManager.Current.IsBoosterTime() ? "1" : "0";
         logParams["option5"] = userManager.Current.Life.ToString();
         logParams["option6"] = userManager.Current.Coin.ToString();
         logParams["option7"] = userManager.Current.Puzzle.ToString();

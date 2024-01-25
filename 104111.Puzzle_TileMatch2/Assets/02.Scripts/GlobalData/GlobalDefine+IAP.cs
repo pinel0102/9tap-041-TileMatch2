@@ -12,7 +12,7 @@ public static partial class GlobalDefine
 
         Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : {1}", product.ProductId, product.FullName));
 
-#if !UNITY_EDITOR
+#if UNITY_EDITOR
         IPaymentResult.Success result = new IPaymentResult.Success(0);
         ShowIAPResult_Success(product, result);
 #else

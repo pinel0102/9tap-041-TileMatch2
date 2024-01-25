@@ -20,6 +20,8 @@ public partial class SDKManager
     /// <Summary>리워드 광고 보상 인덱스.</Summary>
     public int rewardNum;
 
+    private static bool IsBannerAvailable => globalData.CURRENT_SCENE == GlobalDefine.SCENE_PLAY;
+
     /// <Summary>현재 타임 카운트 (초).</Summary>///
     private static int currentTimeCount;
     private static bool isBannerOn;
@@ -157,6 +159,7 @@ public partial class SDKManager
 #if ENABLE_IRONSOURCE
 
         if (m_isAdFreeUser) return;
+        if (!IsBannerAvailable) return;
 
 		if (appOpenCount <= 1)
         {

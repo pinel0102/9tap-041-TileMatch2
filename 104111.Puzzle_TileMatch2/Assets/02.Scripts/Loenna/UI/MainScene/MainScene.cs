@@ -273,6 +273,7 @@ public class MainScene : UIScene
 		m_scrollView.MoveTo((int)parameter.ShowMenuType);
 
         SDKManager.SendAnalytics_I_Scene();
+        GlobalDefine.RequestAD_HideBanner();
 	}
 
 	private void OnDestroy()
