@@ -15,6 +15,7 @@ using NineTap.Common;
 
 public class AnimatedRewardContainerParameter
 {
+    public RewardPopupType PopupType;
 	public List<IReward> Rewards = new();
 	public Action OnFinishedAnimation;
 }
@@ -23,6 +24,9 @@ public class AnimatedRewardContainer : CachedBehaviour
 {
 	[SerializeField]
 	private CanvasGroup m_canvasGroup;
+    [SerializeField]
+	private List<RectTransform> m_layoutTransform = default;
+    private RewardPopupType m_popupType;
 
 	private List<RewardGoodsItem> m_rewardGoodsItems = new();
 
@@ -34,13 +38,34 @@ public class AnimatedRewardContainer : CachedBehaviour
 
 		var prefab = ResourcePathAttribute.GetResource<RewardGoodsItem>();
 
+        m_popupType = parameter.PopupType;
+
+        int rewardCount = parameter.Rewards.Count;
+        int currentCount = 0;
+
         var items = parameter.Rewards.Select(
 			(reward, index) => {
 				GameObject go = new GameObject($"Position {index}");
 				LayoutElement layoutElement = go.AddComponent<LayoutElement>();
 				layoutElement.minWidth = 120;
+                layoutElement.minHeight = 180;
 
-				go.transform.SetParentReset(CachedTransform);
+                switch(rewardCount)
+                {
+                    case <= 3: 
+                        go.transform.SetParentReset(m_layoutTransform[0]);
+                        break;
+                    case 4:
+                        go.transform.SetParentReset(m_layoutTransform[currentCount < 2 ? 0 : 1]);
+                        break;
+                    default:
+                        go.transform.SetParentReset(m_layoutTransform[currentCount < 3 ? 0 : 1]);
+                        break;
+                }
+
+                currentCount++;
+
+				//go.transform.SetParentReset(CachedTransform);
 
 				LayoutRebuilder.ForceRebuildLayoutImmediate(CachedRectTransform);
 
@@ -52,7 +77,9 @@ public class AnimatedRewardContainer : CachedBehaviour
 						FontSize = 59
 					}
 				);
-				item.CachedTransform.SetParentReset(go.transform);
+
+                item.CachedTransform.SetParentReset(go.transform);
+
 				item.UpdateUI(
 					reward.Type.GetIconName(), 
 					reward.GetAmountString(),
@@ -84,25 +111,34 @@ public class AnimatedRewardContainer : CachedBehaviour
 		.AttachExternalCancellation(token);
 
         var tasks = m_rewardGoodsItems.Select(
-			item => UniTask.WhenAll(
-				item.CachedRectTransform
-					.DOAnchorPos(Vector2.zero, 0.3f)
-					.SetEase(Ease.OutQuad)
-					.ToUniTask(),
-				item.CachedTransform
-					.DOScale(1f, 0.3f)
-					.SetEase(Ease.OutBack)
-					.ToUniTask(),
-				UniTask.Create(
-					() => UniTask.WhenAll(
-						UniTask.Delay(TimeSpan.FromSeconds(0.5f)),
-						item.PlayAsync(token)
-					)
-				)
-			)
-		).ToUniTaskAsyncEnumerable();
+            item => UniTask.WhenAll(
+                item.CachedRectTransform
+                    .DOAnchorPos(Vector2.zero, 0.3f)
+                    .SetEase(Ease.OutQuad)
+                    .ToUniTask(),
+                item.CachedTransform
+                    .DOScale(1f, 0.3f)
+                    .SetEase(Ease.OutBack)
+                    .ToUniTask(),
+                UniTask.Create(
+                    () => UniTask.WhenAll(
+                        UniTask.Delay(TimeSpan.FromSeconds(0.5f)),
+                        item.PlayAsync(token, 0.5f)
+                    )
+                )
+            )
+        ).ToUniTaskAsyncEnumerable();
 
-		await UniTaskAsyncEnumerable.ForEachAwaitAsync(tasks, task => task, token).AttachExternalCancellation(token);
+        switch(m_popupType)
+        {
+            case RewardPopupType.CHEST:
+                await UniTaskAsyncEnumerable.ForEachAwaitAsync(tasks, task => task, token).AttachExternalCancellation(token);
+                break;
+            case RewardPopupType.PRESENT:
+            default:
+                await tasks.ToListAsync(token).AsUniTask();
+                break;
+        }
 	}
 
 	public void ShowParticle()

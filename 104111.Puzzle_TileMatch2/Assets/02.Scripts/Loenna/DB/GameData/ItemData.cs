@@ -37,6 +37,9 @@ public record ItemData
 
 			if (timeSpan.Minutes > 0)
 			{
+                if (timeSpan.Hours > 0)
+                    stringBuilder.Append($" ");
+
 				stringBuilder.Append($"{timeSpan.Minutes}m");
 			}
 

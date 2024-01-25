@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 public record RewardData
 (
@@ -48,6 +49,8 @@ public record RewardData
 			{
 				continue;
 			}
+
+            UnityEngine.Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : {1}", goodsType, count));
 
 			result.Add(
 				goodsType switch {

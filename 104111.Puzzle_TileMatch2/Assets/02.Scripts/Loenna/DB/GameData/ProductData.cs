@@ -114,11 +114,13 @@ public record ProductData
             Repeat: -1,
             Coin: Coin,
             PuzzlePiece: 0,
-            StashItem: (int)Contents[1],
-            UndoItem: (int)Contents[2],
-            ShuffleItem: (int)Contents[3],
-            HeartBooster: Contents[4]
+            StashItem: (int)Contents.GetValueOrDefault(1, 0),
+            UndoItem: (int)Contents.GetValueOrDefault(2, 0),
+            ShuffleItem: (int)Contents.GetValueOrDefault(3, 0),
+            HeartBooster: Contents.GetValueOrDefault(4, 0)
         );
+
+        rewardData.CreateRewards();
 
         return rewardData;
     }

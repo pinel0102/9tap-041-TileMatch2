@@ -197,6 +197,7 @@ public record User
 	public bool IsFullLife() => Life >= Constant.User.MAX_LIFE_COUNT;
     public bool IsBoosterTime() => ExpiredLifeBoosterAt >= DateTime.Now;
 
+    private const string timeFormat_d = @"%d'd'";
     private const string timeFormat_hhmmss = @"hh\:mm\:ss";
     private const string timeFormat_hmmss = @"h\:mm\:ss";
     private const string timeFormat_mmss = @"mm\:ss";
@@ -247,7 +248,7 @@ public record User
         if (IsBoosterTime())
         {
             TimeSpan span = ExpiredLifeBoosterAt - DateTime.Now;
-            return (true, span.Days > 0 ? string.Format("{0}d {1}", span.Days, span.ToString(timeFormat_hhmmss)) 
+            return (true, span.Days > 0 ? string.Format("{0} {1}", span.ToString(timeFormat_d), span.ToString(timeFormat_hhmmss)) 
                         : span.Hours > 9 ? span.ToString(timeFormat_hhmmss) 
                         : span.Hours > 0 ? span.ToString(timeFormat_hmmss)
                         : span.ToString(timeFormat_mmss));

@@ -1,5 +1,5 @@
 using System;
-
+using System.Text;
 
 public interface IReward
 {
@@ -51,25 +51,39 @@ public class ItemReward : Reward<int>
 
 public class BoosterReward : Reward<TimeSpan>
 {
-	public readonly long Seconds;
+	public readonly long Minutes;
 
-	public BoosterReward(ProductType type, long seconds) : base(type)
+	public BoosterReward(ProductType type, long minutes) : base(type)
 	{
-		Seconds = seconds;
+		Minutes = minutes;
 	}
 
 	public override long GetAmount()
 	{
-		return Seconds;
+		return Minutes;
 	}
 
 	public override string GetAmountString()
 	{
-		return TimeSpan.FromMinutes(Seconds).ToString("mm");
+        TimeSpan timeSpan = GetValue();
+        StringBuilder stringBuilder = new StringBuilder();
+        if (timeSpan.Hours > 0)
+        {
+            stringBuilder.Append($"{timeSpan.Hours}h");
+        }
+
+        if (timeSpan.Minutes > 0)
+        {
+            if (timeSpan.Hours > 0)
+                stringBuilder.Append($" ");
+
+            stringBuilder.Append($"{timeSpan.Minutes}m");
+        }
+        return stringBuilder.ToString();
 	}
 
 	public override TimeSpan GetValue() 
 	{
-		return TimeSpan.FromSeconds(Seconds);
+		return TimeSpan.FromMinutes(Minutes);
 	}
 }

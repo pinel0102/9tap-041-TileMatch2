@@ -75,11 +75,17 @@ public class MainScene : UIScene
             ),
             new KeyValuePair<HUDType, System.Action>(
                 HUDType.LIFE, () => { 
-                    if (IsEnableShowPopup() && !m_userManager.Current.IsBoosterTime())
+                    /*if (IsEnableShowPopup() && !m_userManager.Current.IsBoosterTime())
                     {
                         soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
                         OpenBuyHeartPopup(4);
-                    }  
+                    }*/
+                    if (IsEnableShowPopup()) 
+                    {
+                        soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
+                        SDKManager.SendAnalytics_C_Scene(NineTap.Constant.Text.Button.STORE);
+                        m_scrollView.MoveTo((int)MainMenuType.STORE); 
+                    }
                 }
             ),
             new KeyValuePair<HUDType, System.Action>(

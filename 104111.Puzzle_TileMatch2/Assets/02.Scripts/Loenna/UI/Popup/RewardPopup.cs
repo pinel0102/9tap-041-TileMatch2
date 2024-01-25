@@ -12,8 +12,7 @@ using NineTap.Common;
 public enum RewardPopupType
 {
     CHEST,
-	PRESENT,
-    PRODUCT
+	PRESENT
 }
 
 public record RewardPopupParameter
@@ -61,9 +60,6 @@ public class RewardPopup : UIPopup
             case RewardPopupType.PRESENT:
                 SetupPresent(parameter, token);
                 break;
-            case RewardPopupType.PRODUCT:
-                SetupProduct(parameter, token);
-                break;
             default:
                 Debug.Log(CodeManager.GetMethodName() + m_popupType);
                 break;
@@ -78,6 +74,7 @@ public class RewardPopup : UIPopup
 
         m_animatedRewardContainer.OnSetup(
 			new AnimatedRewardContainerParameter {
+                PopupType = parameter.PopupType,
 				Rewards = parameter.Reward.Rewards,
 				OnFinishedAnimation = () => {
 					UniTask.Void(
@@ -115,36 +112,11 @@ public class RewardPopup : UIPopup
 
     private void SetupPresent(RewardPopupParameter parameter, CancellationToken token)
     {
-        //
-    }
-
-    private void SetupProduct(RewardPopupParameter parameter, CancellationToken token)
-    {
-        rewardCoin = parameter.Reward.Coin;
-        if (rewardCoin > 0)
-            GlobalData.Instance.HUD?.behaviour.Fields[2].SetIncreaseText(GlobalData.Instance.oldCoin);
-
         m_animatedRewardContainer.OnSetup(
 			new AnimatedRewardContainerParameter {
+                PopupType = parameter.PopupType,
 				Rewards = parameter.Reward.Rewards,
-				OnFinishedAnimation = () => {
-					UniTask.Void(
-						async () => {
-                            if (rewardCoin > 0)
-                            {
-                                GlobalData.Instance.soundManager?.PlayFx(Constant.Sound.SFX_GOLD_PIECE);
-                                //GlobalData.Instance.HUD_LateUpdate_Coin(rewardCoin, autoTurnOff_IncreaseMode:false);
-                            }
-							
-                            await UniTask.Delay(
-								TimeSpan.FromSeconds(1.5f), 
-								delayTiming: PlayerLoopTiming.LastPostLateUpdate, 
-								cancellationToken: token
-							);
-							OnClickClose();
-						}
-					);
-				}
+				OnFinishedAnimation = null
 			}
 		);
 
@@ -155,7 +127,7 @@ public class RewardPopup : UIPopup
 				OnClick = () => { 
                     m_confirmButton.interactable = false;
                     m_confirmButton.Alpha = 0f;
-                    m_animatedRewardContainer.ShowParticle();
+                    OnExit(HUDType.ALL);
                 }
 			}
 		);
@@ -188,4 +160,10 @@ public class RewardPopup : UIPopup
 	{
 		UIManager.DetachAllHUD();
 	}
+
+    public void OnExit(HUDType hudType)
+    {
+        OnClickClose();
+        GlobalData.Instance.HUD_Show(hudType);
+    }
 }

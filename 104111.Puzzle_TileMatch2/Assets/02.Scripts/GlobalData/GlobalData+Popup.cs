@@ -75,8 +75,19 @@ public partial class GlobalData
     {
         UIManager.ShowPopupUI<RewardPopup>(
             new RewardPopupParameter (
-                PopupType: RewardPopupType.PRODUCT,
+                PopupType: RewardPopupType.PRESENT,
                 Reward: product.ToRewardData(),
+                VisibleHUD: HUDType.NONE
+            )
+        );
+    }
+
+    public void ShowPresentPopup(RewardData rewardData)
+    {
+        UIManager.ShowPopupUI<RewardPopup>(
+            new RewardPopupParameter (
+                PopupType: RewardPopupType.PRESENT,
+                Reward: rewardData,
                 VisibleHUD: HUDType.NONE
             )
         );

@@ -82,9 +82,9 @@ public class RewardGoodsItem : CachedBehaviour
 		}
 	}
 
-	public async UniTask PlayAsync(CancellationToken token)
+	public async UniTask PlayAsync(CancellationToken token, float delay = 0.5f)
 	{
-		await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
+		await UniTask.Delay(TimeSpan.FromSeconds(delay));
 
 		await m_haloAlpha
 			.DOFade(1f, 0.25f)
