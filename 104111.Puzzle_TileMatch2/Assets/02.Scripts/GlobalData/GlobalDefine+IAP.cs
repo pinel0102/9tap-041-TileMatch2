@@ -77,5 +77,14 @@ public static partial class GlobalDefine
 
         if(!GlobalData.Instance.userManager.Current.NoAD)
             GlobalData.Instance.userManager.UpdateLog(noAD: true);
+
+        RefreshADFreeUI();
+    }
+
+    public static void RefreshADFreeUI()
+    {
+        bool NoAD = globalData.userManager.Current.NoAD;
+        
+        globalData.fragmentStore.banner.SetActive(!NoAD);
     }
 }

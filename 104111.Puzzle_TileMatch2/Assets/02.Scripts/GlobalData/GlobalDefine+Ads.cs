@@ -51,8 +51,8 @@ public static partial class GlobalDefine
         switch(num)
         {
             case 0: 
-                GetItem_Life(1);
-                
+                GetItems(addBooster:1);
+                UIManager.ClosePopupUI_ForceAll();                
                 break;
         }
     }

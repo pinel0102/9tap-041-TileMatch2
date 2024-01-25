@@ -27,6 +27,8 @@ public class MainSceneFragmentContent_Store : ScrollViewFragmentContent
 	[SerializeField]
 	private InfiniteScroll m_scrollView;
 
+    public GameObject banner;
+
 	public override void OnSetup(ScrollViewFragmentContentParameter contentParameter)
 	{
 		if (contentParameter is not MainSceneFragmentContentParameter_Store parameter) 
@@ -47,5 +49,7 @@ public class MainSceneFragmentContent_Store : ScrollViewFragmentContent
 			.ToArray();
 		
 		m_scrollView.InsertData(productItemDatas);
+
+        GlobalDefine.RefreshADFreeUI();
 	}
 }

@@ -75,7 +75,7 @@ public class MainScene : UIScene
             ),
             new KeyValuePair<HUDType, System.Action>(
                 HUDType.LIFE, () => { 
-                    if (IsEnableShowPopup())
+                    if (IsEnableShowPopup() && !m_userManager.Current.IsBoosterTime())
                     {
                         soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
                         OpenBuyHeartPopup(4);
@@ -220,8 +220,8 @@ public class MainScene : UIScene
             
 			UIManager.ShowPopupUI<BuyHeartPopup>(
 				new BuyHeartPopupParameter(
-					Title: "Charge Heart",
-					Message: "Heart",
+					Title: "Heart Booster",
+					Message: "Get free heart booster",
 					ExitParameter: ExitBaseParameter.CancelParam,
                     BaseButtonParameter: new UITextButtonParameter {
 						OnClick = () => {
