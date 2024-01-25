@@ -5,5 +5,6 @@ public enum RewardType: int
 	Default = 1,
 	Chest = 2,
 	SpecialtyLevel = 3,
-	Daily = 4
+	Daily = 4,
+    IAP = 5
 }

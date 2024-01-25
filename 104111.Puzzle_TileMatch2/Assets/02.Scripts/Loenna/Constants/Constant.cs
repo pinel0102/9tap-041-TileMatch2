@@ -56,6 +56,7 @@ public static class Constant
 		public const float TWEENTIME_TILE_DEFAULT = 0.15f;
         public const float TWEENTIME_TILE_SCALE = 0.05f;
         public const float TWEENTIME_JIGSAW_MOVE = 0.5f;
+        public const float EFFECTTIME_TILE_MATCH = 0.5f;
 
 		public static readonly Vector2 RESIZE_TILE_RATIOS = new Vector2(0.55f, 0.575f);
 

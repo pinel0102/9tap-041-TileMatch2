@@ -1,18 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-
 using System;
 using System.Threading;
 using System.Collections.Generic;
-
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
-
 using DG.Tweening;
-
-using AssetKits.ParticleImage;
-
 using NineTap.Common;
 
 public class TileItemParameter
@@ -112,7 +106,7 @@ public class TileItem : CachedBehaviour
 	private Text m_tmpText; //이미지가 없을 경우 텍스트로
 
 	[SerializeField]
-	private ParticleImage m_disappearEffect;
+	private GameObject m_disappearEffect;
 
 	private TileItemModel m_current;
 	public TileItemModel Current => m_current;
@@ -193,7 +187,7 @@ public class TileItem : CachedBehaviour
 
         isScaling = false;
         isMoving = false;
-        m_disappearEffect.gameObject.SetActive(false);
+        m_disappearEffect.SetActive(false);
 		m_scaleTween?.OnChangeValue(Vector3.one, 0f).Forget();
 		m_iconAlphaTween?.OnChangeValue(Color.white, -1f).Forget();
 		CachedGameObject.SetActive(false);
@@ -365,8 +359,15 @@ public class TileItem : CachedBehaviour
                 m_positionTween?.OnChangeValue(m_originWorldPosition, duration) 
                 ?? UniTask.CompletedTask,
 			(LocationType.POOL, _) => m_scaleTween?.OnChangeValue(Vector3.zero, 0.15f, () => {
-                    m_disappearEffect.gameObject.SetActive(true);
+                    m_disappearEffect.SetActive(true);
                     m_view.SetLocalScale(0);
+
+                    UniTask.Void(
+                        async () => {
+                            await UniTask.Delay(TimeSpan.FromSeconds(Constant.Game.EFFECTTIME_TILE_MATCH));
+                            m_disappearEffect.SetActive(false);
+                        }
+                    );
                 }) ?? UniTask.CompletedTask,
 			_ => UniTask.CompletedTask
 		};

@@ -41,15 +41,7 @@ public static partial class GlobalDefine
         // [3] : Shuffle
         // [4] : Infinity Heart (Min)
 
-        /*UIManager.ShowPopupUI<RewardPopup>(
-            new RewardPopupParameter (
-                PopupType: RewardPopupType.CHEST,
-                Reward: rewardData,
-                HUDType.COIN
-            )
-        );*/
-
-        Dictionary<SkillItemType, int> addItems = new()
+        Dictionary<SkillItemType, int> addSkillItems = new()
         {
             { SkillItemType.Stash,      (int)product.Contents.GetValueOrDefault(1, 0) },
             { SkillItemType.Undo,       (int)product.Contents.GetValueOrDefault(2, 0) },
@@ -58,9 +50,10 @@ public static partial class GlobalDefine
 
         long addBooster = product.Contents.GetValueOrDefault(4, 0);
 
-        GetItems(product.Coin, addItems, addBooster);
+        GetItems(product.Coin, addSkillItems, addBooster);
 
         SetADFreeUser();
+        globalData.ShowPresentPopup(product);
     }
 
     public static void ShowIAPResult_Fail(ProductData product, IPaymentResult.Error error)

@@ -1,5 +1,4 @@
 using UnityEngine;
-
 using System.Collections.Generic;
 
 public enum PaymentType
@@ -105,8 +104,25 @@ public record ProductData
 	IReadOnlyDictionary<int, long> Contents
 ) : TableRowData<int>(Index)
 {
+    public RewardData ToRewardData()
+    {
+        RewardData rewardData = new RewardData(
+            Index: -1,
+            RewardType: RewardType.IAP,
+            DifficultType: DifficultType.NONE,
+            Level: -1,
+            Repeat: -1,
+            Coin: Coin,
+            PuzzlePiece: 0,
+            StashItem: (int)Contents[1],
+            UndoItem: (int)Contents[2],
+            ShuffleItem: (int)Contents[3],
+            HeartBooster: Contents[4]
+        );
 
-	public string GetShopItemImagePath()
+        return rewardData;
+    }
+    public string GetShopItemImagePath()
 	{
 		if (string.IsNullOrWhiteSpace(ImagePath))
 		{

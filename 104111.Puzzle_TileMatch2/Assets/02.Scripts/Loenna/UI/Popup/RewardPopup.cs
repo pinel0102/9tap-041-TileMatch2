@@ -12,7 +12,8 @@ using NineTap.Common;
 public enum RewardPopupType
 {
     CHEST,
-	PRESENT
+	PRESENT,
+    PRODUCT
 }
 
 public record RewardPopupParameter
@@ -50,13 +51,32 @@ public class RewardPopup : UIPopup
 			return;
 		}
 
+        m_popupType = parameter.PopupType;
+
+        switch(m_popupType)
+        {
+            case RewardPopupType.CHEST:
+                SetupChest(parameter, token);
+                break;
+            case RewardPopupType.PRESENT:
+                SetupPresent(parameter, token);
+                break;
+            case RewardPopupType.PRODUCT:
+                SetupProduct(parameter, token);
+                break;
+            default:
+                Debug.Log(CodeManager.GetMethodName() + m_popupType);
+                break;
+        }
+	}
+
+    private void SetupChest(RewardPopupParameter parameter, CancellationToken token)
+    {
         rewardCoin = parameter.Reward.Coin;
         if (rewardCoin > 0)
             GlobalData.Instance.HUD?.behaviour.Fields[2].SetIncreaseText(GlobalData.Instance.oldCoin);
 
-        m_popupType = parameter.PopupType;       
-
-		m_animatedRewardContainer.OnSetup(
+        m_animatedRewardContainer.OnSetup(
 			new AnimatedRewardContainerParameter {
 				Rewards = parameter.Reward.Rewards,
 				OnFinishedAnimation = () => {
@@ -91,7 +111,55 @@ public class RewardPopup : UIPopup
                 }
 			}
 		);
-	}
+    }
+
+    private void SetupPresent(RewardPopupParameter parameter, CancellationToken token)
+    {
+        //
+    }
+
+    private void SetupProduct(RewardPopupParameter parameter, CancellationToken token)
+    {
+        rewardCoin = parameter.Reward.Coin;
+        if (rewardCoin > 0)
+            GlobalData.Instance.HUD?.behaviour.Fields[2].SetIncreaseText(GlobalData.Instance.oldCoin);
+
+        m_animatedRewardContainer.OnSetup(
+			new AnimatedRewardContainerParameter {
+				Rewards = parameter.Reward.Rewards,
+				OnFinishedAnimation = () => {
+					UniTask.Void(
+						async () => {
+                            if (rewardCoin > 0)
+                            {
+                                GlobalData.Instance.soundManager?.PlayFx(Constant.Sound.SFX_GOLD_PIECE);
+                                //GlobalData.Instance.HUD_LateUpdate_Coin(rewardCoin, autoTurnOff_IncreaseMode:false);
+                            }
+							
+                            await UniTask.Delay(
+								TimeSpan.FromSeconds(1.5f), 
+								delayTiming: PlayerLoopTiming.LastPostLateUpdate, 
+								cancellationToken: token
+							);
+							OnClickClose();
+						}
+					);
+				}
+			}
+		);
+
+		m_confirmButton.OnSetup(
+			new UITextButtonParameter {
+				ButtonText = Text.Button.CLAIM,
+				FadeEffect = true,
+				OnClick = () => { 
+                    m_confirmButton.interactable = false;
+                    m_confirmButton.Alpha = 0f;
+                    m_animatedRewardContainer.ShowParticle();
+                }
+			}
+		);
+    }
 
 	public override void OnShow()
 	{

@@ -70,4 +70,15 @@ public partial class GlobalData
             )
         );
     }
+
+    public void ShowPresentPopup(ProductData product)
+    {
+        UIManager.ShowPopupUI<RewardPopup>(
+            new RewardPopupParameter (
+                PopupType: RewardPopupType.PRODUCT,
+                Reward: product.ToRewardData(),
+                VisibleHUD: HUDType.NONE
+            )
+        );
+    }
 }

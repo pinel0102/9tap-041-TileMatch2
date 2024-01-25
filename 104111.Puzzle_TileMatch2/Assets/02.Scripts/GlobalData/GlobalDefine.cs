@@ -31,12 +31,12 @@ public static partial class GlobalDefine
 
     public static void GetItems(
         Optional<long> addCoin = default, 
-        Optional<Dictionary<SkillItemType, int>> addItems = default, 
+        Optional<Dictionary<SkillItemType, int>> addSkillItems = default, 
         Optional<long> addBooster = default)
     {
         globalData.userManager.GetItems(
             addCoin: addCoin,
-            addSkillItems: addItems,
+            addSkillItems: addSkillItems,
             addBooster: addBooster
         );
     }

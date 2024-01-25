@@ -203,7 +203,7 @@ public class GameClearPopup : UIPopup
 							new RewardPopupParameter (
 								PopupType: RewardPopupType.CHEST,
 								Reward: m_chestRewardData,
-								HUDType.COIN
+                                VisibleHUD: HUDType.COIN
 							)
 						);
 					}
