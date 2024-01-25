@@ -346,8 +346,6 @@ public class UserManager : IDisposable
 			return;
 		}
 
-        var (isBoosterTime, _, _) = Current.GetLifeStatus();
-        
         m_user.Update(
 			user => user.Update(
 				coin: user.Coin + addCoin.GetValueOrDefault(0),
@@ -360,8 +358,8 @@ public class UserManager : IDisposable
                         }
                     )
                     .ToDictionary(keySelector: pair => pair.Key, elementSelector: pair => pair.Value) : user.OwnSkillItems,
-                expiredLifeBoosterAt: isBoosterTime ? user.ExpiredLifeBoosterAt + TimeSpan.FromMinutes(addBooster.GetValueOrDefault(0))
-                                                    : DateTimeOffset.Now + TimeSpan.FromMinutes(addBooster.GetValueOrDefault(0))
+                expiredLifeBoosterAt: Current.IsBoosterTime() ? user.ExpiredLifeBoosterAt + TimeSpan.FromMinutes(addBooster.GetValueOrDefault(0))
+                                                              : DateTimeOffset.Now + TimeSpan.FromMinutes(addBooster.GetValueOrDefault(0))
 			)
 		);
 	}

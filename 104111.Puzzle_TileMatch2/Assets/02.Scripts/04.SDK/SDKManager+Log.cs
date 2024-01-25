@@ -69,7 +69,7 @@ public partial class SDKManager
 
         string eventName = "i_scene_fail";
         var logParams = CreateParams(eventName);
-        logParams["option11"] = userManager.Current.FailedCount.ToString();
+        logParams["option12"] = userManager.Current.FailedCount.ToString();
 
         SendEvent(eventName, logParams);
     }
@@ -92,7 +92,7 @@ public partial class SDKManager
 
         string eventName = "c_scene_clear";
         var logParams = CreateParams(eventName);
-        logParams["option11"] = action;
+        logParams["option12"] = action;
 
         SendEvent(eventName, logParams);
     }
@@ -104,7 +104,7 @@ public partial class SDKManager
 
         string eventName = "c_scene_fail";
         var logParams = CreateParams(eventName);
-        logParams["option11"] = action;
+        logParams["option12"] = action;
 
         SendEvent(eventName, logParams);
     }
@@ -116,7 +116,7 @@ public partial class SDKManager
 
         string eventName = "c_scene";
         var logParams = CreateParams(eventName);
-        logParams["option11"] = action;
+        logParams["option12"] = action;
 
         SendEvent(eventName, logParams);
     }
@@ -128,8 +128,8 @@ public partial class SDKManager
 
         string eventName = "c_item_get";
         var logParams = CreateParams(eventName);
-        logParams["option11"] = item_name;
-        logParams["option12"] = count.ToString();
+        logParams["option12"] = item_name;
+        logParams["option13"] = count.ToString();
 
         SendEvent(eventName, logParams);
     }
@@ -141,8 +141,8 @@ public partial class SDKManager
 
         string eventName = "c_item_use";
         var logParams = CreateParams(eventName);
-        logParams["option11"] = item_name;
-        logParams["option12"] = count.ToString();
+        logParams["option12"] = item_name;
+        logParams["option13"] = count.ToString();
 
         SendEvent(eventName, logParams);
     }
@@ -193,7 +193,7 @@ public partial class SDKManager
 
         string eventName = "Video_Ads_Reward";
         var logParams = CreateParams(eventName);
-        logParams["option11"] = rewardNum.ToString();
+        logParams["option12"] = rewardNum.ToString();
 
         SendEvent(eventName, logParams);
     }
@@ -206,8 +206,8 @@ public partial class SDKManager
         string eventName = "IAP_Purchase";
 
         var logParams = CreateParams(eventName);
-        logParams["option11"] = product.definition.id;
-        logParams["option12"] = product.metadata.localizedPrice.ToString();
+        logParams["option12"] = product.definition.id;
+        logParams["option13"] = product.metadata.localizedPrice.ToString();
         logParams[AFInAppEvents.CONTENT_ID] = product.definition.id;
         logParams[AFInAppEvents.REVENUE] = product.metadata.localizedPrice.ToString();
 		logParams[AFInAppEvents.CURRENCY] = product.metadata.isoCurrencyCode;
@@ -254,13 +254,14 @@ public partial class SDKManager
         logParams["option1"] = userGroup;
         logParams["option2"] = globalData.CURRENT_SCENE;
         logParams["option3"] = globalData.CURRENT_LEVEL.ToString();
-        logParams["option4"] = userManager.Current.Coin.ToString();
+        logParams["option4"] = userManager.Current.IsBoosterTime().ToString();
         logParams["option5"] = userManager.Current.Life.ToString();
-        logParams["option6"] = userManager.Current.Puzzle.ToString();
-        logParams["option7"] = userManager.Current.GoldPiece.ToString();
-        logParams["option8"] = userManager.Current.OwnSkillItems[SkillItemType.Undo].ToString();
-        logParams["option9"] = userManager.Current.OwnSkillItems[SkillItemType.Stash].ToString();
-        logParams["option10"] = userManager.Current.OwnSkillItems[SkillItemType.Shuffle].ToString();
+        logParams["option6"] = userManager.Current.Coin.ToString();
+        logParams["option7"] = userManager.Current.Puzzle.ToString();
+        logParams["option8"] = userManager.Current.GoldPiece.ToString();
+        logParams["option9"] = userManager.Current.OwnSkillItems[SkillItemType.Undo].ToString();
+        logParams["option10"] = userManager.Current.OwnSkillItems[SkillItemType.Stash].ToString();
+        logParams["option11"] = userManager.Current.OwnSkillItems[SkillItemType.Shuffle].ToString();
 
         return logParams;
     }

@@ -195,7 +195,7 @@ public record User
 	}
 
 	public bool IsFullLife() => Life >= Constant.User.MAX_LIFE_COUNT;
-    public bool IsBoosterTime() => GetBoosterStatus().Item1;
+    public bool IsBoosterTime() => ExpiredLifeBoosterAt >= DateTime.Now;
 
     private const string timeFormat_hhmmss = @"hh\:mm\:ss";
     private const string timeFormat_hmmss = @"h\:mm\:ss";
@@ -244,7 +244,7 @@ public record User
 
     private (bool, string) GetBoosterStatus()
     {
-        if (DateTime.Now <= ExpiredLifeBoosterAt)
+        if (IsBoosterTime())
         {
             TimeSpan span = ExpiredLifeBoosterAt - DateTime.Now;
             return (true, span.Days > 0 ? string.Format("{0}d {1}", span.Days, span.ToString(timeFormat_hhmmss)) 
