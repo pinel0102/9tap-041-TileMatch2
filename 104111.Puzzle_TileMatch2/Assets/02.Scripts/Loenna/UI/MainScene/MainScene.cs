@@ -216,35 +216,35 @@ public class MainScene : UIScene
 		m_userManager.OnUpdated += OnUpdateUI;
 
         SDKManager.Instance.SDKStart();
-
-        void OpenBuyHeartPopup(int itemIndex)
-        {
-            if (!m_itemDataTable.TryGetValue(itemIndex, out var itemData))
-			{
-				return;
-			}
-            
-			UIManager.ShowPopupUI<BuyHeartPopup>(
-				new BuyHeartPopupParameter(
-					Title: "Heart Booster",
-					Message: "Get free heart booster",
-					ExitParameter: ExitBaseParameter.CancelParam,
-                    BaseButtonParameter: new UITextButtonParameter {
-						OnClick = () => {
-                            GlobalDefine.RequestAD_RewardVideo(0);
-						},
-						ButtonText = "Watch",
-						SubWidgetBuilder = () => {
-							var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
-							widget.OnSetup("UI_Icon_AD");
-							return widget.CachedGameObject;
-						}
-					},
-                    ItemData: itemData
-				)
-			);
-        }
 	}
+
+    void OpenBuyHeartPopup(int itemIndex)
+    {
+        if (!m_itemDataTable.TryGetValue(itemIndex, out var itemData))
+        {
+            return;
+        }
+        
+        UIManager.ShowPopupUI<BuyHeartPopup>(
+            new BuyHeartPopupParameter(
+                Title: "Heart Booster",
+                Message: "Get free heart booster",
+                ExitParameter: ExitBaseParameter.CancelParam,
+                BaseButtonParameter: new UITextButtonParameter {
+                    OnClick = () => {
+                        GlobalDefine.RequestAD_RewardVideo(0);
+                    },
+                    ButtonText = "Watch",
+                    SubWidgetBuilder = () => {
+                        var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
+                        widget.OnSetup("UI_Icon_AD");
+                        return widget.CachedGameObject;
+                    }
+                },
+                ItemData: itemData
+            )
+        );
+    }
 
     public void MoveTo(MainMenuType type)
     {
