@@ -11,21 +11,21 @@ using AppsFlyerSDK;
 #pragma warning disable 162
 public partial class SDKManager
 {
-    private static string appsFlyer_DevKey;
-    private static string appsFlyer_AppID;
+    private static string appsFlyerDevKey;
+    private static string appsFlyerAppID;
     private static bool isInitialized_AppsFlyer = false;
 
     private void Initialize_AppsFlyer(string devKey, string appID)
     {
-        appsFlyer_DevKey = devKey;
+        appsFlyerDevKey = devKey;
         isInitialized_AppsFlyer = false;
 
 #if UNITY_IOS
-        appsFlyer_AppID = appID;
-        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=#EC46EB>AppsFlyer [{0}] {1} / {2}</color>", AppsFlyer.kAppsFlyerPluginVersion, appsFlyer_DevKey, appsFlyer_AppID));
+        appsFlyerAppID = appID;
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=#EC46EB>AppsFlyer [{0}] {1} / {2}</color>", AppsFlyer.kAppsFlyerPluginVersion, appsFlyerDevKey, appsFlyerAppID));
 #elif UNITY_ANDROID
-        appsFlyer_AppID = string.Empty;
-        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=#EC46EB>AppsFlyer [{0}] {1}</color>", AppsFlyer.kAppsFlyerPluginVersion, appsFlyer_DevKey));
+        appsFlyerAppID = string.Empty;
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=#EC46EB>AppsFlyer [{0}] {1}</color>", AppsFlyer.kAppsFlyerPluginVersion, appsFlyerDevKey));
 #else        
         return;
 #endif
@@ -36,7 +36,7 @@ public partial class SDKManager
         AppsFlyer.setIsDebug(false);
 #endif
 
-        AppsFlyer.initSDK(appsFlyer_DevKey, appsFlyer_AppID, this);
+        AppsFlyer.initSDK(appsFlyerDevKey, appsFlyerAppID, this);
         AppsFlyer.startSDK();
         
         isInitialized_AppsFlyer = true;

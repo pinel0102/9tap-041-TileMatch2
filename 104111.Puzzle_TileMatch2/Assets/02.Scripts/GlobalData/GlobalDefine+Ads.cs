@@ -15,31 +15,15 @@ public static partial class GlobalDefine
     public static void RequestAD_ShowBanner()
     {
         Debug.Log(string.Format(logAdFormat0, CodeManager.GetMethodName()));
-
-        UniTask.Void(
-            async () => {
-                for(int i=0; i < 2; i++)
-                {
-                    SDKManager.Instance.ShowBanner();
-                    await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
-                }
-            }
-        );
+        
+        SDKManager.Instance.ShowBanner();
     }
 
     public static void RequestAD_HideBanner()
     {
         Debug.Log(string.Format(logAdFormat0, CodeManager.GetMethodName()));
-
-        UniTask.Void(
-            async () => {
-                for(int i=0; i < 2; i++)
-                {
-                    SDKManager.Instance.HideBanner();
-                    await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
-                }
-            }
-        );
+        
+        SDKManager.Instance.HideBanner();
     }
 
     public static void RequestAD_Interstitial(bool openRemoveAdsPopup = true)

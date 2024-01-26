@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 
 public partial class SDKManager : SingletonMono<SDKManager>
 {
+    [Header("★ [Settings] SDK Manager")]
     public bool showLog = true;
 
     [Header("★ [Live] SDK Manager")]

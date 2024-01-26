@@ -9,38 +9,35 @@ using System;
 public partial class SDKManager
 {
     [Header("★ [Settings] IronSource")]
-    public bool m_isAdFreeUser;
-
+    public bool m_showLogIronSource = false;
     /// <Summary>최초 설치시 광고 비표시 기간 (전면) (클리어 레벨).</Summary>
     public int firstAdsFreeLevel = 20;
     /// <Summary>최초 설치시 광고 비표시 기간 (배너, 전면) (초).</Summary>
     public int firstAdsFreeDelay = 180;
     /// <Summary>전면 광고 주기 (초).</Summary>
     public int interstitialDelay = 120;
-    /// <Summary>리워드 광고 보상 인덱스.</Summary>
-    public int rewardNum;
-
+    /// <Summary>배너 광고 조건.</Summary>
     private static bool IsBannerAvailable => globalData.CURRENT_SCENE == GlobalDefine.SCENE_PLAY;
-
+    
+    [Header("★ [Live] IronSource")]
+    [SerializeField] private bool m_isAdFreeUser;
     /// <Summary>현재 타임 카운트 (초).</Summary>///
-    [SerializeField]
-    private int currentTimeCount;
-    private static bool isBannerOn;
+    [SerializeField] private int currentTimeCount;
+    /// <Summary>리워드 광고 보상 인덱스.</Summary>
+    [SerializeField] private int rewardNum = -1;
+    private static bool isBannerLoaded;
     private static bool openRemoveAdsPopup;
-    [SerializeField]
-    private string ironSource_appKey;
+    private static string ironSourceAppKey;
     private static bool isInitialized_IronSource = false;    
-    private WaitForSecondsRealtime wUpdateDelay = new WaitForSecondsRealtime(4f);
-    private WaitForSecondsRealtime wOneSecond = new WaitForSecondsRealtime(1f);
-
+    private static WaitForSecondsRealtime wUpdateDelay = new WaitForSecondsRealtime(4f);
+    private static WaitForSecondsRealtime wOneSecond = new WaitForSecondsRealtime(1f);
 
 #region Initialize
 
     private void Initialize_IronSource(string appKey_AOS, string appKey_iOS, bool isADFreeUser = false)
     {
         isInitialized_IronSource = false;
-        SetAdFreeUser(isADFreeUser);
-
+        
 #if ENABLE_IRONSOURCE
 
 #if UNITY_STANDALONE
@@ -48,13 +45,17 @@ public partial class SDKManager
 #endif
 
 #if UNITY_ANDROID
-        ironSource_appKey = appKey_AOS;
+        ironSourceAppKey = appKey_AOS;
 #elif UNITY_IOS
-        ironSource_appKey = appKey_iOS;
+        ironSourceAppKey = appKey_iOS;
 #endif
-        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=#EC46EB>IronSource [{0}] {1}</color>", IronSource.pluginVersion(), ironSource_appKey));
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=#EC46EB>IronSource [{0}] {1}</color>", IronSource.pluginVersion(), ironSourceAppKey));
+        
+        SetAdFreeUser(isADFreeUser);
 
+        isBannerLoaded = false;
         currentTimeCount = 0;
+        rewardNum = -1;
 
         IronSourceConfig.Instance.setClientSideCallbacks(true);
         IronSource.Agent.validateIntegration();
@@ -87,21 +88,20 @@ public partial class SDKManager
 
 #if ENABLE_IRONSOURCE
 
-        IronSource.Agent.init(ironSource_appKey, IronSourceAdUnits.REWARDED_VIDEO, IronSourceAdUnits.INTERSTITIAL, IronSourceAdUnits.BANNER);
+        IronSource.Agent.init(ironSourceAppKey, IronSourceAdUnits.REWARDED_VIDEO, IronSourceAdUnits.INTERSTITIAL, IronSourceAdUnits.BANNER);
         isInitialized_IronSource = true;
         
         while (true)
         {
             if (!IronSource.Agent.isInterstitialReady())
-            {
                 LoadInterstitial();
-            }
-
-            if (!isBannerOn)
-            {
+            
+            if (!isBannerLoaded)
                 ShowBanner();
-            }
-
+            
+            if (!IsBannerAvailable)
+                HideBanner();
+            
             yield return wUpdateDelay;
         }
 #endif
@@ -171,14 +171,24 @@ public partial class SDKManager
 			// 최초 설치 딜레이 적용.
 			if(stDeltaTime.TotalSeconds >= firstAdsFreeDelay) 
             {
-                //Debug.Log(CodeManager.GetMethodName());
-				IronSource.Agent.loadBanner(IronSourceBannerSize.SMART, IronSourceBannerPosition.BOTTOM);
+                if (m_showLogIronSource)
+                    Debug.Log(CodeManager.GetMethodName() + isBannerLoaded);
+
+                if (isBannerLoaded)
+                    IronSource.Agent.displayBanner();
+                else
+				    IronSource.Agent.loadBanner(IronSourceBannerSize.SMART, IronSourceBannerPosition.BOTTOM);
 			}
 		}
         else
         {
-            //Debug.Log(CodeManager.GetMethodName());
-			IronSource.Agent.loadBanner(IronSourceBannerSize.SMART, IronSourceBannerPosition.BOTTOM);
+            if (m_showLogIronSource)
+                Debug.Log(CodeManager.GetMethodName() + isBannerLoaded);
+
+			if (isBannerLoaded)
+                IronSource.Agent.displayBanner();
+            else
+                IronSource.Agent.loadBanner(IronSourceBannerSize.SMART, IronSourceBannerPosition.BOTTOM);
 		}
 #endif
     }
@@ -186,8 +196,13 @@ public partial class SDKManager
     public void HideBanner()
     {
 #if ENABLE_IRONSOURCE
-        Debug.Log(CodeManager.GetMethodName());
-        IronSource.Agent.hideBanner();
+        if (isBannerLoaded)
+        {
+            if (m_showLogIronSource)
+                Debug.Log(CodeManager.GetMethodName());
+
+            IronSource.Agent.hideBanner();
+        }
 #endif
     }
 
@@ -203,15 +218,15 @@ public partial class SDKManager
             {
                 openRemoveAdsPopup = _openRemoveAdsPopup;
 
-                Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>openRemoveAdsPopup : {0}</color>", openRemoveAdsPopup));
-
 #if UNITY_EDITOR
                 Interstitial_OnAdClosedEvent(null);
                 currentTimeCount = 0;
 #endif
                 if (IronSource.Agent.isInterstitialReady())
                 {
-                    Debug.Log(CodeManager.GetMethodName());
+                    if (m_showLogIronSource)
+                        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>openRemoveAdsPopup : {0}</color>", openRemoveAdsPopup));
+                    
                     IronSource.Agent.showInterstitial();
                     currentTimeCount = 0;
 
@@ -238,6 +253,9 @@ public partial class SDKManager
 #if ENABLE_IRONSOURCE
         if (IronSource.Agent.isRewardedVideoAvailable())
         {
+            if (m_showLogIronSource)
+                Debug.Log(CodeManager.GetMethodName());
+            
             rewardNum = num;
             IronSource.Agent.showRewardedVideo();
 
@@ -302,15 +320,20 @@ public partial class SDKManager
     {
         Debug.Log(CodeManager.GetMethodName());
 
-        isBannerOn = true;
+        isBannerLoaded = true;
+
+        if (!IsBannerAvailable)
+        {
+            HideBanner();
+        }
     }
 
     private void Banner_OnAdLoadFailedEvent(IronSourceError error)
     {
-        if (error.getCode() != 606) // No ads to show
-            Debug.Log(CodeManager.GetMethodName() + string.Format("code: {0} / description : {1}", error.getCode(), error.getDescription()));
+        //if (error.getCode() != 606) // No ads to show
+        Debug.Log(CodeManager.GetMethodName() + string.Format("code: {0} / description : {1}", error.getCode(), error.getDescription()));
         
-        isBannerOn = false;
+        isBannerLoaded = false;
     }
 
     private void Banner_OnAdClickedEvent(IronSourceAdInfo adInfo)

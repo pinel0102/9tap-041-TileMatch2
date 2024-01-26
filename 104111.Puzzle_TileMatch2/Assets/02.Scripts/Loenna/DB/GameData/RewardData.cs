@@ -50,7 +50,7 @@ public record RewardData
 				continue;
 			}
 
-            UnityEngine.Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : {1}", goodsType, count));
+            //UnityEngine.Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : {1}", goodsType, count));
 
 			result.Add(
 				goodsType switch {
