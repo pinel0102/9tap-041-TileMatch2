@@ -380,6 +380,7 @@ public partial class PlayScene : UIScene
     {
         base.Show();
 
+        UIManager.ClosePopupUI_ForceAll();
         SDKManager.SendAnalytics_I_Scene();
         GlobalDefine.RequestAD_ShowBanner();
     }

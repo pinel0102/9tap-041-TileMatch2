@@ -24,6 +24,7 @@ public class MainSceneFragmentContent_Home : ScrollViewFragmentContent
 
 	[SerializeField]
 	private UITextButton m_playButton;
+    public UITextButton PlayButton => m_playButton;
 
     public RectTransform objectPool;
     public RectTransform rewardPosition_puzzlePiece;

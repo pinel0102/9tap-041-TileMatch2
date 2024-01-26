@@ -14,13 +14,16 @@ public partial class GlobalData
         UIManager.ShowPopupUI<ReadyPopup>(
         new ReadyPopupParameter(
             Level: user.Level,
-            ExitParameter: ExitBaseParameter.CancelParam,
+            ExitParameter: new ExitBaseParameter(
+                onExit:()=>{
+                    UIManager.ClosePopupUI_ForceAll();
+                }
+            ),//ExitBaseParameter.CancelParam,
             BaseButtonParameter: new UITextButtonParameter{
                 ButtonText = NineTap.Constant.Text.Button.PLAY,
                 OnClick = () => 
                 {
                     var (_, valid, _) = user.Valid();
-
                     if (!valid)
                     {
                         ShowHeartBuyPopup(() => {
@@ -29,6 +32,7 @@ public partial class GlobalData
                         );
                         return;
                     }
+                    
                     SDKManager.SendAnalytics_C_Scene(NineTap.Constant.Text.Button.PLAY);
                     UIManager.ShowSceneUI<PlayScene>(new PlaySceneParameter());
                 }

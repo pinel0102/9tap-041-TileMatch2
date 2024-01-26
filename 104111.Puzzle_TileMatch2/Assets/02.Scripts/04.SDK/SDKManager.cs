@@ -41,15 +41,17 @@ public partial class SDKManager : SingletonMono<SDKManager>
     {
         Debug.Log(CodeManager.GetMethodName());
 
-        UniTask.Void(
-            async () => {
-                await UniTask.Delay(TimeSpan.FromSeconds(2f));
-                Start_Facebook();
-                await UniTask.Delay(TimeSpan.FromSeconds(1f));
-                Start_IronSource();
+        StartCoroutine(CO_SDKStart());
+    }
 
-                SendAnalytics_User_App_Open();
-            }
-        );
+    private IEnumerator CO_SDKStart()
+    {
+        yield return delay_2sec;
+        Start_Facebook();
+        yield return delay_1sec;
+        Start_IronSource();
+
+        SendAnalytics_User_App_Open();
+
     }
 }

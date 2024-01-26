@@ -63,6 +63,13 @@ public class InitScene : UIScene
 						return;
 					}
 					UIManager.ShowSceneUI<MainScene>(new MainSceneParameter(PuzzleManager: result.manager));
+
+                    if (GlobalData.Instance.userManager.Current.AppOpenCount == 1)
+                    {
+                        Debug.Log(CodeManager.GetMethodName() + "Play Level 1");
+                        SDKManager.SendAnalytics_C_Scene(NineTap.Constant.Text.Button.PLAY);
+                        UIManager.ShowSceneUI<PlayScene>(new PlaySceneParameterCustom(1));
+                    }
 				}
 			);
 		}
@@ -86,12 +93,11 @@ public class InitScene : UIScene
 			},
 			this.GetCancellationTokenOnDestroy()
 		);
-
 	}
 
 	public override void OnShow()
 	{
-		base.OnShow();	
+		base.OnShow();
 	}
 
 	private UniTask Initialize(IProgress<float> progress)
@@ -136,7 +142,7 @@ public class InitScene : UIScene
 						m_puzzleManager.Value = puzzleManager;
 
                         SDKManager.Instance.Initialize(user.AppOpenCount, user.InstallDate, user.UserGroup, user.NoAD);
-
+                        
 						return true;
 					}
 				)
