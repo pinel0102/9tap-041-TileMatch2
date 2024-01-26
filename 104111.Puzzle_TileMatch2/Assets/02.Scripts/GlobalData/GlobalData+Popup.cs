@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 
 public partial class GlobalData
@@ -107,5 +108,57 @@ public partial class GlobalData
                 VisibleHUD: HUDType.NONE
             )
         );
+    }
+
+    public void ShowAgreePopup_GDPR(string region)
+    {
+        Debug.Log(CodeManager.GetMethodName());
+
+        UIManager.ShowPopupUI<AgreeGDPRPopup>(
+            new AgreeGDPRPopupParameter(
+                Region: region
+            )
+        );
+    }
+
+    public void ShowAgreePopup_CMP(string region)
+    {
+#if CMP_CHECK_ENABLE
+
+        Debug.Log(CodeManager.GetMethodName());
+
+#if UNITY_EDITOR
+        //userManager.UpdateAgree(agreeCMP: true);
+        return;
+#else
+        string CMPString = PlayerPrefs.GetString("IABTCF_AddtlConsent");
+        
+        Debug.Log(CodeManager.GetMethodName() + string.Format("CMPString : {0}", CMPString));
+        if (CMPString.Contains("2878"))
+        {
+            Debug.Log(CodeManager.GetMethodName() + "setConsent : True");
+            //IronSource.Agent.setConsent(true);
+        }
+        else
+        {
+            Debug.Log(CodeManager.GetMethodName() + "setConsent : False");
+            //IronSource.Agent.setConsent(false);
+        }
+#endif
+
+#endif
+    }
+
+    public void ShowAgreePopup_ATT(string region)
+    {
+#if (UNITY_IOS && !UNITY_STANDALONE) || UNITY_EDITOR
+        Debug.Log(CodeManager.GetMethodName());
+
+        UIManager.ShowPopupUI<AgreeATTPopup>(
+            new AgreeATTPopupParameter(
+                Region: region
+            )
+        );
+#endif
     }
 }

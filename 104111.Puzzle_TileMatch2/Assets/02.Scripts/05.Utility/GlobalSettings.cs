@@ -4,11 +4,6 @@ using UnityEngine;
 
 public static class GlobalSettings
 {
-    public static string GetUserGroup()
-    {
-        return "A";
-    }
-
     public static void OpenURL_Review()
     {
 #if UNITY_IOS        
@@ -51,7 +46,7 @@ public static class GlobalSettings
                 "Please write your questions.\r\n\r\n\r\n\r\n" +
                 "Device : " + SystemInfo.deviceModel + "\r\n" +
                 "OS : " + SystemInfo.operatingSystem + "\r\n" +
-                "Version : v" + Application.version + "-" + GetUserGroup()
+                "Version : v" + Application.version + "-" + GlobalData.Instance.userManager.Current.UserGroup
             );
 
         Application.OpenURL(string.Format("mailto:{0}?subject={1}&body={2}", mailto, subject, body));

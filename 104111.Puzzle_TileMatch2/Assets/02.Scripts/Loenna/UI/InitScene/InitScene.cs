@@ -20,12 +20,14 @@ public class InitScene : UIScene
 	[SerializeField]
 	private LoadingView m_loadingView;
 
+    public GameObject m_waitPanel;
 	private IAsyncReactiveProperty<PuzzleManager> m_puzzleManager;
 
 	public override void OnSetup(UIParameter uiParameter)
 	{
 		base.OnSetup(uiParameter);
 
+        m_waitPanel.SetActive(false);
 		m_puzzleManager = new AsyncReactiveProperty<PuzzleManager>(null);
 
 		m_splashView.alpha = 0f;
@@ -62,6 +64,7 @@ public class InitScene : UIScene
 					{
 						return;
 					}
+                    
 					UIManager.ShowSceneUI<MainScene>(new MainSceneParameter(PuzzleManager: result.manager));
 
                     if (GlobalData.Instance.userManager.Current.AppOpenCount == 1)
@@ -116,7 +119,7 @@ public class InitScene : UIScene
 
 		List<UniTask<bool>> tasks = new List<UniTask<bool>>
 		{
-			userManager.LoadAsync(editorMode),
+			userManager.LoadAsync(editorMode, m_waitPanel),
 			tableManager.LoadGameData(),
 			tableManager.LoadLevelData(editorMode),
 		};
@@ -140,8 +143,6 @@ public class InitScene : UIScene
 
 						await puzzleManager.LoadAsync(puzzleData, placedPieces, unlockedPieces);
 						m_puzzleManager.Value = puzzleManager;
-
-                        SDKManager.Instance.Initialize(user.AppOpenCount, user.InstallDate, user.UserGroup, user.NoAD);
                         
 						return true;
 					}

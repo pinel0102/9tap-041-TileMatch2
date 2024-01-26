@@ -34,7 +34,7 @@ public class UserManager : IDisposable
 		OnUpdated = null;
 	}
 
-	public async UniTask<bool> LoadAsync(bool editorMode)
+	public async UniTask<bool> LoadAsync(bool editorMode, GameObject waitPanel)
 	{
         Debug.Log(CodeManager.GetAsyncName());
 
@@ -83,15 +83,24 @@ public class UserManager : IDisposable
 
         LogUserData();
 
+        SDKManager.Instance.Initialize(m_user.Value.AppOpenCount, m_user.Value.InstallDate, m_user.Value.UserGroup, m_user.Value.NoAD);
+
+#if !UNITY_STANDALONE
+        await CheckAgrees(waitPanel);
+#endif
+        waitPanel?.SetActive(false);
+
 		return true;
 
 		void CreateDummy(int level)
 		{
 			m_user.Value = new User(
                 AgreePrivacy: true,
-                AgreeTerms: true,
+                AgreeService: true,
                 AgreeCMP: true,
                 AgreeATT: true,
+                AgreeCMPState: true,
+                AgreeATTState: true,
 				Coin: 9999999,
 				Life: Constant.User.MAX_LIFE_COUNT,
 				Puzzle: 0,
@@ -129,6 +138,51 @@ public class UserManager : IDisposable
 			);
 		}
 	}
+    
+    private async UniTask CheckAgrees(GameObject waitPanel)
+    {
+        string region = PreciseLocale.GetRegion();
+
+#if UNITY_EDITOR
+        region = "KR";
+#endif
+
+        Debug.Log(CodeManager.GetMethodName() + region);
+
+        if (!m_user.Value.AgreeService || !m_user.Value.AgreePrivacy)
+        {
+            waitPanel?.SetActive(true);
+            GlobalData.Instance.ShowAgreePopup_GDPR(region);
+        }
+
+        await UniTask.WaitUntil(() => 
+            m_user.Value.AgreeService && m_user.Value.AgreePrivacy 
+        );
+
+#if CMP_CHECK_ENABLE
+        if (!m_user.Value.AgreeCMP)
+        {
+            waitPanel?.SetActive(true);
+            GlobalData.Instance.ShowAgreePopup_CMP(region);
+        }
+
+        await UniTask.WaitUntil(() => 
+            m_user.Value.AgreeCMP
+        );
+#endif
+        
+#if (UNITY_IOS && !UNITY_STANDALONE) || UNITY_EDITOR
+        if (!m_user.Value.AgreeATT)
+        {
+            waitPanel?.SetActive(true);
+            GlobalData.Instance.ShowAgreePopup_ATT(region);
+        }
+
+        await UniTask.WaitUntil(() => 
+            m_user.Value.AgreeATT
+        );
+#endif
+    }
 
     public void LogUserData()
     {
@@ -334,6 +388,33 @@ public class UserManager : IDisposable
                 sendAppOpenCount: sendAppOpenCount,
                 sendInterstitalViewCount: sendInterstitalViewCount,
                 sendRewardViewCount: sendRewardViewCount
+			)
+		);
+	}
+
+    public void UpdateAgree
+	(
+	 	Optional<bool> agreePrivacy = default,
+        Optional<bool> agreeService = default,
+        Optional<bool> agreeCMP = default,
+        Optional<bool> agreeATT = default,
+        Optional<bool> agreeCMPState = default,
+        Optional<bool> agreeATTState = default
+	)
+	{
+		if (m_user?.Value == null)
+		{
+			return;
+		}
+
+		m_user.Update(
+			user => user.Update(
+				agreePrivacy: agreePrivacy,
+                agreeService: agreeService,
+                agreeCMP: agreeCMP,
+                agreeATT: agreeATT,
+                agreeCMPState: agreeCMPState,
+                agreeATTState: agreeATTState
 			)
 		);
 	}
