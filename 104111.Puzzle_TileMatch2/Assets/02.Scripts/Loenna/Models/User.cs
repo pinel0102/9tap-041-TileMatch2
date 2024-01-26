@@ -35,9 +35,10 @@ public record User
 	int Life, // 보유 하트
 	int Puzzle, // 보유 미션조각
     int GoldPiece,
-
 	long ExpiredLifeBoosterTime, // 하트 부스터 끝나는 시간
 	long EndChargeLifeTime, // 하트가 모두 충전되는 시간
+    string DailyRewardDate, // 마지막으로 출석체크 보상을 받은 시각.
+    int DailyRewardIndex, // 받을 수 있는 출석체크 보상의 인덱스. == 이번 주기에서 수령한 누적 횟수.
 
     bool IsRated,
     
@@ -82,6 +83,8 @@ public record User
             {SettingsType.Notification, true},
 		},
         InstallDate: SDKManager.dateDefault,
+        DailyRewardDate: SDKManager.dateDefault,
+        DailyRewardIndex: 0,
         UserGroup: "A",
         AppOpenCount: 0,
         InterstitalViewCount: 0,
@@ -121,6 +124,8 @@ public record User
 		in Optional<Dictionary<SkillItemType, int>> ownSkillItems = default,
 		in Optional<Dictionary<SettingsType, bool>> settings = default,
         in Optional<string> installDate = default,
+        in Optional<string> dailyRewardDate = default,
+        in Optional<int> dailyRewardIndex = default,
         in Optional<string> userGroup = default,
         in Optional<int> appOpenCount = default,
         in Optional<int> interstitalViewCount = default,
@@ -188,6 +193,8 @@ public record User
 			OwnSkillItems: ownSkillItems.GetValueOrDefault(OwnSkillItems),
 			Settings: settings.GetValueOrDefault(Settings),
             InstallDate: installDate.GetValueOrDefault(InstallDate),
+            DailyRewardDate: dailyRewardDate.GetValueOrDefault(DailyRewardDate),
+            DailyRewardIndex: dailyRewardIndex.GetValueOrDefault(DailyRewardIndex),
             UserGroup: userGroup.GetValueOrDefault(UserGroup),
             AppOpenCount: appOpenCount.GetValueOrDefault(AppOpenCount),
             InterstitalViewCount: interstitalViewCount.GetValueOrDefault(InterstitalViewCount),

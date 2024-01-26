@@ -125,6 +125,8 @@ public class UserManager : IDisposable
                     {SettingsType.Notification, true},
 				},
                 InstallDate: SDKManager.dateDefault,
+                DailyRewardDate: SDKManager.dateDefault,
+                DailyRewardIndex: 0,
                 UserGroup: "A",
                 AppOpenCount: 1,
                 InterstitalViewCount: 0,
@@ -416,6 +418,25 @@ public class UserManager : IDisposable
                 agreeATT: agreeATT,
                 agreeCMPState: agreeCMPState,
                 agreeATTState: agreeATTState
+			)
+		);
+	}
+
+    public void UpdateDailyReward
+	(
+	 	Optional<string> dailyRewardDate = default,
+        Optional<int> dailyRewardIndex = default
+	)
+	{
+		if (m_user?.Value == null)
+		{
+			return;
+		}
+
+		m_user.Update(
+			user => user.Update(
+				dailyRewardDate: dailyRewardDate,
+                dailyRewardIndex: dailyRewardIndex
 			)
 		);
 	}
