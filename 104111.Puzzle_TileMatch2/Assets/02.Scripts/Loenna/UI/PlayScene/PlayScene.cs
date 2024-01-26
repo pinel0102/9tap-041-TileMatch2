@@ -330,6 +330,9 @@ public partial class PlayScene : UIScene
 
 	private void ShowGiveUpPopup(UITextButtonParameter buttonParameter, ExitBaseParameter exitBaseParameter)
 	{
+        //[PlayScene:Pause] PausePopup > Replay : 하트 소모 알림. (x 누를시 Replay & 광고)
+        //[PlayScene:Pause] PausePopup > Home : 하트 소모 알림. (x 누를시 Home & 광고)
+        //[PlayScene:Fail] PlayEndPopup -> GiveUp/Home : 하트 소모 알림. (x 누를시 Home & 광고)
 		UIManager.ShowPopupUI<GiveupPopup>(
 			new GiveupPopupParameter(
 				Title: Text.Popup.Title.GIVE_UP,
@@ -347,7 +350,7 @@ public partial class PlayScene : UIScene
 
         if (!valid)
         {
-            //하트 구매 요구 (TBD)
+            //[PlayScene:Replay] 하트 부족 알림.
             UIManager.ShowPopupUI<GiveupPopup>(
                 new GiveupPopupParameter(
                     Title: "Purchase",
@@ -384,6 +387,8 @@ public partial class PlayScene : UIScene
 	private void OnExit(bool onJumpStore)
 	{
 		UIManager.ClosePopupUI();
+        GlobalDefine.RequestAD_Interstitial();
+        
 		string mode = PlayerPrefs.GetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, Constant.Scene.CLIENT);
 
 		if (mode == Constant.Scene.CLIENT)

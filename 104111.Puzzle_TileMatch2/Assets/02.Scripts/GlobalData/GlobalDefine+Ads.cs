@@ -8,20 +8,32 @@ public static partial class GlobalDefine
 {
 #region 광고
 
+    private const string logAdColor = "#FF64FF";
+    private readonly static string logAdFormat0 = $"<color={logAdColor}>{{0}}</color>";
+    private readonly static string logAdFormat1 = $"<color={logAdColor}>{{0}} : {{1}}</color>";
+
     public static void RequestAD_ShowBanner()
     {
-        Debug.Log(CodeManager.GetMethodName());
+        Debug.Log(string.Format(logAdFormat0, CodeManager.GetMethodName()));
 
-        SDKManager.Instance.ShowBanner();
+        UniTask.Void(
+            async () => {
+                for(int i=0; i < 2; i++)
+                {
+                    SDKManager.Instance.ShowBanner();
+                    await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
+                }
+            }
+        );
     }
 
     public static void RequestAD_HideBanner()
     {
-        Debug.Log(CodeManager.GetMethodName());
+        Debug.Log(string.Format(logAdFormat0, CodeManager.GetMethodName()));
 
         UniTask.Void(
             async () => {
-                for(int i=0; i < 5; i++)
+                for(int i=0; i < 2; i++)
                 {
                     SDKManager.Instance.HideBanner();
                     await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
@@ -32,21 +44,21 @@ public static partial class GlobalDefine
 
     public static void RequestAD_Interstitial(bool openRemoveAdsPopup = true)
     {
-        Debug.Log(CodeManager.GetMethodName());
+        Debug.Log(string.Format(logAdFormat0, CodeManager.GetMethodName()));
         
         SDKManager.Instance.ShowInterstitial(openRemoveAdsPopup);
     }
 
     public static void RequestAD_RewardVideo(int num)
     {
-        Debug.Log(CodeManager.GetMethodName() + num);
+        Debug.Log(string.Format(logAdFormat1, CodeManager.GetMethodName(), num));
 
         SDKManager.Instance.ShowRewardVideo(num);
     }
 
     public static void GetReward_FromVideo(int num)
     {
-        Debug.Log(CodeManager.GetMethodName() + num);
+        Debug.Log(string.Format(logAdFormat1, CodeManager.GetMethodName(), num));
 
         switch(num)
         {

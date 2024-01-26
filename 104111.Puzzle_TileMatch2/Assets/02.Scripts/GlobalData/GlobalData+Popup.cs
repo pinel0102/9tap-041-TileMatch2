@@ -7,6 +7,8 @@ public partial class GlobalData
 {
     public void ShowReadyPopup(Action onComplete = null)
     {
+        Debug.Log(CodeManager.GetMethodName());
+
         User user = userManager.Current;
 
         UIManager.ShowPopupUI<ReadyPopup>(
@@ -39,6 +41,10 @@ public partial class GlobalData
 
     public void ShowHeartBuyPopup(Action onClick = null)
     {
+        Debug.Log(CodeManager.GetMethodName());
+        
+        //[MainScene:PlayButton] 하트 부족 알림.
+        //[MainScene:HUD:Puzzle] 하트 부족 알림.
         UIManager.ShowPopupUI<GiveupPopup>(
             new GiveupPopupParameter(
                 Title: "Purchase",
@@ -56,7 +62,9 @@ public partial class GlobalData
 
     public void ShowRemoveAdsPopup(Action onClick = null)
     {
-        UIManager.ShowPopupUI<GiveupPopup>(
+        Debug.Log(CodeManager.GetMethodName());
+
+        /*UIManager.ShowPopupUI<GiveupPopup>(
             new GiveupPopupParameter(
                 Title: "Purchase",
                 Message: "Purchase Life",
@@ -68,11 +76,13 @@ public partial class GlobalData
                 },
                 HUDTypes: HUDType.ALL
             )
-        );
+        );*/
     }
 
     public void ShowPresentPopup(ProductData product)
     {
+        Debug.Log(CodeManager.GetMethodName());
+
         UIManager.ShowPopupUI<RewardPopup>(
             new RewardPopupParameter (
                 PopupType: RewardPopupType.PRESENT,
@@ -84,6 +94,8 @@ public partial class GlobalData
 
     public void ShowPresentPopup(RewardData rewardData)
     {
+        Debug.Log(CodeManager.GetMethodName());
+
         UIManager.ShowPopupUI<RewardPopup>(
             new RewardPopupParameter (
                 PopupType: RewardPopupType.PRESENT,

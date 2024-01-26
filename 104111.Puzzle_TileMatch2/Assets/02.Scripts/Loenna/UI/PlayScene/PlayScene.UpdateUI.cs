@@ -117,6 +117,7 @@ partial class PlayScene
 			return;
 		}
 
+        //[PlayScene:Continue] 코인 부족 알림.
         UIManager.ShowPopupUI<GiveupPopup>(
             new GiveupPopupParameter(
                 Title: "Purchase",

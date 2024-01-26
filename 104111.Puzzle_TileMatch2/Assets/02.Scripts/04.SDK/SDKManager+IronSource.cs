@@ -23,10 +23,12 @@ public partial class SDKManager
     private static bool IsBannerAvailable => globalData.CURRENT_SCENE == GlobalDefine.SCENE_PLAY;
 
     /// <Summary>현재 타임 카운트 (초).</Summary>///
-    private static int currentTimeCount;
+    [SerializeField]
+    private int currentTimeCount;
     private static bool isBannerOn;
     private static bool openRemoveAdsPopup;
-    private static string ironSource_appKey;
+    [SerializeField]
+    private string ironSource_appKey;
     private static bool isInitialized_IronSource = false;    
     private WaitForSecondsRealtime wUpdateDelay = new WaitForSecondsRealtime(4f);
     private WaitForSecondsRealtime wOneSecond = new WaitForSecondsRealtime(1f);
@@ -169,11 +171,13 @@ public partial class SDKManager
 			// 최초 설치 딜레이 적용.
 			if(stDeltaTime.TotalSeconds >= firstAdsFreeDelay) 
             {
+                //Debug.Log(CodeManager.GetMethodName());
 				IronSource.Agent.loadBanner(IronSourceBannerSize.SMART, IronSourceBannerPosition.BOTTOM);
 			}
 		}
         else
         {
+            //Debug.Log(CodeManager.GetMethodName());
 			IronSource.Agent.loadBanner(IronSourceBannerSize.SMART, IronSourceBannerPosition.BOTTOM);
 		}
 #endif
@@ -182,6 +186,7 @@ public partial class SDKManager
     public void HideBanner()
     {
 #if ENABLE_IRONSOURCE
+        Debug.Log(CodeManager.GetMethodName());
         IronSource.Agent.hideBanner();
 #endif
     }
@@ -192,7 +197,7 @@ public partial class SDKManager
 
         if (m_isAdFreeUser) return;
 
-        if (globalData.CURRENT_LEVEL >= firstAdsFreeLevel)
+        if (globalData.CURRENT_LEVEL > firstAdsFreeLevel)
         {
             if(currentTimeCount > interstitialDelay)
             {
@@ -203,9 +208,10 @@ public partial class SDKManager
 #if UNITY_EDITOR
                 Interstitial_OnAdClosedEvent(null);
                 currentTimeCount = 0;
-#else
+#endif
                 if (IronSource.Agent.isInterstitialReady())
                 {
+                    Debug.Log(CodeManager.GetMethodName());
                     IronSource.Agent.showInterstitial();
                     currentTimeCount = 0;
 
@@ -215,7 +221,6 @@ public partial class SDKManager
                 {
                     LoadInterstitial();
                 }
-#endif
             }
         }
 
