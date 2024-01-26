@@ -4,6 +4,7 @@ using NineTap.Common;
 using TMPro;
 using System;
 using Cysharp.Threading.Tasks;
+using UnityEngine.UI;
 
 public class MainSceneFragmentContentParameter_Home
 : ScrollViewFragmentContentParameter
@@ -32,6 +33,8 @@ public class MainSceneFragmentContent_Home : ScrollViewFragmentContent
     public TMP_Text goldPieceText;
 
     [SerializeField]
+	private  Transform puzzleLockObject;
+    [SerializeField]
 	private  GameObject puzzleBadgeObject;
 
     [SerializeField]
@@ -48,14 +51,18 @@ public class MainSceneFragmentContent_Home : ScrollViewFragmentContent
 		m_playButton.OnSetup(parameter.PlayButtonParam);
         m_sideContainers.ForEach(container => container.OnSetup());
 
+        LayoutRebuilder.ForceRebuildLayoutImmediate(CachedRectTransform);
+        
         RefreshGoldPiece(GlobalData.Instance.userManager.Current.GoldPiece, GlobalData.Instance.GetGoldPiece_NextLevel());
         RefreshPuzzleBadge(GlobalData.Instance.userManager.Current.Puzzle);
+        RefreshPuzzleButton();
         RefreshPlayButton();
 	}
 
 	public override void OnUpdateUI(User user)
 	{
-		m_puzzleButton.OnUpdateUI(user);
+        m_puzzleButton.OnUpdateUI(user);
+        RefreshPuzzleButton();
         RefreshPlayButton();
 	}
 
@@ -64,6 +71,13 @@ public class MainSceneFragmentContent_Home : ScrollViewFragmentContent
         bool isPlayable = GlobalData.Instance.userManager.Current.Level <= GlobalData.Instance.tableManager.LastLevel;
 
         m_playButton.SetInteractable(isPlayable);
+    }
+
+    public void RefreshPuzzleButton()
+    {
+        bool canPlayPuzzle = GlobalData.Instance.userManager.Current.Level > Constant.Game.LEVEL_PUZZLE_START;
+        m_puzzleButton.interactable = canPlayPuzzle;
+        puzzleLockObject.gameObject.SetActive(!canPlayPuzzle);
     }
 
     public void RefreshPuzzleBadge(long count)
