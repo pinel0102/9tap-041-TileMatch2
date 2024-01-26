@@ -150,6 +150,8 @@ public partial class GlobalData
 
         Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Open Puzzle {0}</color>", openPuzzleIndex));
 
+        fragmentCollection.RefreshLockState();
+
         if (GlobalDefine.IsTutorialPuzzle(openPuzzleIndex))
         {
             ShowTutorial_Puzzle();

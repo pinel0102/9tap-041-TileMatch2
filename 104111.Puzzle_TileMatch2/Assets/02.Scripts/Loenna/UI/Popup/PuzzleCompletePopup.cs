@@ -33,6 +33,9 @@ public class PuzzleCompletePopup : UIPopup
 	private GameObject m_touchLock = default!;
 
     [SerializeField]
+	private GameObject m_closeText = default!;
+
+    [SerializeField]
     private RectTransform slotParent;
 
     private List<Transform> m_slots = new();
@@ -41,6 +44,8 @@ public class PuzzleCompletePopup : UIPopup
 
     public int PuzzleIndex;
     public string PuzzleName = string.Empty;
+    private bool existReward;
+    private RewardData rewardData;
 
     public override void OnSetup(UIParameter uiParameter)
     {
@@ -52,9 +57,8 @@ public class PuzzleCompletePopup : UIPopup
 			return;
 		}
 
-        //TableManager tableManager = Game.Inst.Get<TableManager>();
-		//RewardDataTable rewardDataTable = tableManager.RewardDataTable;
-		//LevelDataTable levelDataTable = tableManager.LevelDataTable;
+        RewardDataTable rewardDataTable = GlobalData.Instance.tableManager.RewardDataTable;
+        existReward = rewardDataTable.TryPuzzleCompleteReward(out rewardData);
 
         PuzzleIndex = parameter.Index;
         PuzzleName = parameter.PuzzleName;
@@ -65,16 +69,21 @@ public class PuzzleCompletePopup : UIPopup
         m_backgroundButton.onClick.AddListener(() => { OnClick_Close(parameter.OnContinue); });
         m_effect.SetActive(false);
         m_touchLock.SetActive(true);
+        m_closeText.SetActive(false);
 
         CreateSlot();
         CreatePuzzle();
+        GetReward();
     }
 
     public override void OnShow()
     {
         base.OnShow();
 
-        WaitTime();
+        m_touchLock.SetActive(true);
+        m_effect.SetActive(true);
+        
+        GlobalData.Instance.soundManager?.PlayFx(Constant.Sound.SFX_PUZZLE_COMPLETE);
     }
 
     private void OnClick_Close(Action onComplete)
@@ -130,15 +139,17 @@ public class PuzzleCompletePopup : UIPopup
 		}
     }
 
-    private void WaitTime()
+    private void GetReward()
     {
-        m_touchLock.SetActive(true);
-        m_effect.SetActive(true);
-
         UniTask.Void(
 			async token => {                
                 await UniTask.Delay(TimeSpan.FromSeconds(2f));
-				m_touchLock.SetActive(false);
+                
+                if (existReward)
+				    GlobalData.Instance.ShowPresentPopup(rewardData);
+
+                m_touchLock.SetActive(false);
+                m_closeText.SetActive(true);
 			},
 			this.GetCancellationTokenOnDestroy()
 		);

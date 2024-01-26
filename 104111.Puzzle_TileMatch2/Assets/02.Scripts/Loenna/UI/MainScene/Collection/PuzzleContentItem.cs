@@ -85,7 +85,7 @@ public class PuzzleContentItem : UIButton
 
 	private bool SetLocked(int currentLevel, int requiredLevel)
 	{
-		bool locked = currentLevel < requiredLevel;
+        bool locked = currentLevel <= requiredLevel;
 		m_lockObject.SetActive(locked);
 		return locked;
 	}
@@ -115,10 +115,11 @@ public class PuzzleContentItem : UIButton
             isActivePuzzle = false;
 		}
         else
-        {   
+        {
+            m_nameText.text = puzzleName;
+
             if(!isActivePuzzle)
-            {
-                m_nameText.text = puzzleName;
+            {   
                 onClick.AddListener(() => m_puzzleContentData?.onClick?.Invoke());
                 isActivePuzzle = true;
             }
@@ -160,7 +161,7 @@ public class PuzzleContentItem : UIButton
         attachedCount = GetAttachedCount();
         float completed = attachedCount >= PuzzlePieceMaker.MAX_PUZZLE_PIECE_COUNT? 1f : 0f;
 
-		m_viewButtonObject.alpha = completed;
+		m_viewButtonObject.alpha = 0;
 		m_gaugeBar.Alpha = 1f - completed;
 		m_gaugeBar.OnUpdateUI(attachedCount, PuzzlePieceMaker.MAX_PUZZLE_PIECE_COUNT);
     }

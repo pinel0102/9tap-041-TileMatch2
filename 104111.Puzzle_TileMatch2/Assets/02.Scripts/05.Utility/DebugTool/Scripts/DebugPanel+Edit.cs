@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System;
-using static UnityEngine.SceneManagement.SceneManager;
 
 public partial class DebugPanel : MonoBehaviour
 {
@@ -56,6 +56,7 @@ public partial class DebugPanel : MonoBehaviour
         Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat2, "Set Level", level));
 
         m_userManager?.Update(level: level);
+        GlobalData.Instance.fragmentCollection.ContainerList.ForEach(item => item.RefreshLockState());
         UIManager.ClosePopupUI_ForceAll();
         UIManager.ShowSceneUI<MainScene>(new NineTap.Common.DefaultParameter());
     }
@@ -114,7 +115,7 @@ public partial class DebugPanel : MonoBehaviour
 
         m_userManager?.ResetUser();
         
-        LoadScene("Game");
+        SceneManager.LoadScene("Game");
     }
 
     private void Debug_ResetPuzzle()
@@ -125,7 +126,7 @@ public partial class DebugPanel : MonoBehaviour
 
         m_userManager?.ResetPuzzle();
         
-        LoadScene("Game");
+        SceneManager.LoadScene("Game");
     }
 
     #region Play Scene Only

@@ -85,4 +85,18 @@ public class RewardDataTable : Table<long, RewardData>
 		reward = chestQuests.Last(data => data.Level < level);
 		return true;
 	}
+
+    public bool TryPuzzleCompleteReward(out RewardData reward)
+	{
+		reward = default;
+		var chestQuests = m_rowDataDic.Values?.Where(data => data.RewardType is RewardType.PuzzleComplete)?.ToArray() ?? Array.Empty<RewardData>();
+
+		if (chestQuests.Count() <= 0)
+		{
+			return false;
+		}
+
+		reward = chestQuests.First();
+		return true;
+	}
 }

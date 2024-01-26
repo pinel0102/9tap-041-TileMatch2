@@ -31,6 +31,7 @@ public static class Constant
 
         //Temp
         public const string SFX_GOLD_PIECE = "popup_open"; // 골든 타일 획득시.
+        public const string SFX_PUZZLE_COMPLETE = "chest_reward"; // 직소 퍼즐 완성시.
     }
 
 	public static class User
