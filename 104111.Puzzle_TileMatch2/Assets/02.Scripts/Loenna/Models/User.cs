@@ -10,6 +10,11 @@ using NineTap.Common;
 [Serializable]
 public record User
 (
+    bool AgreePrivacy,
+    bool AgreeTerms,
+    bool AgreeCMP,
+    bool AgreeATT,
+
     // Log
     string InstallDate,
     string UserGroup,
@@ -45,6 +50,10 @@ public record User
 )
 {	
 	public static User NewUser = new User (
+        AgreePrivacy: false,
+        AgreeTerms: false,
+        AgreeCMP: false,
+        AgreeATT: false,
 		Coin: 0,
 		Life: Constant.User.MAX_LIFE_COUNT,
 		Puzzle: 0,
@@ -88,6 +97,10 @@ public record User
 
 	public User Update
 	(
+        in Optional<bool> agreePrivacy = default,
+        in Optional<bool> agreeTerms = default,
+        in Optional<bool> agreeCMP = default,
+        in Optional<bool> agreeATT = default,
 	  	in Optional<long> coin = default, 
 		in Optional<int> life = default,
 		in Optional<int> puzzle = default,
@@ -148,6 +161,10 @@ public record User
 		}
 
         User user = new User(
+            AgreePrivacy: agreePrivacy.GetValueOrDefault(AgreePrivacy),
+            AgreeTerms: agreeTerms.GetValueOrDefault(AgreeTerms),
+            AgreeCMP: agreeCMP.GetValueOrDefault(AgreeCMP),
+            AgreeATT: agreeATT.GetValueOrDefault(AgreeATT),
 			Coin: coin.GetValueOrDefault(Coin),
 			Life: newLife,
 			Puzzle: puzzle.GetValueOrDefault(Puzzle),

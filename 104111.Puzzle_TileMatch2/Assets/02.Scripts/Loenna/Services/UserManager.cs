@@ -88,6 +88,10 @@ public class UserManager : IDisposable
 		void CreateDummy(int level)
 		{
 			m_user.Value = new User(
+                AgreePrivacy: true,
+                AgreeTerms: true,
+                AgreeCMP: true,
+                AgreeATT: true,
 				Coin: 9999999,
 				Life: Constant.User.MAX_LIFE_COUNT,
 				Puzzle: 0,
