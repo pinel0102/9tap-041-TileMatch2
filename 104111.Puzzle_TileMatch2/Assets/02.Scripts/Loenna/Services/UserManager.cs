@@ -159,17 +159,18 @@ public class UserManager : IDisposable
             m_user.Value.AgreeService && m_user.Value.AgreePrivacy 
         );
 
-#if CMP_CHECK_ENABLE
-        if (!m_user.Value.AgreeCMP)
+        if (UmpManager.useCMPCheck)
         {
-            waitPanel?.SetActive(true);
-            GlobalData.Instance.ShowAgreePopup_CMP(region);
-        }
+            if (!m_user.Value.AgreeCMP)
+            {
+                waitPanel?.SetActive(true);
+                GlobalData.Instance.ShowAgreePopup_CMP(region);
+            }
 
-        await UniTask.WaitUntil(() => 
-            m_user.Value.AgreeCMP
-        );
-#endif
+            await UniTask.WaitUntil(() => 
+                m_user.Value.AgreeCMP
+            );
+        }
         
 #if (UNITY_IOS && !UNITY_STANDALONE) || UNITY_EDITOR
         if (!m_user.Value.AgreeATT)

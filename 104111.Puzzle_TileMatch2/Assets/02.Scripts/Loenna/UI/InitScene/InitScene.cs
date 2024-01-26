@@ -110,12 +110,13 @@ public class InitScene : UIScene
 
         Debug.Log(CodeManager.GetAsyncName() + string.Format("<color=yellow>Current Mode : {0}</color>", mode));
 
-		TableManager tableManager = Game.Inst.Get<TableManager>();
+        TableManager tableManager = Game.Inst.Get<TableManager>();
 		UserManager userManager = Game.Inst.Get<UserManager>();
 		SoundManager soundManager= Game.Inst.Get<SoundManager>();
 		PaymentService paymentService = Game.Inst.Get<PaymentService>();
 
 		soundManager.Load();
+        UmpManager.Init();
 
 		List<UniTask<bool>> tasks = new List<UniTask<bool>>
 		{

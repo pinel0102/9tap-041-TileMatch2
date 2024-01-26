@@ -123,30 +123,9 @@ public partial class GlobalData
 
     public void ShowAgreePopup_CMP(string region)
     {
-#if CMP_CHECK_ENABLE
-
         Debug.Log(CodeManager.GetMethodName());
 
-#if UNITY_EDITOR
-        //userManager.UpdateAgree(agreeCMP: true);
-        return;
-#else
-        string CMPString = PlayerPrefs.GetString("IABTCF_AddtlConsent");
-        
-        Debug.Log(CodeManager.GetMethodName() + string.Format("CMPString : {0}", CMPString));
-        if (CMPString.Contains("2878"))
-        {
-            Debug.Log(CodeManager.GetMethodName() + "setConsent : True");
-            //IronSource.Agent.setConsent(true);
-        }
-        else
-        {
-            Debug.Log(CodeManager.GetMethodName() + "setConsent : False");
-            //IronSource.Agent.setConsent(false);
-        }
-#endif
-
-#endif
+        UmpManager.Show_Ump();
     }
 
     public void ShowAgreePopup_ATT(string region)
