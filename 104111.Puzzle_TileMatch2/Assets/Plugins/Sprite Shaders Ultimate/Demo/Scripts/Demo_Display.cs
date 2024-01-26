@@ -208,19 +208,19 @@ namespace SpriteShadersUltimate.Demo
             }
         }
 
-        void OnMouseOver()
+        void OnMouseOver_Disable()
         {
             isHovered = true;
             activeUntil = Time.unscaledTime + 4f;
         }
 
-        void OnMouseExit()
+        void OnMouseExit_Disable()
         {
             isHovered = false;
             activeUntil = Time.unscaledTime + 4f;
         }
 
-        void OnMouseDown()
+        void OnMouseDown_Disable()
         {
             if(selected == null)
             {
