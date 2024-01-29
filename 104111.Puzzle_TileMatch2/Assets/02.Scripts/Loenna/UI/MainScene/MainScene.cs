@@ -271,7 +271,7 @@ public class MainScene : UIScene
         }
 
         if (GlobalDefine.IsEnableDailyRewards())
-            GlobalData.Instance.ShowDailyBonusPopup();
+            GlobalData.Instance.ShowDailyRewardPopup();
 
         m_scrollView.MoveTo((int)parameter.ShowMenuType);
 

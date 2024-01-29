@@ -3,26 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using NineTap.Common;
 
-public record DailyBonusPopupParameter
+public record DailyRewardPopupParameter
 (
 	string DailyRewardDate,
     int DailyRewardIndex,
     params HUDType[] VisibleHUD
 ) : UIParameter(VisibleHUD);
 
-[ResourcePath("UI/Popup/DailyBonusPopup")]
-public class DailyBonusPopup : UIPopup
+[ResourcePath("UI/Popup/DailyRewardPopup")]
+public class DailyRewardPopup : UIPopup
 {
-    [Header("★ [Live] Daily Bonus")]
+    [Header("★ [Live] Daily Reward")]
     [SerializeField] private int dailyRewardIndex;
 
-    [Header("★ [Reference] Daily Bonus Popup")]
+    [Header("★ [Reference] Daily Reward Popup")]
     [SerializeField] private UITextButton getRewardButton;
     [SerializeField] private UITextButton getDoubleButton;
     [SerializeField] private UIImageButton closeButton;
     [SerializeField] private GameObject m_touchLock;
 
-    [Header("★ [Reference] Daily Bonus UI")]
+    [Header("★ [Reference] Daily Reward UI")]
     [SerializeField] private List<DailyRewardItem> dailyItems;
     [SerializeField] private List<Transform> lastItemsParent;
 
@@ -35,7 +35,7 @@ public class DailyBonusPopup : UIPopup
 	{
 		base.OnSetup(uiParameter);
 
-		if (uiParameter is not DailyBonusPopupParameter parameter)
+		if (uiParameter is not DailyRewardPopupParameter parameter)
 		{
             OnClickClose();
 			return;

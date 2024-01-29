@@ -65,12 +65,12 @@ public partial class GlobalData
         );
     }
 
-    public void ShowDailyBonusPopup()
+    public void ShowDailyRewardPopup()
     {
         Debug.Log(CodeManager.GetMethodName());
 
-        UIManager.ShowPopupUI<DailyBonusPopup>(
-            new DailyBonusPopupParameter(
+        UIManager.ShowPopupUI<DailyRewardPopup>(
+            new DailyRewardPopupParameter(
                 userManager.Current.DailyRewardDate,
                 userManager.Current.DailyRewardIndex,
                 VisibleHUD: HUDType.ALL
