@@ -111,7 +111,7 @@ public record ProductData
             RewardType: RewardType.IAP,
             DifficultType: DifficultType.NONE,
             Level: -1,
-            Repeat: -1,
+            Repeat: 1,
             Coin: Coin,
             PuzzlePiece: 0,
             StashItem: (int)Contents.GetValueOrDefault(1, 0),

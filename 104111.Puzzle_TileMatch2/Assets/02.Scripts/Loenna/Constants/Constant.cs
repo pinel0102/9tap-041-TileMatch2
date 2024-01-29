@@ -36,6 +36,7 @@ public static class Constant
 
 	public static class User
 	{
+        public const int LEVEL_DAILY_REWARD_START = 15; // 오픈시 해금.
 		public const int MAX_LIFE_COUNT = 5;
         public const int LIFE_CHARGE_TIME_MINUTES = 30;
         public const string MAX_LIFE_TEXT = "Full";
@@ -45,7 +46,7 @@ public static class Constant
 
 	public static class Game
 	{
-        public const int LEVEL_PUZZLE_START = 5;
+        public const int LEVEL_PUZZLE_START = 5; // 클리어시 해금.
 		public const float TILE_WIDTH = 88f;
 		public const float TILE_HEIGHT = 92f;
         public const float TILE_WIDTH_HALF = 44f;

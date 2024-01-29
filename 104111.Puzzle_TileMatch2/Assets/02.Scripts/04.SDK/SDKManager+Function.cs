@@ -5,6 +5,7 @@ using System.Globalization;
 
 public partial class SDKManager
 {
+    private const string dateDefault_HHmmss = "19990101-00:00:00";
     private const string dateFormat_HHmmss = "yyyyMMdd-HH:mm:ss";
     private const string remainTimeFormat = "{0:D2}:{1:D2}:{2:D2}";
 
@@ -17,6 +18,9 @@ public partial class SDKManager
 
     public static DateTime ToDateTime(string timeString, string format = dateFormat_HHmmss)
     {
+        if (string.IsNullOrEmpty(timeString))
+            timeString = DateTime.ParseExact(dateDefault_HHmmss, format, CultureInfo.InvariantCulture, DateTimeStyles.None).ToString(format);
+        
         if(DateTime.TryParseExact(timeString, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
             return result;
         

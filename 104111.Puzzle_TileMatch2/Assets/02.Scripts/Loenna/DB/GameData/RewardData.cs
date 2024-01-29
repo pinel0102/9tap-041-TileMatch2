@@ -21,6 +21,11 @@ public record RewardData
 	private readonly List<IReward> m_rewards = new();
 	public List<IReward> Rewards => m_rewards;
 
+    public void ResetRewards()
+    {
+        m_rewards.Clear();
+    }
+
 	public void CreateRewards()
 	{
 		List<IReward> result = new();

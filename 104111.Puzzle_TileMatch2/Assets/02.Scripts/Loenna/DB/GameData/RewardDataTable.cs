@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public class RewardDataTable : Table<long, RewardData>
@@ -27,6 +28,14 @@ public class RewardDataTable : Table<long, RewardData>
 					data.DifficultType == (hardMode? DifficultType.HARD : DifficultType.NORMAL
 				)
 			);
+	}
+
+    public List<RewardData> GetDailyRewards()
+	{
+		return m_rowDataDic
+			.Values?
+			.Where(data => data.RewardType is RewardType.Daily)
+            .OrderBy(data => data.Level).ToList();
 	}
 
 	public bool TryPreparedChestReward(int level, out RewardData reward)

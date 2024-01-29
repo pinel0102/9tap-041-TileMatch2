@@ -65,6 +65,19 @@ public partial class GlobalData
         );
     }
 
+    public void ShowDailyBonusPopup()
+    {
+        Debug.Log(CodeManager.GetMethodName());
+
+        UIManager.ShowPopupUI<DailyBonusPopup>(
+            new DailyBonusPopupParameter(
+                userManager.Current.DailyRewardDate,
+                userManager.Current.DailyRewardIndex,
+                VisibleHUD: HUDType.ALL
+            )
+        );
+    }
+
     public void ShowRemoveAdsPopup(Action onClick = null)
     {
         Debug.Log(CodeManager.GetMethodName());

@@ -33,24 +33,11 @@ public static partial class GlobalDefine
         SDKManager.Instance.ShowInterstitial(openRemoveAdsPopup);
     }
 
-    public static void RequestAD_RewardVideo(int num)
+    public static void RequestAD_RewardVideo(int num, Action<bool> onSuccess = null)
     {
         Debug.Log(string.Format(logAdFormat1, CodeManager.GetMethodName(), num));
 
-        SDKManager.Instance.ShowRewardVideo(num);
-    }
-
-    public static void GetReward_FromVideo(int num)
-    {
-        Debug.Log(string.Format(logAdFormat1, CodeManager.GetMethodName(), num));
-
-        switch(num)
-        {
-            case 0: 
-                GetItems(addBooster:1);
-                UIManager.ClosePopupUI_ForceAll();                
-                break;
-        }
+        SDKManager.Instance.ShowRewardVideo(num, onSuccess);
     }
 
 #endregion

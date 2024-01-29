@@ -319,6 +319,61 @@ public class UserManager : IDisposable
 		}
 	}
 
+    public void UpdateRewards(Dictionary<ProductType, long> rewards)
+	{
+		if (m_user?.Value == null || rewards?.Count <= 0)
+		{
+			return;
+		}
+
+		TimeSpan addBooster = TimeSpan.Zero;
+
+		if (rewards.TryGetValue(ProductType.HeartBooster, out var minutes))
+		{
+			addBooster = TimeSpan.FromMinutes(minutes);
+		}
+
+		m_user.Update(
+			user => user.Update(
+				coin: user.Coin + GetValue(ProductType.Coin),
+				puzzle: user.Puzzle + GetValue(ProductType.PuzzlePiece),
+				ownSkillItems: user.OwnSkillItems.Select(
+					pair => {
+						int value = pair.Value + GetValue(pair.Key.GetProductType());
+						return KeyValuePair.Create(pair.Key, value);
+					}
+				)
+				.ToDictionary(keySelector: pair => pair.Key, elementSelector: pair => pair.Value),
+				expiredLifeBoosterAt: Current.IsBoosterTime() ? user.ExpiredLifeBoosterAt + addBooster
+                                                              : DateTimeOffset.Now + addBooster
+			)
+		);
+
+        foreach(var item in rewards)
+        {
+            if (item.Value > 0)
+            {
+                if (item.Key == ProductType.HeartBooster)
+                {   
+                    Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1}m</color>", item.Key, item.Value));
+                    Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Booster Time] {0}</color>", Current.ExpiredLifeBoosterAt));
+                }
+                else
+                    Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1}</color>", item.Key, item.Value));
+            }
+        }
+
+        int GetValue(ProductType type)
+		{
+			if (rewards.TryGetValue(type, out long value))
+			{
+				return (int)value;
+			}
+
+			return 0;
+		}
+	}
+
 	public void Update
 	(
 	 	Optional<long> coin = default, 
@@ -433,6 +488,8 @@ public class UserManager : IDisposable
 			return;
 		}
 
+        Debug.Log(CodeManager.GetMethodName() + string.Format("{0} / {1}", dailyRewardDate, dailyRewardIndex));
+
 		m_user.Update(
 			user => user.Update(
 				dailyRewardDate: dailyRewardDate,
@@ -482,7 +539,7 @@ public class UserManager : IDisposable
         }
         if(addBooster.GetValueOrDefault(0) > 0)
         {
-            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Booster] {0}m</color>", addBooster));
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[HeartBooster] {0}m</color>", addBooster));
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Booster Time] {0}</color>", Current.ExpiredLifeBoosterAt));
         }
 	}

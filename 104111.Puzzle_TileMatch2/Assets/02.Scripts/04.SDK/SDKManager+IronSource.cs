@@ -25,6 +25,7 @@ public partial class SDKManager
     [SerializeField] private int currentTimeCount;
     /// <Summary>리워드 광고 보상 인덱스.</Summary>
     [SerializeField] private int rewardNum = -1;
+    private Action<bool> rewardVideoCallback;
     private static bool isBannerLoaded;
     private static bool openRemoveAdsPopup;
     private static string ironSourceAppKey;
@@ -248,22 +249,23 @@ public partial class SDKManager
 
 #region Reward AD
 
-    public void ShowRewardVideo(int num)
+    public void ShowRewardVideo(int num, Action<bool> onRewardVideoComplete)
     {
 #if ENABLE_IRONSOURCE
+        rewardNum = num;
+        rewardVideoCallback = onRewardVideoComplete;
+
         if (IronSource.Agent.isRewardedVideoAvailable())
         {
             if (m_showLogIronSource)
                 Debug.Log(CodeManager.GetMethodName());
-            
-            rewardNum = num;
+
             IronSource.Agent.showRewardedVideo();
 
-            SendAnalytics_Video_Ads_Show();        
+            SendAnalytics_Video_Ads_Show();
         }
 
 #if UNITY_EDITOR
-        rewardNum = num;
         GetReward();
 #endif
 #endif
@@ -273,7 +275,8 @@ public partial class SDKManager
     {
         Debug.Log(CodeManager.GetMethodName() + "Get Reward : " + rewardNum);
 
-        GlobalDefine.GetReward_FromVideo(rewardNum);
+        rewardVideoCallback?.Invoke(true);
+        rewardVideoCallback = null;
         SendAnalytics_Video_Ads_Reward(rewardNum);
     }
 
@@ -428,6 +431,9 @@ public partial class SDKManager
     private void RewardedVideo_OnAdShowFailedEvent(IronSourceError error, IronSourceAdInfo adInfo)
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("code: {0} / description : {1}", error.getCode(), error.getDescription()));
+
+        rewardVideoCallback?.Invoke(false);
+        rewardVideoCallback = null;
     }
 
     private void RewardedVideo_OnAdRewardedEvent(IronSourcePlacement ssp, IronSourceAdInfo adInfo)

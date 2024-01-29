@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using NineTap.Common;
@@ -47,5 +48,22 @@ public static partial class GlobalDefine
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Life] {0}</color>", addCount));
         
         globalData.userManager.GetItem_Life(addCount);
+    }
+
+    public static void AddRewards(Dictionary<ProductType, long> dict, List<IReward> rewards)
+    {
+        foreach (var reward in rewards)
+        {
+            if (!dict.ContainsKey(reward.Type))
+            {
+                dict.Add(reward.Type, 0);
+            }
+            dict[reward.Type] += reward.GetAmount();
+        }
+    }
+
+    public static void UpdateRewards(Dictionary<ProductType, long> rewards)
+    {
+        globalData.userManager.UpdateRewards(rewards);
     }
 }
