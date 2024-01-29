@@ -36,6 +36,11 @@ public class MainSceneFragmentContent_Store : ScrollViewFragmentContent
 			return;
 		}
 
+        if (GlobalData.Instance.CURRENT_SCENE == GlobalDefine.SCENE_PLAY)
+        {
+            GlobalData.Instance.fragmentStore_popup = this;
+        }
+
 		m_title.text = parameter.TitleText;
 
 		m_closeButton.OnSetup(parameter.CloseButtonParameter);
@@ -50,6 +55,13 @@ public class MainSceneFragmentContent_Store : ScrollViewFragmentContent
 		
 		m_scrollView.InsertData(productItemDatas);
 
-        GlobalDefine.RefreshADFreeUI();
+        RefreshADFreeUI();
 	}
+
+    public void RefreshADFreeUI()
+    {
+        bool NoAD = GlobalData.Instance.userManager.Current.NoAD;
+        
+        banner.SetActive(!NoAD);
+    }
 }

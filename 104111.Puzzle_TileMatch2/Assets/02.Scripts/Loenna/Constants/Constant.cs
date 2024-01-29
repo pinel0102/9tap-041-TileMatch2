@@ -38,6 +38,7 @@ public static class Constant
 	{
         public const int LEVEL_DAILY_REWARD_START = 15; // 오픈시 해금.
 		public const int MAX_LIFE_COUNT = 5;
+        public const int MAX_LIFE_COIN = 250;
         public const int LIFE_CHARGE_TIME_MINUTES = 30;
         public const string MAX_LIFE_TEXT = "Full";
 		public static readonly long REQUIRE_CHARGE_LIFE_MILLISECONDS = (long)TimeSpan.FromMinutes(LIFE_CHARGE_TIME_MINUTES).TotalMilliseconds;

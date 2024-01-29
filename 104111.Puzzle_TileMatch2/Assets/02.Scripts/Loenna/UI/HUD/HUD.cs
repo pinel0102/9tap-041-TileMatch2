@@ -24,6 +24,7 @@ public class HUD
     public HUDBehaviour behaviour => m_behaviour;
     private readonly HUDBehaviour m_behaviour;
 	private readonly AsyncMessageBroker<User> m_messageBroker;
+    public AsyncMessageBroker<User> MessageBroker => m_messageBroker;
 
 	public HUD(UserManager userManager)
 	{

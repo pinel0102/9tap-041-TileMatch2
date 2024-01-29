@@ -146,21 +146,6 @@ public partial class PlayScene : UIScene
 
 			var (valid, _, _) = m_userManager.Current.Valid(requireCoin: (long)product.Price);
 			
-			/*if (!valid)
-			{
-				UIManager.ShowSceneUI<StoreScene>(
-					new StoreSceneParameter(
-						StoreParam: new MainSceneFragmentContentParameter_Store {
-							TitleText = "Store",
-							CloseButtonParameter = new UIImageButtonParameter {
-								OnClick = UIManager.ReturnBackUI
-							}
-						}
-					)
-				);
-				return;
-			}*/
-
 			UIManager.ShowPopupUI<BuyItemPopup>(
 				new BuyItemPopupParameter(
 					Title: $"{itemData.Name}",
@@ -344,6 +329,7 @@ public partial class PlayScene : UIScene
 		);
 	}
 
+    // 하트 0인 상태에서 플레이 시도시 상점 열기.
 	private void ShowReadyPopup(int level)
 	{
         var (_, valid, _) = m_userManager.Current.Valid();

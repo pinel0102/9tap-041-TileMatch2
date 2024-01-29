@@ -75,16 +75,11 @@ public class MainScene : UIScene
             ),
             new KeyValuePair<HUDType, System.Action>(
                 HUDType.LIFE, () => { 
-                    /*if (IsEnableShowPopup() && !m_userManager.Current.IsBoosterTime())
+                    if (IsEnableShowPopup() && !m_userManager.Current.IsBoosterTime()
+                                            && !m_userManager.Current.IsFullLife())
                     {
                         soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
-                        OpenBuyHeartPopup(4);
-                    }*/
-                    if (IsEnableShowPopup()) 
-                    {
-                        soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
-                        SDKManager.SendAnalytics_C_Scene(NineTap.Constant.Text.Button.STORE);
-                        m_scrollView.MoveTo((int)MainMenuType.STORE); 
+                        GlobalData.Instance.ShowBuyHeartPopup();
                     }
                 }
             ),
@@ -218,34 +213,6 @@ public class MainScene : UIScene
         SDKManager.Instance.SDKStart();
 	}
 
-    void OpenBuyHeartPopup(int itemIndex)
-    {
-        if (!m_itemDataTable.TryGetValue(itemIndex, out var itemData))
-        {
-            return;
-        }
-        
-        UIManager.ShowPopupUI<BuyHeartPopup>(
-            new BuyHeartPopupParameter(
-                Title: "Heart Booster",
-                Message: "Get free heart booster",
-                ExitParameter: ExitBaseParameter.CancelParam,
-                BaseButtonParameter: new UITextButtonParameter {
-                    OnClick = () => {
-                        GlobalDefine.RequestAD_RewardVideo(0);
-                    },
-                    ButtonText = "Watch",
-                    SubWidgetBuilder = () => {
-                        var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
-                        widget.OnSetup("UI_Icon_AD");
-                        return widget.CachedGameObject;
-                    }
-                },
-                ItemData: itemData
-            )
-        );
-    }
-
     public void MoveTo(MainMenuType type)
     {
         m_scrollView.MoveTo((int)type);
@@ -291,6 +258,8 @@ public class MainScene : UIScene
 
     private bool IsEnableShowPopup()
     {
-        return transform.root.childCount < 2 && !GlobalData.Instance.IsTouchLockNow_MainScene();
+        return GlobalData.Instance.CURRENT_SCENE != GlobalDefine.SCENE_PLAY &&
+            transform.root.childCount < 2 && 
+            !GlobalData.Instance.IsTouchLockNow_MainScene();
     }
 }

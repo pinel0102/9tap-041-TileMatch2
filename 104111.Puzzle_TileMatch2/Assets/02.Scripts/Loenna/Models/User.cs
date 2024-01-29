@@ -41,6 +41,8 @@ public record User
     int DailyRewardIndex, // 받을 수 있는 출석체크 보상의 인덱스. == 이번 주기에서 수령한 누적 횟수.
 
     bool IsRated,
+    int ReviewPopupCount,
+    string ReviewPopupDate,
     
     // 게임 현황
 	int Level, // 플레이할 레벨
@@ -66,6 +68,7 @@ public record User
 		ExpiredLifeBoosterTime: 0L,
 		EndChargeLifeTime: 0L,
         IsRated: false,
+        ReviewPopupCount: 0,
         Level: 1,
 		ClearedPuzzleCollection: new(),
 		CurrentPlayingPuzzleIndex: 1001, //퍼즐 하나는 무조건 언락되어 있는 상태
@@ -84,6 +87,7 @@ public record User
 		},
         InstallDate: GlobalDefine.dateDefault_HHmmss,
         DailyRewardDate: GlobalDefine.dateDefault_HHmmss,
+        ReviewPopupDate: GlobalDefine.dateDefault_HHmmss,
         DailyRewardIndex: 0,
         UserGroup: "A",
         AppOpenCount: 0,
@@ -118,6 +122,8 @@ public record User
 		in Optional<DateTimeOffset> endChargeLifeAt = default,
         in Optional<int> level = default,
         in Optional<bool> isRated = default,
+        in Optional<int> reviewPopupCount = default,
+        in Optional<string> reviewPopupDate = default,
         in Optional<(int, uint)> unlockedPuzzlePiece = default,
 		in Optional<List<int>> clearedPuzzleCollection = default,
 		in Optional<(int, uint)> playingPuzzle = default,
@@ -186,6 +192,8 @@ public record User
 			EndChargeLifeTime: endChargeLifeAt.GetValueOrDefault(EndChargeLifeAt).ToUnixTimeMilliseconds(),
             Level: level.GetValueOrDefault(Level),
             IsRated: isRated.GetValueOrDefault(IsRated),
+            ReviewPopupCount: reviewPopupCount.GetValueOrDefault(ReviewPopupCount),
+            ReviewPopupDate: reviewPopupDate.GetValueOrDefault(ReviewPopupDate),
             CurrentPlayingPuzzleIndex: playingPuzzleIndex > 0 ? playingPuzzleIndex : CurrentPlayingPuzzleIndex,
 			UnlockedPuzzlePieceDic: unlockedPuzzlePieceDic,
 			PlayingPuzzleCollection: currentPlayingCollection,
@@ -242,7 +250,7 @@ public record User
     /// <para>Item2 : 라이프 개수.</para>
     /// <para>Item3 : (Item1 == true) ? 부스터 남은 시간 : 라이프 충전 시간.)</para>
     /// </returns>
-    public (bool, string, string) GetLifeStatus()
+    public (bool, string, string, bool) GetLifeStatus()
     {
         var (isBoosterTime, boosterRemainTime) = GetBoosterStatus();
         string heartString, timeString;
@@ -272,7 +280,7 @@ public record User
             }
         }
 
-        return (isBoosterTime, heartString, timeString);
+        return (isBoosterTime, heartString, timeString, Life >= Constant.User.MAX_LIFE_COUNT);
     }
 
     private (bool, string) GetBoosterStatus()

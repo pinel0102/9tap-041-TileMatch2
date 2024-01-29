@@ -160,8 +160,8 @@ public class GameClearPopup : UIPopup
                     rewardGoldPiece:goldPieceCount
                 ));
                 
-                if (UIManager.IsEnableReviewPopup(parameter.Level))
-                    UIManager.ShowReviewPopup();
+                if (GlobalDefine.IsEnableReviewPopup(parameter.Level))
+                    GlobalData.Instance.ShowReviewPopup();
 			}
 			else
 			{

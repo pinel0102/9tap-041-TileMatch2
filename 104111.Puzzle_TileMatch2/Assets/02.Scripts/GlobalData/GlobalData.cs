@@ -11,8 +11,9 @@ public partial class GlobalData : SingletonMono<GlobalData>
     [HideInInspector] public MainSceneFragmentContent_Home fragmentHome = default;
     [HideInInspector] public MainSceneFragmentContent_Collection fragmentCollection = default;
     [HideInInspector] public MainSceneFragmentContent_Puzzle fragmentPuzzle = default;
-    [HideInInspector] public MainSceneFragmentContent_Store fragmentStore = default;
     [HideInInspector] public MainSceneFragmentContent_Settings fragmentSettings = default;
+    [HideInInspector] public MainSceneFragmentContent_Store fragmentStore = default;
+    [HideInInspector] public MainSceneFragmentContent_Store fragmentStore_popup = default;
 
     public UserManager userManager => Game.Inst?.Get<UserManager>();
     public SoundManager soundManager => Game.Inst?.Get<SoundManager>();

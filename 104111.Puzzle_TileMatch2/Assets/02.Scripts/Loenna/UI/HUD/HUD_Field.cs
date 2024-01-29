@@ -10,7 +10,7 @@ public class HUDFieldParameter
 	public HUDType Type;
 	public Action OnClick;
 	public IUniTaskAsyncEnumerable<string> FieldBinder;
-    public IUniTaskAsyncEnumerable<(bool, string, string)> LifeStatus;
+    public IUniTaskAsyncEnumerable<(bool, string, string, bool)> LifeStatus;
 }
 
 public class HUD_Field : CachedBehaviour
@@ -23,12 +23,17 @@ public class HUD_Field : CachedBehaviour
 
 	[SerializeField]
 	private TMP_Text m_text;
+    public TMP_Text Text => m_text;
 
     [SerializeField]
 	private TMP_Text m_textIncrease;
 
     [SerializeField]
 	private TMP_Text m_timeText;
+    public TMP_Text TimeText => m_timeText;
+
+    [SerializeField]
+    private GameObject heartPlusObject;
 
     [SerializeField]
     private GameObject boosterTimeObject;
@@ -49,8 +54,11 @@ public class HUD_Field : CachedBehaviour
 		}
         else if (parameter.LifeStatus != null)
 		{
-            parameter.LifeStatus.BindTo(m_text, (component, status) => component.text = status.Item2);
+            parameter.LifeStatus.BindTo(m_text, (component, status) => {
+                    component.text = status.Item2;
+                });
             parameter.LifeStatus.BindTo(m_timeText, (component, status) => {
+                    heartPlusObject.SetActive(!status.Item1 && !status.Item4);
                     boosterTimeObject.SetActive(status.Item1); 
                     component.text = status.Item3;
                     component.color = status.Item1 ? Constant.UI.COLOR_BOOSTER_TIME : Constant.UI.COLOR_WHITE;

@@ -108,6 +108,7 @@ public class UserManager : IDisposable
 				ExpiredLifeBoosterTime: 0L,
 				EndChargeLifeTime: 0L,
                 IsRated: false,
+                ReviewPopupCount: 0,
 				Level: level,
 				CurrentPlayingPuzzleIndex: 1001,
 				UnlockedPuzzlePieceDic: new(),
@@ -124,8 +125,9 @@ public class UserManager : IDisposable
 					{SettingsType.Vibration, true},
                     {SettingsType.Notification, true},
 				},
-                InstallDate: SDKManager.dateDefault,
-                DailyRewardDate: SDKManager.dateDefault,
+                InstallDate: GlobalDefine.dateDefault_HHmmss,
+                DailyRewardDate: GlobalDefine.dateDefault_HHmmss,
+                ReviewPopupDate: GlobalDefine.dateDefault_HHmmss,
                 DailyRewardIndex: 0,
                 UserGroup: "A",
                 AppOpenCount: 1,
@@ -269,6 +271,7 @@ public class UserManager : IDisposable
 
 		DateTimeOffset CalcualteChargeLifeAt(long _oldEndChargeLifeTime, int _newLife, bool _requireLife)
 		{
+            //[TODO] 라이프 타임 계산 오류 있음.
 			DateTimeOffset at = DateTimeOffset.FromUnixTimeMilliseconds(_oldEndChargeLifeTime);
 			DateTimeOffset chargeAt = at > DateTimeOffset.Now? at : DateTimeOffset.Now;
 
@@ -383,8 +386,7 @@ public class UserManager : IDisposable
 		//Optional<DateTimeOffset> expiredLifeBoosterAt = default,
         Optional<DateTimeOffset> endChargeLifeAt = default,
         Optional<int> level = default,
-        Optional<bool> isRated = default,
-		Optional<(int, uint)> unlockedPuzzlePiece = default,
+        Optional<(int, uint)> unlockedPuzzlePiece = default,
 		Optional<List<int>> clearedPuzzleCollection = default,
 		Optional<(int, uint)> playingPuzzle = default,
 		Optional<Dictionary<SkillItemType, int>> ownSkillItems = default
@@ -404,8 +406,7 @@ public class UserManager : IDisposable
 				//expiredLifeBoosterAt: expiredLifeBoosterAt,
                 endChargeLifeAt: endChargeLifeAt,
 				level: level,
-                isRated: isRated,
-				unlockedPuzzlePiece: unlockedPuzzlePiece,
+                unlockedPuzzlePiece: unlockedPuzzlePiece,
 				clearedPuzzleCollection: clearedPuzzleCollection,
 				playingPuzzle: playingPuzzle,
 				ownSkillItems: ownSkillItems
@@ -477,6 +478,26 @@ public class UserManager : IDisposable
 		);
 	}
 
+    public void UpdateReviewPopup(
+        Optional<bool> isRated = default,
+        Optional<int> reviewPopupCount = default,
+        Optional<string> reviewPopupDate = default
+    )
+    {
+        if (m_user?.Value == null)
+		{
+			return;
+		}
+
+		m_user.Update(
+			user => user.Update(
+				isRated: isRated,
+                reviewPopupCount: reviewPopupCount,
+				reviewPopupDate: reviewPopupDate
+			)
+		);
+    }
+
     public void UpdateDailyReward
 	(
 	 	Optional<string> dailyRewardDate = default,
@@ -527,17 +548,17 @@ public class UserManager : IDisposable
 			)
 		);
 
-        if(addCoin.GetValueOrDefault(0) > 0)
+        if(addCoin.GetValueOrDefault(0) != 0)
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Coin] {0}</color>", addCoin));
         if(addSkillItems.HasValue)
         {
             foreach(var item in addSkillItems.Value)
             {
-                if (item.Value > 0)
+                if (item.Value != 0)
                     Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1}</color>", item.Key, item.Value));
             }
         }
-        if(addBooster.GetValueOrDefault(0) > 0)
+        if(addBooster.GetValueOrDefault(0) != 0)
         {
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[HeartBooster] {0}m</color>", addBooster));
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Booster Time] {0}</color>", Current.ExpiredLifeBoosterAt));

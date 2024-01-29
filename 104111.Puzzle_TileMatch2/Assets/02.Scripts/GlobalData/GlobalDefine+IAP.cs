@@ -76,8 +76,7 @@ public static partial class GlobalDefine
 
     public static void RefreshADFreeUI()
     {
-        bool NoAD = globalData.userManager.Current.NoAD;
-        
-        globalData.fragmentStore.banner.SetActive(!NoAD);
+        globalData.fragmentStore.RefreshADFreeUI();
+        globalData.fragmentStore_popup?.RefreshADFreeUI();
     }
 }

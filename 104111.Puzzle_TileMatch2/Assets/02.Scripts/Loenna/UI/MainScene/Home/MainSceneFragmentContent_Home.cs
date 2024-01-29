@@ -36,9 +36,12 @@ public class MainSceneFragmentContent_Home : ScrollViewFragmentContent
 	private  Transform puzzleLockObject;
     [SerializeField]
 	private  GameObject puzzleBadgeObject;
-
     [SerializeField]
 	private  TMP_Text puzzleBadgeText;
+    [SerializeField]
+	private  GameObject hardModeIcon;
+
+    private GlobalData globalData { get { return GlobalData.Instance; } }
 
 	public override void OnSetup(ScrollViewFragmentContentParameter contentParameter)
 	{
@@ -68,14 +71,17 @@ public class MainSceneFragmentContent_Home : ScrollViewFragmentContent
 
     public void RefreshPlayButton()
     {
-        bool isPlayable = GlobalData.Instance.userManager.Current.Level <= GlobalData.Instance.tableManager.LastLevel;
+        bool isPlayable = globalData.userManager.Current.Level <= globalData.tableManager.LastLevel;
+        var levelData = globalData.tableManager.LevelDataTable.FirstOrDefault(index => index == globalData.userManager.Current.Level);
+        bool isHardLevel = isPlayable && (levelData?.HardMode ?? false);
 
         m_playButton.SetInteractable(isPlayable);
+        hardModeIcon.SetActive(isHardLevel);
     }
 
     public void RefreshPuzzleButton()
     {
-        bool canPlayPuzzle = GlobalData.Instance.userManager.Current.Level > Constant.Game.LEVEL_PUZZLE_START;
+        bool canPlayPuzzle = globalData.userManager.Current.Level > Constant.Game.LEVEL_PUZZLE_START;
         m_puzzleButton.interactable = canPlayPuzzle;
         puzzleLockObject.gameObject.SetActive(!canPlayPuzzle);
     }

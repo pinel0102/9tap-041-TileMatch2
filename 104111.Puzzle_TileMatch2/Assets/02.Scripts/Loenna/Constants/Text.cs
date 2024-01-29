@@ -18,6 +18,7 @@ namespace NineTap.Constant
             public const string COMING_SOON = "Coming Soon";
             public const string STORE = "Store";
             public const string CLOSE = "Close";
+            public const string REFILL = "Refill";
 		}
 
 		public static class Popup
