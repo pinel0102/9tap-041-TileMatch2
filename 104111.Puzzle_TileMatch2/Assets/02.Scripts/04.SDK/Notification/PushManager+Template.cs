@@ -6,7 +6,7 @@ public static partial class PushManager
 {
 #region Push Templates
 
-    private static TimeSpan pushOnceTime = new TimeSpan(12, 0, 0);
+    private readonly static TimeSpan pushOnceTime = new TimeSpan(12, 0, 0);
     private readonly static List<KeyValuePair<int, string>> pushOnceTemplate = new List<KeyValuePair<int, string>>
     {
         //new (1, "Time to play the \"Tile Match world tours\"!!"),
@@ -16,7 +16,7 @@ public static partial class PushManager
         //new (7, "Need more fun? PLAY NOW"),
     };
 
-    private static TimeSpan pushRepeatTime1 = new TimeSpan(12, 0, 0);
+    private readonly static TimeSpan pushRepeatTime1 = new TimeSpan(12, 0, 0);
     private readonly static List<string> pushRepeatTemplate1 = new List<string>
     {
         "Time to play the \"Tile Match world tours\"!!",
@@ -26,7 +26,7 @@ public static partial class PushManager
         "Need more fun? PLAY NOW"
     };
 
-    private static TimeSpan pushRepeatTime2 = new TimeSpan(19, 0, 0);    
+    private readonly static TimeSpan pushRepeatTime2 = new TimeSpan(19, 0, 0);    
     private readonly static List<string> pushRepeatTemplate2 = new List<string>
     {
         "Don’t forget to claim your daily reward!",

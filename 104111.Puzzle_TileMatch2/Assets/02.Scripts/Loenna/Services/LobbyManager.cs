@@ -36,6 +36,7 @@ public class LobbyManager : IDisposable
 	public void OnSelectPuzzle(PuzzleData puzzleData, uint placedPieces, uint unlockedPieces)
 	{
 		m_onUpdatePuzzle.Value = new PuzzleInfo(puzzleData, placedPieces, unlockedPieces);
+        SDKManager.SendAnalytics_I_Puzzle(puzzleData.Index);
 	}
 
 	public void OnCheckShowPopup(Action onMoveShop)

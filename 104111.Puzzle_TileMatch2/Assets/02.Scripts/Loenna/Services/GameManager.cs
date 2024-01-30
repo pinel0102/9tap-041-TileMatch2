@@ -7,7 +7,6 @@ using System.Collections.Generic;
 
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
-using Unity.VisualScripting;
 
 public partial class GameManager : IDisposable
 {
@@ -197,6 +196,8 @@ public partial class GameManager : IDisposable
 			return;
 		}
 
+        GlobalData.Instance.CURRENT_DIFFICULTY = levelData.HardMode ? 1 : 0;
+
 		// 랜덤 타입 타일의 타입을 임의적으로 설정한다.
 		int boardIndex = 0;
 		var boards = new Queue<BoardItemModel>();
@@ -252,6 +253,7 @@ public partial class GameManager : IDisposable
 			)
 		);
 
+        m_userManager.UpdateLog(levelPlayCount: m_userManager.Current.LevelPlayCount + 1);
         SDKManager.SendAnalytics_I_Scene_Play();
 
         #region Local Functions

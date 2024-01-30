@@ -61,7 +61,9 @@ public partial class GlobalData : SingletonMono<GlobalData>
     {
         while(true)
         {
+            userManager?.UpdateLog(totalPlayTime: userManager.Current.TotalPlayTime + 1);
             fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); });
+            
             yield return wTimeDelay;
         }
     }

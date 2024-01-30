@@ -126,7 +126,7 @@ partial class PlayScene
                 ExitParameter: new ExitBaseParameter(
                     includeBackground: false,
                     onExit: () => {
-                        SDKManager.SendAnalytics_C_Scene_Fail(Text.Button.GIVE_UP);
+                        SDKManager.SendAnalytics_C_Scene_Fail("Close");
                         m_userManager.TryUpdate(requireLife: true);
                         OnExit(false);
                     }
@@ -134,7 +134,7 @@ partial class PlayScene
                 BaseButtonParameter: new UITextButtonParameter {
                     ButtonText = "Go to Shop",
                     OnClick = () => {
-                        SDKManager.SendAnalytics_C_Scene_Fail(Text.Button.STORE);
+                        SDKManager.SendAnalytics_C_Scene(Text.Button.STORE);
                         m_userManager.TryUpdate(requireLife: true);
                         OnExit(true);
                     }

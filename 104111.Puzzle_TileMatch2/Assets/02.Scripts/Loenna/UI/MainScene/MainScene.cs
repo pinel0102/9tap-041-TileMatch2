@@ -234,6 +234,7 @@ public class MainScene : UIScene
 		}
 
         GlobalData.Instance.CURRENT_LEVEL = m_userManager.Current.Level;
+        GlobalData.Instance.CURRENT_DIFFICULTY = 0;
 
         if (CachedParameter is MainSceneRewardParameter rewardParameter)
         {

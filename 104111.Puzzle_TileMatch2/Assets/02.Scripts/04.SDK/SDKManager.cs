@@ -23,7 +23,7 @@ public partial class SDKManager : SingletonMono<SDKManager>
     ///<Summary>SDK 초기화. Awake()에서 사용.</Summary>
     public void Initialize(int _appOpenCount = 0, string _installDate = dateDefault, string _userGroup = "A", bool _isADFreeUser = false)
     {
-        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>appOpenCount : {0} / InstallDate : {1} / UserGroup : {2} / IsADFreeUser = {3}</color>", _appOpenCount, _installDate, _userGroup, _isADFreeUser));
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>AppOpenCount : {0} / InstallDate : {1} / UserGroup : {2} / IsADFreeUser = {3}</color>", _appOpenCount, _installDate, _userGroup, _isADFreeUser));
 
         deviceID = SystemInfo.deviceUniqueIdentifier;
         appOpenCount = _appOpenCount;

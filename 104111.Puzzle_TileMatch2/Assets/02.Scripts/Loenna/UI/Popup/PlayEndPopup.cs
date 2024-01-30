@@ -88,7 +88,7 @@ public class PlayEndPopup : UIPopup
         m_continueButton.OnSetup(
             new UITextButtonParameter {
                 OnClick = () => {
-                    SDKManager.SendAnalytics_C_Scene_Fail(Text.Button.CONTINUE);
+                    SDKManager.SendAnalytics_C_Scene_Fail("Retry");
                     OnClickClose();
                     parameter.ContinueButtonParameter.OnClick?.Invoke();
                 },
@@ -100,7 +100,7 @@ public class PlayEndPopup : UIPopup
 		m_quitButton.OnSetup(
 			new UITextButtonParameter {
 				OnClick = () => {
-                    SDKManager.SendAnalytics_C_Scene_Fail(Text.Button.GIVE_UP);
+                    SDKManager.SendAnalytics_C_Scene_Fail("Close");
 					OnClickClose();
 					parameter.OnQuit?.Invoke();
 				},
@@ -116,7 +116,7 @@ public class PlayEndPopup : UIPopup
         m_exitButton.OnSetup(
 			new UITextButtonParameter {
 				OnClick = () => {
-                    SDKManager.SendAnalytics_C_Scene_Fail(Text.Button.GIVE_UP);
+                    SDKManager.SendAnalytics_C_Scene_Fail("Close");
 					OnClickClose();
                     parameter.OnQuit?.Invoke();
 				},

@@ -142,9 +142,7 @@ namespace NineTap.Payment
 				return;
 			}
 
-            SDKManager.SendAnalytics_IAP_Purchase(product);
-
-			m_purchaseResult.Update(value => value = new IAPResult.Nothing());
+            m_purchaseResult.Update(value => value = new IAPResult.Nothing());
 
 			m_onConfirmPendingPurchase = (value) => {
 				if (value is IAPResult.Error or IAPResult.Success)
@@ -231,6 +229,9 @@ namespace NineTap.Payment
 			Debug.Log($"[Success Purchase] productID {purchaseEvent.purchasedProduct.definition.id}");
 			#endif
 			Product product = purchaseEvent.purchasedProduct;
+
+            GlobalData.Instance.userManager.UpdateLog(totalPayment: GlobalData.Instance.userManager.Current.TotalPayment + Convert.ToSingle(product.metadata.localizedPrice));
+            SDKManager.SendAnalytics_IAP_Purchase(product);
 
 			#if UNITY_EDITOR
 			m_purchaseResult.Update(value => value = new IAPResult.Success(0, purchaseEvent.purchasedProduct.definition.id));

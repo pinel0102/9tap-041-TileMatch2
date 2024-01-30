@@ -24,7 +24,7 @@ public partial class SDKManager
         Debug.Log(string.Format(logFormat0, CodeManager.GetMethodName()));
 
         string eventName = "user_app_open";
-        var logParams = CreateParams(eventName);
+        var logParams = CreateParamsAppOpen(eventName);
 
         SendEvent(eventName, logParams);
 
@@ -43,6 +43,7 @@ public partial class SDKManager
         
         string eventName = "i_scene_play";
         var logParams = CreateParams(eventName);
+        logParams["option7"] = GlobalData.Instance.CURRENT_DIFFICULTY.ToString();
 
         SendEvent(eventName, logParams);
     }
@@ -56,6 +57,7 @@ public partial class SDKManager
 
         string eventName = "i_scene_clear";
         var logParams = CreateParams(eventName);
+        logParams["option7"] = GlobalData.Instance.CURRENT_DIFFICULTY.ToString();
 
         SendEvent(eventName, logParams);
     }
@@ -69,7 +71,20 @@ public partial class SDKManager
 
         string eventName = "i_scene_fail";
         var logParams = CreateParams(eventName);
-        logParams["option12"] = userManager.Current.FailedCount.ToString();
+        logParams["option7"] = GlobalData.Instance.CURRENT_DIFFICULTY.ToString();
+        logParams["option15"] = userManager.Current.FailedCount.ToString();
+
+        SendEvent(eventName, logParams);
+    }
+
+    ///<Summary>기타 씬 시작시 관련 정보를 보낸다.</Summary>
+    public static void SendAnalytics_I_Puzzle(int puzzleIndex)
+    {
+        Debug.Log(string.Format(logFormat2, CodeManager.GetMethodName(), GlobalData.Instance.CURRENT_SCENE, puzzleIndex));
+        
+        string eventName = "i_scene_puzzle";
+        var logParams = CreateParams(eventName);
+        logParams["option3"] = puzzleIndex.ToString();
 
         SendEvent(eventName, logParams);
     }
@@ -92,7 +107,7 @@ public partial class SDKManager
 
         string eventName = "c_scene_clear";
         var logParams = CreateParams(eventName);
-        logParams["option12"] = action;
+        logParams["option4"] = action;
 
         SendEvent(eventName, logParams);
     }
@@ -104,7 +119,7 @@ public partial class SDKManager
 
         string eventName = "c_scene_fail";
         var logParams = CreateParams(eventName);
-        logParams["option12"] = action;
+        logParams["option4"] = action;
 
         SendEvent(eventName, logParams);
     }
@@ -116,7 +131,7 @@ public partial class SDKManager
 
         string eventName = "c_scene";
         var logParams = CreateParams(eventName);
-        logParams["option12"] = action;
+        logParams["option4"] = action;
 
         SendEvent(eventName, logParams);
     }
@@ -128,8 +143,8 @@ public partial class SDKManager
 
         string eventName = "c_item_get";
         var logParams = CreateParams(eventName);
-        logParams["option12"] = item_name;
-        logParams["option13"] = count.ToString();
+        logParams["option4"] = item_name;
+        logParams["option5"] = count.ToString();
 
         SendEvent(eventName, logParams);
     }
@@ -141,8 +156,8 @@ public partial class SDKManager
 
         string eventName = "c_item_use";
         var logParams = CreateParams(eventName);
-        logParams["option12"] = item_name;
-        logParams["option13"] = count.ToString();
+        logParams["option4"] = item_name;
+        logParams["option5"] = count.ToString();
 
         SendEvent(eventName, logParams);
     }
@@ -193,7 +208,6 @@ public partial class SDKManager
 
         string eventName = "Video_Ads_Reward";
         var logParams = CreateParams(eventName);
-        logParams["option12"] = rewardNum.ToString();
 
         SendEvent(eventName, logParams);
     }
@@ -206,8 +220,8 @@ public partial class SDKManager
         string eventName = "IAP_Purchase";
 
         var logParams = CreateParams(eventName);
-        logParams["option12"] = product.definition.id;
-        logParams["option13"] = product.metadata.localizedPrice.ToString();
+        logParams["option4"] = product.definition.id;
+        logParams["option5"] = product.metadata.localizedPrice.ToString();
         logParams[AFInAppEvents.CONTENT_ID] = product.definition.id;
         logParams[AFInAppEvents.REVENUE] = product.metadata.localizedPrice.ToString();
 		logParams[AFInAppEvents.CURRENCY] = product.metadata.isoCurrencyCode;
@@ -245,6 +259,28 @@ public partial class SDKManager
         SendEvent_Firebase(eventName, log);
     }
 
+    private static Dictionary<string, string> CreateParamsAppOpen(string eventName)
+    {
+        var logParams = new Dictionary<string, string>();
+        logParams["event_name"] = eventName;
+        logParams["install_date"] = installDate;
+        logParams["log_date"] = GetCurrentTime();
+        logParams["purchased_user"] = userManager.Current.NoAD ? "1" : "0";
+        logParams["option1"] = userGroup;
+        logParams["option2"] = "0";
+        logParams["option3"] = userManager.Current.TotalPayment.ToString();//IAP 누적금액.
+        logParams["option4"] = userManager.Current.TotalPlayTime.ToString();//누적 플레이 타임.
+        logParams["option5"] = userManager.Current.AppOpenCount.ToString();//누적 세션수.
+        logParams["option6"] = globalData.CURRENT_LEVEL.ToString();
+        logParams["option7"] = userManager.Current.LevelPlayCount.ToString();//누적 레벨 플레이.
+        logParams["option8"] = userManager.Current.Coin.ToString();
+        logParams["option9"] = userManager.Current.OwnSkillItems[SkillItemType.Stash].ToString();
+        logParams["option10"] = userManager.Current.OwnSkillItems[SkillItemType.Undo].ToString();
+        logParams["option11"] = userManager.Current.OwnSkillItems[SkillItemType.Shuffle].ToString();
+
+        return logParams;
+    }
+
     private static Dictionary<string, string> CreateParams(string eventName)
     {
         var logParams = new Dictionary<string, string>();
@@ -255,13 +291,9 @@ public partial class SDKManager
         logParams["option1"] = userGroup;
         logParams["option2"] = globalData.CURRENT_SCENE;
         logParams["option3"] = globalData.CURRENT_LEVEL.ToString();
-        logParams["option4"] = userManager.Current.IsBoosterTime() ? "1" : "0";
-        logParams["option5"] = userManager.Current.Life.ToString();
-        logParams["option6"] = userManager.Current.Coin.ToString();
-        logParams["option7"] = userManager.Current.Puzzle.ToString();
-        logParams["option8"] = userManager.Current.GoldPiece.ToString();
-        logParams["option9"] = userManager.Current.OwnSkillItems[SkillItemType.Undo].ToString();
-        logParams["option10"] = userManager.Current.OwnSkillItems[SkillItemType.Stash].ToString();
+        logParams["option8"] = userManager.Current.Coin.ToString();
+        logParams["option9"] = userManager.Current.OwnSkillItems[SkillItemType.Stash].ToString();
+        logParams["option10"] = userManager.Current.OwnSkillItems[SkillItemType.Undo].ToString();
         logParams["option11"] = userManager.Current.OwnSkillItems[SkillItemType.Shuffle].ToString();
 
         return logParams;

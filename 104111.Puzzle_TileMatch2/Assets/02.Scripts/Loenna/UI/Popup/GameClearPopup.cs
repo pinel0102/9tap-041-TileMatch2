@@ -197,7 +197,7 @@ public class GameClearPopup : UIPopup
 
 			if (mode == Constant.Scene.CLIENT)
 			{
-                SDKManager.SendAnalytics_C_Scene_Clear(existNextLevel? Text.Button.CONTINUE : Text.Button.HOME);
+                SDKManager.SendAnalytics_C_Scene_Clear(existNextLevel ? "Next" : "Close");
                 GlobalDefine.RequestAD_Interstitial();
                 
                 UIManager.ShowSceneUI<MainScene>(new MainSceneRewardParameter(

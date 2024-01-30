@@ -65,7 +65,7 @@ public class UserManager : IDisposable
 
         if(Current.AppOpenCount == 0)
         {
-            UpdateLog(installDate: SDKManager.TimeToString(DateTime.Now));
+            UpdateLog(installDate: GlobalDefine.TimeToString(DateTime.Now));
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>First Open : {0}</color>", Current.InstallDate));
         }
 
@@ -83,6 +83,7 @@ public class UserManager : IDisposable
 
         LogUserData();
 
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>LevelPlayCount : {0} / TotalPlayTime : {1} / TotalPayment : {2}</color>", m_user.Value.LevelPlayCount, m_user.Value.TotalPlayTime, m_user.Value.TotalPayment));
         SDKManager.Instance.Initialize(m_user.Value.AppOpenCount, m_user.Value.InstallDate, m_user.Value.UserGroup, m_user.Value.NoAD);
         PushManager.Initialize(ProjectManager.productName, GlobalDefine.ToDateTime(m_user.Value.InstallDate));
 
@@ -133,6 +134,9 @@ public class UserManager : IDisposable
                 PuzzleOpenPopupIndex: -1,
                 UserGroup: "A",
                 AppOpenCount: 1,
+                LevelPlayCount: 0,
+                TotalPlayTime: 0,
+                TotalPayment: 0,
                 InterstitalViewCount: 0,
                 RewardViewCount: 0,
                 FailedLevel: 0,
@@ -410,6 +414,9 @@ public class UserManager : IDisposable
 	 	Optional<string> installDate = default, 
         Optional<string> userGroup = default, 
 		Optional<int> appOpenCount = default,
+        Optional<int> levelPlayCount = default,
+        Optional<uint> totalPlayTime = default,
+        Optional<float> totalPayment = default,
 		Optional<int> interstitalViewCount = default,
         Optional<int> rewardViewCount = default,
         Optional<int> failedLevel = default,
@@ -430,6 +437,9 @@ public class UserManager : IDisposable
 				installDate: installDate,
                 userGroup: userGroup,
                 appOpenCount: appOpenCount,
+                levelPlayCount: levelPlayCount,
+                totalPlayTime: totalPlayTime,
+                totalPayment: totalPayment,
                 interstitalViewCount: interstitalViewCount,
                 rewardViewCount: rewardViewCount,
                 failedLevel: failedLevel,
