@@ -50,6 +50,13 @@ public static partial class GlobalDefine
         globalData.userManager.GetItem_Life(addCount);
     }
 
+    public static void ResetLife()
+    {
+        Debug.Log(CodeManager.GetMethodName());
+
+        globalData.userManager.ResetLife();
+    }
+
     public static void AddRewards(Dictionary<ProductType, long> dict, List<IReward> rewards)
     {
         foreach (var reward in rewards)

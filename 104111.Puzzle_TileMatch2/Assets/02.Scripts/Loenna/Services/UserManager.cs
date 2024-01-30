@@ -262,7 +262,7 @@ public class UserManager : IDisposable
 				coin: user.Coin - requireCoin.GetValueOrDefault(0),
 				puzzle: user.Puzzle - requirePuzzle.GetValueOrDefault(0),
 				life: newLife,
-				endChargeLifeAt: CalcualteChargeLifeAt(user.EndChargeLifeTime, newLife, requireLife && user.ExpiredLifeBoosterTime <= 0)
+				endChargeLifeAt: CalcualteChargeLifeAt(user.EndChargeLifeTime, newLife, requireLife && !onBooster)
 			)
 		);
 
@@ -271,8 +271,7 @@ public class UserManager : IDisposable
 
 		DateTimeOffset CalcualteChargeLifeAt(long _oldEndChargeLifeTime, int _newLife, bool _requireLife)
 		{
-            //[TODO] 라이프 타임 계산 오류 있음.
-			DateTimeOffset at = DateTimeOffset.FromUnixTimeMilliseconds(_oldEndChargeLifeTime);
+            DateTimeOffset at = DateTimeOffset.FromUnixTimeMilliseconds(_oldEndChargeLifeTime);
 			DateTimeOffset chargeAt = at > DateTimeOffset.Now? at : DateTimeOffset.Now;
 
 			return _newLife >= Constant.User.MAX_LIFE_COUNT ? DateTimeOffset.Now :
@@ -564,6 +563,23 @@ public class UserManager : IDisposable
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Booster Time] {0}</color>", Current.ExpiredLifeBoosterAt));
         }
 	}
+
+    public void ResetLife()
+    {
+        if (m_user?.Value == null)
+		{
+			return;
+		}
+
+        m_user.Update(
+			user => user.Update(
+				life: Constant.User.MAX_LIFE_COUNT,
+                endChargeLifeAt: DateTimeOffset.Now//.AddDays(-1)
+			)
+		);
+
+        Debug.Log(CodeManager.GetMethodName() + string.Format("[Life] {0} / Full : {1}", Current.Life, Current.EndChargeLifeAt.LocalDateTime));
+    }
 
     public void GetItem_Life(int addCount)
 	{

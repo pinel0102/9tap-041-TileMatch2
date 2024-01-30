@@ -70,9 +70,8 @@ public partial class GlobalData
 
                                 SDKManager.SendAnalytics_C_Item_Use("Coin", Constant.User.MAX_LIFE_COIN);
 
-                                GlobalDefine.GetItem_Life(
-                                    Constant.User.MAX_LIFE_COUNT - userManager.Current.Life
-                                );
+                                //GlobalDefine.GetItem_Life(Constant.User.MAX_LIFE_COUNT - userManager.Current.Life);
+                                GlobalDefine.ResetLife();
 
                                 SDKManager.SendAnalytics_C_Item_Get("Life", Constant.User.MAX_LIFE_COUNT);
                             }

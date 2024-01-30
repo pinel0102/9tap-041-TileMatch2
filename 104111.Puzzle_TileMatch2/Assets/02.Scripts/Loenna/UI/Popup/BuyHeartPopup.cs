@@ -35,6 +35,7 @@ public class BuyHeartPopup : PopupBase
 
         parameter.LifeStatus.BindTo(m_text, (component, status) => {
                 component.text = status.Item2;
+                m_button.SetInteractable(!globalData.userManager.Current.IsFullLife());
             });
         parameter.LifeStatus.BindTo(m_timeText, (component, status) => {
                 component.text = status.Item3;
