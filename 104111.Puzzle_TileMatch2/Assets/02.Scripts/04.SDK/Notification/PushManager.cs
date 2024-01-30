@@ -19,13 +19,12 @@ public static partial class PushManager
 
         m_appTitle = appTitle;
         m_installDate = new DateTime(installDate.Year, installDate.Month, installDate.Day, 0, 0, 0);
-        pushOnceList.Clear();
-        pushRepeatList.Clear();
-        
-        DateTime now = DateTime.Now;
-        m_totalDays = (int)now.Subtract(m_installDate).TotalDays;
+        m_totalDays = (int)DateTime.Now.Subtract(m_installDate).TotalDays;
 
         Debug.Log(CodeManager.GetMethodName() + string.Format("totalDays : {0}", m_totalDays));
+
+        pushOnceList.Clear();
+        pushRepeatList.Clear();
 
         InitPushText();
         
@@ -36,7 +35,7 @@ public static partial class PushManager
     {
         if (!m_isInitialized)
         {
-            Debug.LogWarning(CodeManager.GetMethodName() + "Initialize First");
+            Debug.LogWarning(CodeManager.GetMethodName() + "Call Initialize First");
             return;
         }
 
