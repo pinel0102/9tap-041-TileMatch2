@@ -6,7 +6,7 @@ using System;
 /// </summary>
 public static partial class PushManager
 {
-    private static bool m_showLog = false;
+    private static bool m_showInternalLog = false;
 
     private static bool m_isInitialized = false;
     private static int m_totalDays = 0;
@@ -19,7 +19,7 @@ public static partial class PushManager
 
         m_appTitle = appTitle;
         m_installDate = new DateTime(installDate.Year, installDate.Month, installDate.Day, 0, 0, 0);
-        pushOnceList.Clear();        
+        pushOnceList.Clear();
         pushRepeatList.Clear();
         
         DateTime now = DateTime.Now;

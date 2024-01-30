@@ -22,7 +22,8 @@ public static partial class PushManager
                 {
                     GleyNotifications.SendNotification(m_appTitle, pushOnceList[i].PushText[j], pushDelay);
                     
-                    if(m_showLog) Debug.Log(CodeManager.GetMethodName() + string.Format("pushStartTime[{0}][{1}] : {2} / pushDelay : {3} / text : {4}", i, j, pushStartTime, pushDelay, pushOnceList[i].PushText[j]));
+                    if (m_showInternalLog)
+                        Debug.Log(CodeManager.GetMethodName() + string.Format("pushStartTime[{0}][{1}] : {2} / pushDelay : {3} / text : {4}", i, j, pushStartTime, pushDelay, pushOnceList[i].PushText[j]));
                 }
             }
         }
@@ -43,7 +44,8 @@ public static partial class PushManager
                 {
                     GleyNotifications.SendRepeatNotification(m_appTitle, pushRepeatList[i].PushText[j], pushDelay, pushRepeatList[i].Interval, null, null, string.Empty);
                     
-                    if(m_showLog) Debug.Log(CodeManager.GetMethodName() + string.Format("pushStartTime[{0}][{1}] : {2} / pushDelay : {3} / interval : {4} / text : {5}", i, j, pushStartTime.AddDays(j), pushDelay, pushRepeatList[i].Interval, pushRepeatList[i].PushText[j]));
+                    if (m_showInternalLog)
+                        Debug.Log(CodeManager.GetMethodName() + string.Format("pushStartTime[{0}][{1}] : {2} / pushDelay : {3} / interval : {4} / text : {5}", i, j, pushStartTime.AddDays(j), pushDelay, pushRepeatList[i].Interval, pushRepeatList[i].PushText[j]));
                 }
             }
         }
