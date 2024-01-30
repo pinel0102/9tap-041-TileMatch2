@@ -39,6 +39,7 @@ public class PuzzleOpenPopup : UIPopup
 			return;
 		}
 
+        GlobalData.Instance.userManager.UpdatePuzzleOpenIndex(puzzleOpenPopupIndex: -1);
         openPuzzleIndex = parameter.OpenPuzzleIndex;
 
 		SetInteractable(false);
@@ -73,8 +74,6 @@ public class PuzzleOpenPopup : UIPopup
                     m_openPuzzleContinue.SetActive(true);
                     SetInteractable(true);
                 }
-
-                GlobalData.Instance.userManager.UpdatePuzzleOpenIndex(puzzleOpenPopupIndex: -1);
 			},
 			this.GetCancellationTokenOnDestroy()
 		);
