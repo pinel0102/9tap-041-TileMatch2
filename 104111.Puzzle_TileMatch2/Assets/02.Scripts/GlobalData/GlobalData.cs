@@ -34,6 +34,7 @@ public partial class GlobalData : SingletonMono<GlobalData>
     public float shuffleTime = 1;
     
     private IObjectPool<MissionCollectedFx> m_particlePool;
+    private WaitForSecondsRealtime wTimeDelay = new WaitForSecondsRealtime(1.0f);
 
     public void Initialize()
     {
@@ -52,6 +53,17 @@ public partial class GlobalData : SingletonMono<GlobalData>
 			},
 			actionOnRelease: item => item.OnRelease()
 		);
+
+        StartCoroutine(Co_RealTime());
+    }
+
+    private IEnumerator Co_RealTime()
+    {
+        while(true)
+        {
+            fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); });
+            yield return wTimeDelay;
+        }
     }
 
     public void SetTouchLock_MainScene(bool active)

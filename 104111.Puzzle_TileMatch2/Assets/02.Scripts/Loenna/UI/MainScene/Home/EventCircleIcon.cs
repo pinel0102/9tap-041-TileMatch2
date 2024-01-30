@@ -69,4 +69,10 @@ public class EventCircleIcon : CachedBehaviour
 		m_mainIcon.UpdateUI(circleSprite, iconSprite);
 		m_optionalContainer.OnUpdateUI(productData);
 	}
+
+    public void RefreshTime(bool _active, string _text)
+    {
+        m_optionalContainer.m_timeWidget.SetActive(_active);
+        m_optionalContainer.m_timeWidget.SetText(_text);
+    }
 }

@@ -25,7 +25,7 @@ public class PuzzleContentItem : UIButton
 	private RectTransform m_pieceParent;
 
 	[SerializeField]
-	private CanvasGroup m_viewButtonObject;
+	private GameObject m_completeUI;
 
 	[SerializeField]
 	private UIGaugeBar m_gaugeBar;
@@ -160,8 +160,8 @@ public class PuzzleContentItem : UIButton
     {
         attachedCount = GetAttachedCount();
         float completed = attachedCount >= PuzzlePieceMaker.MAX_PUZZLE_PIECE_COUNT? 1f : 0f;
-
-		m_viewButtonObject.alpha = 0;
+        
+        m_completeUI.SetActive(completed == 1);
 		m_gaugeBar.Alpha = 1f - completed;
 		m_gaugeBar.OnUpdateUI(attachedCount, PuzzlePieceMaker.MAX_PUZZLE_PIECE_COUNT);
     }

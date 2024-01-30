@@ -18,6 +18,7 @@ public class MainSceneFragmentContent_Home : ScrollViewFragmentContent
 {
 	[SerializeField]
 	private List<HomeSideContainer> m_sideContainers;
+    public List<HomeSideContainer> SideContainers => m_sideContainers;
 
 	[SerializeField]
 	private HomeFragmentLargeButton m_puzzleButton;

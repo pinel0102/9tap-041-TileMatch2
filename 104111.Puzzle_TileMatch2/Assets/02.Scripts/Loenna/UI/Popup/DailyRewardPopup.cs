@@ -49,7 +49,10 @@ public class DailyRewardPopup : UIPopup
 
         SetupButtons();
         SetupRewards();
-        RefreshUI(false);
+
+        //RefreshUI(false);
+        RefreshUI(!GlobalDefine.IsEnableDailyRewards());
+        
         SetButtonInteractable(true);
 	}
 

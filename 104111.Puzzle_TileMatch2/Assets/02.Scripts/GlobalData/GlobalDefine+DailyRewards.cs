@@ -12,9 +12,14 @@ public static partial class GlobalDefine
             dailyRewardIndex: dailyIndex);
     }
 
+    public static bool IsOpenDailyRewards()
+    {
+        return globalData.userManager.Current.Level >= Constant.User.LEVEL_DAILY_REWARD_START;
+    }
+
     public static bool IsEnableDailyRewards()
     {
-        bool levelCheck = globalData.userManager.Current.Level >= Constant.User.LEVEL_DAILY_REWARD_START;
+        bool levelCheck = IsOpenDailyRewards();
         if (!levelCheck) 
             return false;
 
@@ -24,8 +29,8 @@ public static partial class GlobalDefine
         TimeSpan ts = DateTime.Now.Subtract(lastTime);
         bool dateCheck = ts.TotalDays > 0;
 
-        if (levelCheck && dateCheck)
-            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1} -> {2}</color>", levelCheck && dateCheck, lastTime, DateTime.Now));
+        //if (levelCheck && dateCheck)
+        //    Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1} -> {2}</color>", levelCheck && dateCheck, lastTime, DateTime.Now));
         
         return levelCheck && dateCheck;
     }

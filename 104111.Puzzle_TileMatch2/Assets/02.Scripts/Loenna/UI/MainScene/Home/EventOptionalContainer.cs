@@ -10,7 +10,7 @@ using NineTap.Common;
 public class EventOptionalContainer : CachedBehaviour
 {
     [Serializable]
-	private class Widget
+	public class Widget
 	{
 		[SerializeField]
 		protected GameObject m_root;
@@ -23,7 +23,7 @@ public class EventOptionalContainer : CachedBehaviour
 	}
 
 	[Serializable]
-	private class TextWidget : Widget
+	public class TextWidget : Widget
 	{
 		[SerializeField]
 		protected TMP_Text m_text;
@@ -35,7 +35,7 @@ public class EventOptionalContainer : CachedBehaviour
 	}
 
 	[Serializable]
-	private class TextWithImageWidget : TextWidget
+	public class TextWithImageWidget : TextWidget
 	{
 		[SerializeField]
 		protected Image m_image;
@@ -47,19 +47,19 @@ public class EventOptionalContainer : CachedBehaviour
 	}
 
 	[SerializeField]
-	private TextWidget m_speechBubbleWidget;
+	public TextWidget m_speechBubbleWidget;
 
 	[SerializeField]
-	private TextWithImageWidget m_labelWidget;
+	public TextWithImageWidget m_labelWidget;
 
 	[SerializeField]
-	private TextWithImageWidget m_timeWidget;
+	public TextWithImageWidget m_timeWidget;
 
 	[SerializeField]
-	private TextWidget m_discountWidget;
+	public TextWidget m_discountWidget;
 
 	[SerializeField]
-	private Widget m_adWidget;
+	public Widget m_adWidget;
 
 	public void OnUpdateUI(ProductData product)
 	{
@@ -85,7 +85,8 @@ public class EventOptionalContainer : CachedBehaviour
 		)
 		{
 			// 노출 시간
-			m_timeWidget.SetText(DateTime.Now.ToShortTimeString());
+			//m_timeWidget.SetText(DateTime.Now.ToShortTimeString());
+            m_timeWidget.SetText(string.Empty);
 			m_timeWidget.SetSprite(SpriteManager.GetSprite(product.UIType.GetEventTimeImagePath()));
 		}
 

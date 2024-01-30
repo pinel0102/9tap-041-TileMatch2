@@ -11,7 +11,7 @@ public static partial class GlobalDefine
 
     public const string dateDefault_HHmmss = "19990101-00:00:00";
     public const string dateFormat_HHmmss = "yyyyMMdd-HH:mm:ss";
-    private const string remainTimeFormat = "{0:D2}:{1:D2}:{2:D2}";
+    public const string remainTimeFormat = "{0:D2}:{1:D2}:{2:D2}";
 
     public static string GetCurrentTime(string format = dateFormat_HHmmss)
     {
