@@ -337,8 +337,8 @@ public partial class SDKManager
 
     private void Banner_OnAdLoadFailedEvent(IronSourceError error)
     {
-        //if (error.getCode() != 606) // No ads to show
-        Debug.Log(CodeManager.GetMethodName() + string.Format("code: {0} / description : {1}", error.getCode(), error.getDescription()));
+        if (error.getCode() != 606) // No ads to show
+            Debug.Log(CodeManager.GetMethodName() + string.Format("code: {0} / description : {1}", error.getCode(), error.getDescription()));
         
         //isBannerLoaded = false;
     }
