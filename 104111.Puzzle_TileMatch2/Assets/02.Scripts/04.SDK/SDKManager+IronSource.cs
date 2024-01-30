@@ -340,7 +340,7 @@ public partial class SDKManager
         //if (error.getCode() != 606) // No ads to show
         Debug.Log(CodeManager.GetMethodName() + string.Format("code: {0} / description : {1}", error.getCode(), error.getDescription()));
         
-        isBannerLoaded = false;
+        //isBannerLoaded = false;
     }
 
     private void Banner_OnAdClickedEvent(IronSourceAdInfo adInfo)
@@ -418,7 +418,7 @@ public partial class SDKManager
     {
         Debug.Log(CodeManager.GetMethodName());
 
-        isRewardVideoLoaded = false;
+        //isRewardVideoLoaded = false;
     }
 
     private void RewardedVideo_OnAdClickedEvent(IronSourcePlacement ssp, IronSourceAdInfo adInfo)
