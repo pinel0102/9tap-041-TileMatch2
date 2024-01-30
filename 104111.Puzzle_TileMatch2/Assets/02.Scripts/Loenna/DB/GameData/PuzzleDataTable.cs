@@ -60,4 +60,23 @@ public class PuzzleDataTable : Table<int, PuzzleData>
 
 		return null;
 	}
+
+    public bool ExistLandmarkReward(int level, out PuzzleData puzzleData)
+    {
+        puzzleData = default;
+        var chestQuests = m_rowDataDic.Values?.Where(data => data.Level > level)?.ToArray() ?? Array.Empty<PuzzleData>();
+        
+        if (chestQuests.Count() <= 0)
+		{
+			return false;
+		}
+
+		if (!chestQuests.Any(data => data.Level > level))
+		{
+			return false;
+		}
+
+        puzzleData = chestQuests.First(data => data.Level > level);
+		return true;
+    }
 }

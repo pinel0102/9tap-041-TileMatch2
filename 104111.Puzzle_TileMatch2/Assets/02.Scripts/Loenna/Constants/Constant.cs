@@ -47,7 +47,7 @@ public static class Constant
 
 	public static class Game
 	{
-        public const int LEVEL_PUZZLE_START = 5; // 클리어시 해금.
+        public const int LEVEL_PUZZLE_START = 6; // 5 클리어시 해금.
 		public const float TILE_WIDTH = 88f;
 		public const float TILE_HEIGHT = 92f;
         public const float TILE_WIDTH_HALF = 44f;
@@ -59,7 +59,7 @@ public static class Constant
 		public const float TWEENTIME_TILE_DEFAULT = 0.15f;
         public const float TWEENTIME_TILE_SCALE = 0.05f;
         public const float TWEENTIME_JIGSAW_MOVE = 0.5f;
-        public const float EFFECTTIME_TILE_MATCH = 0.5f;
+        public const float EFFECTTIME_TILE_MATCH = 0.3f;
 
 		public static readonly Vector2 RESIZE_TILE_RATIOS = new Vector2(0.55f, 0.575f);
 

@@ -66,7 +66,7 @@ public class PuzzlePlayView : CachedBehaviour
 
     public void CheckUserLevel(int level)
     {
-        m_lockedObject.SetActive(level <= Constant.Game.LEVEL_PUZZLE_START);
+        m_lockedObject.SetActive(level < Constant.Game.LEVEL_PUZZLE_START);
     }
 
 	public async UniTask OnShowAsync(PuzzleData puzzleData, uint placedPieces, uint unlockedPieces)

@@ -421,7 +421,7 @@ public class Reporter : MonoBehaviour
 		showWarning = (PlayerPrefs.GetInt("Reporter_showWarning", 1) == 1) ? true : false;
 		showError = (PlayerPrefs.GetInt("Reporter_showError", 1) == 1) ? true : false;
 		filterText = PlayerPrefs.GetString("Reporter_filterText");
-		size.x = size.y = PlayerPrefs.GetFloat("Reporter_size", 32);
+		//size.x = size.y = PlayerPrefs.GetFloat("Reporter_size", 32);
 
 
 		showClearOnNewSceneLoadedButton = (PlayerPrefs.GetInt("Reporter_showClearOnNewSceneLoadedButton", 1) == 1) ? true : false;

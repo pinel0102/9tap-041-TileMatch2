@@ -15,7 +15,7 @@ public static class ProjectManager
     // 6. 완료 후 APK를 빌드하면 기존 앱과 별개로 설치된다.
     public const string projectName = "104111.Puzzle_TileMatch2";
     public const string appIdentifier = "com.ninetap.tilematchworldtours";
-    public const string appStoreConnectId = "6449579663";
+    public const string appStoreConnectId = "6476755898";
 
 #if UNITY_ANDROID
     public const string productName = "Tile Match! World Tours";

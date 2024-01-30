@@ -35,6 +35,7 @@ public class GameClearPopup : UIPopup
 
 	private LevelData? m_levelData;	
 	private RewardData? m_chestRewardData;
+    private PuzzleData? m_puzzleRewardData;
     
     public bool isInteractable;
     public int clearedLevel;
@@ -58,8 +59,9 @@ public class GameClearPopup : UIPopup
 		}
 
         TableManager tableManager = Game.Inst.Get<TableManager>();
-		RewardDataTable rewardDataTable = tableManager.RewardDataTable;
 		LevelDataTable levelDataTable = tableManager.LevelDataTable;
+        RewardDataTable rewardDataTable = tableManager.RewardDataTable;
+        PuzzleDataTable puzzleDataTable = tableManager.PuzzleDataTable;
 
 		if (!levelDataTable.TryGetValue(parameter.Level, out m_levelData))
 		{
@@ -85,16 +87,19 @@ public class GameClearPopup : UIPopup
         m_clearStarCanvasGroup.alpha = 0;
 		m_clearRewardContainer.OnSetup(rewardData);
 
+        int nextChestLevel = -1;
+        int nextPuzzleLevel = 0;
+
 		bool existChestTarget = rewardDataTable.TryPreparedChestReward(clearedLevel, out m_chestRewardData);
         bool existChestReward = false;
         
 		if (existChestTarget)
 		{
-            rewardDataTable.TryPreviousChestReward(clearedLevel, out var m_previousReward);
+            rewardDataTable.TryPreviousChestReward(clearedLevel, out var m_previousChest);
 
-            int prevChestLevel = m_previousReward?.Level ?? (clearedLevel > Constant.Game.LEVEL_PUZZLE_START ? Constant.Game.LEVEL_PUZZLE_START : 0);
+            int prevChestLevel = m_previousChest?.Level ?? (clearedLevel >= Constant.Game.LEVEL_PUZZLE_START ? Constant.Game.LEVEL_PUZZLE_START - 1 : 0);
             
-            gageMax = clearedLevel > Constant.Game.LEVEL_PUZZLE_START ? m_chestRewardData.Level - prevChestLevel : Constant.Game.LEVEL_PUZZLE_START;
+            gageMax = clearedLevel >= Constant.Game.LEVEL_PUZZLE_START ? m_chestRewardData.Level - prevChestLevel : Constant.Game.LEVEL_PUZZLE_START - 1;
             gageTo = clearedLevel - prevChestLevel;
             gageFrom = gageTo - 1;
 
@@ -106,9 +111,19 @@ public class GameClearPopup : UIPopup
 			);
 
             existChestReward = clearedLevel >= m_chestRewardData.Level;
+            nextChestLevel = m_chestRewardData.Level;
 		}
 
-		m_confirmButton.OnSetup(
+        bool existLandmarkTarget = puzzleDataTable.ExistLandmarkReward(clearedLevel, out m_puzzleRewardData);
+        
+        if (existLandmarkTarget)
+        {
+            nextPuzzleLevel = m_puzzleRewardData.Level - 1;
+        }
+
+        Debug.Log(CodeManager.GetMethodName() + string.Format("nextChestLevel : {0} / nextPuzzleLevel : {1}", nextChestLevel, nextPuzzleLevel));
+
+        m_confirmButton.OnSetup(
 			new UITextButtonParameter {
 				ButtonText = existNextLevel? Text.Button.CONTINUE : Text.Button.HOME,
 				OnClick = () => {
@@ -127,12 +142,16 @@ public class GameClearPopup : UIPopup
 		m_clearRewardContainer.Alpha = 0f;
 		m_headLineImage.transform.localScale = Vector3.zero;
         m_BgEffect.SetLocalScale(0);
-        m_rewardLandmark.SetActive(clearedLevel <= Constant.Game.LEVEL_PUZZLE_START);
-        m_rewardChest.SetActive(clearedLevel > Constant.Game.LEVEL_PUZZLE_START);
-        m_rewardRibbonText.SetText(openPuzzleIndex > 0 ? 
+        m_rewardLandmark.SetActive(clearedLevel < Constant.Game.LEVEL_PUZZLE_START);
+        m_rewardChest.SetActive(clearedLevel >= Constant.Game.LEVEL_PUZZLE_START);
+
+        m_rewardRibbonText.SetText(nextChestLevel == nextPuzzleLevel ? string_reward_default_landmark :
+                                    nextChestLevel > nextPuzzleLevel ? string_reward_landmark : string_reward_default);
+
+        /*m_rewardRibbonText.SetText(openPuzzleIndex > 0 ? 
                                     (existChestReward ? string_reward_default_landmark : string_reward_landmark) : 
-                                    string_reward_default);
-        m_landmarkObject.SetActive(openPuzzleIndex > 0 || existChestReward);
+                                    string_reward_default);*/
+        //m_landmarkObject.SetActive(openPuzzleIndex > 0 || existChestReward);
 
         m_resultObject.SetActive(true);
         m_effect.SetActive(false);

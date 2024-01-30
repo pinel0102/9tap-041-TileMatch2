@@ -81,7 +81,7 @@ public class MainSceneFragmentContent_Home : ScrollViewFragmentContent
 
     public void RefreshPuzzleButton()
     {
-        bool canPlayPuzzle = globalData.userManager.Current.Level > Constant.Game.LEVEL_PUZZLE_START;
+        bool canPlayPuzzle = globalData.userManager.Current.Level >= Constant.Game.LEVEL_PUZZLE_START;
         m_puzzleButton.interactable = canPlayPuzzle;
         puzzleLockObject.gameObject.SetActive(!canPlayPuzzle);
     }

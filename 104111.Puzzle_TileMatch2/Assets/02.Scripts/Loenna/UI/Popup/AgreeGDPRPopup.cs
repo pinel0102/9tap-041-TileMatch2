@@ -55,9 +55,6 @@ public class AgreeGDPRPopup : UIPopup
         buttonPrivacy.onClick.AddListener(OpenPrivacy);
         buttonNext.onClick.AddListener(CheckGDPR_EN);
 
-        scrollbarService.value = 1f;
-        scrollbarPrivacy.value = 1f;
-
         if (region == "KR")
         {
             gdpr_ko.SetActive(true);
@@ -68,6 +65,9 @@ public class AgreeGDPRPopup : UIPopup
             gdpr_ko.SetActive(false);
             gdpr_en.SetActive(true);
         }
+
+        scrollbarService.value = 1f;
+        scrollbarPrivacy.value = 1f;
 	}
 
 #region KR

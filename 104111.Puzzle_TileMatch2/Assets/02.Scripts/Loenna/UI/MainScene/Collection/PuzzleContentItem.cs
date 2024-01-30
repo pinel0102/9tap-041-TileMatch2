@@ -85,7 +85,7 @@ public class PuzzleContentItem : UIButton
 
 	private bool SetLocked(int currentLevel, int requiredLevel)
 	{
-        bool locked = currentLevel <= requiredLevel;
+        bool locked = currentLevel < requiredLevel;
 		m_lockObject.SetActive(locked);
 		return locked;
 	}
