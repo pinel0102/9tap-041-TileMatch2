@@ -7,6 +7,5 @@ public partial class GlobalData
     [Header("★ [Live] Current Status")]
     public int CURRENT_LEVEL;
     public string CURRENT_SCENE;
-    public MainMenuType currentTab;
-    
+    public MainMenuType currentTab;    
 }

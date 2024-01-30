@@ -73,4 +73,9 @@ public static partial class GlobalDefine
     {
         globalData.userManager.UpdateRewards(rewards);
     }
+
+    public static bool IsEnablePuzzleOpenPopup()
+    {
+        return globalData.userManager.Current.PuzzleOpenPopupIndex > 0;
+    }
 }

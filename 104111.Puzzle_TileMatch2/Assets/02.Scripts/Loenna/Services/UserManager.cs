@@ -129,6 +129,7 @@ public class UserManager : IDisposable
                 DailyRewardDate: GlobalDefine.dateDefault_HHmmss,
                 ReviewPopupDate: GlobalDefine.dateDefault_HHmmss,
                 DailyRewardIndex: 0,
+                PuzzleOpenPopupIndex: -1,
                 UserGroup: "A",
                 AppOpenCount: 1,
                 InterstitalViewCount: 0,
@@ -608,6 +609,22 @@ public class UserManager : IDisposable
                 _addCount == 0 ? chargeAt : chargeAt.Subtract(TimeSpan.FromMilliseconds(Constant.User.REQUIRE_CHARGE_LIFE_MILLISECONDS * _addCount)));
         }
 	}
+
+    public void UpdatePuzzleOpenIndex(
+        Optional<int> puzzleOpenPopupIndex = default
+    )
+    {
+        if (m_user?.Value == null)
+		{
+			return;
+		}
+
+		m_user.Update(
+			user => user.Update(
+				puzzleOpenPopupIndex: puzzleOpenPopupIndex
+			)
+		);
+    }
 
 	public void UpdateSettings(SettingsType type, bool value)
 	{

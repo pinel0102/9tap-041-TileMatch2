@@ -27,14 +27,8 @@ public class GameClearPopup : UIPopup
     [SerializeField]	private CanvasGroup m_clearStarHalo = default!;
     [SerializeField]    private GameObject m_landmarkObject = default!;
     [SerializeField]    private GameObject m_resultObject = default!;
-    [SerializeField]    private GameObject m_openPuzzleObject = default!;
-    [SerializeField]	private CanvasGroup m_openPuzzleStarCanvasGroup = default!;
-    [SerializeField]	private CanvasGroup m_openPuzzleHalo = default!;
     [SerializeField]	private CanvasGroup m_layoutResult = default!;
-    [SerializeField]	private CanvasGroup m_layoutPuzzle = default!;
     [SerializeField]    private TMP_Text m_rewardRibbonText = default!;
-    [SerializeField]    private TMP_Text m_openPuzzleText = default!;
-    [SerializeField]	private GameObject m_openPuzzleContinue = default!;
     [SerializeField]	private GameObject m_rewardChest = default!;
     [SerializeField]	private GameObject m_rewardLandmark = default!;
     [SerializeField]	private GameObject m_effect = default!;
@@ -42,8 +36,7 @@ public class GameClearPopup : UIPopup
 	private LevelData? m_levelData;	
 	private RewardData? m_chestRewardData;
     
-    public bool isButtonInteractable;
-    public bool isPuzzleInteractable;
+    public bool isInteractable;
     public int clearedLevel;
     public int openPuzzleIndex;
     private int gageFrom;
@@ -53,7 +46,6 @@ public class GameClearPopup : UIPopup
     private const string string_reward_default = "Reward";
     private const string string_reward_landmark = "New Landmark";
     private const string string_reward_default_landmark = "New Landmark & Reward";    
-    private const string format_openPuzzle = "You have unlocked\n{0}!";
     
     public override void OnSetup(UIParameter uiParameter)
     {
@@ -69,20 +61,23 @@ public class GameClearPopup : UIPopup
 		RewardDataTable rewardDataTable = tableManager.RewardDataTable;
 		LevelDataTable levelDataTable = tableManager.LevelDataTable;
 
-        clearedLevel = parameter.Level;
-
-        int goldPieceCount = GlobalData.Instance.missionCollected;    
-        openPuzzleIndex = GlobalData.Instance.GetOpenedPuzzleIndex(clearedLevel);            
-
 		if (!levelDataTable.TryGetValue(parameter.Level, out m_levelData))
 		{
 			OnClickClose();
 			return;
 		}
 
-        SetButtonInteractable(false);
-        SetPuzzleInteractable(false);
-        m_openPuzzleContinue.SetActive(false);
+        clearedLevel = parameter.Level;
+
+        int goldPieceCount = GlobalData.Instance.missionCollected;    
+        openPuzzleIndex = GlobalData.Instance.GetOpenedPuzzleIndex(clearedLevel);
+
+        if (openPuzzleIndex > 0)
+        {
+            GlobalData.Instance.userManager.UpdatePuzzleOpenIndex(puzzleOpenPopupIndex: openPuzzleIndex);
+        }
+
+        SetInteractable(false);
         
 		bool existNextLevel = levelDataTable.TryGetValue(clearedLevel + 1, out var nextLevelData);
 		RewardData rewardData = rewardDataTable.GetDefaultReward(m_levelData.HardMode);
@@ -117,7 +112,7 @@ public class GameClearPopup : UIPopup
 			new UITextButtonParameter {
 				ButtonText = existNextLevel? Text.Button.CONTINUE : Text.Button.HOME,
 				OnClick = () => {
-                    if (isButtonInteractable)
+                    if (isInteractable)
                     {
                         OnClickClose();
 					    OnExit();
@@ -140,7 +135,6 @@ public class GameClearPopup : UIPopup
         m_landmarkObject.SetActive(openPuzzleIndex > 0 || existChestReward);
 
         m_resultObject.SetActive(true);
-        m_openPuzzleObject.SetActive(false);
         m_effect.SetActive(false);
 
 		void OnExit()
@@ -212,19 +206,6 @@ public class GameClearPopup : UIPopup
 					}
 				}
 
-                /*if (openPuzzleIndex > 0)
-                {   
-                    if(GlobalData.Instance.tableManager.PuzzleDataTable.TryGetValue(openPuzzleIndex, out PuzzleData puzzleData))
-                    {
-                        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Open Puzzle {0}</color>", openPuzzleIndex));
-                        await SetPopupOpenPuzzle(puzzleData, token);
-                    }
-                }
-                else
-                {
-                    await ShowContinueButton();
-                }*/
-
                 await ShowContinueButton();
 			},
 			this.GetCancellationTokenOnDestroy()
@@ -253,63 +234,7 @@ public class GameClearPopup : UIPopup
         .ToUniTask()
         .SuppressCancellationThrow();
 
-        SetButtonInteractable(true);
-    }
-
-    private async UniTask SetPopupOpenPuzzle(PuzzleData puzzleData, CancellationToken token)
-    {
-        m_openPuzzleText.SetText(string.Format(format_openPuzzle, puzzleData.Name));
-        m_openPuzzleContinue.SetActive(false);
-
-        await UniTask.Delay(TimeSpan.FromSeconds(1f));
-        await PlayHaloAsync(m_openPuzzleHalo, m_openPuzzleStarCanvasGroup, token);
-
-        m_layoutPuzzle.alpha = 0;
-
-        /*await m_layoutResult
-            .DOFade(0, 0.25f)
-            .ToUniTask()
-			.SuppressCancellationThrow();*/
-
-        m_resultObject.SetActive(false);
-        m_openPuzzleObject.SetActive(true);
-
-        SoundManager soundManager = Game.Inst.Get<SoundManager>();
-        soundManager?.PlayFx(Constant.Sound.SFX_REWARD_OPEN);
-
-        await m_layoutPuzzle
-            .DOFade(1f, 0.5f)
-            .ToUniTask()
-			.SuppressCancellationThrow();
-
-        await UniTask.Delay(TimeSpan.FromSeconds(1f));
-
-        m_openPuzzleContinue.SetActive(true);
-        SetPuzzleInteractable(true);
-    }
-
-    public async void SetPopupResult()
-    {
-        if (!isPuzzleInteractable) return;
-
-        m_layoutResult.alpha = 0;
-
-        /*await m_layoutPuzzle
-            .DOFade(0, 0.25f)
-            .ToUniTask()
-			.SuppressCancellationThrow();*/
-
-        m_resultObject.SetActive(true);
-        m_openPuzzleObject.SetActive(false);
-
-        /*await m_layoutResult
-            .DOFade(1f, 0.25f)
-            .ToUniTask()
-			.SuppressCancellationThrow();*/
-
-        m_layoutResult.alpha = 1;
-
-        await ShowContinueButton();
+        SetInteractable(true);
     }
 
     public async UniTask PlayHaloAsync(CanvasGroup halo, CanvasGroup container, CancellationToken token)
@@ -333,15 +258,9 @@ public class GameClearPopup : UIPopup
 			).Forget();
 	}
 
-    private void SetButtonInteractable(bool interactable)
+    private void SetInteractable(bool interactable)
     {
-        isButtonInteractable = interactable;
+        isInteractable = interactable;
         //Debug.Log(CodeManager.GetMethodName() + isButtonInteractable);
-    }
-
-    private void SetPuzzleInteractable(bool interactable)
-    {
-        isPuzzleInteractable = interactable;
-        //Debug.Log(CodeManager.GetMethodName() + isPuzzleInteractable);
     }
 }

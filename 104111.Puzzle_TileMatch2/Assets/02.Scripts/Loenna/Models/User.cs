@@ -41,8 +41,9 @@ public record User
     int DailyRewardIndex, // 받을 수 있는 출석체크 보상의 인덱스. == 이번 주기에서 수령한 누적 횟수.
 
     bool IsRated,
-    int ReviewPopupCount,
     string ReviewPopupDate,
+    int ReviewPopupCount,
+    int PuzzleOpenPopupIndex,
     
     // 게임 현황
 	int Level, // 플레이할 레벨
@@ -93,6 +94,7 @@ public record User
         AppOpenCount: 0,
         InterstitalViewCount: 0,
         RewardViewCount: 0,
+        PuzzleOpenPopupIndex: -1,
         FailedLevel: 0,
         FailedCount: 0,
         NoAD: false,
@@ -132,6 +134,7 @@ public record User
         in Optional<string> installDate = default,
         in Optional<string> dailyRewardDate = default,
         in Optional<int> dailyRewardIndex = default,
+        in Optional<int> puzzleOpenPopupIndex = default,
         in Optional<string> userGroup = default,
         in Optional<int> appOpenCount = default,
         in Optional<int> interstitalViewCount = default,
@@ -194,6 +197,7 @@ public record User
             IsRated: isRated.GetValueOrDefault(IsRated),
             ReviewPopupCount: reviewPopupCount.GetValueOrDefault(ReviewPopupCount),
             ReviewPopupDate: reviewPopupDate.GetValueOrDefault(ReviewPopupDate),
+            PuzzleOpenPopupIndex: puzzleOpenPopupIndex.GetValueOrDefault(PuzzleOpenPopupIndex),
             CurrentPlayingPuzzleIndex: playingPuzzleIndex > 0 ? playingPuzzleIndex : CurrentPlayingPuzzleIndex,
 			UnlockedPuzzlePieceDic: unlockedPuzzlePieceDic,
 			PlayingPuzzleCollection: currentPlayingCollection,

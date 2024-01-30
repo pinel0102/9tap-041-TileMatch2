@@ -134,6 +134,15 @@ public partial class GlobalData
         );
     }
 
+    public void ShowPuzzleOpenPopup()
+    {
+        UIManager.ShowPopupUI<PuzzleOpenPopup>(
+            new PuzzleOpenPopupParameter(
+                OpenPuzzleIndex: userManager.Current.PuzzleOpenPopupIndex
+            )
+        );
+    }
+
     public void ShowRemoveAdsPopup(Action onClick = null)
     {
         Debug.Log(CodeManager.GetMethodName());

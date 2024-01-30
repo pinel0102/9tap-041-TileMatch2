@@ -141,7 +141,7 @@ public partial class GlobalData
     }
 
     public void CheckPuzzleOpen(int openPuzzleIndex)
-    {   
+    {
         if (openPuzzleIndex < 0)
         {
             SetTouchLock_MainScene(false);

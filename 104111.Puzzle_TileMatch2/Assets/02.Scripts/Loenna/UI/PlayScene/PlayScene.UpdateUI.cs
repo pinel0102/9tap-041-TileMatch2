@@ -199,8 +199,12 @@ partial class PlayScene
                 m_bottomView.BasketView.isTutorialLevel = GlobalDefine.IsTutorialLevel(level);
                 m_bottomView.BasketView.isTutorialShowed = false;
                 m_bottomView.BasketView.tutorialCheckCount = 0;
-				
-                if (m_bottomView.BasketView.isTutorialLevel)
+
+                if (GlobalDefine.IsEnablePuzzleOpenPopup())
+                {
+                    GlobalData.Instance.ShowPuzzleOpenPopup();
+                }
+                else if (m_bottomView.BasketView.isTutorialLevel)
                 {
                     m_bottomView.BasketView.tutorialCheckCount = GlobalDefine.GetTutorialCheckCount(level);
                     m_bottomView.BasketView.CheckTutorialBasket();
