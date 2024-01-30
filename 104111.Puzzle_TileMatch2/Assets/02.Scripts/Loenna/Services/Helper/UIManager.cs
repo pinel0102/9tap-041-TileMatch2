@@ -131,6 +131,11 @@ public static partial class UIManager
         s_implementation?.PopupManager?.ClosePopupUI_ForceAll();
     }
 
+    public static void ClosePopupUI_Force()
+    {
+        s_implementation?.PopupManager?.ClosePopupUI_Force();
+    }
+
     public static void ClosePopupUI()
 	{
 		s_implementation?.PopupManager?.ClosePopupUI();

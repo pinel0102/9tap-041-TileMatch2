@@ -161,6 +161,7 @@ public partial class GlobalData
             new RewardPopupParameter (
                 PopupType: RewardPopupType.PRESENT,
                 Reward: product.ToRewardData(),
+                NewLandmark: 0,
                 VisibleHUD: HUDType.NONE
             )
         );
@@ -174,6 +175,7 @@ public partial class GlobalData
             new RewardPopupParameter (
                 PopupType: RewardPopupType.PRESENT,
                 Reward: rewardData,
+                NewLandmark: 0,
                 VisibleHUD: HUDType.NONE
             )
         );

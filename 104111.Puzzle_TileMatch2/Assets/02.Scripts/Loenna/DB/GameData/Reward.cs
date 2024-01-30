@@ -49,6 +49,31 @@ public class ItemReward : Reward<int>
 	}
 }
 
+public class LandmarkReward : Reward<string>
+{
+	public readonly string Name;
+
+	public LandmarkReward(ProductType type, string name) : base (type)
+	{
+		Name = name;
+	}
+
+	public override long GetAmount()
+	{
+		return 1;
+	}
+
+	public override string GetAmountString()
+	{
+		return Name;
+	}
+
+	public override string GetValue() 
+	{
+		return Name;
+	}
+}
+
 public class BoosterReward : Reward<TimeSpan>
 {
 	public readonly long Minutes;

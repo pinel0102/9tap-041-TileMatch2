@@ -50,7 +50,7 @@ public class GameClearPopup : UIPopup
     private int gageTo;
     private int gageMax;
 
-    private const string string_reward_default = "Gift for you";
+    private const string string_reward_default = "Reward";
     private const string string_reward_landmark = "New Landmark";
     private const string string_reward_default_landmark = "New Landmark & Reward";    
     private const string format_openPuzzle = "You have unlocked\n{0}!";
@@ -198,19 +198,21 @@ public class GameClearPopup : UIPopup
 
 					await m_gaugeBar.OnUpdateUIAsync(gageFrom, gageTo, gageMax);
 
-					if (m_levelData?.Key! >= m_chestRewardData?.Level!)
+                    bool existChest = m_levelData?.Key! >= m_chestRewardData?.Level!;
+					if (existChest || openPuzzleIndex > 0)
 					{
 						UIManager.ShowPopupUI<RewardPopup>(
 							new RewardPopupParameter (
 								PopupType: RewardPopupType.CHEST,
-								Reward: m_chestRewardData,
+								Reward: existChest ? m_chestRewardData : CreateDummy(),
+                                NewLandmark: openPuzzleIndex,
                                 VisibleHUD: HUDType.COIN
 							)
 						);
 					}
 				}
 
-                if (openPuzzleIndex > 0)
+                /*if (openPuzzleIndex > 0)
                 {   
                     if(GlobalData.Instance.tableManager.PuzzleDataTable.TryGetValue(openPuzzleIndex, out PuzzleData puzzleData))
                     {
@@ -221,10 +223,17 @@ public class GameClearPopup : UIPopup
                 else
                 {
                     await ShowContinueButton();
-                }
+                }*/
+
+                await ShowContinueButton();
 			},
 			this.GetCancellationTokenOnDestroy()
 		);
+
+        RewardData CreateDummy()
+        {
+            return new RewardData(0, RewardType.Unknown, DifficultType.NONE, 0, 0, 0, 0, 0, 0, 0, 0);
+        } 
     }
 
     public async UniTask ShowContinueButton()

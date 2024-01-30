@@ -264,6 +264,18 @@ public class PopupManager
 		return true;
 	}
 
+    public void ClosePopupUI_Force()
+	{
+		//	스택에 쌓여있는 씬이 없으면 뒤로가기 불가
+		if (m_popups.Count == 0)
+		{
+			return;
+		}
+        
+        Debug.Log(CodeManager.GetMethodName() + string.Format("Close Popup : {0}", m_popups.Last().name));
+        ClosePopup(m_popups.Last());
+	}
+
     public void ClosePopupUI_ForceAll()
 	{
 		//	스택에 쌓여있는 씬이 없으면 뒤로가기 불가

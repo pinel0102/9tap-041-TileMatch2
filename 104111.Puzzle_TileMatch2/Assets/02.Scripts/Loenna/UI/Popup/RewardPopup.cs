@@ -19,6 +19,7 @@ public record RewardPopupParameter
 (
 	RewardPopupType PopupType, 
 	RewardData Reward,
+    int NewLandmark,
 	params HUDType[] VisibleHUD
 ): UIParameter(VisibleHUD);
 
@@ -76,6 +77,7 @@ public class RewardPopup : UIPopup
 			new AnimatedRewardContainerParameter {
                 PopupType = parameter.PopupType,
 				Rewards = parameter.Reward.Rewards,
+                NewLandmark = parameter.NewLandmark,
 				OnFinishedAnimation = () => {
 					UniTask.Void(
 						async () => {
@@ -104,7 +106,7 @@ public class RewardPopup : UIPopup
 				OnClick = () => { 
                     m_confirmButton.interactable = false;
                     m_confirmButton.Alpha = 0f;
-                    m_animatedRewardContainer.ShowParticle();
+                    m_animatedRewardContainer.ShowParticle(OnClickClose);
                 }
 			}
 		);
@@ -116,6 +118,7 @@ public class RewardPopup : UIPopup
 			new AnimatedRewardContainerParameter {
                 PopupType = parameter.PopupType,
 				Rewards = parameter.Reward.Rewards,
+                NewLandmark = parameter.NewLandmark,
 				OnFinishedAnimation = null
 			}
 		);

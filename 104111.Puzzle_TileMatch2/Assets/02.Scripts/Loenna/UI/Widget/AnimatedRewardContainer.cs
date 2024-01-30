@@ -17,6 +17,7 @@ public class AnimatedRewardContainerParameter
 {
     public RewardPopupType PopupType;
 	public List<IReward> Rewards = new();
+    public int NewLandmark;
 	public Action OnFinishedAnimation;
 }
 
@@ -29,71 +30,86 @@ public class AnimatedRewardContainer : CachedBehaviour
     private RewardPopupType m_popupType;
 
 	private List<RewardGoodsItem> m_rewardGoodsItems = new();
+    private RewardGoodsItem prefab;
+    private int m_animationCount;
 
 	public float Alpha { set => m_canvasGroup.alpha = value; }
 
 	public void OnSetup(AnimatedRewardContainerParameter parameter)
 	{
-		m_canvasGroup.alpha = 0f;
-
-		var prefab = ResourcePathAttribute.GetResource<RewardGoodsItem>();
-
+        prefab = ResourcePathAttribute.GetResource<RewardGoodsItem>();
+		m_rewardGoodsItems.Clear();
+        m_animationCount = 0;
+        m_canvasGroup.alpha = 0f;
         m_popupType = parameter.PopupType;
 
-        int rewardCount = parameter.Rewards.Count;
+        int rewardCount = parameter.Rewards.Count + (parameter.NewLandmark > 0 ? 1 : 0);
         int currentCount = 0;
 
-        var items = parameter.Rewards.Select(
-			(reward, index) => {
-				GameObject go = new GameObject($"Position {index}");
-				LayoutElement layoutElement = go.AddComponent<LayoutElement>();
-				layoutElement.minWidth = 120;
-                layoutElement.minHeight = 180;
+        for(int i=0; i < parameter.Rewards.Count; i++)
+        {
+            m_rewardGoodsItems.Add(CreateRewadItem(ref currentCount, i, rewardCount, parameter.Rewards[i], parameter.OnFinishedAnimation));
+        }
 
-                switch(rewardCount)
-                {
-                    case <= 3: 
-                        go.transform.SetParentReset(m_layoutTransform[0]);
-                        break;
-                    case 4:
-                        go.transform.SetParentReset(m_layoutTransform[currentCount < 2 ? 0 : 1]);
-                        break;
-                    default:
-                        go.transform.SetParentReset(m_layoutTransform[currentCount < 3 ? 0 : 1]);
-                        break;
-                }
-
-                currentCount++;
-
-				//go.transform.SetParentReset(CachedTransform);
-
-				LayoutRebuilder.ForceRebuildLayoutImmediate(CachedRectTransform);
-
-				var item = Instantiate(prefab);
-				item.OnSetup(
-					new RewardGoodsItemParameter{
-						Animated = true,
-						IconSize = 114,
-						FontSize = 59
-					}
-				);
-
-                item.CachedTransform.SetParentReset(go.transform);
-
-				item.UpdateUI(
-					reward.Type.GetIconName(), 
-					reward.GetAmountString(),
-					UIManager.HUD.GetAttractorTarget(reward.Type.GetHUDType()),
-					parameter.OnFinishedAnimation
-				);
-				item.transform.localScale = Vector2.zero;
-
-				return item;
-			}
-		);
-
-		m_rewardGoodsItems.AddRange(items);
+        if (parameter.NewLandmark > 0)
+        {
+            if(GlobalData.Instance.tableManager.PuzzleDataTable.TryGetValue(parameter.NewLandmark, out PuzzleData puzzleData))
+            {
+                m_rewardGoodsItems.Add(CreateRewadItem(ref currentCount, parameter.Rewards.Count, rewardCount, 
+                    new LandmarkReward(ProductType.Landmark, puzzleData.Name), parameter.OnFinishedAnimation));
+            }
+        }
 	}
+
+    RewardGoodsItem CreateRewadItem(ref int currentCount, int index, int rewardCount, IReward reward, Action OnFinishedAnimation)
+    {
+        GameObject go = new GameObject($"Position {index}");
+        LayoutElement layoutElement = go.AddComponent<LayoutElement>();
+        layoutElement.minWidth = 120;
+        layoutElement.minHeight = 180;
+
+        switch(rewardCount)
+        {
+            case <= 3: 
+                go.transform.SetParentReset(m_layoutTransform[0]);
+                break;
+            case 4:
+                go.transform.SetParentReset(m_layoutTransform[currentCount < 2 ? 0 : 1]);
+                break;
+            default:
+                go.transform.SetParentReset(m_layoutTransform[currentCount < 3 ? 0 : 1]);
+                break;
+        }
+
+        currentCount++;
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(CachedRectTransform);
+
+        var item = Instantiate(prefab);
+        item.OnSetup(
+            new RewardGoodsItemParameter{
+                Animated = true,
+                IconSize = 114,
+                FontSize = reward.Type == ProductType.Landmark ? 40 : 59
+            }
+        );
+
+        item.CachedTransform.SetParentReset(go.transform);
+
+        Transform target = UIManager.HUD.GetAttractorTarget(reward.Type.GetHUDType());
+        if (target != null) 
+            m_animationCount++;
+
+        item.UpdateUI(
+            reward.Type.GetIconName(), 
+            reward.GetAmountString(),
+            target,
+            OnFinishedAnimation
+        );
+        item.transform.localScale = Vector2.zero;
+
+        return item;
+    }
 
 	public async UniTask ShowAsync(CancellationToken token)
 	{
@@ -141,8 +157,11 @@ public class AnimatedRewardContainer : CachedBehaviour
         }
 	}
 
-	public void ShowParticle()
+	public void ShowParticle(Action onNoAnimation)
 	{
-        m_rewardGoodsItems.ForEach(item => item.ShowParticle());
+        if (m_animationCount > 0)
+            m_rewardGoodsItems.ForEach(item => item.ShowParticle());
+        else
+            onNoAnimation.Invoke();
 	}
 }
