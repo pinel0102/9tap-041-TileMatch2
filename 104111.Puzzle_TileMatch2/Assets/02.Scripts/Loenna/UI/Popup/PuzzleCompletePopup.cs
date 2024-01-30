@@ -73,7 +73,6 @@ public class PuzzleCompletePopup : UIPopup
 
         CreateSlot();
         CreatePuzzle();
-        GetReward();
     }
 
     public override void OnShow()
@@ -82,8 +81,10 @@ public class PuzzleCompletePopup : UIPopup
 
         m_touchLock.SetActive(true);
         m_effect.SetActive(true);
-        
+
         GlobalData.Instance.soundManager?.PlayFx(Constant.Sound.SFX_PUZZLE_COMPLETE);
+
+        GetReward();
     }
 
     private void OnClick_Close(Action onComplete)
@@ -142,11 +143,17 @@ public class PuzzleCompletePopup : UIPopup
     private void GetReward()
     {
         UniTask.Void(
-			async token => {                
-                await UniTask.Delay(TimeSpan.FromSeconds(2f));
-                
+			async token => {
                 if (existReward)
+                {
+                    Dictionary<ProductType, long> collectRewardAll = new Dictionary<ProductType, long>();
+                    GlobalDefine.AddRewards(collectRewardAll, rewardData.Rewards);
+                    GlobalDefine.UpdateRewards(collectRewardAll);
+
+                    await UniTask.Delay(TimeSpan.FromSeconds(2f));
+                    
 				    GlobalData.Instance.ShowPresentPopup(rewardData);
+                }
 
                 m_touchLock.SetActive(false);
                 m_closeText.SetActive(true);

@@ -139,7 +139,7 @@ public class PuzzlePlayView : CachedBehaviour
 
 		if (m_puzzleManager.TryUnlockPiece(piece.Index))
 		{
-            Debug.Log(CodeManager.GetMethodName() + string.Format("{0:00} : SUCCESS", piece.Index));
+            //Debug.Log(CodeManager.GetMethodName() + string.Format("{0:00} : SUCCESS", piece.Index));
 
             GlobalData.Instance.SetTouchLock_MainScene(true);
             GlobalData.Instance.fragmentHome?.RefreshPuzzleBadge(GlobalData.Instance.userManager.Current.Puzzle);

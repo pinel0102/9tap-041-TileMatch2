@@ -311,6 +311,8 @@ public class UserManager : IDisposable
 			)
 		);
 
+        LogGetItems(rewards);
+
 		int GetValue(ProductType type)
 		{
 			if (rewards.TryGetValue(type, out long value))
@@ -352,19 +354,7 @@ public class UserManager : IDisposable
 			)
 		);
 
-        foreach(var item in rewards)
-        {
-            if (item.Value > 0)
-            {
-                if (item.Key == ProductType.HeartBooster)
-                {   
-                    Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1}m</color>", item.Key, item.Value));
-                    Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Booster Time] {0}</color>", Current.ExpiredLifeBoosterAt));
-                }
-                else
-                    Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1}</color>", item.Key, item.Value));
-            }
-        }
+        LogGetItems(rewards);
 
         int GetValue(ProductType type)
 		{
@@ -377,7 +367,7 @@ public class UserManager : IDisposable
 		}
 	}
 
-	public void Update
+    public void Update
 	(
 	 	Optional<long> coin = default, 
 		Optional<int> life = default,
@@ -549,19 +539,16 @@ public class UserManager : IDisposable
 		);
 
         if(addCoin.GetValueOrDefault(0) != 0)
-            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Coin] {0}</color>", addCoin));
+        {
+            LogGetItem("Coin", addCoin.Value);
+        }
         if(addSkillItems.HasValue)
         {
-            foreach(var item in addSkillItems.Value)
-            {
-                if (item.Value != 0)
-                    Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1}</color>", item.Key, item.Value));
-            }
+            LogGetItems(addSkillItems.Value);
         }
         if(addBooster.GetValueOrDefault(0) != 0)
         {
-            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[HeartBooster] {0}m</color>", addBooster));
-            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Booster Time] {0}</color>", Current.ExpiredLifeBoosterAt));
+            LogGetItem("Booster", addBooster.Value);
         }
 	}
 
@@ -575,7 +562,7 @@ public class UserManager : IDisposable
         m_user.Update(
 			user => user.Update(
 				life: Constant.User.MAX_LIFE_COUNT,
-                endChargeLifeAt: DateTimeOffset.Now//.AddDays(-1)
+                endChargeLifeAt: DateTimeOffset.Now
 			)
 		);
 
@@ -678,4 +665,78 @@ public class UserManager : IDisposable
             UnlockedPuzzlePieceDic = new Dictionary<int, uint>() };
         Save();
     }
+
+
+#region SDK Log
+
+    private void LogGetItem(string itemName, long count)
+    {
+        if (itemName.Contains("Booster"))
+        {
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1}m</color>", itemName, count));
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Booster Time] {0}</color>", Current.ExpiredLifeBoosterAt));
+        }
+        else
+        {
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1}</color>", itemName, count));
+        }
+
+        SDKManager.SendAnalytics_C_Item_Get(itemName, (int)count);
+    }
+
+    private void LogGetItems(Dictionary<ProductType, long> rewards)
+    {
+        foreach(var item in rewards)
+        {
+            if (item.Value > 0)
+            {
+                if (item.Key == ProductType.HeartBooster)
+                {   
+                    Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1}m</color>", item.Key, item.Value));
+                    Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Booster Time] {0}</color>", Current.ExpiredLifeBoosterAt));
+                    
+                    SDKManager.SendAnalytics_C_Item_Get("Booster", (int)item.Value);
+                }
+                else
+                {
+                    Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1}</color>", item.Key, item.Value));
+                    
+                    string itemName = "Unknown";
+                    switch(item.Key)
+                    {
+                        case ProductType.Coin:        itemName = "Coin"; break;
+                        case ProductType.StashItem:   itemName = "Return"; break;
+                        case ProductType.UndoItem:    itemName = "Undo"; break;
+                        case ProductType.ShuffleItem: itemName = "Shuffle"; break;
+                        case ProductType.PuzzlePiece: itemName = "PuzzlePiece"; break;
+                        case ProductType.Landmark:    itemName = "Landmark"; break;
+                    }
+                    SDKManager.SendAnalytics_C_Item_Get(itemName, (int)item.Value);
+                }
+            }
+        }
+    }
+
+    private void LogGetItems(Dictionary<SkillItemType, int> rewards)
+    {
+        foreach(var item in rewards)
+        {
+            if (item.Value != 0)
+            {
+                Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1}</color>", item.Key, item.Value));
+                
+                string itemName = "Unknown";
+                switch(item.Key)
+                {
+                    case SkillItemType.Stash:   itemName = "Return"; break;
+                    case SkillItemType.Undo:    itemName = "Undo"; break;
+                    case SkillItemType.Shuffle: itemName = "Shuffle"; break;
+                }
+                SDKManager.SendAnalytics_C_Item_Get(itemName, item.Value);
+            }
+        }
+    }
+
+#endregion SDK Log
+
 }
