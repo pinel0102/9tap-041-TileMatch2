@@ -237,7 +237,7 @@ public class MainScene : UIScene
             GlobalData.Instance.HUD_LateUpdate_MainSceneReward(rewardParameter.clearedLevel, rewardParameter.openPuzzleIndex, rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardGoldPiece);
         }
 
-        if (GlobalDefine.IsEnableDailyRewards())
+        if (GlobalDefine.IsEnableDailyRewards() && GlobalDefine.IsRewardVideoReady())
             GlobalData.Instance.ShowDailyRewardPopup();
 
         m_scrollView.MoveTo((int)parameter.ShowMenuType);

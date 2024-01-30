@@ -12,6 +12,11 @@ public static partial class GlobalDefine
     private readonly static string logAdFormat0 = $"<color={logAdColor}>{{0}}</color>";
     private readonly static string logAdFormat1 = $"<color={logAdColor}>{{0}} : {{1}}</color>";
 
+    public static bool IsRewardVideoReady()
+    {
+        return SDKManager.IsRewardVideoLoaded;
+    }
+
     public static void RequestAD_ShowBanner()
     {
         Debug.Log(string.Format(logAdFormat0, CodeManager.GetMethodName()));

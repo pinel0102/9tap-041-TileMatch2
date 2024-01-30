@@ -1404,6 +1404,7 @@ MonoBehaviour:
   dailyRewardIndex: 0
   getRewardButton: {fileID: 2843108939071008496}
   getDoubleButton: {fileID: 4183991744200361265}
+  rewardVideoOnlyObject: {fileID: 1858212123073070389}
   closeButton: {fileID: 2905083521176818823}
   m_touchLock: {fileID: 1755402649813474269}
   dailyItems:
@@ -2973,6 +2974,10 @@ PrefabInstance:
     - target: {fileID: 4090779678457007051, guid: 6b5e8c4fdd46ac54d83154ab14743fd4, type: 3}
       propertyPath: m_Name
       value: Button_Confirm
+      objectReference: {fileID: 0}
+    - target: {fileID: 4090779678457007051, guid: 6b5e8c4fdd46ac54d83154ab14743fd4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5647477555598494552, guid: 6b5e8c4fdd46ac54d83154ab14743fd4, type: 3}
       propertyPath: m_text

@@ -34,8 +34,7 @@ public class GameClearPopup : UIPopup
     [SerializeField]	private GameObject m_effect = default!;
 
 	private LevelData? m_levelData;	
-	private RewardData? m_chestRewardData;
-    private PuzzleData? m_puzzleRewardData;
+	private RewardData? m_nextChest;
     
     public bool isInteractable;
     public int clearedLevel;
@@ -69,63 +68,34 @@ public class GameClearPopup : UIPopup
 			return;
 		}
 
+        SetInteractable(false);
+
         clearedLevel = parameter.Level;
 
-        int goldPieceCount = GlobalData.Instance.missionCollected;    
         openPuzzleIndex = GlobalData.Instance.GetOpenedPuzzleIndex(clearedLevel);
-
         if (openPuzzleIndex > 0)
         {
             GlobalData.Instance.userManager.UpdatePuzzleOpenIndex(puzzleOpenPopupIndex: openPuzzleIndex);
         }
-
-        SetInteractable(false);
-        
-		bool existNextLevel = levelDataTable.TryGetValue(clearedLevel + 1, out var nextLevelData);
+		
 		RewardData rewardData = rewardDataTable.GetDefaultReward(m_levelData.HardMode);
 		
         m_clearStarCanvasGroup.alpha = 0;
 		m_clearRewardContainer.OnSetup(rewardData);
 
-        int nextChestLevel = -1;
-        int nextPuzzleLevel = 0;
-
-		bool existChestTarget = rewardDataTable.TryPreparedChestReward(clearedLevel, out m_chestRewardData);
-        bool existChestReward = false;
-        
-		if (existChestTarget)
-		{
-            rewardDataTable.TryPreviousChestReward(clearedLevel, out var m_previousChest);
-
-            int prevChestLevel = m_previousChest?.Level ?? (clearedLevel >= Constant.Game.LEVEL_PUZZLE_START ? Constant.Game.LEVEL_PUZZLE_START - 1 : 0);
-            
-            gageMax = clearedLevel >= Constant.Game.LEVEL_PUZZLE_START ? m_chestRewardData.Level - prevChestLevel : Constant.Game.LEVEL_PUZZLE_START - 1;
-            gageTo = clearedLevel - prevChestLevel;
-            gageFrom = gageTo - 1;
-
-			m_gaugeBar.OnSetup(
-				new UIGaugeBarParameter {
-					CurrentNumber = gageFrom,
-					MaxNumber = gageMax
-				}
-			);
-
-            existChestReward = clearedLevel >= m_chestRewardData.Level;
-            nextChestLevel = m_chestRewardData.Level;
-		}
-
-        bool existLandmarkTarget = puzzleDataTable.ExistLandmarkReward(clearedLevel, out m_puzzleRewardData);
-        
-        if (existLandmarkTarget)
-        {
-            nextPuzzleLevel = m_puzzleRewardData.Level - 1;
-        }
+        int prevChestLevel = GetPrevChestLevel(clearedLevel);
+        int nextChestLevel = GetNextChestLevel(clearedLevel);
+        int nextPuzzleLevel = GetNextPuzzleLevel(clearedLevel);
 
         Debug.Log(CodeManager.GetMethodName() + string.Format("nextChestLevel : {0} / nextPuzzleLevel : {1}", nextChestLevel, nextPuzzleLevel));
+        
+        SetProgressGage(clearedLevel, prevChestLevel, nextChestLevel);
+
+        bool existNextLevel = clearedLevel < tableManager.LastLevel;
 
         m_confirmButton.OnSetup(
 			new UITextButtonParameter {
-				ButtonText = existNextLevel? Text.Button.CONTINUE : Text.Button.HOME,
+				ButtonText = existNextLevel ? Text.Button.CONTINUE : Text.Button.HOME,
 				OnClick = () => {
                     if (isInteractable)
                     {
@@ -144,17 +114,82 @@ public class GameClearPopup : UIPopup
         m_BgEffect.SetLocalScale(0);
         m_rewardLandmark.SetActive(clearedLevel < Constant.Game.LEVEL_PUZZLE_START);
         m_rewardChest.SetActive(clearedLevel >= Constant.Game.LEVEL_PUZZLE_START);
-
-        m_rewardRibbonText.SetText(nextChestLevel == nextPuzzleLevel ? string_reward_default_landmark :
-                                    nextChestLevel > nextPuzzleLevel ? string_reward_landmark : string_reward_default);
-
-        /*m_rewardRibbonText.SetText(openPuzzleIndex > 0 ? 
-                                    (existChestReward ? string_reward_default_landmark : string_reward_landmark) : 
-                                    string_reward_default);*/
-        //m_landmarkObject.SetActive(openPuzzleIndex > 0 || existChestReward);
-
+        m_rewardRibbonText.SetText(GetRibbonText());
         m_resultObject.SetActive(true);
         m_effect.SetActive(false);
+
+        int GetPrevChestLevel(int _clearedLevel)
+        {
+            if (rewardDataTable.TryPreviousChestReward(_clearedLevel, out var m_prevChest))
+            {
+                return m_prevChest.Level;
+            }
+
+            return _clearedLevel >= Constant.Game.LEVEL_PUZZLE_START ? Constant.Game.LEVEL_PUZZLE_START - 1 : 0;
+        }
+
+        int GetNextChestLevel(int _clearedLevel)
+        {
+            if (rewardDataTable.TryPreparedChestReward(_clearedLevel, out m_nextChest))
+            {
+                return m_nextChest.Level > tableManager.LastLevel ? -1 : m_nextChest.Level;
+            }
+
+            return 0;
+        }
+
+        int GetNextPuzzleLevel(int _clearedLevel)
+        {
+            if (puzzleDataTable.ExistLandmarkReward(_clearedLevel, out var m_nextPuzzle))
+            {
+                return m_nextPuzzle.Level > tableManager.LastLevel ? 0 : m_nextPuzzle.Level - 1;
+            }
+
+            return 0;
+        }
+
+        string GetRibbonText()
+        {
+            string result = string.Empty;
+            bool existNextChest = nextChestLevel > 0;
+            bool existNextPuzzle = nextPuzzleLevel > 0;
+
+            if (existNextPuzzle)
+            {
+                if (existNextChest)
+                {
+                    if (nextChestLevel == nextPuzzleLevel)
+                        result = string_reward_default_landmark;
+                    else if (nextChestLevel > nextPuzzleLevel)
+                        result = string_reward_landmark;
+                    else
+                        result = string_reward_default;
+                }
+            }
+            else
+            {
+                if (existNextChest)
+                    result = string_reward_default;
+            }
+
+            return result;
+        }
+
+        void SetProgressGage(int _clearedLevel, int _prevChestLevel, int _nextChestLevel)
+        {
+            gageMax = _clearedLevel >= Constant.Game.LEVEL_PUZZLE_START ? 
+                      _nextChestLevel - _prevChestLevel : 
+                      Constant.Game.LEVEL_PUZZLE_START - 1;
+            gageTo = _clearedLevel - _prevChestLevel;
+            gageFrom = gageTo - 1;
+
+            m_gaugeBar.OnSetup(
+                new UIGaugeBarParameter {
+                    CurrentNumber = gageFrom,
+                    MaxNumber = gageMax
+                }
+            );
+        }
 
 		void OnExit()
 		{
@@ -166,14 +201,14 @@ public class GameClearPopup : UIPopup
                 GlobalDefine.RequestAD_Interstitial();
                 
                 UIManager.ShowSceneUI<MainScene>(new MainSceneRewardParameter(
-                    clearedLevel:parameter.Level,
-                    openPuzzleIndex:openPuzzleIndex,
-                    rewardCoin:rewardData.Coin,
-                    rewardPuzzlePiece:rewardData.PuzzlePiece,
-                    rewardGoldPiece:goldPieceCount
+                    clearedLevel: clearedLevel,
+                    openPuzzleIndex: openPuzzleIndex,
+                    rewardCoin: rewardData.Coin,
+                    rewardPuzzlePiece: rewardData.PuzzlePiece,
+                    rewardGoldPiece: GlobalData.Instance.missionCollected
                 ));
                 
-                if (GlobalDefine.IsEnableReviewPopup(parameter.Level))
+                if (GlobalDefine.IsEnableReviewPopup(clearedLevel))
                     GlobalData.Instance.ShowReviewPopup();
 			}
 			else
@@ -211,13 +246,13 @@ public class GameClearPopup : UIPopup
 
 					await m_gaugeBar.OnUpdateUIAsync(gageFrom, gageTo, gageMax);
 
-                    bool existChest = m_levelData?.Key! >= m_chestRewardData?.Level!;
+                    bool existChest = m_levelData?.Key! >= m_nextChest?.Level!;
 					if (existChest || openPuzzleIndex > 0)
 					{
 						UIManager.ShowPopupUI<RewardPopup>(
 							new RewardPopupParameter (
 								PopupType: RewardPopupType.CHEST,
-								Reward: existChest ? m_chestRewardData : CreateDummy(),
+								Reward: existChest ? m_nextChest : CreateDummy(),
                                 NewLandmark: openPuzzleIndex,
                                 VisibleHUD: HUDType.COIN
 							)

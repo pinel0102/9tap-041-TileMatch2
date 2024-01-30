@@ -19,6 +19,7 @@ public class DailyRewardPopup : UIPopup
     [Header("★ [Reference] Daily Reward Popup")]
     [SerializeField] private UITextButton getRewardButton;
     [SerializeField] private UITextButton getDoubleButton;
+    [SerializeField] private GameObject rewardVideoOnlyObject;
     [SerializeField] private UIImageButton closeButton;
     [SerializeField] private GameObject m_touchLock;
 
@@ -50,7 +51,6 @@ public class DailyRewardPopup : UIPopup
         SetupButtons();
         SetupRewards();
 
-        //RefreshUI(false);
         RefreshUI(!GlobalDefine.IsEnableDailyRewards());
         
         SetButtonInteractable(true);
@@ -138,9 +138,15 @@ public class DailyRewardPopup : UIPopup
 
     private void RefreshUI(bool isGetReward)
     {
-        closeButton.gameObject.SetActive(isGetReward);
+        //closeButton.gameObject.SetActive(isGetReward);
         getRewardButton.SetInteractable(!isGetReward);
         getDoubleButton.SetInteractable(!isGetReward);
+
+#if UNITY_EDITOR
+        rewardVideoOnlyObject.SetActive(true);
+#else
+        rewardVideoOnlyObject.SetActive(GlobalDefine.IsRewardVideoReady());
+#endif
 
         for(int i=0; i < dailyItems.Count; i++)
         {
@@ -162,7 +168,7 @@ public class DailyRewardPopup : UIPopup
 
     private void OnClick_RewardVideo()
     {
-        if (!isButtonInteractable || !GlobalDefine.IsEnableDailyRewards())
+        if (!isButtonInteractable || !GlobalDefine.IsEnableDailyRewards() || !GlobalDefine.IsRewardVideoReady())
             return;
         
         GlobalDefine.RequestAD_RewardVideo(0, (success) => {

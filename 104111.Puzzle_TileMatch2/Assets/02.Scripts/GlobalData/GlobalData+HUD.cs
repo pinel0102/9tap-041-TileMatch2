@@ -162,7 +162,10 @@ public partial class GlobalData
 
     public int GetOpenedPuzzleIndex(int clearedLevel)
     {
-        var puzzle = tableManager.PuzzleDataTable.Dic.FirstOrDefault(item => item.Value.Level == clearedLevel + 1).Value;
+        var puzzle = tableManager.PuzzleDataTable.Dic.FirstOrDefault(item => 
+            item.Value.Level <= tableManager.LastLevel && 
+            item.Value.Level == clearedLevel + 1).Value;
+        
         return puzzle?.Index ?? -1;
     }
 

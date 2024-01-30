@@ -27,6 +27,9 @@ public partial class SDKManager
     [SerializeField] private int rewardNum = -1;
     private Action<bool> rewardVideoCallback;
     private static bool isBannerLoaded;
+    public static bool IsBannerLoaded => isBannerLoaded;
+    private static bool isRewardVideoLoaded;
+    public static bool IsRewardVideoLoaded => isRewardVideoLoaded;
     private static bool openRemoveAdsPopup;
     private static string ironSourceAppKey;
     private static bool isInitialized_IronSource = false;    
@@ -55,6 +58,7 @@ public partial class SDKManager
         SetAdFreeUser(isADFreeUser);
 
         isBannerLoaded = false;
+        isRewardVideoLoaded = false;
         currentTimeCount = 0;
         rewardNum = -1;
 
@@ -406,11 +410,15 @@ public partial class SDKManager
     private void RewardedVideo_OnAdAvailableEvent(IronSourceAdInfo adInfo)
     {
         Debug.Log(CodeManager.GetMethodName());
+
+        isRewardVideoLoaded = true;
     }
 
     private void RewardedVideo_OnAdUnavailableEvent()
     {
         Debug.Log(CodeManager.GetMethodName());
+
+        isRewardVideoLoaded = false;
     }
 
     private void RewardedVideo_OnAdClickedEvent(IronSourcePlacement ssp, IronSourceAdInfo adInfo)
