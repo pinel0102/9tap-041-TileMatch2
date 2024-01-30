@@ -178,7 +178,10 @@ public class MainScene : UIScene
 									Text = SettingsType.Notification.GetName(),
 									AwakeOn = m_userManager.Current.Settings.GetValueOrDefault(SettingsType.Notification, true),
 									IconBuilder = isOn => SettingsType.Notification.GetIconPath(isOn),
-									OnToggle = value => m_userManager.UpdateSettings(SettingsType.Notification, value),
+									OnToggle = value => {
+                                        m_userManager.UpdateSettings(SettingsType.Notification, value);
+                                        PushManager.PushAgree(value);
+                                    },
 								}
 							},
 							ServiceButtonParameter = new UITextButtonParameter{
@@ -211,6 +214,7 @@ public class MainScene : UIScene
 		m_userManager.OnUpdated += OnUpdateUI;
 
         SDKManager.Instance.SDKStart();
+        PushManager.PushAgree(m_userManager.Current.Settings.GetValueOrDefault(SettingsType.Notification, true));
 	}
 
     public void MoveTo(MainMenuType type)

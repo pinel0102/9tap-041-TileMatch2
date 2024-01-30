@@ -84,6 +84,7 @@ public class UserManager : IDisposable
         LogUserData();
 
         SDKManager.Instance.Initialize(m_user.Value.AppOpenCount, m_user.Value.InstallDate, m_user.Value.UserGroup, m_user.Value.NoAD);
+        PushManager.Initialize(ProjectManager.productName, GlobalDefine.ToDateTime(m_user.Value.InstallDate));
 
 #if !UNITY_STANDALONE
         await CheckAgrees(waitPanel);
