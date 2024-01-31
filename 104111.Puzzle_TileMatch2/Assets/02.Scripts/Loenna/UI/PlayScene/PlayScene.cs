@@ -168,7 +168,12 @@ public partial class PlayScene : UIScene
                             }
                             else
                             {
-                                GlobalData.Instance.ShowStorePopup(GlobalData.Instance.HUD_Hide);
+                                GlobalDefine.RequestAD_HideBanner();
+                                
+                                GlobalData.Instance.ShowStorePopup(() => {
+                                    GlobalDefine.RequestAD_ShowBanner();
+                                    GlobalData.Instance.HUD_Hide();
+                                });
                             }
 						},
 						ButtonText = "Buy",
@@ -322,7 +327,12 @@ public partial class PlayScene : UIScene
             //[PlayScene:Replay] 하트 부족시 상점 열기.
             SDKManager.SendAnalytics_C_Scene(Text.Button.STORE);
 
-            GlobalData.Instance.ShowStorePopup(ShowRetryPopup);
+            GlobalDefine.RequestAD_HideBanner();
+
+            GlobalData.Instance.ShowStorePopup(() => {
+                GlobalDefine.RequestAD_ShowBanner();
+                ShowRetryPopup();
+            });
             
             return;
         }

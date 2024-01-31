@@ -118,6 +118,8 @@ partial class PlayScene
         else
         {
             //[PlayScene:Retry] 코인 부족.
+            GlobalDefine.RequestAD_HideBanner();
+            
             GlobalData.Instance.ShowStorePopup(onStoreClosed);
         }
 	}
@@ -376,6 +378,7 @@ partial class PlayScene
                 State: result,
                 ContinueButtonParameter: new UITextButtonParameter {
                     OnClick = () => OnContinue(coinAmount, itemTypes, () => { 
+                        GlobalDefine.RequestAD_ShowBanner();
                         LevelFail(false); 
                     }),
                     ButtonText = Text.Button.PLAY_ON,
@@ -396,6 +399,7 @@ partial class PlayScene
             new UITextButtonParameter {
                 ButtonText = Text.Button.PLAY_ON,
                 OnClick = () => OnContinue(coinAmount, itemTypes, () => { 
+                    GlobalDefine.RequestAD_ShowBanner();
                     ShowAreYouSure(coinAmount, itemTypes); 
                 }),
                 SubWidgetBuilder = () => {
