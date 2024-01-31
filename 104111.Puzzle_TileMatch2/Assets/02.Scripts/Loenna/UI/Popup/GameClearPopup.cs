@@ -254,6 +254,7 @@ public class GameClearPopup : UIPopup
 								PopupType: RewardPopupType.CHEST,
 								Reward: existChest ? m_nextChest : CreateDummy(),
                                 NewLandmark: openPuzzleIndex,
+                                OnComplete: null,
                                 VisibleHUD: HUDType.COIN
 							)
 						);

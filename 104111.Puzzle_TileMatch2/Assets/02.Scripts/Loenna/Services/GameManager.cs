@@ -484,9 +484,10 @@ public partial class GameManager : IDisposable
 		}
 	}
 
-	public int GetSkillPackageCoin(out List<SkillItemType> skillItemTypes)
+	public int GetSkillPackageCoin(bool checkCount, out List<SkillItemType> skillItemTypes)
 	{
-		m_continueCount += 1;
+        if (checkCount)
+		    m_continueCount += 1;
 
 		skillItemTypes = new();
 

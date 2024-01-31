@@ -61,7 +61,7 @@ public class HUD_Field : CachedBehaviour
                     heartPlusObject.SetActive(!status.Item1 && !status.Item4);
                     boosterTimeObject.SetActive(status.Item1); 
                     component.text = status.Item3;
-                    component.color = status.Item1 ? Constant.UI.COLOR_BOOSTER_TIME : Constant.UI.COLOR_WHITE;
+                    //component.color = status.Item1 ? Constant.UI.COLOR_BOOSTER_TIME : Constant.UI.COLOR_WHITE;
                     //Debug.Log(status.Item3);
                 });
 		}

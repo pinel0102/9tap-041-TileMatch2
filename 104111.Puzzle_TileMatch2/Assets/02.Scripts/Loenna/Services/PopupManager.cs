@@ -111,6 +111,7 @@ public class PopupManager
 
 	public void ClosePopup(UIPopup? popup)
 	{
+        Debug.Log(CodeManager.GetMethodName() + string.Format("Close Popup : {0}", popup?.name));
 		ClosePopupInternal(popup, CancellationToken.None);
 	}
 
@@ -258,7 +259,7 @@ public class PopupManager
         if(lastPopup.ignoreBackKey)
             return true;
 
-        Debug.Log(CodeManager.GetMethodName() + string.Format("Close Popup : {0}", lastPopup.name));		
+        Debug.Log(CodeManager.GetMethodName() + string.Format("Close Popup : {0}", lastPopup.name));
         ClosePopup(lastPopup);
 
 		return true;

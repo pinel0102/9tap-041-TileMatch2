@@ -8,6 +8,24 @@ using Cysharp.Threading.Tasks.Linq;
 
 public partial class GlobalData
 {
+    public void ShowStorePopup(Action onStoreClosed = null)
+    {
+        UIManager.backKeyCallback = onStoreClosed;
+
+        UIManager.ShowSceneUI<StoreScene>(
+            new StoreSceneParameter(
+                StoreParam: new MainSceneFragmentContentParameter_Store {
+                    TitleText = "Store",
+                    CloseButtonParameter = new UIImageButtonParameter {
+                        OnClick = () => { 
+                            UIManager.ReturnBackUI(UIManager.backKeyCallback);
+                        }
+                    }
+                }
+            )
+        );
+    }
+
     public void ShowReadyPopup(Action onComplete = null)
     {
         Debug.Log(CodeManager.GetMethodName());
@@ -29,10 +47,8 @@ public partial class GlobalData
                     var (_, valid, _) = user.Valid();
                     if (!valid)
                     {
-                        ShowGoToStorePopup("Purchase Life", () => {
-                            SDKManager.SendAnalytics_C_Scene(NineTap.Constant.Text.Button.STORE);
-                            mainScene.scrollView.MoveTo((int)MainMenuType.STORE);}
-                        );
+                        SDKManager.SendAnalytics_C_Scene(NineTap.Constant.Text.Button.STORE);
+                        mainScene.scrollView.MoveTo((int)MainMenuType.STORE);
                         return;
                     }
                     
@@ -78,13 +94,9 @@ public partial class GlobalData
                         }
                         else
                         {
-                            ShowGoToStorePopup("Purchase Coin", () => {
-                                    SDKManager.SendAnalytics_C_Scene(NineTap.Constant.Text.Button.STORE);
-
-                                    mainScene.scrollView.MoveTo((int)MainMenuType.STORE);
-                                    UIManager.ClosePopupUI_ForceAll();
-                                }
-                            );
+                            SDKManager.SendAnalytics_C_Scene(NineTap.Constant.Text.Button.STORE);
+                            mainScene.scrollView.MoveTo((int)MainMenuType.STORE);
+                            UIManager.ClosePopupUI_ForceAll();
                         }
                     },
                     SubWidgetBuilder = () => {
@@ -94,29 +106,6 @@ public partial class GlobalData
                     }
                 },
                 LifeStatus: HUD.MessageBroker.Subscribe().Select(user => user.GetLifeStatus())
-            )
-        );
-    }
-
-    // 재화 부족시 상점 열기.
-    public void ShowGoToStorePopup(string message, Action onClick = null)
-    {
-        Debug.Log(CodeManager.GetMethodName());
-        
-        //[MainScene:PlayButton] 하트 부족 알림.
-        //[MainScene:HUD:Puzzle] 하트 부족 알림.
-        //[MainScene:HUD:Heart] 코인 부족 알림.
-        UIManager.ShowPopupUI<GiveupPopup>(
-            new GiveupPopupParameter(
-                Title: "Purchase",
-                Message: message,
-                ignoreBackKey: false,
-                ExitParameter: ExitBaseParameter.CancelParam,
-                BaseButtonParameter: new UITextButtonParameter {
-                    ButtonText = "Go to Shop",
-                    OnClick = onClick
-                },
-                HUDTypes: HUDType.ALL
             )
         );
     }
@@ -171,12 +160,13 @@ public partial class GlobalData
                 PopupType: RewardPopupType.PRESENT,
                 Reward: product.ToRewardData(),
                 NewLandmark: 0,
+                OnComplete: null,
                 VisibleHUD: HUDType.NONE
             )
         );
     }
 
-    public void ShowPresentPopup(RewardData rewardData)
+    public void ShowPresentPopup(RewardData rewardData, Action onComplete = null)
     {
         Debug.Log(CodeManager.GetMethodName());
 
@@ -185,6 +175,7 @@ public partial class GlobalData
                 PopupType: RewardPopupType.PRESENT,
                 Reward: rewardData,
                 NewLandmark: 0,
+                OnComplete: onComplete,
                 VisibleHUD: HUDType.NONE
             )
         );

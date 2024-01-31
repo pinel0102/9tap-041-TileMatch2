@@ -90,7 +90,7 @@ public class Game : MonoBehaviour
         if (Keyboard.current.escapeKey.wasPressedThisFrame ||
 			Keyboard.current.backspaceKey.wasPressedThisFrame)
         {
-            UIManager.ReturnBackUI();
+            UIManager.ReturnBackUI(UIManager.backKeyCallback);
         }
     }
 }

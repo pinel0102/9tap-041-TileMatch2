@@ -83,7 +83,7 @@ partial class PlayScene
 		);
 	}
 
-	private void OnContinue(int coinAmount, List<SkillItemType> itemTypes)
+	private void OnContinue(int coinAmount, List<SkillItemType> itemTypes, Action onStoreClosed)
 	{
 		if (m_userManager.TryUpdate(requireCoin: coinAmount))
 		{
@@ -114,33 +114,12 @@ partial class PlayScene
 
 			UIManager.ClosePopupUI();
 			m_block.SetActive(false);
-			return;
 		}
-
-        //[PlayScene:Continue] 코인 부족 알림.
-        UIManager.ShowPopupUI<GiveupPopup>(
-            new GiveupPopupParameter(
-                Title: "Purchase",
-                Message: "Purchase Coin",
-                ignoreBackKey: true,
-                ExitParameter: new ExitBaseParameter(
-                    includeBackground: false,
-                    onExit: () => {
-                        SDKManager.SendAnalytics_C_Scene_Fail("Close");
-                        m_userManager.TryUpdate(requireLife: true);
-                        OnExit(false);
-                    }
-                ),
-                BaseButtonParameter: new UITextButtonParameter {
-                    ButtonText = "Go to Shop",
-                    OnClick = () => {
-                        SDKManager.SendAnalytics_C_Scene(Text.Button.STORE);
-                        m_userManager.TryUpdate(requireLife: true);
-                        OnExit(true);
-                    }
-                }
-            )
-        );
+        else
+        {
+            //[PlayScene:Retry] 코인 부족.
+            GlobalData.Instance.ShowStorePopup(onStoreClosed);
+        }
 	}
 
 	private async UniTask OnUpdateUI(CurrentPlayState currentPlayState)
@@ -302,8 +281,6 @@ partial class PlayScene
 					await UniTask.Defer(() => m_canvasGroup.DOFade(0f, 0.5f).ToUniTask());
 				}
 
-				int coinAmount = m_gameManager.GetSkillPackageCoin(out var itemTypes);
-
 				if (result is CurrentPlayState.Finished.State.OVER)
 				{
                     LevelFail();
@@ -383,20 +360,24 @@ partial class PlayScene
         );
     }
 
-    public void LevelFail()
+    public void LevelFail(bool sendLog = true)
     {
-        Debug.Log(CodeManager.GetMethodName() + m_gameManager.CurrentLevel);
+        if (sendLog)
+        {
+            Debug.Log(CodeManager.GetMethodName() + m_gameManager.CurrentLevel);
+            SDKManager.SendAnalytics_I_Scene_Fail();
+        }
 
         CurrentPlayState.Finished.State result = CurrentPlayState.Finished.State.OVER;
-        int coinAmount = m_gameManager.GetSkillPackageCoin(out var itemTypes);
-
-        SDKManager.SendAnalytics_I_Scene_Fail();
-
+        int coinAmount = m_gameManager.GetSkillPackageCoin(sendLog, out var itemTypes);
+        
         UIManager.ShowPopupUI<PlayEndPopup>(
             new PlayEndPopupParameter(
                 State: result,
                 ContinueButtonParameter: new UITextButtonParameter {
-                    OnClick = () => OnContinue(coinAmount, itemTypes),
+                    OnClick = () => OnContinue(coinAmount, itemTypes, () => { 
+                        LevelFail(false); 
+                    }),
                     ButtonText = Text.Button.PLAY_ON,
                     SubWidgetBuilder = () => {
                         var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
@@ -404,7 +385,31 @@ partial class PlayScene
                         return widget.CachedGameObject;
                     }
                 },
-                OnQuit: () => ShowNext(result, coinAmount, () => OnContinue(coinAmount, itemTypes))
+                OnQuit: () => ShowAreYouSure(coinAmount, itemTypes)
+            )
+        );
+    }
+
+    private void ShowAreYouSure(int coinAmount, List<SkillItemType> itemTypes)
+    {
+        ShowGiveUpPopup(
+            new UITextButtonParameter {
+                ButtonText = Text.Button.PLAY_ON,
+                OnClick = () => OnContinue(coinAmount, itemTypes, () => { 
+                    ShowAreYouSure(coinAmount, itemTypes); 
+                }),
+                SubWidgetBuilder = () => {
+                    var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
+                    widget.OnSetup("UI_Icon_Coin", $"{coinAmount}");
+                    return widget.CachedGameObject;
+                }
+            },
+            new ExitBaseParameter (
+                includeBackground: false,
+                onExit: () => {
+                    m_userManager.TryUpdate(requireLife: true);
+                    OnExit(false);
+                }
             )
         );
     }

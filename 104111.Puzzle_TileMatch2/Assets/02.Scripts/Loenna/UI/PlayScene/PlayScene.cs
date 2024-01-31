@@ -168,18 +168,7 @@ public partial class PlayScene : UIScene
                             }
                             else
                             {
-                                UIManager.ShowSceneUI<StoreScene>(
-                                    new StoreSceneParameter(
-                                        StoreParam: new MainSceneFragmentContentParameter_Store {
-                                            TitleText = "Store",
-                                            CloseButtonParameter = new UIImageButtonParameter {
-                                                OnClick = () => { 
-                                                    UIManager.ReturnBackUI();
-                                                }
-                                            }
-                                        }
-                                    )
-                                );
+                                GlobalData.Instance.ShowStorePopup(GlobalData.Instance.HUD_Hide);
                             }
 						},
 						ButtonText = "Buy",
@@ -236,8 +225,9 @@ public partial class PlayScene : UIScene
                         else
                         {
                             SDKManager.SendAnalytics_C_Scene(Text.Button.REPLAY);
+                            ShowRetryPopup();
 
-                            ShowGiveUpPopup(
+                            /*ShowGiveUpPopup(
                                 new UITextButtonParameter
                                 {
                                     ButtonText = Text.Button.PLAY_ON
@@ -250,7 +240,7 @@ public partial class PlayScene : UIScene
                                         ShowReadyPopup(m_gameManager.CurrentLevel);
                                     }
                                 )
-                            );
+                            );*/
                         }
 					}
 				},
@@ -288,30 +278,23 @@ public partial class PlayScene : UIScene
 		);
 	}
 
-	private void ShowNext(CurrentPlayState.Finished.State stateType, int coinAmount, Action onContinue)
-	{
-		if (stateType is CurrentPlayState.Finished.State.OVER)
-		{
-			ShowGiveUpPopup(
-				new UITextButtonParameter {
-					ButtonText = Text.Button.PLAY_ON,
-					OnClick = onContinue,
-					SubWidgetBuilder = () => {
-						var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
-						widget.OnSetup("UI_Icon_Coin", $"{coinAmount}");
-						return widget.CachedGameObject;
-					}
-				},
-				new ExitBaseParameter (
-					includeBackground: false,
-					onExit: () => {
-						m_userManager.TryUpdate(requireLife: true);
-						OnExit(false);
-					}
-				)
-			);
-		}
-	}
+    private void ShowRetryPopup()
+    {
+        ShowGiveUpPopup(
+            new UITextButtonParameter
+            {
+                ButtonText = Text.Button.PLAY_ON
+            },
+            new ExitBaseParameter(
+                includeBackground: false,
+                onExit: () =>
+                {
+                    m_userManager.TryUpdate(requireLife: true);
+                    ShowReadyPopup(m_gameManager.CurrentLevel);
+                }
+            )
+        );
+    }
 
 	private void ShowGiveUpPopup(UITextButtonParameter buttonParameter, ExitBaseParameter exitBaseParameter)
 	{
@@ -336,27 +319,11 @@ public partial class PlayScene : UIScene
 
         if (!valid)
         {
-            //[PlayScene:Replay] 하트 부족 알림.
-            UIManager.ShowPopupUI<GiveupPopup>(
-                new GiveupPopupParameter(
-                    Title: "Purchase",
-                    Message: "Purchase Life",
-                    ignoreBackKey: true,
-                    ExitParameter: new ExitBaseParameter(
-                        onExit: () => {
-                            SDKManager.SendAnalytics_C_Scene(Text.Button.CLOSE);
-                            OnExit(false);
-                        }
-                    ),
-                    BaseButtonParameter: new UITextButtonParameter {
-                        ButtonText = "Go to Shop",
-                        OnClick = () => {
-                            SDKManager.SendAnalytics_C_Scene(Text.Button.STORE);
-                            OnExit(true);
-                        }
-                    }
-                )
-            );
+            //[PlayScene:Replay] 하트 부족시 상점 열기.
+            SDKManager.SendAnalytics_C_Scene(Text.Button.STORE);
+
+            GlobalData.Instance.ShowStorePopup(ShowRetryPopup);
+            
             return;
         }
         m_gameManager.LoadLevel(level, m_mainView.CachedRectTransform);

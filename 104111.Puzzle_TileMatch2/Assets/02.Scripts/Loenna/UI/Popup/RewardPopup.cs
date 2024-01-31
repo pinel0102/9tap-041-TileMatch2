@@ -20,6 +20,7 @@ public record RewardPopupParameter
 	RewardPopupType PopupType, 
 	RewardData Reward,
     int NewLandmark,
+    Action OnComplete,
 	params HUDType[] VisibleHUD
 ): UIParameter(VisibleHUD);
 
@@ -38,6 +39,8 @@ public class RewardPopup : UIPopup
 	private RewardPopupType m_popupType;
     public int rewardCoin;
 
+    private Action onComplete;
+
 	public override void OnSetup(UIParameter uiParameter)
 	{
 		base.OnSetup(uiParameter);
@@ -52,6 +55,7 @@ public class RewardPopup : UIPopup
 		}
 
         m_popupType = parameter.PopupType;
+        onComplete = parameter.OnComplete;
 
         switch(m_popupType)
         {
@@ -168,5 +172,11 @@ public class RewardPopup : UIPopup
     {
         OnClickClose();
         GlobalData.Instance.HUD_Show(hudType);
+    }
+
+    public override void OnClickClose()
+    {
+        base.OnClickClose();
+        onComplete?.Invoke();
     }
 }

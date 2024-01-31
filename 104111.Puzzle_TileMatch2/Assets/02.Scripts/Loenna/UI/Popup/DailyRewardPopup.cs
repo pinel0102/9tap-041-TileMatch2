@@ -29,6 +29,7 @@ public class DailyRewardPopup : UIPopup
 
     private bool isButtonInteractable;
     
+    private IconWidget adWidget;
     private List<RewardData> rewardDataList = default;
     private GlobalData globalData { get { return GlobalData.Instance; } }
 
@@ -66,9 +67,9 @@ public class DailyRewardPopup : UIPopup
         getDoubleButton.OnSetup(new UITextButtonParameter {
             ButtonText = "Double",
             SubWidgetBuilder = () => {
-					var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
-					widget.OnSetup("UI_Icon_AD");
-					return widget.CachedGameObject;
+					adWidget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
+					adWidget.OnSetup("UI_Icon_AD");
+					return adWidget.CachedGameObject;
 				},
             OnClick = OnClick_RewardVideo
         });
@@ -141,6 +142,7 @@ public class DailyRewardPopup : UIPopup
         //closeButton.gameObject.SetActive(isGetReward);
         getRewardButton.SetInteractable(!isGetReward);
         getDoubleButton.SetInteractable(!isGetReward);
+        adWidget?.SetInteractable(!isGetReward);
 
 #if UNITY_EDITOR
         rewardVideoOnlyObject.SetActive(true);
@@ -206,7 +208,7 @@ public class DailyRewardPopup : UIPopup
     {
         if (multiplier == 1)
         {
-            globalData.ShowPresentPopup(rewardData);
+            globalData.ShowPresentPopup(rewardData, () => RefreshUI(true));
         }
         else
         {
@@ -221,10 +223,10 @@ public class DailyRewardPopup : UIPopup
             newRewardData.ResetRewards();
             newRewardData.CreateRewards();
 
-            globalData.ShowPresentPopup(newRewardData);
+            globalData.ShowPresentPopup(newRewardData, () => RefreshUI(true));
         }
 
-        RefreshUI(true);
+        //RefreshUI(true);
         SetButtonInteractable(true);
     }
 

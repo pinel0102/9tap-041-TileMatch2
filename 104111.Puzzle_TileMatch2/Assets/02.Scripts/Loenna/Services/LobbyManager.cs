@@ -48,7 +48,7 @@ public class LobbyManager : IDisposable
         if (!valid)
         {
             SDKManager.SendAnalytics_C_Scene(Text.Button.STORE);
-            GlobalData.Instance.ShowGoToStorePopup("Purchase Life", onMoveShop);
+            onMoveShop?.Invoke();
             return;
         }
 

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using NineTap.Common;
+using System;
 
 public static partial class UIManager
 {
@@ -57,10 +58,14 @@ public static partial class UIManager
 		return s_implementation?.AttachHUD(uiParameter.VisibleHUD)?.PopupManager?.ShowPopup<T>(uiParameter);
 	}
 
-	public static void ReturnBackUI()
+    public static Action? backKeyCallback;
+
+	public static void ReturnBackUI(Action? onComplete = null)
 	{
         if (GlobalData.Instance.IsTouchLockNow_MainScene() || GlobalData.Instance.IsTouchLockNow_PlayScene()) 
             return;
+
+        backKeyCallback = null;
         
 		// 먼저 팝업 닫기 시도
 		bool closedPopup = s_implementation?.PopupManager?.ClosePopupUI() ?? false;
@@ -68,7 +73,6 @@ public static partial class UIManager
         if(closedPopup)
         {
             //Debug.Log(CodeManager.GetMethodName() + "Close Popup");
-            return;
         }    
 		else
 		{
@@ -124,6 +128,8 @@ public static partial class UIManager
                 }
             }
 		}
+
+        onComplete?.Invoke();
 	}
 
     public static void ClosePopupUI_ForceAll()

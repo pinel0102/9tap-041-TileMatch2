@@ -22,4 +22,10 @@ public class IconWidget : CachedBehaviour
 		m_image.color = isGray? Color.gray : Color.white;
 		m_text.color = isGray? Color.gray : Color.white;
 	}
+
+    public void SetInteractable(bool interactable)
+    {
+        m_image.color = interactable? Color.white : Color.gray;
+		m_text.color = interactable? Color.white : Color.gray;
+    }
 }

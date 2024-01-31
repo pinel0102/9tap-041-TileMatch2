@@ -30,9 +30,6 @@ public class ReviewPopup : PopupBase
     [SerializeField]
 	private GameObject m_container2;
 
-    [SerializeField]
-	private TMP_Text m_message2;
-
 	public override void OnSetup(UIParameter uiParameter)
 	{
 		base.OnSetup(uiParameter);
@@ -46,7 +43,6 @@ public class ReviewPopup : PopupBase
         OnSetupButton(m_otherButton, parameter.LeftButtonParameter, parameter.AllPressToClose);
         OnSetupButton(m_closeButton, parameter.CloseButtonParameter, parameter.AllPressToClose);
         m_button.onClick.AddListener(OpenReviewPage);
-        m_message2.text = parameter.Message2;
         m_container1.SetActive(true);
         m_container2.SetActive(false);
 	}
