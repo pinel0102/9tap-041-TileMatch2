@@ -1,9 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+using System;
 
 public static class GlobalSettings
 {
+    public static void InitFrameRate()
+    {
+        QualitySettings.vSyncCount = 0;
+
+        Resolution[] resolutions = Screen.resolutions;
+        //foreach (var res in resolutions)
+        //    Debug.Log(CodeManager.GetMethodName() + res.width + "x" + res.height + " : " + res.refreshRateRatio);
+
+        Resolution maxResolution = resolutions.Last();
+        //Debug.Log(CodeManager.GetMethodName() + maxResolution.width + "x" + maxResolution.height + " : " + maxResolution.refreshRateRatio);
+
+        int supportRate = Convert.ToInt32(maxResolution.refreshRateRatio.value);
+        int targetRate = Mathf.Clamp(supportRate, 60, 120);
+
+        Application.targetFrameRate = targetRate;
+
+        Debug.Log(CodeManager.GetMethodName() + string.Format("targetFrameRate : {0}", targetRate));
+    }
+
     public static void OpenURL_Review()
     {
 #if UNITY_IOS        

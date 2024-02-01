@@ -69,7 +69,7 @@ public class MainScene : UIScene
                     if (IsEnableShowPopup())
                     {
                         soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
-                        m_lobbyManager.OnCheckShowPopup(() => m_scrollView.MoveTo((int)MainMenuType.STORE));
+                        m_lobbyManager.OnCheckShowPopup(() => GlobalData.Instance.ShowBuyHeartPopup());
                     } 
                 }
             ),
@@ -115,7 +115,7 @@ public class MainScene : UIScene
 						new MainSceneFragmentContentParameter_Puzzle{
 							PuzzleManager = parameter.PuzzleManager,
 							OnUpdated = m_lobbyManager.OnUpdatePuzzle,
-							OnClick = () => m_lobbyManager.OnCheckShowPopup(() => m_scrollView.MoveTo((int)MainMenuType.STORE))
+							OnClick = () => m_lobbyManager.OnCheckShowPopup(() => GlobalData.Instance.ShowBuyHeartPopup())
 						}
 					),
 					new ScrollViewFragmentParameter(
@@ -132,7 +132,7 @@ public class MainScene : UIScene
 							},
 							PlayButtonParam = new UITextButtonParameter{
 								ButtonText = string.Empty,
-								OnClick = () => m_lobbyManager.OnCheckShowPopup(() => m_scrollView.MoveTo((int)MainMenuType.STORE)),
+								OnClick = () => m_lobbyManager.OnCheckShowPopup(() => GlobalData.Instance.ShowBuyHeartPopup()),
 								ButtonTextBinder = m_lobbyManager.CurrentLevel
 							}
 						}

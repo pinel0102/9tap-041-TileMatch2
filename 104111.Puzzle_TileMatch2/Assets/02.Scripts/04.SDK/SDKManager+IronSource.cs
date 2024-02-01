@@ -123,7 +123,7 @@ public partial class SDKManager
 
         IronSource.Agent.onApplicationPause(isPaused);        
         
-        ShowBanner();
+        ShowBanner(true);
 #endif
     }
 
@@ -161,7 +161,7 @@ public partial class SDKManager
 #endif
     }
 
-    public void ShowBanner()
+    public void ShowBanner(bool forceLoad = false)
     {
 #if ENABLE_IRONSOURCE
 
@@ -179,7 +179,7 @@ public partial class SDKManager
                 if (m_showLogIronSource)
                     Debug.Log(CodeManager.GetMethodName() + isBannerLoaded);
 
-                if (isBannerLoaded)
+                if (isBannerLoaded && !forceLoad)
                     IronSource.Agent.displayBanner();
                 else
 				    IronSource.Agent.loadBanner(IronSourceBannerSize.SMART, IronSourceBannerPosition.BOTTOM);
@@ -190,7 +190,7 @@ public partial class SDKManager
             if (m_showLogIronSource)
                 Debug.Log(CodeManager.GetMethodName() + isBannerLoaded);
 
-			if (isBannerLoaded)
+			if (isBannerLoaded && !forceLoad)
                 IronSource.Agent.displayBanner();
             else
                 IronSource.Agent.loadBanner(IronSourceBannerSize.SMART, IronSourceBannerPosition.BOTTOM);

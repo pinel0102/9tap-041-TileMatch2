@@ -36,10 +36,9 @@ public class Game : MonoBehaviour
     {        
         Debug.Log(CodeManager.GetMethodName());
 
-        QualitySettings.vSyncCount = 0;
-        Application.targetFrameRate = 60;
-        
-		DOTween.SetTweensCapacity(500, 50);
+        GlobalSettings.InitFrameRate();
+
+        DOTween.SetTweensCapacity(500, 50);
 		SpriteManager.Initialize();
 		TableManager tableManager = new TableManager();
 		TimeManager timeManager = new TimeManager();

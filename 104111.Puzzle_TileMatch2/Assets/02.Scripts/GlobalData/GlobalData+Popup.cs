@@ -48,7 +48,7 @@ public partial class GlobalData
                     if (!valid)
                     {
                         SDKManager.SendAnalytics_C_Scene(NineTap.Constant.Text.Button.STORE);
-                        mainScene.scrollView.MoveTo((int)MainMenuType.STORE);
+                        ShowBuyHeartPopup();
                         return;
                     }
                     
@@ -232,11 +232,11 @@ public partial class GlobalData
                 },
                 LeftButtonParameter: new UITextButtonParameter {
                     ButtonText = NineTap.Constant.Text.Button.NO_THANKS,
-                    OnClick = UIManager.ClosePopupUI
+                    OnClick = UIManager.ClosePopupUI_Force
                 },
                 CloseButtonParameter: new UITextButtonParameter {
                     ButtonText = NineTap.Constant.Text.Button.OK,
-                    OnClick = UIManager.ClosePopupUI
+                    OnClick = UIManager.ClosePopupUI_Force
                 },
                 HUDTypes: HUDType.ALL
             )
