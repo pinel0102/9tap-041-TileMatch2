@@ -108,7 +108,7 @@ public partial class SDKManager
                 LoadInterstitial();
             
             if (!isBannerLoaded)
-                ShowBanner();
+                ShowBanner(true);
             
             if (!IsBannerAvailable)
                 HideBanner();
@@ -182,16 +182,15 @@ public partial class SDKManager
 			// 최초 설치 딜레이 적용.
 			if(stDeltaTime.TotalSeconds >= firstAdsFreeDelay) 
             {
-                if (m_showLogIronSource)
-                    Debug.Log(CodeManager.GetMethodName() + isBannerLoaded);
-
-                if (isBannerLoaded && !forceLoad)
-                    IronSource.Agent.displayBanner();
-                else
-				    IronSource.Agent.loadBanner(IronSourceBannerSize.SMART, IronSourceBannerPosition.BOTTOM);
+                LoadBanner();
 			}
 		}
         else
+        {
+            LoadBanner();
+		}
+
+        void LoadBanner()
         {
             if (m_showLogIronSource)
                 Debug.Log(CodeManager.GetMethodName() + isBannerLoaded);
@@ -200,7 +199,7 @@ public partial class SDKManager
                 IronSource.Agent.displayBanner();
             else
                 IronSource.Agent.loadBanner(IronSourceBannerSize.SMART, IronSourceBannerPosition.BOTTOM);
-		}
+        }
 #endif
     }
 

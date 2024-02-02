@@ -3,7 +3,7 @@
 Puzzle - TileMatch2 클라이언트 프로젝트
 
 + aOS : [Tile Match! World Tours](https://play.google.com/store/apps/details?id=com.ninetap.bubblepartyshooterpuzzle&gl=US)
-+ iOS : [Tile Match! World Tours](https://apps.apple.com/app/id6449579663)
++ iOS : [Tile Match! World Tours](https://apps.apple.com/app/id6476965728)
 
 <br>
 
@@ -28,8 +28,12 @@ Puzzle - TileMatch2 클라이언트 프로젝트
 # ChangeLog
 
 <details>
-<summary markdown="span"><em>last update : 0.5.0</em></summary>
+<summary markdown="span"><em>last update : 1.0.0</em></summary>
 <br>
+
+---
++ 1.0.0
+   - 출시 버전 배포
 
 ---
 + 0.0.1

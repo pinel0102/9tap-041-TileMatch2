@@ -21,7 +21,7 @@ public static partial class GlobalDefine
     {
         Debug.Log(string.Format(logAdFormat0, CodeManager.GetMethodName()));
         
-        SDKManager.Instance.ShowBanner(true);
+        SDKManager.Instance.ShowBanner();
     }
 
     public static void RequestAD_HideBanner()
