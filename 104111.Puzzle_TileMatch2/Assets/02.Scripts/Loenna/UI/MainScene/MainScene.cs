@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using NineTap.Common;
+using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine.Rendering;
 
@@ -244,21 +245,37 @@ public class MainScene : UIScene
 
         GlobalData.Instance.CURRENT_LEVEL = m_userManager.Current.Level;
         GlobalData.Instance.CURRENT_DIFFICULTY = 0;
-
-        if (CachedParameter is MainSceneRewardParameter rewardParameter)
-        {
-            Debug.Log(CodeManager.GetMethodName() + string.Format("[Get Reward] {0} / {1} / {2}", rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardGoldPiece));
-            GlobalData.Instance.HUD_LateUpdate_MainSceneReward(rewardParameter.clearedLevel, rewardParameter.openPuzzleIndex, rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardGoldPiece);
-        }
-
-        if (GlobalDefine.IsEnableDailyRewards() && GlobalDefine.IsRewardVideoReady())
-            GlobalData.Instance.ShowDailyRewardPopup();
-
         m_scrollView.MoveTo((int)parameter.ShowMenuType);
 
         SDKManager.SendAnalytics_I_Scene();
         GlobalDefine.RequestAD_HideBanner();
+
+        CheckAutoPopups();
 	}
+
+    private async void CheckAutoPopups()
+    {
+        GlobalData.Instance.SetTouchLock_MainScene(true);
+
+        if (CachedParameter is MainSceneRewardParameter rewardParameter)
+        {
+            Debug.Log(CodeManager.GetMethodName() + string.Format("[Get Reward] {0} / {1} / {2}", rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardGoldPiece));
+            await GlobalData.Instance.HUD_LateUpdate_MainSceneReward(rewardParameter.clearedLevel, rewardParameter.openPuzzleIndex, rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardGoldPiece);
+            await GlobalData.Instance.CheckPuzzleOpen(rewardParameter.openPuzzleIndex);
+
+            if (GlobalDefine.IsEnableReviewPopup(rewardParameter.clearedLevel))
+            {
+                await GlobalData.Instance.ShowReviewPopup();
+            }
+        }
+
+        if (GlobalDefine.IsEnableDailyRewards() && GlobalDefine.IsRewardVideoReady())
+        {
+            await GlobalData.Instance.ShowDailyRewardPopup();
+        }
+
+        GlobalData.Instance.SetTouchLock_MainScene(false);
+    }
 
 	private void OnDestroy()
 	{

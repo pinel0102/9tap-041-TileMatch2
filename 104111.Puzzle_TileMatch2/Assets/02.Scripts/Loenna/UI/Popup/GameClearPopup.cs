@@ -207,9 +207,6 @@ public class GameClearPopup : UIPopup
                     rewardPuzzlePiece: rewardData.PuzzlePiece,
                     rewardGoldPiece: GlobalData.Instance.missionCollected
                 ));
-                
-                if (GlobalDefine.IsEnableReviewPopup(clearedLevel))
-                    GlobalData.Instance.ShowReviewPopup();
 			}
 			else
 			{

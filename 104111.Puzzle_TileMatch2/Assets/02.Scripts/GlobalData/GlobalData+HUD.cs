@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System;
-using System.Linq;
 
 public partial class GlobalData
 {
@@ -48,7 +47,7 @@ public partial class GlobalData
         );
     }
 
-    public void HUD_LateUpdate_MainSceneReward(int _clearedLevel, int _openPuzzleIndex, int _getCoin, int _getPuzzlePiece, int _getGoldPiece)
+    public async UniTask HUD_LateUpdate_MainSceneReward(int _clearedLevel, int _openPuzzleIndex, int _getCoin, int _getPuzzlePiece, int _getGoldPiece)
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("Level {0} : {1} / {2} / {3} / {4}", _clearedLevel, _openPuzzleIndex, _getCoin, _getPuzzlePiece, _getGoldPiece));
 
@@ -72,54 +71,49 @@ public partial class GlobalData
         float _startDelay = 0.5f;
         float _fxDuration = 1f;
 
-        UniTask.Void(
-			async token => {
-                SetTouchLock_MainScene(true);
+        //SetTouchLock_MainScene(true);
 
-                if(_getPuzzlePiece > 0)
-                {
-                    Debug.Log(CodeManager.GetMethodName() + string.Format("[PuzzlePiece] {0} + {1} = {2}", _oldPuzzle, _getPuzzlePiece, _oldPuzzle + _getPuzzlePiece));
-                    
-                    if (_startDelay > 0)
-                        await UniTask.Delay(TimeSpan.FromSeconds(_startDelay));
+        if(_getPuzzlePiece > 0)
+        {
+            Debug.Log(CodeManager.GetMethodName() + string.Format("[PuzzlePiece] {0} + {1} = {2}", _oldPuzzle, _getPuzzlePiece, _oldPuzzle + _getPuzzlePiece));
+            
+            if (_startDelay > 0)
+                await UniTask.Delay(TimeSpan.FromSeconds(_startDelay));
 
-                    CreateEffect("UI_Icon_GoldPuzzle_Big", Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, fragmentHome.rewardPosition_puzzlePiece, _fxDuration);
-                    CreateEffect("UI_Icon_GoldPuzzle_Big", Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, HUD.behaviour.Fields[0].AttractorTarget, _fxDuration, () => { 
-                        HUD?.behaviour.Fields[0].IncreaseText(_oldPuzzle, _getPuzzlePiece, onUpdate:fragmentHome.RefreshPuzzleBadge);
-                    });
+            CreateEffect("UI_Icon_GoldPuzzle_Big", Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, fragmentHome.rewardPosition_puzzlePiece, _fxDuration);
+            CreateEffect("UI_Icon_GoldPuzzle_Big", Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, HUD.behaviour.Fields[0].AttractorTarget, _fxDuration, () => { 
+                HUD?.behaviour.Fields[0].IncreaseText(_oldPuzzle, _getPuzzlePiece, onUpdate:fragmentHome.RefreshPuzzleBadge);
+            });
 
-                    await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
-                }
+            await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
+        }
 
-                if(_getCoin > 0)
-                {
-                    Debug.Log(CodeManager.GetMethodName() + string.Format("[Coin] {0} + {1} = {2}", _oldCoin, _getCoin, _oldCoin + _getCoin));
-                    
-                    CreateEffect("UI_Icon_Coin", Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, HUD.behaviour.Fields[2].AttractorTarget, _fxDuration, () => {
-                        HUD?.behaviour.Fields[2].IncreaseText(_oldCoin, _getCoin);
-                    });
+        if(_getCoin > 0)
+        {
+            Debug.Log(CodeManager.GetMethodName() + string.Format("[Coin] {0} + {1} = {2}", _oldCoin, _getCoin, _oldCoin + _getCoin));
+            
+            CreateEffect("UI_Icon_Coin", Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, HUD.behaviour.Fields[2].AttractorTarget, _fxDuration, () => {
+                HUD?.behaviour.Fields[2].IncreaseText(_oldCoin, _getCoin);
+            });
 
-                    await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
-                }
+            await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
+        }
 
-                if(isGoldPieceActivated)
-                {
-                    if(_getGoldPiece > 0)
-                    {
-                        Debug.Log(CodeManager.GetMethodName() + string.Format("[GoldPiece] {0} + {1} = {2}", _oldGoldPiece, _getGoldPiece, _oldGoldPiece + _getGoldPiece));
-                        
-                        CreateEffect("UI_Icon_GoldPuzzle_Big", Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, fragmentHome.rewardPosition_goldPiece, _fxDuration, () => {
-                            fragmentHome.IncreaseGoldPiece(_oldGoldPiece, _getGoldPiece, GetGoldPiece_NextLevel());
-                        });
+        if(isGoldPieceActivated)
+        {
+            if(_getGoldPiece > 0)
+            {
+                Debug.Log(CodeManager.GetMethodName() + string.Format("[GoldPiece] {0} + {1} = {2}", _oldGoldPiece, _getGoldPiece, _oldGoldPiece + _getGoldPiece));
+                
+                CreateEffect("UI_Icon_GoldPuzzle_Big", Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, fragmentHome.rewardPosition_goldPiece, _fxDuration, () => {
+                    fragmentHome.IncreaseGoldPiece(_oldGoldPiece, _getGoldPiece, GetGoldPiece_NextLevel());
+                });
 
-                        await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
-                    }
-                }
+                await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
+            }
+        }
 
-                CheckPuzzleOpen(_openPuzzleIndex);
-            },
-			this.GetCancellationTokenOnDestroy()
-        );
+        //SetTouchLock_MainScene(false);
     }
 
     public void CreateEffect(string spriteName, string soundClip, Transform from, Transform to, float duration = 1f, Action onComplete = null, float sizeFrom = 70f, float sizeTo = 82f)
@@ -138,26 +132,6 @@ public partial class GlobalData
                 onComplete?.Invoke();
             }, sizeFrom, sizeTo
         );
-    }
-
-    public void CheckPuzzleOpen(int openPuzzleIndex)
-    {
-        if (openPuzzleIndex < 0)
-        {
-            SetTouchLock_MainScene(false);
-            return;
-        }
-
-        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Open Puzzle {0}</color>", openPuzzleIndex));
-
-        fragmentCollection.RefreshLockState();
-
-        if (GlobalDefine.IsTutorialPuzzle(openPuzzleIndex))
-        {
-            ShowTutorial_Puzzle();
-        }
-
-        SetTouchLock_MainScene(false);
     }
 
     public void HUD_Show(params HUDType[] types)

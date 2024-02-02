@@ -5,12 +5,10 @@ using System;
 
 public static partial class GlobalDefine
 {
-    private static bool testReviewPopup = false;
-
     public static bool IsEnableReviewPopup(int level)
     {
 #if UNITY_EDITOR
-        if(testReviewPopup)
+        if(testAutoPopupEditor)
             return true;
 #endif
 

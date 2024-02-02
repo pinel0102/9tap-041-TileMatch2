@@ -2,9 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Cysharp.Threading.Tasks;
 
 public partial class GlobalData
 {
+    public async UniTask CheckPuzzleOpen(int openPuzzleIndex)
+    {
+        if (openPuzzleIndex < 0)
+        {
+            return;
+        }
+
+        //SetTouchLock_MainScene(true);
+
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Open Puzzle {0}</color>", openPuzzleIndex));
+
+        fragmentCollection.RefreshLockState();
+
+        if (GlobalDefine.IsTutorialPuzzle(openPuzzleIndex))
+        {
+            await ShowTutorial_Puzzle();
+        }
+
+        //SetTouchLock_MainScene(false);
+    }
+
     public void ShowTutorial_Play(int level)
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Show Tutorial : Level {0}</color>", level));
@@ -12,11 +34,11 @@ public partial class GlobalData
         ShowTutorialPlayPopup(level);
     }
 
-    public void ShowTutorial_Puzzle()
+    public async UniTask ShowTutorial_Puzzle()
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Show Tutorial : Puzzle</color>"));
 
-        ShowTutorialPuzzlePopup();
+        await ShowTutorialPuzzlePopup();
     }
 
     public void ShowTutorialPlayPopup(int level, Action onComplete = null)
@@ -29,9 +51,15 @@ public partial class GlobalData
         ));
     }
 
-    public void ShowTutorialPuzzlePopup(Action onComplete = null)
+    public async UniTask ShowTutorialPuzzlePopup(Action onComplete = null)
     {
+        bool popupClosed = false;
+
         UIManager.ShowPopupUI<TutorialPuzzlePopup>(
-        new TutorialPuzzlePopupParameter());
+        new TutorialPuzzlePopupParameter(
+            () => { popupClosed = true; }
+        ));
+
+        await UniTask.WaitUntil(() => popupClosed);
     }
 }

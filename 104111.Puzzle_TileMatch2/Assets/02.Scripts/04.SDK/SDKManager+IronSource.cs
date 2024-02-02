@@ -66,6 +66,12 @@ public partial class SDKManager
         IronSource.Agent.validateIntegration();
         
         AddEvents();
+
+#if UNITY_EDITOR
+        isBannerLoaded = true;
+        isRewardVideoLoaded = true;
+#endif
+
 #endif
     }
 

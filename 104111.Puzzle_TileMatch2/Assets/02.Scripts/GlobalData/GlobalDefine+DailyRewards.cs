@@ -19,6 +19,11 @@ public static partial class GlobalDefine
 
     public static bool IsEnableDailyRewards()
     {
+#if UNITY_EDITOR
+        if(testAutoPopupEditor)
+            return true;
+#endif
+
         bool levelCheck = IsOpenDailyRewards();
         if (!levelCheck) 
             return false;

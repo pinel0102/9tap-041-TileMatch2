@@ -110,17 +110,26 @@ public partial class GlobalData
         );
     }
 
-    public void ShowDailyRewardPopup()
+    public async UniTask ShowDailyRewardPopup()
     {
         Debug.Log(CodeManager.GetMethodName());
+
+        //SetTouchLock_MainScene(true);
+
+        bool popupClosed = false;
 
         UIManager.ShowPopupUI<DailyRewardPopup>(
             new DailyRewardPopupParameter(
                 userManager.Current.DailyRewardDate,
                 userManager.Current.DailyRewardIndex,
+                () => { popupClosed = true; },
                 VisibleHUD: HUDType.ALL
             )
         );
+
+        await UniTask.WaitUntil(() => popupClosed);
+
+        //SetTouchLock_MainScene(false);
     }
 
     public void ShowPuzzleOpenPopup()
@@ -212,35 +221,49 @@ public partial class GlobalData
 #endif
     }
 
-    public void ShowReviewPopup()
+    public async UniTask ShowReviewPopup()
     {
+        //SetTouchLock_MainScene(true);
+
         userManager.UpdateReviewPopup(
             reviewPopupCount: userManager.Current.ReviewPopupCount + 1
         );
 
         Debug.Log(CodeManager.GetMethodName() + string.Format("ReviewPopupCount : {0}", userManager.Current.ReviewPopupCount));
 
+        bool popupClosed = false;
+
         UIManager.ShowPopupUI<ReviewPopup>(
             new ReviewPopupParameter(
                 Title: NineTap.Constant.Text.Popup.Title.REVIEW,
                 Message: NineTap.Constant.Text.Popup.Message.REVIEW_1,
                 Message2: NineTap.Constant.Text.Popup.Message.REVIEW_2,
-                ExitParameter: ExitBaseParameter.CancelParam,
+                ExitParameter: new ExitBaseParameter(() => popupClosed = true, false),
                 BaseButtonParameter: new UITextButtonParameter {
                     ButtonText = NineTap.Constant.Text.Button.SURE,
                     OnClick = SetRated
                 },
                 LeftButtonParameter: new UITextButtonParameter {
                     ButtonText = NineTap.Constant.Text.Button.NO_THANKS,
-                    OnClick = UIManager.ClosePopupUI_Force
+                    OnClick = () => {
+                        UIManager.ClosePopupUI_Force();
+                        popupClosed = true;
+                    }
                 },
                 CloseButtonParameter: new UITextButtonParameter {
                     ButtonText = NineTap.Constant.Text.Button.OK,
-                    OnClick = UIManager.ClosePopupUI_Force
+                    OnClick = () => {
+                        UIManager.ClosePopupUI_Force();
+                        popupClosed = true;
+                    }
                 },
                 HUDTypes: HUDType.ALL
             )
         );
+
+        await UniTask.WaitUntil(() => popupClosed);
+
+        //SetTouchLock_MainScene(false);
 
         void SetRated()
         {            

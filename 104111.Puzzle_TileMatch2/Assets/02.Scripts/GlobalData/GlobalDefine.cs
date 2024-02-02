@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using NineTap.Common;
 using UnityEngine;
 
 public static partial class GlobalDefine
 {
+    private static bool testAutoPopupEditor = false;
+
     public const string SCENE_MAIN = "Main";
     public const string SCENE_COLLECTION = "Collection";
     public const string SCENE_PUZZLE = "Puzzle";

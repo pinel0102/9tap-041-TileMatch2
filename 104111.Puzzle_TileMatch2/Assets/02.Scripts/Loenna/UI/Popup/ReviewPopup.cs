@@ -2,6 +2,7 @@ using UnityEngine;
 
 using NineTap.Common;
 using TMPro;
+using System;
 
 public record ReviewPopupParameter
 (
@@ -30,7 +31,7 @@ public class ReviewPopup : PopupBase
     [SerializeField]
 	private GameObject m_container2;
 
-	public override void OnSetup(UIParameter uiParameter)
+    public override void OnSetup(UIParameter uiParameter)
 	{
 		base.OnSetup(uiParameter);
 

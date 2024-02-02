@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NineTap.Common;
+using System;
 
 public record DailyRewardPopupParameter
 (
 	string DailyRewardDate,
     int DailyRewardIndex,
+    Action PopupCloseCallback,
     params HUDType[] VisibleHUD
 ) : UIParameter(VisibleHUD);
 
@@ -28,7 +30,8 @@ public class DailyRewardPopup : UIPopup
     [SerializeField] private List<Transform> lastItemsParent;
 
     private bool isButtonInteractable;
-    
+    private Action m_popupCloseCallback;
+
     private IconWidget adWidget;
     private List<RewardData> rewardDataList = default;
     private GlobalData globalData { get { return GlobalData.Instance; } }
@@ -42,6 +45,8 @@ public class DailyRewardPopup : UIPopup
             OnClickClose();
 			return;
 		}
+
+        m_popupCloseCallback = parameter.PopupCloseCallback;
 
         RewardDataTable rewardDataTable = globalData.tableManager.RewardDataTable;
         rewardDataList = rewardDataTable.GetDailyRewards();
@@ -238,6 +243,8 @@ public class DailyRewardPopup : UIPopup
     public override void OnClickClose()
 	{
         base.OnClickClose();
+
+        m_popupCloseCallback?.Invoke();
 	}
 
     private void SetButtonInteractable(bool interactable)

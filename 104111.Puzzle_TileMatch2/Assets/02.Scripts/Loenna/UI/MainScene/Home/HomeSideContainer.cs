@@ -36,7 +36,7 @@ public class HomeSideContainer : CachedBehaviour
         switch (m_direction)
 		{
 			case Direction.LEFT:
-                m_cachedIcons.Add(dailyRewardIcon = CreateIcon(30000, () => { GlobalData.Instance.ShowDailyRewardPopup(); }));
+                m_cachedIcons.Add(dailyRewardIcon = CreateIcon(30000, async () => { await GlobalData.Instance.ShowDailyRewardPopup(); }));
 				//CreateIcon(20301); // Piggy Bank
 				break;
 			case Direction.RIGHT:

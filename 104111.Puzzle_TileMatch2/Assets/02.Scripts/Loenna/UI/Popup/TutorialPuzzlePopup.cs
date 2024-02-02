@@ -9,7 +9,9 @@ using NineTap.Common;
 using TMPro;
 using DG.Tweening;
 
-public record TutorialPuzzlePopupParameter(): DefaultParameterWithoutHUD;
+public record TutorialPuzzlePopupParameter(
+    Action PopupCloseCallback
+): DefaultParameterWithoutHUD;
 
 [ResourcePath("UI/Popup/TutorialPuzzlePopup")]
 public class TutorialPuzzlePopup : UIPopup
@@ -31,6 +33,7 @@ public class TutorialPuzzlePopup : UIPopup
     public int blinkCount = 3;
 
     private bool isButtonInteractable;
+    private Action? m_popupCloseCallback;
     private int[] pieceIndex = new int[3]{12, 7, 17};
     private const string resPath = "Images/Puzzle/PieceDefault/1001/{0:00}";
     
@@ -43,6 +46,8 @@ public class TutorialPuzzlePopup : UIPopup
 			OnClickClose();
 			return;
 		}
+
+        m_popupCloseCallback = parameter.PopupCloseCallback;
 
         currentIndex = 0;        
         SetButtonInteractable(false);        
@@ -170,4 +175,11 @@ public class TutorialPuzzlePopup : UIPopup
                 break;
         }
     }
+
+    public override void OnClickClose()
+	{
+        base.OnClickClose();
+
+        m_popupCloseCallback?.Invoke();
+	}
 }
