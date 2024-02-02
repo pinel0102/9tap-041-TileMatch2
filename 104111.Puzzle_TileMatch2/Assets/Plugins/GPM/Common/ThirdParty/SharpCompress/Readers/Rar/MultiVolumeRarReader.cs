@@ -86,7 +86,7 @@ namespace Gpm.Common.ThirdParty.SharpCompress.Readers.Rar
             {
                 if (isFirst)
                 {
-                    Current = reader.Entry.Parts.First();
+                    Current = reader.Entry.Parts.FirstOrDefault();
                     isFirst = false; //first stream already to go
                     return true;
                 }
@@ -109,7 +109,7 @@ namespace Gpm.Common.ThirdParty.SharpCompress.Readers.Rar
                     reader.LoadStreamForReading(nextReadableStreams.Current);
                 }
 
-                Current = reader.Entry.Parts.First();
+                Current = reader.Entry.Parts.FirstOrDefault();
                 return true;
             }
 

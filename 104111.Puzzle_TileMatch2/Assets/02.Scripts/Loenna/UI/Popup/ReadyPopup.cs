@@ -62,6 +62,13 @@ public class ReadyPopup : PopupBase
 		}
 	}
 
+    public override void OnShow()
+    {
+        base.OnShow();
+
+        GlobalData.Instance.SetTouchLock_MainScene(false);
+    }
+
     public override void OnHide()
     {
         base.OnHide();

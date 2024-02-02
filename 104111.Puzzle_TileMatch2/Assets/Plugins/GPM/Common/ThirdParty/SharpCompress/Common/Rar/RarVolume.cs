@@ -68,7 +68,7 @@ namespace Gpm.Common.ThirdParty.SharpCompress.Common.Rar
                 }
 
                 // we only want to load the archive header to avoid overhead but have to do the nasty thing and reset the stream
-                GetVolumeFileParts().First();
+                GetVolumeFileParts().FirstOrDefault();
                 Stream.Position = 0;
             }
         }

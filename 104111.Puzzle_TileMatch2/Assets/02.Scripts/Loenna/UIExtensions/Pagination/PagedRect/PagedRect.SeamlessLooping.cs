@@ -48,7 +48,7 @@ namespace UI.Pagination
         {
             var pageDistances = GetPageDistancesFromScrollRectCenter();
 
-            var leftMostPageNumber = pageDistances.First().Key;
+            var leftMostPageNumber = pageDistances.FirstOrDefault().Key;
             var leftMostPage = GetPageByNumber(leftMostPageNumber);
             leftMostPage.transform.SetAsLastSibling();
 
@@ -59,7 +59,7 @@ namespace UI.Pagination
         {
             var pageDistances = GetPageDistancesFromScrollRectCenter();
 
-            var rightMostPageNumber = pageDistances.Last().Key;
+            var rightMostPageNumber = pageDistances.LastOrDefault().Key;
             var rightMostPage = GetPageByNumber(rightMostPageNumber);
             rightMostPage.transform.SetAsFirstSibling();
 
@@ -119,7 +119,7 @@ namespace UI.Pagination
 
             if (pagePosition <= minPage)
             {
-                var pageToMove = Pages.Last();
+                var pageToMove = Pages.LastOrDefault();
                 pageToMove.transform.SetAsFirstSibling();
 
                 oneOrMinusOne = -1;
@@ -128,7 +128,7 @@ namespace UI.Pagination
             }
             else if (NumberOfPages - pagePosition <= minPage)
             {
-                var pageToMove = Pages.First();
+                var pageToMove = Pages.FirstOrDefault();
                 pageToMove.transform.SetAsLastSibling();
 
                 pageMoved = true;

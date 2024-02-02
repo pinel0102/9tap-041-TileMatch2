@@ -138,7 +138,7 @@ namespace Gpm.Common.ThirdParty.SharpCompress.Readers
                 && Entry.CompressedSize > 0)
             {
                 //not solid and has a known compressed size then we can skip raw bytes.
-                var part = Entry.Parts.First();
+                var part = Entry.Parts.FirstOrDefault();
                 var rawStream = part.GetRawStream();
 
                 if (rawStream != null)
@@ -201,7 +201,7 @@ namespace Gpm.Common.ThirdParty.SharpCompress.Readers
 
         protected virtual EntryStream GetEntryStream()
         {
-            return CreateEntryStream(Entry.Parts.First().GetCompressedStream());
+            return CreateEntryStream(Entry.Parts.FirstOrDefault().GetCompressedStream());
         }
 
         #endregion

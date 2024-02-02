@@ -84,7 +84,7 @@ namespace Gpm.Common.ThirdParty.SharpCompress.Common.SevenZip
 
         internal CompressionType GetCompression()
         {
-            var coder = Folder._coders.First();
+            var coder = Folder._coders.FirstOrDefault();
             switch (coder._methodId._id)
             {                
                 case K_LZMA:

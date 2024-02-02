@@ -123,7 +123,7 @@ namespace Gpm.Common.ThirdParty.SharpCompress.Archives.Tar
 
         protected override IEnumerable<TarVolume> LoadVolumes(IEnumerable<Stream> streams)
         {
-            return new TarVolume(streams.First(), ReaderOptions).AsEnumerable();
+            return new TarVolume(streams.FirstOrDefault(), ReaderOptions).AsEnumerable();
         }
 
         protected override IEnumerable<TarArchiveEntry> LoadEntries(IEnumerable<TarVolume> volumes)

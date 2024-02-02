@@ -587,7 +587,7 @@ namespace Gpm.Common.ThirdParty.MessagePack.Internal
                         il.Emit(OpCodes.Ret);
 
                         var genereatedType = helperType.CreateTypeInfo().AsType();
-                        dynamicGetKeyMethod = genereatedType.GetMethods().First();
+                        dynamicGetKeyMethod = genereatedType.GetMethods().FirstOrDefault();
                     }
                 }
             }

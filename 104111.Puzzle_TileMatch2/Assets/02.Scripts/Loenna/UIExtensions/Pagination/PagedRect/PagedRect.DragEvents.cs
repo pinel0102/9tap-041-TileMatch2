@@ -95,7 +95,7 @@ namespace UI.Pagination
 
             if (pageDistances.Any())
             {
-                var closestPage = pageDistances.First();
+                var closestPage = pageDistances.FirstOrDefault();
 
                 if (closestPage.Key == CurrentPage && NumberOfPages > 1)
                 {

@@ -195,7 +195,7 @@ namespace Gpm.Common.Compress.Internal
                 {
                     foreach (var directoryInfo in new DirectoryInfo(originPath).GetDirectories())
                     {
-                        var remapPath = File.ReadAllLines(GpmPathUtil.Combine(directoryInfo.FullName, "pathname")).First();
+                        var remapPath = File.ReadAllLines(GpmPathUtil.Combine(directoryInfo.FullName, "pathname")).FirstOrDefault();
                         remapPath = remapPath.Replace('/', Path.DirectorySeparatorChar);
 
                         var assetFilePath = GpmPathUtil.Combine(directoryInfo.FullName, "asset");

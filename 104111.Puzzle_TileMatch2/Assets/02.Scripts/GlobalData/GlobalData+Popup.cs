@@ -65,6 +65,8 @@ public partial class GlobalData
     // 하트 HUD 클릭시 하트 구매 팝업 열기.
     public void ShowBuyHeartPopup()
     {
+        SetTouchLock_MainScene(true);
+
         UIManager.ShowPopupUI<BuyHeartPopup>(
             new BuyHeartPopupParameter(
                 Title: "More Lives",

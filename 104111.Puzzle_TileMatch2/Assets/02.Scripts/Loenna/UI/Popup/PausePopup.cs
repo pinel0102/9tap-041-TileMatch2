@@ -46,4 +46,11 @@ public class PausePopup : PopupBase
 			parameter.AllPressToClose
 		);
 	}
+
+    public override void OnShow()
+    {
+        base.OnShow();
+
+        GlobalData.Instance.SetTouchLock_PlayScene(false);
+    }
 }

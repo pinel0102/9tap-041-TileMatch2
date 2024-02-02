@@ -755,7 +755,7 @@ namespace Gpm.Common.ThirdParty.MessagePack.Internal
                     }
                     else
                     {
-                        il.EmitCall(MessagePackBinaryTypeInfo.TypeInfo.GetDeclaredMethods("Write" + t.Name).OrderByDescending(x => x.GetParameters().Length).First());
+                        il.EmitCall(MessagePackBinaryTypeInfo.TypeInfo.GetDeclaredMethods("Write" + t.Name).OrderByDescending(x => x.GetParameters().Length).FirstOrDefault());
                     }
                 }, argBytes, argOffset);
             }
@@ -1098,7 +1098,7 @@ namespace Gpm.Common.ThirdParty.MessagePack.Internal
                 }
                 else
                 {
-                    il.EmitCall(MessagePackBinaryTypeInfo.TypeInfo.GetDeclaredMethods("Read" + t.Name).OrderByDescending(x => x.GetParameters().Length).First());
+                    il.EmitCall(MessagePackBinaryTypeInfo.TypeInfo.GetDeclaredMethods("Read" + t.Name).OrderByDescending(x => x.GetParameters().Length).FirstOrDefault());
                 }
             }
             else
@@ -1638,7 +1638,7 @@ typeof(int), typeof(int) });
                                     }
                                 }
 
-                                paramMember = hasKey.First().Value;
+                                paramMember = hasKey.FirstOrDefault().Value;
                                 if (item.ParameterType == paramMember.Type && paramMember.IsReadable)
                                 {
                                     constructorParameters.Add(paramMember);

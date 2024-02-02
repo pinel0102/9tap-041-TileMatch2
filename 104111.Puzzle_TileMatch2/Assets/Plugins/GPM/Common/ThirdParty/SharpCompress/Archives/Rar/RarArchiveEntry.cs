@@ -28,7 +28,7 @@ namespace Gpm.Common.ThirdParty.SharpCompress.Archives.Rar
 
         internal override IEnumerable<FilePart> Parts => parts.Cast<FilePart>();
 
-        internal override FileHeader FileHeader => parts.First().FileHeader;
+        internal override FileHeader FileHeader => parts.FirstOrDefault().FileHeader;
 
         public override long Crc
         {
@@ -44,7 +44,7 @@ namespace Gpm.Common.ThirdParty.SharpCompress.Archives.Rar
             get
             {
                 CheckIncomplete();
-                return parts.First().FileHeader.UncompressedSize;
+                return parts.FirstOrDefault().FileHeader.UncompressedSize;
             }
         }
 

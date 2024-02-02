@@ -11,7 +11,7 @@ namespace Gpm.Common.ThirdParty.SharpCompress.Archives.Rar
         /// </summary>
         public static bool IsFirstVolume(this RarArchive archive)
         {
-            return archive.Volumes.First().IsFirstVolume;
+            return archive.Volumes.FirstOrDefault().IsFirstVolume;
         }
 
         /// <summary>
@@ -19,7 +19,7 @@ namespace Gpm.Common.ThirdParty.SharpCompress.Archives.Rar
         /// </summary>
         public static bool IsMultipartVolume(this RarArchive archive)
         {
-            return archive.Volumes.First().IsMultiVolume;
+            return archive.Volumes.FirstOrDefault().IsMultiVolume;
         }
     }
 }

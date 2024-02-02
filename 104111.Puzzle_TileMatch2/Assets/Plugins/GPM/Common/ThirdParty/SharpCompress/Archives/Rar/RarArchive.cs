@@ -57,12 +57,12 @@ namespace Gpm.Common.ThirdParty.SharpCompress.Archives.Rar
 
         protected override IReader CreateReaderForSolidExtraction()
         {
-            var stream = Volumes.First().Stream;
+            var stream = Volumes.FirstOrDefault().Stream;
             stream.Position = 0;
             return RarReader.Open(stream, ReaderOptions);
         }
 
-        public override bool IsSolid => Volumes.First().IsSolidArchive;
+        public override bool IsSolid => Volumes.FirstOrDefault().IsSolidArchive;
 
 #region Creation
 

@@ -365,7 +365,7 @@ public class LevelEditorPresenter : IDisposable
 				return;
 			}
 
-			TileInfo nearby = State.CurrentBoard[stamp.LayerIndex].Tiles.OrderByDescending(tile => Vector2.Distance(inputPosition, tile.Position)).Last();
+			TileInfo nearby = State.CurrentBoard[stamp.LayerIndex].Tiles.OrderByDescending(tile => Vector2.Distance(inputPosition, tile.Position)).LastOrDefault();
 
 			// 근접했을 경우만 
 			Bounds inputBounds = new Bounds(inputPosition, Vector2.one * nearby.Size);

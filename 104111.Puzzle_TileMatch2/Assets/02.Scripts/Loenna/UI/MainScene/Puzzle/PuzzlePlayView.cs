@@ -136,12 +136,13 @@ public class PuzzlePlayView : CachedBehaviour
 	private void OnTryUnlock(JigsawPuzzlePiece piece, Action onComplete=null)
 	{
         //Debug.Log(CodeManager.GetMethodName() + itemData.Index);
+        GlobalData.Instance.SetTouchLock_MainScene(true);
 
 		if (m_puzzleManager.TryUnlockPiece(piece.Index))
 		{
             //Debug.Log(CodeManager.GetMethodName() + string.Format("{0:00} : SUCCESS", piece.Index));
 
-            GlobalData.Instance.SetTouchLock_MainScene(true);
+            //GlobalData.Instance.SetTouchLock_MainScene(true);
             GlobalData.Instance.fragmentHome?.RefreshPuzzleBadge(GlobalData.Instance.userManager.Current.Puzzle);
 
 			MovePiece(piece, onComplete);

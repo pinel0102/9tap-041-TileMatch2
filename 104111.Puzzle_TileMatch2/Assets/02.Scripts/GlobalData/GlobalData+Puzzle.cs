@@ -13,10 +13,10 @@ public partial class GlobalData
                 item.Value.Level <= tableManager.LastLevel && 
                 item.Value.Level <= userManager.Current.Level).Value;
             
-            return puzzle ?? tableManager.PuzzleDataTable.Dic.First().Value;
+            return puzzle ?? tableManager.PuzzleDataTable.Dic.FirstOrDefault().Value;
         }
 
-        return tableManager.PuzzleDataTable.Dic.First().Value;
+        return tableManager.PuzzleDataTable.Dic.FirstOrDefault().Value;
     }
 
     public void MoveToLatestPuzzle()

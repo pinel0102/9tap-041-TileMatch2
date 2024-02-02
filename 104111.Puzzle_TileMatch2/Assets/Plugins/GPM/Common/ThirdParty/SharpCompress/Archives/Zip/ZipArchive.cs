@@ -141,7 +141,7 @@ namespace Gpm.Common.ThirdParty.SharpCompress.Archives.Zip
 
         protected override IEnumerable<ZipVolume> LoadVolumes(IEnumerable<Stream> streams)
         {
-            return new ZipVolume(streams.First(), ReaderOptions).AsEnumerable();
+            return new ZipVolume(streams.FirstOrDefault(), ReaderOptions).AsEnumerable();
         }
 
         protected override IEnumerable<ZipArchiveEntry> LoadEntries(IEnumerable<ZipVolume> volumes)

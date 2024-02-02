@@ -1272,12 +1272,12 @@ namespace Gpm.Common.ThirdParty.SharpCompress.Common.SevenZip
                     continue;
                 }
 
-                if (extractFolderInfoVector.Count == 0 || folderIndex != extractFolderInfoVector.Last()._folderIndex)
+                if (extractFolderInfoVector.Count == 0 || folderIndex != extractFolderInfoVector.LastOrDefault()._folderIndex)
                 {
                     extractFolderInfoVector.Add(new CExtractFolderInfo(-1, folderIndex));
                 }
 
-                CExtractFolderInfo efi = extractFolderInfoVector.Last();
+                CExtractFolderInfo efi = extractFolderInfoVector.LastOrDefault();
 
                 int startIndex = db._folderStartFileIndex[folderIndex];
                 for (int index = efi._extractStatuses.Count; index <= fileIndex - startIndex; index++)

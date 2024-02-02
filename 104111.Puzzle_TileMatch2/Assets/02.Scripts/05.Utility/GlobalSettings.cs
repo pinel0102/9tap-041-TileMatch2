@@ -14,11 +14,14 @@ public static class GlobalSettings
         //foreach (var res in resolutions)
         //    Debug.Log(CodeManager.GetMethodName() + res.width + "x" + res.height + " : " + res.refreshRateRatio);
 
-        Resolution maxResolution = resolutions.Last();
+        Resolution maxResolution = resolutions.LastOrDefault();
         //Debug.Log(CodeManager.GetMethodName() + maxResolution.width + "x" + maxResolution.height + " : " + maxResolution.refreshRateRatio);
 
-        int supportRate = Convert.ToInt32(maxResolution.refreshRateRatio.value);
-        int targetRate = Mathf.Clamp(supportRate, 60, 120);
+        int targetRate = 60;
+        if(int.TryParse(maxResolution.refreshRateRatio.value.ToString(), out int supportRate))
+        {
+            targetRate = Mathf.Clamp(supportRate, 60, 120);
+        }
 
         Application.targetFrameRate = targetRate;
 

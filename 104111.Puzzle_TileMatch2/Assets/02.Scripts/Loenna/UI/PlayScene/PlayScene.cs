@@ -144,6 +144,8 @@ public partial class PlayScene : UIScene
 				return;
 			}
 
+            GlobalData.Instance.SetTouchLock_PlayScene(true);
+
 			var (valid, _, _) = m_userManager.Current.Valid(requireCoin: (long)product.Price);
 			
 			UIManager.ShowPopupUI<BuyItemPopup>(
@@ -194,6 +196,7 @@ public partial class PlayScene : UIScene
 	public void OnPause()
 	{
         SDKManager.SendAnalytics_C_Scene(Text.PAUSE);
+        GlobalData.Instance.SetTouchLock_PlayScene(true);
 
 		UIManager.ShowPopupUI<PausePopup>(
 			new PausePopupParameter(

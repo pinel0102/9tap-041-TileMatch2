@@ -254,7 +254,7 @@ public class PopupManager
 			return false;
 		}
 
-        UIPopup lastPopup = m_popups.Last();
+        UIPopup lastPopup = m_popups.LastOrDefault();
 
         if(lastPopup.ignoreBackKey)
             return true;
@@ -273,8 +273,8 @@ public class PopupManager
 			return;
 		}
         
-        Debug.Log(CodeManager.GetMethodName() + string.Format("Close Popup : {0}", m_popups.Last().name));
-        ClosePopup(m_popups.Last());
+        Debug.Log(CodeManager.GetMethodName() + string.Format("Close Popup : {0}", m_popups.LastOrDefault().name));
+        ClosePopup(m_popups.LastOrDefault());
 	}
 
     public void ClosePopupUI_ForceAll()
@@ -287,8 +287,8 @@ public class PopupManager
 
         for(int i = m_popups.Count - 1; i >= 0; i--)
         {
-            Debug.Log(CodeManager.GetMethodName() + string.Format("Close Popup : {0}", m_popups.Last().name));
-            ClosePopup(m_popups.Last());
+            Debug.Log(CodeManager.GetMethodName() + string.Format("Close Popup : {0}", m_popups.LastOrDefault().name));
+            ClosePopup(m_popups.LastOrDefault());
         }
 	}
 	#endregion

@@ -105,7 +105,7 @@ public class RewardDataTable : Table<long, RewardData>
 			return false;
 		}
 
-		reward = chestQuests.First();
+		reward = chestQuests.FirstOrDefault();
 		return true;
 	}
 }

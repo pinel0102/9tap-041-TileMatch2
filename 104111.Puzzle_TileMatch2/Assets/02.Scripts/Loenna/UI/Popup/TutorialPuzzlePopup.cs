@@ -82,6 +82,7 @@ public class TutorialPuzzlePopup : UIPopup
             case 0: // Main Button
                 m_tutorialPanel[currentIndex].position = GlobalData.Instance.fragmentHome.PuzzleButton.position;
                 m_tutorialObject[currentIndex].SetActive(true);
+                SetButtonInteractable(true);
                 break;
             case 1: // Select Jigsaw
             case 2:
@@ -110,8 +111,13 @@ public class TutorialPuzzlePopup : UIPopup
                         this.GetCancellationTokenOnDestroy()
                     );
                 }
+                else
+                {
+                    SetButtonInteractable(true);
+                }
                 break;
             default:
+                SetButtonInteractable(true);
                 break;
         }
     }
@@ -128,6 +134,7 @@ public class TutorialPuzzlePopup : UIPopup
         if (!isButtonInteractable) 
             return;
 
+        SetButtonInteractable(false);
         m_viewGroup.alpha = 0;
         
         switch (currentIndex)
