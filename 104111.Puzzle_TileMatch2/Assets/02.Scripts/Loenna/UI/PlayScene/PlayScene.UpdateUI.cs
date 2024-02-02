@@ -353,6 +353,7 @@ partial class PlayScene
         m_canvasGroup.alpha = 0f;
         GlobalData.Instance.SetOldItems(m_userManager.Current.Coin, m_userManager.Current.Puzzle, m_userManager.Current.GoldPiece);
         
+        GlobalDefine.RequestAD_HideBanner();
         SDKManager.SendAnalytics_I_Scene_Clear();
 
         UIManager.ShowPopupUI<GameClearPopup>(
