@@ -17,7 +17,7 @@ public static class GlobalSettings
         Resolution maxResolution = resolutions.LastOrDefault();
         //Debug.Log(CodeManager.GetMethodName() + maxResolution.width + "x" + maxResolution.height + " : " + maxResolution.refreshRateRatio);
 
-        int targetRate = 60;
+        int targetRate = 120;
         if(int.TryParse(maxResolution.refreshRateRatio.value.ToString(), out int supportRate))
         {
             targetRate = Mathf.Clamp(supportRate, 60, 120);
