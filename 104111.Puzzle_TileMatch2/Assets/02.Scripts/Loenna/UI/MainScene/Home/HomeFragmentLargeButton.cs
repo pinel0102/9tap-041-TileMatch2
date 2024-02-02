@@ -28,15 +28,13 @@ public class HomeFragmentLargeButton : UITextButton
 
 	public void OnUpdateUI(User user)
 	{
-		int index = user.CurrentPlayingPuzzleIndex;
-        //UnityEngine.Debug.Log(CodeManager.GetMethodName() + index);
+		PuzzleData puzzleData = GlobalData.Instance.GetLatestPuzzle();
+        if (puzzleData == null) 
+            return;
+
+        uint placedPieces = user.PlayingPuzzleCollection.TryGetValue(puzzleData.Index, out uint result)? result : 0;
         
-		PuzzleData puzzleData = m_puzzleDataTable?.FirstOrDefault(key => key == index);
-		
-		if (puzzleData == null || !user.PlayingPuzzleCollection.TryGetValue(index, out uint placedPieces))
-		{
-			return;
-		}
+        //UnityEngine.Debug.Log(CodeManager.GetMethodName() + string.Format("{0} / {1}", puzzleData.Index, placedPieces));
 
 		int current = 0;
 		int max = PuzzlePieceMaker.MAX_PUZZLE_PIECE_COUNT;

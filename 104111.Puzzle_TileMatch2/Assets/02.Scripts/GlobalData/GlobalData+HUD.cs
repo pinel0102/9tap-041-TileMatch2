@@ -160,15 +160,6 @@ public partial class GlobalData
         SetTouchLock_MainScene(false);
     }
 
-    public int GetOpenedPuzzleIndex(int clearedLevel)
-    {
-        var puzzle = tableManager.PuzzleDataTable.Dic.FirstOrDefault(item => 
-            item.Value.Level <= tableManager.LastLevel && 
-            item.Value.Level == clearedLevel + 1).Value;
-        
-        return puzzle?.Index ?? -1;
-    }
-
     public void HUD_Show(params HUDType[] types)
     {
         HUD?.Show(types);

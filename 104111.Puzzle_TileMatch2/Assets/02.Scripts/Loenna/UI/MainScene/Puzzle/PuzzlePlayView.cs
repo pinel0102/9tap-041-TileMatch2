@@ -186,7 +186,7 @@ public class PuzzlePlayView : CachedBehaviour
                 Background: m_puzzleManager.Background,
                 Content: m_puzzleManager.CurrentPlayingPuzzle,
                 OnContinue: () => {
-                    MoveToOtherPuzzle();
+                    MoveToNextPuzzle();
                     GlobalData.Instance.SetTouchLock_MainScene(false); 
                 }
             ));
@@ -197,7 +197,7 @@ public class PuzzlePlayView : CachedBehaviour
         }
     }
 
-    private void MoveToOtherPuzzle()
+    private void MoveToNextPuzzle()
     {   
         int currentIndex = m_puzzleManager.PuzzleIndex;
         User user = GlobalData.Instance.userManager.Current;
@@ -205,35 +205,25 @@ public class PuzzlePlayView : CachedBehaviour
         PuzzleData puzzleData = puzzleDataTable.Dic.FirstOrDefault(item => (item.Value.Level <= user.Level) && (item.Value.Index > currentIndex)).Value;
         if (puzzleData != null)
         {
-            MoveToPuzzle(puzzleData);
+            GlobalData.Instance.MoveToPuzzle(puzzleData);
         }
         else
         {
-            puzzleData = puzzleDataTable.Dic.LastOrDefault(item => (item.Value.Level <= user.Level) && (item.Value.Index < currentIndex)).Value;
+            Debug.Log(CodeManager.GetMethodName() + string.Format("No Other Playable Puzzle"));
+
+            /*puzzleData = puzzleDataTable.Dic.LastOrDefault(item => (item.Value.Level <= user.Level) && (item.Value.Index < currentIndex)).Value;
             if (puzzleData != null)
             {
-                MoveToPuzzle(puzzleData);
+                GlobalData.Instance.MoveToPuzzle(puzzleData);
             }
             else
             {
-                Debug.LogWarning(CodeManager.GetMethodName() + string.Format("No Other Playable Puzzle"));
-            }
+                Debug.Log(CodeManager.GetMethodName() + string.Format("No Other Playable Puzzle"));
+            }*/
         }
     }
 
-    private void MoveToPuzzle(PuzzleData puzzleData)
-    {
-        User user = GlobalData.Instance.userManager.Current;
-        int newIndex = puzzleData.Index;
-        uint placedPieces = user.PlayingPuzzleCollection.TryGetValue(newIndex, out uint result)? result : 0;
-        uint unlockedPieces = user.UnlockedPuzzlePieceDic == null? 0 : 
-            user.UnlockedPuzzlePieceDic.TryGetValue(puzzleData.Key, out uint result2)? 
-            result2 : 0;
-        
-        GlobalData.Instance.mainScene.lobbyManager.OnSelectPuzzle(puzzleData, placedPieces, unlockedPieces);
-    }
-
-	public void OnHide()
+    public void OnHide()
 	{
 		var pieces = CachedTransform.GetComponentsInChildren<JigsawPuzzlePiece>();
 		if (pieces != null)

@@ -124,7 +124,10 @@ public class MainScene : UIScene
 						new MainSceneFragmentContentParameter_Home{
 							PuzzleButtonParam = new HomeFragmentLargeButtonParameter{
 								ButtonText = string.Empty,
-								OnClick = () => m_scrollView.MoveTo((int)MainMenuType.JIGSAW_PUZZLE),
+								OnClick = () => {
+                                    GlobalData.Instance.MoveToLatestPuzzle();
+                                    m_scrollView.MoveTo((int)MainMenuType.JIGSAW_PUZZLE);
+                                },
 								GaugeBarParameter = new UIProgressBarParameter {
 									Type = UIProgressBar.Type.STATIC,
 									VisibleText = true
@@ -207,6 +210,12 @@ public class MainScene : UIScene
 				OnClickTab = type => {  soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
                                         if (type == MainMenuType.COLLECTION)
                                             GlobalData.Instance.fragmentCollection.RefreshLockState();
+                                        else if (type == MainMenuType.JIGSAW_PUZZLE)
+                                        {
+                                            if (GlobalData.Instance.CURRENT_SCENE != GlobalDefine.SCENE_PUZZLE)
+                                                GlobalData.Instance.MoveToLatestPuzzle();
+                                        }
+
                                         m_scrollView.MoveTo((int)type);}
 			}
 		);

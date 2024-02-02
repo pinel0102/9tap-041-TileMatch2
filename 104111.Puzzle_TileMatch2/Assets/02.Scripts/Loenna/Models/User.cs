@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 
 using NineTap.Common;
+using System.Linq;
 
 [Serializable]
 public record User
@@ -252,7 +253,7 @@ public record User
 
 	public bool IsFullLife() => Life >= Constant.User.MAX_LIFE_COUNT;
     public bool IsBoosterTime() => ExpiredLifeBoosterAt >= DateTime.Now;
-
+    
     private const string timeFormat_d = @"%d'd'";
     private const string timeFormat_hhmmss = @"hh\:mm\:ss";
     private const string timeFormat_hmmss = @"h\:mm\:ss";
