@@ -127,24 +127,24 @@ namespace NineTap.Payment
             });
         }
 
-		public void Request(ProductData productData, Action<IPaymentResult.Success> onSuccess, Action<IPaymentResult.Error> onError)
+		public void Request(ProductData productData, Action<Product, IPaymentResult.Success> onSuccess, Action<Product, IPaymentResult.Error> onError)
 		{
             if (m_purchaseResult?.Value is IAPResult.Purchasing)
 			{
-				onError?.Invoke(Error(PurchaseFailureReason.ExistingPurchasePending));
+				onError?.Invoke(null, Error(PurchaseFailureReason.ExistingPurchasePending));
 				return;
 			}
 
 			Product product = m_storeController?.products?.all?.FirstOrDefault(product => product.definition.id == productData.ProductId) ?? null;
 			if (product == null)
 			{
-				onError?.Invoke(new IAPResult.Error("product is null"));
+				onError?.Invoke(null, new IAPResult.Error("product is null"));
 				return;
 			}
 
             if (!product.availableToPurchase)
             {
-				onError?.Invoke(new IAPResult.Error("product is unavailable"));
+				onError?.Invoke(product, new IAPResult.Error("product is unavailable"));
 				return;
 			}
 
@@ -157,10 +157,10 @@ namespace NineTap.Payment
 					switch (value)
 					{
 						case IAPResult.Error errorResult:
-							onError?.Invoke(errorResult);
+							onError?.Invoke(product, errorResult);
 							break;
 						case IAPResult.Success successResult:
-							onSuccess?.Invoke(successResult);
+							onSuccess?.Invoke(product, successResult);
 							break;
 					}
 				}
@@ -234,12 +234,6 @@ namespace NineTap.Payment
 			Debug.Log($"[Success Purchase] productID {purchaseEvent.purchasedProduct.definition.id}");
 			#endif
 			Product product = purchaseEvent.purchasedProduct;
-
-            GlobalData.Instance.userManager.UpdateLog(totalPayment: GlobalData.Instance.userManager.Current.TotalPayment + Convert.ToSingle(product.metadata.localizedPrice));
-            SDKManager.SendAnalytics_IAP_Purchase(product);
-
-            //m_purchaseResult.Update(value => value = new IAPResult.Success(0, purchaseEvent.purchasedProduct.definition.id));
-			//return PurchaseProcessingResult.Complete;
 
 #if UNITY_EDITOR
 			m_purchaseResult.Update(value => value = new IAPResult.Success(0, purchaseEvent.purchasedProduct.definition.id));

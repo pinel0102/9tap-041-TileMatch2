@@ -26,17 +26,18 @@ public class CoinService : IPaymentService
 		return UniTask.FromResult(true);
 	}
 
-	public void Request(ProductData product, Action<IPaymentResult.Success> onSuccess, Action<IPaymentResult.Error> onError)
+	public void Request(ProductData productData, Action<UnityEngine.Purchasing.Product, IPaymentResult.Success> onSuccess, Action<UnityEngine.Purchasing.Product, IPaymentResult.Error> onError)
 	{
-		long price = (long)product.Price;
+		long price = (long)productData.Price;
 
 		if (m_userManager.TryUpdate(requireCoin: price))
 		{
-			onSuccess?.Invoke(new CoinResult.Success(product.Index));
+            SDKManager.SendAnalytics_C_Item_Use("Coin", (int)price);
+			onSuccess?.Invoke(null, new CoinResult.Success(productData.Index));
 			return;
 		}
 
-		onError?.Invoke(new CoinResult.Error());
+		onError?.Invoke(null, new CoinResult.Error());
 	}
 
 }

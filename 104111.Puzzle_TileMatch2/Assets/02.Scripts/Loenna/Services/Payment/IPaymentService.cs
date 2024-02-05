@@ -14,7 +14,7 @@ namespace NineTap.Payment
 		PaymentType PaymentType { get; }
 		IReadOnlyList<ProductData> Products { get; }
 		UniTask<bool> LoadProducts(ProductDataTable productDataTable);
-		void Request(ProductData product, Action<IPaymentResult.Success> onSuccess, Action<IPaymentResult.Error> onError);
+		void Request(ProductData product, Action<UnityEngine.Purchasing.Product, IPaymentResult.Success> onSuccess, Action<UnityEngine.Purchasing.Product, IPaymentResult.Error> onError);
 	}
 
 	public class PaymentService
@@ -39,13 +39,13 @@ namespace NineTap.Payment
 			return true;
 		}
 
-		public void Request(int productIndex, Action<IPaymentResult.Success> onSuccess, Action<IPaymentResult.Error> onError)
+		public void Request(int productIndex, Action<UnityEngine.Purchasing.Product, IPaymentResult.Success> onSuccess, Action<UnityEngine.Purchasing.Product, IPaymentResult.Error> onError)
 		{
-			if (m_productDataTable.TryGetValue(productIndex, out var product))
+			if (m_productDataTable.TryGetValue(productIndex, out var productData))
 			{
-				if (m_services.TryGetValue(product.PaymentType, out var service))
+				if (m_services.TryGetValue(productData.PaymentType, out var service))
 				{
-					service.Request(product, onSuccess, onError);
+					service.Request(productData, onSuccess, onError);
 				}
 			}
 		}

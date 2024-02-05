@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 using NineTap.Payment;
 
 public static partial class GlobalDefine
@@ -26,33 +26,31 @@ public static partial class GlobalDefine
         ActivityIndicatorManager.StopActivityIndicator();
     }
 
-    public static void Purchase(ProductData product)
+    public static void Purchase(ProductData productData)
     {
         PaymentService paymentService = Game.Inst.Get<PaymentService>();
 
-        Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : {1}", product.ProductId, product.FullName));
+        Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : {1}", productData.ProductId, productData.FullName));
 
         StartActivityIndicator();
 
-#if UNITY_EDITOR
-        IPaymentResult.Success result = new IPaymentResult.Success(0);
-        ShowIAPResult_Success(product, result);
-#else
         paymentService?.Request(
-            product.Index, 
-            onSuccess: result => {
-                ShowIAPResult_Success(product, result);
+            productData.Index, 
+            onSuccess: (product, result) => {
+                ShowIAPResult_Success(productData, product, result);
             },
-            onError: error => {
-                ShowIAPResult_Fail(product, error);
+            onError: (product, result) => {
+                ShowIAPResult_Fail(productData, product, result);
             }
         );
-#endif
     }
 
-    public static void ShowIAPResult_Success(ProductData product, IPaymentResult.Success result)
+    public static void ShowIAPResult_Success(ProductData productData, UnityEngine.Purchasing.Product product, IPaymentResult.Success result)
     {
-        Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : SUCCESS : {1}", product.ProductId, result.ToString()));
+        Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : SUCCESS : {1}", productData.ProductId, result.ToString()));
+
+        globalData.userManager.UpdateLog(totalPayment: globalData.userManager.Current.TotalPayment + Convert.ToSingle(product.metadata.localizedPrice));
+        SDKManager.SendAnalytics_IAP_Purchase(product);
 
         StopActivityIndicator();
 
@@ -67,22 +65,22 @@ public static partial class GlobalDefine
 
         Dictionary<SkillItemType, int> addSkillItems = new()
         {
-            { SkillItemType.Stash,      (int)product.Contents.GetValueOrDefault(1, 0) },
-            { SkillItemType.Undo,       (int)product.Contents.GetValueOrDefault(2, 0) },
-            { SkillItemType.Shuffle,    (int)product.Contents.GetValueOrDefault(3, 0) }
+            { SkillItemType.Stash,      (int)productData.Contents.GetValueOrDefault(1, 0) },
+            { SkillItemType.Undo,       (int)productData.Contents.GetValueOrDefault(2, 0) },
+            { SkillItemType.Shuffle,    (int)productData.Contents.GetValueOrDefault(3, 0) }
         };
 
-        long addBooster = product.Contents.GetValueOrDefault(4, 0);
+        long addBooster = productData.Contents.GetValueOrDefault(4, 0);
 
-        GetItems(product.Coin, addSkillItems, addBooster);
+        GetItems(productData.Coin, addSkillItems, addBooster);
 
         SetADFreeUser();
-        globalData.ShowPresentPopup(product);
+        globalData.ShowPresentPopup(productData);
     }
 
-    public static void ShowIAPResult_Fail(ProductData product, IPaymentResult.Error error)
+    public static void ShowIAPResult_Fail(ProductData productData, UnityEngine.Purchasing.Product product, IPaymentResult.Error error)
     {
-        Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : ERROR : {1}", product.ProductId, error.ToString()));
+        Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : ERROR : {1}", productData.ProductId, error.ToString()));
 
         StopActivityIndicator();
     }

@@ -159,13 +159,18 @@ public partial class PlayScene : UIScene
                             {
                                 m_paymentService.Request(
                                     product.Index, 
-                                    onSuccess: (result) => {
-                                        var ownSkillItems = m_userManager.Current.OwnSkillItems;
-                                        ownSkillItems[(SkillItemType)itemIndex] += 3;
-                                        m_userManager.Update(ownSkillItems: ownSkillItems);
+                                    onSuccess: (_, result) => {
+                                        
+                                        Dictionary<SkillItemType, int> addSkillItems = new()
+                                        {
+                                            { (SkillItemType)itemIndex, 3}
+                                        };
+
+                                        GlobalDefine.GetItems(addSkillItems: addSkillItems);
+
                                         m_gameManager.UseSkillItem((SkillItemType)itemIndex, true);
                                     },
-                                    onError: (error) => { }
+                                    onError: (_, error) => { }
                                 );
                             }
                             else
