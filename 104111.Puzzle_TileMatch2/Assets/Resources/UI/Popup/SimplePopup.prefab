@@ -650,6 +650,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3696388461805774582, guid: 0ebda9e35b21b0c4c8535d048e66b18f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3033469684156592779}
+    - targetCorrespondingSourceObject: {fileID: 3696388461805774582, guid: 0ebda9e35b21b0c4c8535d048e66b18f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 965657053218395504}
   m_SourcePrefab: {fileID: 100100000, guid: 0ebda9e35b21b0c4c8535d048e66b18f, type: 3}
 --- !u!224 &1435603111732070058 stripped
 RectTransform:
@@ -702,6 +705,14 @@ MonoBehaviour:
   m_message: {fileID: 7683572986340694184}
   m_button: {fileID: 5662098974238172664}
   m_otherButton: {fileID: 4996208068346698743}
+--- !u!222 &965657053218395504
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4770629953106784404}
+  m_CullTransparentMesh: 1
 --- !u!114 &4996208068346698743 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3760087695082343829, guid: 0ebda9e35b21b0c4c8535d048e66b18f, type: 3}

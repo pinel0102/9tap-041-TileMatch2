@@ -683,6 +683,8 @@ GameObject:
   - component: {fileID: 1897371884274306828}
   - component: {fileID: 4178188812588180046}
   - component: {fileID: 639317835991470072}
+  - component: {fileID: 8385092937643669015}
+  - component: {fileID: 931748573095430607}
   m_Layer: 5
   m_Name: RewardPopup
   m_TagString: Untagged
@@ -793,6 +795,44 @@ MonoBehaviour:
   m_animatedRewardContainer: {fileID: 5838945159708379267}
   m_confirmButton: {fileID: 1548639295612523053}
   rewardCoin: 0
+--- !u!222 &8385092937643669015
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3264527957060021947}
+  m_CullTransparentMesh: 1
+--- !u!114 &931748573095430607
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3264527957060021947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &3572610969642733766
 GameObject:
   m_ObjectHideFlags: 0

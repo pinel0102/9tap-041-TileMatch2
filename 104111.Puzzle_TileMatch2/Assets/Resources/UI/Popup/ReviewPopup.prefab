@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 1062372864549607916}
   - component: {fileID: 1689166758891279449}
   - component: {fileID: 1808966997791517712}
+  - component: {fileID: 2563391669422728915}
+  - component: {fileID: 5668771048061519994}
   m_Layer: 5
   m_Name: ReviewPopup
   m_TagString: Untagged
@@ -139,6 +141,44 @@ MonoBehaviour:
   m_container1: {fileID: 1822616004835469833}
   m_container2: {fileID: 4197292983764792448}
   m_message2: {fileID: 755429929906859469}
+--- !u!222 &2563391669422728915
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 32329128030484259}
+  m_CullTransparentMesh: 1
+--- !u!114 &5668771048061519994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 32329128030484259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &223245067523152261
 GameObject:
   m_ObjectHideFlags: 0
