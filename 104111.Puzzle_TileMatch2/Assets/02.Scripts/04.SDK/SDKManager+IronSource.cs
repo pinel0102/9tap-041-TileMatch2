@@ -34,7 +34,7 @@ public partial class SDKManager
     private static string ironSourceAppKey;
     private static bool isInitialized_IronSource = false;    
     private static WaitForSecondsRealtime wUpdateDelay = new WaitForSecondsRealtime(4f);
-    private static WaitForSecondsRealtime wOneSecond = new WaitForSecondsRealtime(1f);
+    private static WaitForSeconds wOneSecond = new WaitForSeconds(1f);
 
 #region Initialize
 

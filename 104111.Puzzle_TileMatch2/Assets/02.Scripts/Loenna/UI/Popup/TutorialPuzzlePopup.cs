@@ -31,6 +31,7 @@ public class TutorialPuzzlePopup : UIPopup
     public Color blinkColor = new Color(1, 1, 0, 0.8f);
     public float blinkTime = 0.5f;
     public int blinkCount = 3;
+    private bool isBlinking = false;
 
     private bool isButtonInteractable;
     private Action? m_popupCloseCallback;
@@ -49,7 +50,8 @@ public class TutorialPuzzlePopup : UIPopup
 
         m_popupCloseCallback = parameter.PopupCloseCallback;
 
-        currentIndex = 0;        
+        currentIndex = 0;
+        isBlinking = false;
         SetButtonInteractable(false);        
         m_unmask.gameObject.SetActive(false);
 
@@ -99,14 +101,26 @@ public class TutorialPuzzlePopup : UIPopup
 
                     UniTask.Void(
                         async token => {     
+                            isBlinking = true;
+
                             for(int i=0; i < blinkCount; i++)
-                            {           
-                                await UniTask.Delay(TimeSpan.FromSeconds(blinkTime));
-                                m_pieceImageBlur.color = blinkColor;
-                                await UniTask.Delay(TimeSpan.FromSeconds(blinkTime));
-                                m_pieceImageBlur.color = originColor;
+                            {
+                                if (isBlinking)
+                                {
+                                    await UniTask.Delay(TimeSpan.FromSeconds(blinkTime));
+                                    m_pieceImageBlur.color = blinkColor;
+                                }
+                                
+                                if (i == 0)
+                                    SetButtonInteractable(true);
+                                
+                                if (isBlinking)
+                                {
+                                    await UniTask.Delay(TimeSpan.FromSeconds(blinkTime));
+                                    m_pieceImageBlur.color = originColor;
+                                }
                             }
-                            SetButtonInteractable(true);
+                            isBlinking = false;
                         },
                         this.GetCancellationTokenOnDestroy()
                     );
@@ -156,6 +170,9 @@ public class TutorialPuzzlePopup : UIPopup
                 break;
             case 1: // Select Jigsaw
             case 2:
+                isBlinking = false;
+                m_pieceImageBlur.color = originColor;
+
                 GlobalData.Instance.fragmentPuzzle.GetSlotPiece(pieceIndex[currentIndex-1]).OnClick_Unlock_MustCallback(() => {
                     UniTask.Void(
                         async token => {                
