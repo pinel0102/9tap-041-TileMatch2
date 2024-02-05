@@ -292,6 +292,7 @@ public class MainScene : UIScene
     {
         return GlobalData.Instance.CURRENT_SCENE != GlobalDefine.SCENE_PLAY &&
             transform.root.childCount < 2 && 
-            !GlobalData.Instance.IsTouchLockNow_MainScene();
+            !GlobalData.Instance.IsTouchLockNow_MainScene() &&
+            !GlobalDefine.IsPurchasePending();
     }
 }

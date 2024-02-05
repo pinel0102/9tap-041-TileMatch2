@@ -6,6 +6,14 @@ using NineTap.Payment;
 
 public static partial class GlobalDefine
 {
+    public static bool IsPurchasePending()
+    {
+        bool mainPending = globalData.mainScene?.m_purchasing.activeSelf ?? false;
+        bool popupPending = globalData.storeScene?.m_purchasing.activeSelf ?? false;
+        
+        return mainPending || popupPending;
+    }
+
     private static void StartActivityIndicator()
     {
         Debug.Log(CodeManager.GetMethodName());
