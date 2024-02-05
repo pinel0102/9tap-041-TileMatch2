@@ -97,12 +97,12 @@ public class TutorialPuzzlePopup : UIPopup
 
                 if (currentIndex == 1)
                 {
-                    SetButtonInteractable(false);
+                    SetButtonInteractable(true);
+                    isBlinking = true;
 
                     UniTask.Void(
                         async token => {     
-                            isBlinking = true;
-
+                            
                             for(int i=0; i < blinkCount; i++)
                             {
                                 if (isBlinking)
@@ -111,15 +111,14 @@ public class TutorialPuzzlePopup : UIPopup
                                     m_pieceImageBlur.color = blinkColor;
                                 }
                                 
-                                if (i == 0)
-                                    SetButtonInteractable(true);
-                                
                                 if (isBlinking)
                                 {
                                     await UniTask.Delay(TimeSpan.FromSeconds(blinkTime));
                                     m_pieceImageBlur.color = originColor;
                                 }
                             }
+
+                            m_pieceImageBlur.color = originColor;
                             isBlinking = false;
                         },
                         this.GetCancellationTokenOnDestroy()
@@ -128,6 +127,8 @@ public class TutorialPuzzlePopup : UIPopup
                 else
                 {
                     SetButtonInteractable(true);
+                    m_pieceImageBlur.color = originColor;
+                    isBlinking = false;
                 }
                 break;
             default:
