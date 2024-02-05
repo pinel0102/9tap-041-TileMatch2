@@ -13,7 +13,7 @@ public class ShopProductItem : CachedBehaviour
 
 	public void UpdateUI(ProductData product)
 	{
-		m_valueWidget.UpdateUI(product.UIType, product.GetShopItemImagePath(), $"{product.Coin} Gold");
+		m_valueWidget.UpdateUI(product.UIType, product.GetShopItemImagePath(), $"{product.Coin} Golds");
 
         m_button.onClick.RemoveAllListeners();
 		m_button.OnSetup(

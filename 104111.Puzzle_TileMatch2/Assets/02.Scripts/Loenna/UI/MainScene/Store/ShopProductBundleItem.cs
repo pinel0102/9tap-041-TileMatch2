@@ -67,7 +67,7 @@ public class ShopProductBundleItem : CachedBehaviour
 		m_optionalTag.UpdateUI(!string.IsNullOrWhiteSpace(product.Description), product.Description);
 		m_saleTag.UpdateUI(product.DiscountPercent > 0, product.GetSaleString());
 
-		m_goldWidget.UpdateUI(product.UIType, "UI_Shop_Icon_Coins", $"{product.Coin} Gold");
+		m_goldWidget.UpdateUI(product.UIType, "UI_Shop_Icon_Coins", $"{product.Coin} Golds");
 
 		m_button.onClick.RemoveAllListeners();
 		m_button.OnSetup(

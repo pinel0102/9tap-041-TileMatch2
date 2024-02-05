@@ -142,9 +142,15 @@ namespace NineTap.Payment
 				return;
 			}
 
+            if (!product.availableToPurchase)
+            {
+				onError?.Invoke(new IAPResult.Error("product is unavailable"));
+				return;
+			}
+
             m_purchaseResult.Update(value => value = new IAPResult.Nothing());
 
-			m_onConfirmPendingPurchase = (value) => {
+            m_onConfirmPendingPurchase = (value) => {
 				if (value is IAPResult.Error or IAPResult.Success)
 				{
 					m_storeController.ConfirmPendingPurchase(product);
@@ -159,7 +165,7 @@ namespace NineTap.Payment
 					}
 				}
 			};
-
+            
 			m_storeController.InitiatePurchase(product);
 		}
 		#endregion
@@ -204,7 +210,6 @@ namespace NineTap.Payment
 				#endregion
 				#endif
 			}
-			
 		}
 
 		public void OnInitializeFailed(InitializationFailureReason error)
@@ -225,7 +230,7 @@ namespace NineTap.Payment
 
 		public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs purchaseEvent)
 		{
-			#if IAP_DEBUG_LOG
+            #if IAP_DEBUG_LOG
 			Debug.Log($"[Success Purchase] productID {purchaseEvent.purchasedProduct.definition.id}");
 			#endif
 			Product product = purchaseEvent.purchasedProduct;
@@ -233,24 +238,25 @@ namespace NineTap.Payment
             GlobalData.Instance.userManager.UpdateLog(totalPayment: GlobalData.Instance.userManager.Current.TotalPayment + Convert.ToSingle(product.metadata.localizedPrice));
             SDKManager.SendAnalytics_IAP_Purchase(product);
 
-			#if UNITY_EDITOR
+            //m_purchaseResult.Update(value => value = new IAPResult.Success(0, purchaseEvent.purchasedProduct.definition.id));
+			//return PurchaseProcessingResult.Complete;
+
+#if UNITY_EDITOR
 			m_purchaseResult.Update(value => value = new IAPResult.Success(0, purchaseEvent.purchasedProduct.definition.id));
 			return PurchaseProcessingResult.Complete;
-			#else
-			var result = ProcessPurchaseInternal();
-
-			if (result is { Tag: ERROR })
+#else
+			//var result = ProcessPurchaseInternal();
+            /*if (result is { Tag: ERROR })
 			{
 				throw new IAPSecurityException();
-			}
+			}*/
 
 			// 펜딩상태에 돌입
-			// 서버에 영수증을 body로 실어 검증 요청한다
-			RequestReceiptValidation(product, result.Value).Forget();
+			RequestReceiptValidation(product).Forget();
 			return PurchaseProcessingResult.Pending;
 
 			#region Local Functions
-			Result<IPurchaseReceipt, Unit> ProcessPurchaseInternal()
+			/*Result<IPurchaseReceipt, Unit> ProcessPurchaseInternal()
 			{
 				if (IsPurchaseValid(product, out IPurchaseReceipt receipt))
 				{
@@ -268,15 +274,14 @@ namespace NineTap.Payment
 				Debug.LogError("IsPurchaseValid False");
 				#endif
 				return ResultUtility.Error();
-			}
+			}*/
 			#endregion
-
-			#endif
+#endif
 		}
 
 		public void OnPurchaseFailed(Product product, PurchaseFailureDescription failureDescription)
 		{
-			#if IAP_DEBUG_LOG
+            #if IAP_DEBUG_LOG
 			Debug.LogError($"[IAPService.OnPurchaseFailed] ProductID: {failureDescription.productId} - Reason: {failureDescription.reason}");
 			#endif
 			m_purchaseResult.Update(value => value = Error(failureDescription.reason));
@@ -284,7 +289,7 @@ namespace NineTap.Payment
 
 		public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
 		{
-			#if IAP_DEBUG_LOG
+            #if IAP_DEBUG_LOG
 			Debug.LogError($"[IAPService.OnPurchaseFailed] ProductID: {product?.definition?.id} - Reason: {failureReason}");
 			#endif
 			m_purchaseResult.Update(value => value = Error(failureReason));
@@ -353,18 +358,13 @@ namespace NineTap.Payment
 			}
 		}
 
-		private async UniTaskVoid RequestReceiptValidation(Product product, IPurchaseReceipt receipt)
+		private async UniTaskVoid RequestReceiptValidation(Product product)
 		{
             Debug.Log($"Confirming purchase of {product.definition.id}");
-			
-#if !UNITY_EDITOR
+
             m_storeController.ConfirmPendingPurchase(product);
-			//m_purchaseResult.Update(value => value = new IAPResult.Success(0, product.definition.id)
-				// 구매에 성공하면 result 콜백
-			//);
-#else
-            m_storeController.ConfirmPendingPurchase(product);
-#endif
+            m_purchaseResult.Update(value => value = new IAPResult.Success(0, product.definition.id));
+
             await UniTask.CompletedTask;
 		}
 

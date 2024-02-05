@@ -8,6 +8,7 @@ public partial class GlobalData : SingletonMono<GlobalData>
 {
     [HideInInspector] public MainScene mainScene = default;
     [HideInInspector] public PlayScene playScene = default;
+    [HideInInspector] public StoreScene storeScene = default;
     [HideInInspector] public MainSceneFragmentContent_Home fragmentHome = default;
     [HideInInspector] public MainSceneFragmentContent_Collection fragmentCollection = default;
     [HideInInspector] public MainSceneFragmentContent_Puzzle fragmentPuzzle = default;

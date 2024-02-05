@@ -6,11 +6,33 @@ using NineTap.Payment;
 
 public static partial class GlobalDefine
 {
+    private static void StartActivityIndicator()
+    {
+        Debug.Log(CodeManager.GetMethodName());
+
+        globalData.mainScene?.m_purchasing.SetActive(true);
+        globalData.storeScene?.m_purchasing.SetActive(true);
+
+        ActivityIndicatorManager.StartActivityIndicator();
+    }
+
+    private static void StopActivityIndicator()
+    {
+        Debug.Log(CodeManager.GetMethodName());
+
+        globalData.mainScene?.m_purchasing.SetActive(false);
+        globalData.storeScene?.m_purchasing.SetActive(false);
+
+        ActivityIndicatorManager.StopActivityIndicator();
+    }
+
     public static void Purchase(ProductData product)
     {
         PaymentService paymentService = Game.Inst.Get<PaymentService>();
 
         Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : {1}", product.ProductId, product.FullName));
+
+        StartActivityIndicator();
 
 #if UNITY_EDITOR
         IPaymentResult.Success result = new IPaymentResult.Success(0);
@@ -31,6 +53,8 @@ public static partial class GlobalDefine
     public static void ShowIAPResult_Success(ProductData product, IPaymentResult.Success result)
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : SUCCESS : {1}", product.ProductId, result.ToString()));
+
+        StopActivityIndicator();
 
         // [TODO] IAP Result
 
@@ -60,7 +84,7 @@ public static partial class GlobalDefine
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : ERROR : {1}", product.ProductId, error.ToString()));
 
-        //
+        StopActivityIndicator();
     }
 
     private static void SetADFreeUser()

@@ -39,6 +39,7 @@ public class Game : MonoBehaviour
         GlobalSettings.InitFrameRate();
 
         DOTween.SetTweensCapacity(500, 50);
+        ActivityIndicatorManager.Initialize();
 		SpriteManager.Initialize();
 		TableManager tableManager = new TableManager();
 		TimeManager timeManager = new TimeManager();

@@ -35,6 +35,7 @@ public class MainScene : UIScene
     public LobbyManager lobbyManager => m_lobbyManager;
     public MainSceneScrollView scrollView => m_scrollView;
     public GameObject m_block;
+    public GameObject m_purchasing;
 
 	public override void OnSetup(UIParameter uiParameter)
 	{

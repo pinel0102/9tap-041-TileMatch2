@@ -10,6 +10,8 @@ public class StoreScene : UIScene
 	[SerializeField]
 	private MainSceneFragmentContent_Store m_storeFragment;
 
+    public GameObject m_purchasing;
+
 	public override void OnSetup(UIParameter uiParameter)
 	{
 		base.OnSetup(uiParameter);
@@ -18,5 +20,7 @@ public class StoreScene : UIScene
 		{
 			m_storeFragment.OnSetup(parameter.StoreParam);
 		}
+
+        GlobalData.Instance.storeScene = this;
 	}
 }

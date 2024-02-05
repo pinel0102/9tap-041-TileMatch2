@@ -4,7 +4,8 @@ using System.Collections;
 public class ReporterMessageReceiver : MonoBehaviour
 {
     public bool isOverrideSize = true;
-    public Vector2 overrideSize = new Vector2(100, 100);
+    public Vector2 overrideSizeAOS = new Vector2(64, 64);
+    public Vector2 overrideSizeiOS = new Vector2(32, 32);
 
 	Reporter reporter;
 	void Start()
@@ -20,7 +21,13 @@ public class ReporterMessageReceiver : MonoBehaviour
 			reporter = gameObject.GetComponent<Reporter>();
 
         if (isOverrideSize)
-            reporter.size = overrideSize;
+        {
+#if UNITY_IOS
+            reporter.size = overrideSizeiOS;
+#else
+            reporter.size = overrideSizeAOS;
+#endif            
+        }
         else if (Screen.width < 1000)
 			reporter.size = new Vector2(32, 32);
 		else
