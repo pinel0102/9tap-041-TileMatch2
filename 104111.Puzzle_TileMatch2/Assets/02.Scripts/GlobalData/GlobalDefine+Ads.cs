@@ -65,7 +65,7 @@ public static partial class GlobalDefine
 
         CheckRemoveAdsPopupExpired();
 
-        bool countCheck = globalData.userManager.Current.RemoveAdsPopupCount < 2;
+        bool countCheck = globalData.userManager.Current.RemoveAdsPopupCount < 1;
         if (!countCheck)
             return false;
         
