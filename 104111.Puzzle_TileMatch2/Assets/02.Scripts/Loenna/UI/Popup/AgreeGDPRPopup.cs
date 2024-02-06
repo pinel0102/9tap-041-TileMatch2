@@ -45,6 +45,9 @@ public class AgreeGDPRPopup : UIPopup
         userManager = GlobalData.Instance.userManager;
         region = parameter.Region;
 
+        checkMarkService.SetActive(false);
+        checkMarkPrivacy.SetActive(false);
+
         toggleService.onValueChanged.RemoveAllListeners();
         togglePrivacy.onValueChanged.RemoveAllListeners();
         buttonService.onClick.RemoveAllListeners();
@@ -56,9 +59,6 @@ public class AgreeGDPRPopup : UIPopup
         buttonService.onClick.AddListener(OpenService);
         buttonPrivacy.onClick.AddListener(OpenPrivacy);
         buttonNext.onClick.AddListener(CheckGDPR_EN);
-
-        checkMarkService.SetActive(false);
-        checkMarkPrivacy.SetActive(false);
 
         if (region == "KR")
         {
