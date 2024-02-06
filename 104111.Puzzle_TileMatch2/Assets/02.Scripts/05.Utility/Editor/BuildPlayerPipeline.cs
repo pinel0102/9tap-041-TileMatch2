@@ -21,7 +21,7 @@ using UnityEngine.Purchasing;
 #endif
 
 /// <author>Pinelia Luna</author>
-/// <Summary>BuildPlayerPipeline v1.4.0
+/// <Summary>BuildPlayerPipeline v1.5.0
 /// <para>빌드 메뉴 제공 및 플랫폼 빌드 파이프라인 클래스.</para>
 /// </Summary>
 [InitializeOnLoad]
@@ -29,7 +29,7 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
 {
 #region Parameters
 
-    private static string version = "1.4.0";
+    private static string version = "1.5.0";
 
     private static BuildPlayerPipeline buildPlayerOptionsObject
     {
@@ -43,6 +43,11 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
 		}
 	}
     
+#if USE_NINETAP_MODULE
+    private const string scriptableObjectPath = "Assets/01-GameEngine/Scripts/Editor/Scriptable/";
+#else
+    private const string scriptableObjectPath = "Assets/02.Scripts/05.Utility/Editor/Scriptable/";
+#endif
     private static BuildPlayerPipeline m_buildPlayerOptionsObject;
     private static BuildPlayerOptions currentOptions;
     private static bool isBuildEditorScene;
@@ -53,22 +58,21 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
     private static string buildName_Windows;
     private const string SCENE_EDITOR = "Editor";
     private const string scriptableObjectFormat = "{0}{1}";
-#if USE_NINETAP_MODULE
-    private const string scriptableObjectPath = "Assets/01-GameEngine/Scripts/Editor/Scriptable/";
-#else
-    private const string scriptableObjectPath = "Assets/02.Scripts/05.Utility/Editor/Scriptable/";
-#endif
     private const string scriptableObjectFileName = "BuildPlayerPipeline.asset";
     private const string combinePathFormat = "{0}/{1}";
     private const string combinePathFormatMeta = "{0}/{1}.meta";
     private const string fullPathFormatMeta = "{0}.meta";
     private const string streamingAssetsPath = "Assets/StreamingAssets";
     private const string streamingAssetsExcludePath = "Assets/StreamingAssets_Exclude";
-    private const string fileNameFormat_Android = "Builds/Android/{0}_{1}_v{2}_{3}.{4}"; // buildName_Release_v1.0.0_10.apk/aab
-    private const string fileNameFormat_Amazon = "Builds/Android/{0}_{1}_v{2}_{3}_Amazon.{4}"; // buildName_Release_v1.0.0_10_Amazon.apk
-    private const string fileNameFormat_iOS = "Builds/iOS/{0}_{1}_v{2}"; // buildName_Release_v1.0.0
-    private const string fileNameFormat_Standalone_MacOS = "Builds/Standalone/{0}_v{1}.app"; // buildName_v1.0.0.app
-    private const string fileNameFormat_Standalone_Windows = "Builds/Standalone/{0}_v{1}_win/{2}.exe"; // buildName_v1.0.0/productName.exe
+    private const string folderName_Android = "Builds/Android";
+    private const string folderName_iOS = "Builds/iOS";
+    private const string folderName_Standalone = "Builds/Standalone";
+    private const string junkSearchPattern = "*DoNotShip*";
+    private static readonly string fileNameFormat_Android = $"{folderName_Android}/{{0}}_{{1}}_v{{2}}_{{3}}.{{4}}"; // buildName_Release_v1.0.0_10.apk/aab
+    private static readonly string fileNameFormat_Amazon = $"{folderName_Android}/{{0}}_{{1}}_v{{2}}_{{3}}_Amazon.{{4}}"; // buildName_Release_v1.0.0_10_Amazon.apk
+    private static readonly string fileNameFormat_iOS = $"{folderName_iOS}/{{0}}_{{1}}_v{{2}}"; // buildName_Release_v1.0.0
+    private static readonly string fileNameFormat_Standalone_MacOS = $"{folderName_Standalone}/{{0}}_v{{1}}.app"; // buildName_v1.0.0.app
+    private static readonly string fileNameFormat_Standalone_Windows = $"{folderName_Standalone}/{{0}}_v{{1}}_win/{{2}}.exe"; // buildName_v1.0.0/productName.exe
     private const string menu_Build_Android_Debug_APK = "Tools/Build/Android/Debug.apk";
     private const string menu_Build_Android_Debug_AAB = "Tools/Build/Android/Debug.aab";
     private const string menu_Build_Android_Release_APK = "Tools/Build/Android/Release.apk";
@@ -380,10 +384,10 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
             Directory.CreateDirectory(folderFullPath);
     }
     
-    static void DeleteFolder(string folderFullPath)
+    static void DeleteFolder(string folderFullPath, bool isRecursive = false)
     {
         if (Directory.Exists(folderFullPath))
-            Directory.Delete(folderFullPath);
+            Directory.Delete(folderFullPath, isRecursive);
         if (File.Exists(string.Format(fullPathFormatMeta, folderFullPath)))
             File.Delete(string.Format(fullPathFormatMeta, folderFullPath));
     }
@@ -600,6 +604,39 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
         }
     }
 
+    static void RemoveJunkFolders()
+    {
+        Debug.Log(CodeManager.GetMethodName());
+
+        try
+        {
+            CleanFolder(folderName_Android);
+            CleanFolder(folderName_iOS);
+            CleanFolder(folderName_Standalone);
+        }
+        catch (Exception e)
+        {
+            Debug.Log(CodeManager.GetMethodName() + e.ToString());
+        }
+
+        void CleanFolder(string folderToClean)
+        {
+            if (Directory.Exists(folderToClean))
+            {
+                string[] dirs = Directory.GetDirectories(folderToClean, junkSearchPattern);
+                if (dirs.Length > 0)
+                {
+                    //Debug.Log(CodeManager.GetMethodName() + folderToClean);
+                    for(int i=0; i < dirs.Length; i++)
+                    {
+                        //Debug.Log(CodeManager.GetMethodName() + dirs[i]);
+                        DeleteFolder(dirs[i], true);
+                    }
+                }
+            }
+        }
+    }
+
     static void BuildAddressable()
     {
 #if USE_ADDRESSABLE_ASSETS
@@ -699,6 +736,7 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
         {
             SetAndroidStore_Google();
             RecoverStreamingAssets();
+            RemoveJunkFolders();
 
             if (buildPlayerOptionsObject.currentGroup != buildOptions.targetGroup || buildPlayerOptionsObject.currentTarget != buildOptions.target)
             {
