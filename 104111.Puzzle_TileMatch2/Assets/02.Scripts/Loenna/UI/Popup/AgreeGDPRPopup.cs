@@ -19,6 +19,8 @@ public class AgreeGDPRPopup : UIPopup
     [Header("★ [Reference] GDPR_KO")]
     public Toggle toggleService;
     public Toggle togglePrivacy;
+    public GameObject checkMarkService;
+    public GameObject checkMarkPrivacy;
     public Scrollbar scrollbarService;
     public Scrollbar scrollbarPrivacy;
     public bool isKRService;
@@ -55,6 +57,9 @@ public class AgreeGDPRPopup : UIPopup
         buttonPrivacy.onClick.AddListener(OpenPrivacy);
         buttonNext.onClick.AddListener(CheckGDPR_EN);
 
+        checkMarkService.SetActive(false);
+        checkMarkPrivacy.SetActive(false);
+
         if (region == "KR")
         {
             gdpr_ko.SetActive(true);
@@ -74,6 +79,9 @@ public class AgreeGDPRPopup : UIPopup
 
     private void CheckGDPR()
     {
+        checkMarkService.SetActive(isKRService);
+        checkMarkPrivacy.SetActive(isKRPrivacy);
+
         if(isKRService && isKRPrivacy)
         {
             NextStep();

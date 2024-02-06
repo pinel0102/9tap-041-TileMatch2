@@ -55,8 +55,12 @@ public static partial class GlobalDefine
         }
 #endif
         
+        bool userCheck = !globalData.userManager.Current.NoAD;
+        if (!userCheck)
+            return false;
+
         bool sdkCheck = !SDKManager.Instance.IsAdFreeUser && SDKManager.OpenRemoveAdsPopup;
-        if (!sdkCheck) 
+        if (!sdkCheck)
             return false;
 
         CheckRemoveAdsPopupExpired();
@@ -69,7 +73,7 @@ public static partial class GlobalDefine
         TimeSpan ts = DateTime.Now.Subtract(lastTime);
         bool dateCheck = ts.TotalDays > 0;
 
-        return sdkCheck && countCheck && dateCheck;
+        return userCheck && sdkCheck && countCheck && dateCheck;
     }
 
     private static void CheckRemoveAdsPopupExpired()
