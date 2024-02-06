@@ -2,7 +2,7 @@
 
 Puzzle - TileMatch2 클라이언트 프로젝트
 
-+ aOS : [Tile Match! World Tours](https://play.google.com/store/apps/details?id=com.ninetap.bubblepartyshooterpuzzle&gl=US)
++ aOS : [Tile Match! World Tours](https://play.google.com/store/apps/details?id=com.ninetap.tilematchworldtours&gl=US)
 + iOS : [Tile Match! World Tours](https://apps.apple.com/app/id6476965728)
 
 <br>
