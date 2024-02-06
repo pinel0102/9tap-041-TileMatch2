@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-
 using NineTap.Payment;
-
+using UnityEngine.Purchasing;
 
 //코인 결제시 이곳에서 처리
 public class CoinService : IPaymentService
@@ -11,8 +10,8 @@ public class CoinService : IPaymentService
 	private readonly UserManager m_userManager;
 	private List<ProductData> m_products;
 
-	public IReadOnlyList<ProductData> Products => m_products;
-	public PaymentType PaymentType => PaymentType.Coin;
+	public IReadOnlyList<ProductData> ProductDatas => m_products;
+    public PaymentType PaymentType => PaymentType.Coin;
 
 	public CoinService(UserManager userManager)
 	{

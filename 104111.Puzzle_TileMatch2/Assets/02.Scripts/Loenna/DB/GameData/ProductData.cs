@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Purchasing;
 using System.Collections.Generic;
 
 public enum PaymentType
@@ -89,7 +90,7 @@ public record ProductData
 (
 	int Index,
 	string ProductId,
-	PaymentType PaymentType,
+    PaymentType PaymentType,
 	UIType UIType,
 	string ImagePath,
 	float Price,
@@ -104,6 +105,8 @@ public record ProductData
 	IReadOnlyDictionary<int, long> Contents
 ) : TableRowData<int>(Index)
 {
+    public Product Product;
+
     public RewardData ToRewardData()
     {
         RewardData rewardData = new RewardData(
@@ -124,6 +127,7 @@ public record ProductData
 
         return rewardData;
     }
+
     public string GetShopItemImagePath()
 	{
 		if (string.IsNullOrWhiteSpace(ImagePath))
@@ -151,7 +155,7 @@ public record ProductData
 			return "Free";
 		}
 
-		return $"{Price} USD";
+		return Product?.metadata.localizedPriceString ?? $"{Price} USD";
 	}
 
 	public string GetSaleString()
@@ -162,4 +166,9 @@ public record ProductData
 		}
 		return $"{DiscountPercent}% SALE";
 	}
+
+    public void SetProduct(Product product)
+    {
+        Product = product;
+    }
 }

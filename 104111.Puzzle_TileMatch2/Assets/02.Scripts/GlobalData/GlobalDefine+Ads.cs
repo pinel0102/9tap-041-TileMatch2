@@ -45,5 +45,54 @@ public static partial class GlobalDefine
         SDKManager.Instance.ShowRewardVideo(num, onSuccess);
     }
 
+    public static bool IsEnableRemoveAdsPopup()
+    {
+#if UNITY_EDITOR
+        if(testAutoPopupEditor)
+        {
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>testAutoPopupEditor : {0}</color>", testAutoPopupEditor));
+            return true;
+        }
+#endif
+        
+        bool sdkCheck = !SDKManager.Instance.IsAdFreeUser && SDKManager.OpenRemoveAdsPopup;
+        if (!sdkCheck) 
+            return false;
+
+        CheckRemoveAdsPopupExpired();
+
+        bool countCheck = globalData.userManager.Current.RemoveAdsPopupCount < 2;
+        if (!countCheck)
+            return false;
+        
+        DateTime lastTime = ToDateTime(globalData.userManager.Current.RemoveAdsPopupDate);
+        TimeSpan ts = DateTime.Now.Subtract(lastTime);
+        bool dateCheck = ts.TotalDays > 0;
+
+        return sdkCheck && countCheck && dateCheck;
+    }
+
+    private static void CheckRemoveAdsPopupExpired()
+    {
+        if (IsExpiredRemoveAdsPopup())
+        {
+            globalData.userManager.UpdateRemoveAdsPopup(
+                RemoveAdsPopupCount: 0,
+                RemoveAdsPopupDate: DateTime.Today.ToString(dateFormat_HHmmss)
+            );
+
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Expired] Reset to {0}</color>", globalData.userManager.Current.RemoveAdsPopupDate));
+        }
+    }
+
+    private static bool IsExpiredRemoveAdsPopup()
+    {
+        DateTime lastTime = ToDateTime(globalData.userManager.Current.RemoveAdsPopupDate);
+        TimeSpan ts = DateTime.Now.Subtract(lastTime);
+        bool dateCheck = ts.TotalDays > 1;
+
+        return dateCheck;
+    }
+
 #endregion
 }

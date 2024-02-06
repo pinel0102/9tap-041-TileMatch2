@@ -48,6 +48,9 @@ public record User
     string ReviewPopupDate,
     int ReviewPopupCount,
     int PuzzleOpenPopupIndex,
+
+    string RemoveAdsPopupDate,
+    int RemoveAdsPopupCount,
     
     // 게임 현황
 	int Level, // 플레이할 레벨
@@ -107,7 +110,9 @@ public record User
         NoAD: false,
         SendAppOpenCount: false,
         SendInterstitalViewCount: false,
-        SendRewardViewCount: false
+        SendRewardViewCount: false,
+        RemoveAdsPopupCount: 0,
+        RemoveAdsPopupDate: GlobalDefine.dateDefault_HHmmss
 	);
 
 	[JsonIgnore]
@@ -154,7 +159,9 @@ public record User
         in Optional<bool> noAD = default,
         in Optional<bool> sendAppOpenCount = default,
         in Optional<bool> sendInterstitalViewCount = default,
-        in Optional<bool> sendRewardViewCount = default
+        in Optional<bool> sendRewardViewCount = default,
+        in Optional<int> removeAdsPopupCount = default,
+        in Optional<string> removeAdsPopupDate = default
 	)
 	{
         DateTimeOffset now = DateTimeOffset.Now;
@@ -229,7 +236,9 @@ public record User
             NoAD: noAD.GetValueOrDefault(NoAD),
             SendAppOpenCount: sendAppOpenCount.GetValueOrDefault(SendAppOpenCount),
             SendInterstitalViewCount: sendInterstitalViewCount.GetValueOrDefault(SendInterstitalViewCount),
-            SendRewardViewCount: sendRewardViewCount.GetValueOrDefault(SendRewardViewCount)
+            SendRewardViewCount: sendRewardViewCount.GetValueOrDefault(SendRewardViewCount),
+            RemoveAdsPopupCount: removeAdsPopupCount.GetValueOrDefault(RemoveAdsPopupCount),
+            RemoveAdsPopupDate: removeAdsPopupDate.GetValueOrDefault(RemoveAdsPopupDate)
 		);
 
         //Debug.Log(CodeManager.GetMethodName() + string.Format("Life : {0} / EndChargeLifeAt : {1}", user.Life, user.EndChargeLifeAt.LocalDateTime));

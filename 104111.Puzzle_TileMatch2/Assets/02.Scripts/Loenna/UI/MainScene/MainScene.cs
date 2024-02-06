@@ -275,6 +275,11 @@ public class MainScene : UIScene
             await GlobalData.Instance.ShowDailyRewardPopup();
         }
 
+        if (GlobalDefine.IsEnableRemoveAdsPopup())
+        {
+            await GlobalData.Instance.ShowRemoveAdsPopup();
+        }
+
         GlobalData.Instance.SetTouchLock_MainScene(false);
     }
 

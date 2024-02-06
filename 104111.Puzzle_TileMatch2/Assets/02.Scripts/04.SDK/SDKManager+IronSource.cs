@@ -26,11 +26,13 @@ public partial class SDKManager
     /// <Summary>리워드 광고 보상 인덱스.</Summary>
     [SerializeField] private int rewardNum = -1;
     private Action<bool> rewardVideoCallback;
-    private static bool isBannerLoaded;
-    public static bool IsBannerLoaded => isBannerLoaded;
-    private static bool isRewardVideoLoaded;
-    public static bool IsRewardVideoLoaded => isRewardVideoLoaded;
-    private static bool openRemoveAdsPopup;
+    public bool IsAdFreeUser => m_isAdFreeUser;
+    private static bool m_isBannerLoaded;
+    public static bool IsBannerLoaded => m_isBannerLoaded;
+    private static bool m_isRewardVideoLoaded;
+    public static bool IsRewardVideoLoaded => m_isRewardVideoLoaded;
+    private static bool m_openRemoveAdsPopup;
+    public static bool OpenRemoveAdsPopup => m_openRemoveAdsPopup;
     private static string ironSourceAppKey;
     private static bool isInitialized_IronSource = false;    
     private static WaitForSecondsRealtime wUpdateDelay = new WaitForSecondsRealtime(4f);
@@ -56,9 +58,10 @@ public partial class SDKManager
         Debug.Log(CodeManager.GetMethodName() + string.Format("<color=#EC46EB>IronSource [{0}] {1}</color>", IronSource.pluginVersion(), ironSourceAppKey));
         
         SetAdFreeUser(isADFreeUser);
+        SetRemoveAdsPopup(false);
 
-        isBannerLoaded = false;
-        isRewardVideoLoaded = false;
+        m_isBannerLoaded = false;
+        m_isRewardVideoLoaded = false;
         currentTimeCount = 0;
         rewardNum = -1;
 
@@ -68,8 +71,8 @@ public partial class SDKManager
         AddEvents();
 
 #if UNITY_EDITOR
-        isBannerLoaded = true;
-        isRewardVideoLoaded = true;
+        m_isBannerLoaded = true;
+        m_isRewardVideoLoaded = true;
 #endif
 
 #endif
@@ -107,7 +110,7 @@ public partial class SDKManager
             if (!IronSource.Agent.isInterstitialReady())
                 LoadInterstitial();
             
-            if (!isBannerLoaded)
+            if (!m_isBannerLoaded)
                 ShowBanner(true);
             
             if (!IsBannerAvailable)
@@ -193,9 +196,9 @@ public partial class SDKManager
         void LoadBanner()
         {
             if (m_showLogIronSource)
-                Debug.Log(CodeManager.GetMethodName() + isBannerLoaded);
+                Debug.Log(CodeManager.GetMethodName() + m_isBannerLoaded);
 
-			if (isBannerLoaded && !forceLoad)
+			if (m_isBannerLoaded && !forceLoad)
                 IronSource.Agent.displayBanner();
             else
                 IronSource.Agent.loadBanner(IronSourceBannerSize.SMART, IronSourceBannerPosition.BOTTOM);
@@ -206,7 +209,7 @@ public partial class SDKManager
     public void HideBanner()
     {
 #if ENABLE_IRONSOURCE
-        if (isBannerLoaded)
+        if (m_isBannerLoaded)
         {
             if (m_showLogIronSource)
                 Debug.Log(CodeManager.GetMethodName());
@@ -216,27 +219,26 @@ public partial class SDKManager
 #endif
     }
 
-    public void ShowInterstitial(bool _openRemoveAdsPopup)
+    public void ShowInterstitial(bool openRemoveAdsPopup)
     {
 #if ENABLE_IRONSOURCE
 
         if (m_isAdFreeUser) return;
 
+        SetRemoveAdsPopup(false);
+
         if (globalData.CURRENT_LEVEL > firstAdsFreeLevel)
         {
             if(currentTimeCount > interstitialDelay)
             {
-                openRemoveAdsPopup = _openRemoveAdsPopup;
-
 #if UNITY_EDITOR
+                SetRemoveAdsPopup(openRemoveAdsPopup);
                 Interstitial_OnAdClosedEvent(null);
                 currentTimeCount = 0;
 #endif
                 if (IronSource.Agent.isInterstitialReady())
                 {
-                    if (m_showLogIronSource)
-                        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>openRemoveAdsPopup : {0}</color>", openRemoveAdsPopup));
-                    
+                    SetRemoveAdsPopup(openRemoveAdsPopup);
                     IronSource.Agent.showInterstitial();
                     currentTimeCount = 0;
 
@@ -248,8 +250,12 @@ public partial class SDKManager
                 }
             }
         }
-
 #endif
+    }
+
+    public static void SetRemoveAdsPopup(bool open)
+    {
+        m_openRemoveAdsPopup = open;
     }
 
 #endregion Handle AD
@@ -332,7 +338,7 @@ public partial class SDKManager
     {
         Debug.Log(CodeManager.GetMethodName());
 
-        isBannerLoaded = true;
+        m_isBannerLoaded = true;
 
         if (!IsBannerAvailable)
         {
@@ -394,9 +400,6 @@ public partial class SDKManager
         Debug.Log(CodeManager.GetMethodName());
 
         LoadInterstitial();
-
-        if (openRemoveAdsPopup)
-            globalData.ShowRemoveAdsPopup();
     }
 
     private void Interstitial_OnAdShowSucceededEvent(IronSourceAdInfo adInfo)
@@ -416,7 +419,7 @@ public partial class SDKManager
     {
         Debug.Log(CodeManager.GetMethodName());
 
-        isRewardVideoLoaded = true;
+        m_isRewardVideoLoaded = true;
     }
 
     private void RewardedVideo_OnAdUnavailableEvent()

@@ -49,6 +49,29 @@ public class ItemReward : Reward<int>
 	}
 }
 
+public class ADBlockReward : Reward<string>
+{
+	public ADBlockReward(ProductType type) : base (type)
+	{
+		
+	}
+
+	public override long GetAmount()
+	{
+		return 1;
+	}
+
+	public override string GetAmountString()
+	{
+		return string.Empty;
+	}
+
+	public override string GetValue() 
+	{
+		return string.Empty;
+	}
+}
+
 public class LandmarkReward : Reward<string>
 {
 	public readonly string Name;

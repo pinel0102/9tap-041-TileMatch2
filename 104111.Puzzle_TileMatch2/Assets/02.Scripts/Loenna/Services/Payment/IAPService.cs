@@ -35,8 +35,10 @@ namespace NineTap.Payment
 		#endregion
 
 		#region IPaymentService Interface
-		private List<ProductData> m_products;
-		public IReadOnlyList<ProductData> Products => m_products;
+		private List<ProductData> m_productDatas;
+		public IReadOnlyList<ProductData> ProductDatas => m_productDatas;
+        private List<Product> m_products;
+        public List<Product> Products => m_products;
 
 		public PaymentType PaymentType => PaymentType.IAP;
 		#endregion
@@ -96,8 +98,8 @@ namespace NineTap.Payment
             ConfigurationBuilder builder = ConfigurationBuilder.Instance(m_purchasingModule);
 
 			//상품 추가
-			var productList = productDataTable.GetProducts(PaymentType.IAP).Where(item => !string.IsNullOrEmpty(item.ProductId)).ToList();
-            productList.ForEach(productData => {
+			m_productDatas = productDataTable.GetProducts(PaymentType.IAP).Where(item => !string.IsNullOrEmpty(item.ProductId)).ToList();
+            m_productDatas.ForEach(productData => {
                 var productID = productData.ProductId;
                 var type = productData.Consumable ? UnityEngine.Purchasing.ProductType.Consumable : UnityEngine.Purchasing.ProductType.NonConsumable;
                 
@@ -106,7 +108,7 @@ namespace NineTap.Payment
                 AddProductToBuilder(ref builder, productID, type);
             });
 
-            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Available Product : {0}</color>", productList.Count));
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Available Product : {0}</color>", m_productDatas.Count));
 
 			UnityPurchasing.Initialize(this, builder);
 
@@ -175,6 +177,13 @@ namespace NineTap.Payment
 		{
 			m_storeController = controller;
 			m_storeExtensionProvider = extensions;
+
+            m_products = m_storeController?.products?.all.ToList();
+            m_productDatas.ForEach(productData => {
+                    if (productData.PaymentType == PaymentType.IAP && !string.IsNullOrEmpty(productData.ProductId))
+                        productData.SetProduct(m_products.FirstOrDefault(item => item.definition.id.Equals(productData.ProductId)));
+                }
+            );
 
 			#if IAP_DEBUG_LOG
 			Debug.Log("IAPService.OnInitialized");

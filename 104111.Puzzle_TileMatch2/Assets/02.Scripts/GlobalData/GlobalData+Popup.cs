@@ -39,7 +39,7 @@ public partial class GlobalData
                 onExit:()=>{
                     UIManager.ClosePopupUI_ForceAll();
                 }
-            ),//ExitBaseParameter.CancelParam,
+            ),
             BaseButtonParameter: new UITextButtonParameter{
                 ButtonText = NineTap.Constant.Text.Button.PLAY,
                 OnClick = () => 
@@ -116,8 +116,6 @@ public partial class GlobalData
     {
         Debug.Log(CodeManager.GetMethodName());
 
-        //SetTouchLock_MainScene(true);
-
         bool popupClosed = false;
 
         UIManager.ShowPopupUI<DailyRewardPopup>(
@@ -130,8 +128,34 @@ public partial class GlobalData
         );
 
         await UniTask.WaitUntil(() => popupClosed);
+    }
 
-        //SetTouchLock_MainScene(false);
+    public async UniTask ShowRemoveAdsPopup()
+    {
+        Debug.Log(CodeManager.GetMethodName() + userManager.Current.RemoveAdsPopupCount);
+
+        SDKManager.SetRemoveAdsPopup(false);
+
+        if (tableManager.ProductDataTable.TryGetValue(GlobalDefine.ADBlockProduct, out var product))
+        {
+            bool popupClosed = false;
+
+            userManager.UpdateRemoveAdsPopup(
+                RemoveAdsPopupCount: userManager.Current.RemoveAdsPopupCount + 1
+            );
+
+            UIManager.ShowPopupUI<RemoveAdsPopup>(
+                new RemoveAdsPopupParameter(
+                    Title: $"{product.FullName}",
+                    Message: $"{product.Description}",                    
+                    PopupCloseCallback: () => { popupClosed = true; },
+                    Product: product,
+                    VisibleHUD: HUDType.ALL
+                )
+            );
+
+            await UniTask.WaitUntil(() => popupClosed);
+        }
     }
 
     public void ShowPuzzleOpenPopup()
@@ -143,26 +167,7 @@ public partial class GlobalData
         );
     }
 
-    public void ShowRemoveAdsPopup(Action onClick = null)
-    {
-        Debug.Log(CodeManager.GetMethodName());
-
-        /*UIManager.ShowPopupUI<GiveupPopup>(
-            new GiveupPopupParameter(
-                Title: "Purchase",
-                Message: "Purchase Life",
-                ignoreBackKey: false,
-                ExitParameter: ExitBaseParameter.CancelParam,
-                BaseButtonParameter: new UITextButtonParameter {
-                    ButtonText = "Go to Shop",
-                    OnClick = onClick
-                },
-                HUDTypes: HUDType.ALL
-            )
-        );*/
-    }
-
-    public void ShowPresentPopup(ProductData product)
+    public void ShowPresentPopup(ProductData product, Action onComplete = null)
     {
         Debug.Log(CodeManager.GetMethodName());
 
@@ -171,7 +176,8 @@ public partial class GlobalData
                 PopupType: RewardPopupType.PRESENT,
                 Reward: product.ToRewardData(),
                 NewLandmark: 0,
-                OnComplete: null,
+                isADBlockProduct: product.Index.Equals(GlobalDefine.ADBlockProduct),
+                OnComplete: onComplete,
                 VisibleHUD: HUDType.NONE
             )
         );
@@ -186,6 +192,7 @@ public partial class GlobalData
                 PopupType: RewardPopupType.PRESENT,
                 Reward: rewardData,
                 NewLandmark: 0,
+                isADBlockProduct: false,
                 OnComplete: onComplete,
                 VisibleHUD: HUDType.NONE
             )

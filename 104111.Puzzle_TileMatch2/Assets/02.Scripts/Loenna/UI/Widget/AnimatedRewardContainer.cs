@@ -18,6 +18,7 @@ public class AnimatedRewardContainerParameter
     public RewardPopupType PopupType;
 	public List<IReward> Rewards = new();
     public int NewLandmark;
+    public bool IsADBlockProduct;
 	public Action OnFinishedAnimation;
 }
 
@@ -58,6 +59,12 @@ public class AnimatedRewardContainer : CachedBehaviour
                 m_rewardGoodsItems.Add(CreateRewadItem(ref currentCount, parameter.Rewards.Count, rewardCount, 
                     new LandmarkReward(ProductType.Landmark, puzzleData.Name), parameter.OnFinishedAnimation));
             }
+        }
+
+        if (parameter.IsADBlockProduct)
+        {
+            m_rewardGoodsItems.Add(CreateRewadItem(ref currentCount, parameter.Rewards.Count, rewardCount, 
+                new ADBlockReward(ProductType.ADBlock), parameter.OnFinishedAnimation));
         }
 	}
 

@@ -17,7 +17,8 @@ public enum ProductType
 	UndoItem,
 	ShuffleItem,
 	HeartBooster,
-    Landmark
+    Landmark,
+    ADBlock
 }
 
 public static class ProductTypeExtensions
@@ -32,6 +33,7 @@ public static class ProductTypeExtensions
 			ProductType.ShuffleItem => "UI_Shop_Icon_Shuffle",
 			ProductType.HeartBooster or ProductType.Heart => "UI_Shop_Icon_Heart",
             ProductType.Landmark => "UI_Icon_LandmarkPuzzle",
+            ProductType.ADBlock => "UI_Icon_AdBlock",
 			_ => string.Empty
 		};
 	}

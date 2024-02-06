@@ -1,9 +1,7 @@
 using Unity.VisualScripting;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 
@@ -12,7 +10,7 @@ namespace NineTap.Payment
 	public interface IPaymentService
 	{
 		PaymentType PaymentType { get; }
-		IReadOnlyList<ProductData> Products { get; }
+		IReadOnlyList<ProductData> ProductDatas { get; }
 		UniTask<bool> LoadProducts(ProductDataTable productDataTable);
 		void Request(ProductData product, Action<UnityEngine.Purchasing.Product, IPaymentResult.Success> onSuccess, Action<UnityEngine.Purchasing.Product, IPaymentResult.Error> onError);
 	}

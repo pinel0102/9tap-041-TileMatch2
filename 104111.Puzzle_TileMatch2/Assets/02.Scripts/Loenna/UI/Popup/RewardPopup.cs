@@ -20,6 +20,7 @@ public record RewardPopupParameter
 	RewardPopupType PopupType, 
 	RewardData Reward,
     int NewLandmark,
+    bool isADBlockProduct,
     Action OnComplete,
 	params HUDType[] VisibleHUD
 ): UIParameter(VisibleHUD);
@@ -82,6 +83,7 @@ public class RewardPopup : UIPopup
                 PopupType = parameter.PopupType,
 				Rewards = parameter.Reward.Rewards,
                 NewLandmark = parameter.NewLandmark,
+                IsADBlockProduct = parameter.isADBlockProduct,
 				OnFinishedAnimation = () => {
 					UniTask.Void(
 						async () => {
@@ -123,6 +125,7 @@ public class RewardPopup : UIPopup
                 PopupType = parameter.PopupType,
 				Rewards = parameter.Reward.Rewards,
                 NewLandmark = parameter.NewLandmark,
+                IsADBlockProduct = parameter.isADBlockProduct,
 				OnFinishedAnimation = null
 			}
 		);

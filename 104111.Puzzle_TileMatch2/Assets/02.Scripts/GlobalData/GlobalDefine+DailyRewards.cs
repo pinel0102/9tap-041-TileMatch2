@@ -21,7 +21,10 @@ public static partial class GlobalDefine
     {
 #if UNITY_EDITOR
         if(testAutoPopupEditor)
+        {
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>testAutoPopupEditor : {0}</color>", testAutoPopupEditor));
             return true;
+        }
 #endif
 
         bool levelCheck = IsOpenDailyRewards();

@@ -144,7 +144,9 @@ public class UserManager : IDisposable
                 NoAD: false,
                 SendAppOpenCount: false,
                 SendInterstitalViewCount: false,
-                SendRewardViewCount: false
+                SendRewardViewCount: false,
+                RemoveAdsPopupCount: 0,
+                RemoveAdsPopupDate: GlobalDefine.dateDefault_HHmmss
 			);
 		}
 	}
@@ -519,6 +521,24 @@ public class UserManager : IDisposable
 			)
 		);
 	}
+
+    public void UpdateRemoveAdsPopup(
+        Optional<int> RemoveAdsPopupCount = default,
+        Optional<string> RemoveAdsPopupDate = default
+    )
+    {
+        if (m_user?.Value == null)
+		{
+			return;
+		}
+
+		m_user.Update(
+			user => user.Update(
+				removeAdsPopupCount: RemoveAdsPopupCount,
+				removeAdsPopupDate: RemoveAdsPopupDate
+			)
+		);
+    }
 
     public void GetItems
 	(

@@ -6,6 +6,8 @@ using NineTap.Payment;
 
 public static partial class GlobalDefine
 {
+    public const int ADBlockProduct = 29901;
+    
     public static bool IsPurchasePending()
     {
         bool mainPending = globalData.mainScene?.m_purchasing.activeSelf ?? false;
@@ -34,7 +36,7 @@ public static partial class GlobalDefine
         ActivityIndicatorManager.StopActivityIndicator();
     }
 
-    public static void Purchase(ProductData productData)
+    /*public static void Purchase(ProductData productData)
     {
         PaymentService paymentService = Game.Inst.Get<PaymentService>();
 
@@ -51,9 +53,28 @@ public static partial class GlobalDefine
                 ShowIAPResult_Fail(productData, product, result);
             }
         );
+    }*/
+
+    public static void Purchase(ProductData productData, Action onSuccess = null, Action onFailed = null)
+    {
+        PaymentService paymentService = Game.Inst.Get<PaymentService>();
+
+        Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : {1}", productData.ProductId, productData.FullName));
+
+        StartActivityIndicator();
+
+        paymentService?.Request(
+            productData.Index, 
+            onSuccess: (product, result) => {
+                ShowIAPResult_Success(productData, product, result, onSuccess);
+            },
+            onError: (product, result) => {
+                ShowIAPResult_Fail(productData, product, result, onFailed);
+            }
+        );
     }
 
-    public static void ShowIAPResult_Success(ProductData productData, UnityEngine.Purchasing.Product product, IPaymentResult.Success result)
+    public static void ShowIAPResult_Success(ProductData productData, UnityEngine.Purchasing.Product product, IPaymentResult.Success result, Action onComplete = null)
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : SUCCESS : {1}", productData.ProductId, result.ToString()));
 
@@ -83,14 +104,17 @@ public static partial class GlobalDefine
         GetItems(productData.Coin, addSkillItems, addBooster);
 
         SetADFreeUser();
-        globalData.ShowPresentPopup(productData);
+
+        globalData.ShowPresentPopup(productData, onComplete);
     }
 
-    public static void ShowIAPResult_Fail(ProductData productData, UnityEngine.Purchasing.Product product, IPaymentResult.Error error)
+    public static void ShowIAPResult_Fail(ProductData productData, UnityEngine.Purchasing.Product product, IPaymentResult.Error error, Action onComplete = null)
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : ERROR : {1}", productData.ProductId, error.ToString()));
 
         StopActivityIndicator();
+
+        onComplete?.Invoke();
     }
 
     private static void SetADFreeUser()
