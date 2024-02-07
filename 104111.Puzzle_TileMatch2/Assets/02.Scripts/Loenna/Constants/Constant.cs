@@ -36,7 +36,9 @@ public static class Constant
 
 	public static class User
 	{
-        public const int LEVEL_DAILY_REWARD_START = 15; // 오픈시 해금.
+        public const int MIN_OPENLEVEL_WEEKEND_BUNDLE = 2; // 오픈시 해금.
+        public const int MIN_OPENLEVEL_BEGINNER_BUNDLE = 10; // 오픈시 해금.
+        public const int MIN_OPENLEVEL_DAILY_REWARD = 15; // 오픈시 해금.
 		public const int MAX_LIFE_COUNT = 5;
         public const int MAX_LIFE_COIN = 250;
         public const int LIFE_CHARGE_TIME_MINUTES = 30;

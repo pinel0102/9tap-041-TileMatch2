@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-
 using TMPro;
-
 using NineTap.Common;
 
 [ResourcePath("UI/Widgets/SimpleProductItemWidget")]

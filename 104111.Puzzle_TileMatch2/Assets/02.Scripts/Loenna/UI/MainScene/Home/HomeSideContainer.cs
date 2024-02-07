@@ -36,7 +36,7 @@ public class HomeSideContainer : CachedBehaviour
         switch (m_direction)
 		{
 			case Direction.LEFT:
-                m_cachedIcons.Add(dailyRewardIcon = CreateIcon(30000, async () => { await GlobalData.Instance.ShowDailyRewardPopup(); }));
+                m_cachedIcons.Add(dailyRewardIcon = CreateIcon(30000, async () => { await GlobalData.Instance.ShowPopup_DailyRewards(); }));
 				//CreateIcon(20301); // Piggy Bank
 				break;
 			case Direction.RIGHT:
@@ -67,13 +67,13 @@ public class HomeSideContainer : CachedBehaviour
         switch (m_direction)
 		{
 			case Direction.LEFT:
-                if (GlobalDefine.IsOpenDailyRewards())
+                if (GlobalDefine.IsOpen_DailyRewards())
                 {
                     dailyRewardIcon.gameObject.SetActive(true);
                     
                     DateTime targetTime = GlobalDefine.ToDateTime(GlobalData.Instance.userManager.Current.DailyRewardDate);
                     TimeSpan ts = targetTime.Subtract(DateTime.Now);
-                    dailyRewardIcon.RefreshTime(!GlobalDefine.IsEnableDailyRewards(), string.Format(GlobalDefine.remainTimeFormat, ts.Hours, ts.Minutes, ts.Seconds));
+                    dailyRewardIcon.RefreshTime(!GlobalDefine.IsEnable_DailyRewards(), string.Format(GlobalDefine.remainTimeFormat, ts.Hours, ts.Minutes, ts.Seconds));
                 }
                 else
                 {

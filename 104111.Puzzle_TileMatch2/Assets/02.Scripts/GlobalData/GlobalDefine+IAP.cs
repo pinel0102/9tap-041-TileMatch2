@@ -6,7 +6,13 @@ using NineTap.Payment;
 
 public static partial class GlobalDefine
 {
-    public const int ADBlockProduct = 29901;
+    public const int ProductIndex_Beginner = 20207;
+    public const int ProductIndex_HardLevel = 20208;
+    public const int ProductIndex_Cheerup1 = 20209;
+    public const int ProductIndex_Cheerup2 = 20210;
+    public const int ProductIndex_Weekend1 = 20211;
+    public const int ProductIndex_Weekend2 = 20212;
+    public const int ProductIndex_ADBlock = 29901;
     
     public static bool IsPurchasePending()
     {

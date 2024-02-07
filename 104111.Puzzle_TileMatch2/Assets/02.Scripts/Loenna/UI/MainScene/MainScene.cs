@@ -264,20 +264,42 @@ public class MainScene : UIScene
             await GlobalData.Instance.HUD_LateUpdate_MainSceneReward(rewardParameter.clearedLevel, rewardParameter.openPuzzleIndex, rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardGoldPiece);
             await GlobalData.Instance.CheckPuzzleOpen(rewardParameter.openPuzzleIndex);
 
-            if (GlobalDefine.IsEnableReviewPopup(rewardParameter.clearedLevel))
+            if (GlobalDefine.IsEnable_Review(rewardParameter.clearedLevel))
             {
-                await GlobalData.Instance.ShowReviewPopup();
+                await GlobalData.Instance.ShowPopup_Review();
             }
         }
 
-        if (GlobalDefine.IsEnableDailyRewards() && GlobalDefine.IsRewardVideoReady())
+        // [Level >= 15] && [not claimed] && [RewardVideo Ready]
+        if (GlobalDefine.IsEnable_DailyRewards() && GlobalDefine.IsRewardVideoReady())
         {
-            await GlobalData.Instance.ShowDailyRewardPopup();
+            await GlobalData.Instance.ShowPopup_DailyRewards();
         }
 
-        if (GlobalDefine.IsEnableRemoveAdsPopup())
+        // [Level >= 10] && [not purchased]
+        if (GlobalDefine.IsEnable_BeginnerBundle())
         {
-            await GlobalData.Instance.ShowRemoveAdsPopup();
+            await GlobalData.Instance.ShowPopup_Beginner();
+        }
+
+        // [Level >= 1] && [Weekend]
+        if (GlobalDefine.IsEnable_Weekend1Bundle())
+        {
+            // [TODO] ShowPopup_Weekend1
+            await GlobalData.Instance.ShowPopup_Weekend1();
+        }
+
+        // [Level >= 1] && [Weekend]
+        if (GlobalDefine.IsEnable_Weekend2Bundle())
+        {
+            // [TODO] ShowPopup_Weekend2
+            await GlobalData.Instance.ShowPopup_Weekend2();
+        }
+
+        // [Level >= 20] && [Interstitial AD]
+        if (GlobalDefine.IsEnable_RemoveAdsPopup())
+        {
+            await GlobalData.Instance.ShowPopup_RemoveAds();
         }
 
         GlobalData.Instance.SetTouchLock_MainScene(false);

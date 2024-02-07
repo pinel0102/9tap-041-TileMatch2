@@ -10,9 +10,11 @@ using NineTap.Common;
 
 public class ExitBaseParameter
 {
+    ///<Summary>배경을 누를때 팝업 닫히기 여부.</Summary>
 	public readonly bool IncludeBackground;
 	public readonly Action OnExit;
 
+    ///<param name="includeBackground">배경을 누를때 팝업 닫히기 여부.</param>
 	public ExitBaseParameter(Action onExit, bool includeBackground = true)
 	{
 		OnExit = onExit;
@@ -22,13 +24,14 @@ public class ExitBaseParameter
 	public static ExitBaseParameter CancelParam = new ExitBaseParameter(null);
 }
 
+///<param name="AllPressToClose">기본 버튼을 누를때 팝업 닫히기 여부.</param>
 public abstract record PopupBaseParameter
 (
 	string Title,
 	string Message,
 	ExitBaseParameter ExitParameter,
 	UITextButtonParameter BaseButtonParameter,
-	bool AllPressToClose,
+    bool AllPressToClose,
 	params HUDType[] HUDTypes
 ) : UIParameter(HUDTypes);
 
@@ -99,7 +102,8 @@ public class PopupBase : UIPopup
 			}
 		}
 
-		OnSetupButton(m_button, parameter.BaseButtonParameter, parameter.AllPressToClose);	
+        if (parameter.BaseButtonParameter is not null and var buttonParameter)
+		    OnSetupButton(m_button, buttonParameter, parameter.AllPressToClose);	
 	}
 
 	protected void OnSetupButton(UIButton button, UIButtonParameter parameter, bool allPressToClose)

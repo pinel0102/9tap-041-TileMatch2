@@ -57,7 +57,7 @@ public class DailyRewardPopup : UIPopup
         SetupButtons();
         SetupRewards();
 
-        RefreshUI(!GlobalDefine.IsEnableDailyRewards());
+        RefreshUI(!GlobalDefine.IsEnable_DailyRewards());
         
         SetButtonInteractable(true);
 	}
@@ -167,7 +167,7 @@ public class DailyRewardPopup : UIPopup
 
     private void OnClick_GetDailyReward()
     {
-        if (!isButtonInteractable || !GlobalDefine.IsEnableDailyRewards())
+        if (!isButtonInteractable || !GlobalDefine.IsEnable_DailyRewards())
             return;
 
         GetDailyReward(1);

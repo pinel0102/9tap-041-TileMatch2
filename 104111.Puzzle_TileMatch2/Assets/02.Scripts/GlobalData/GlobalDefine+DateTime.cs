@@ -49,4 +49,79 @@ public static partial class GlobalDefine
     }
 
 #endregion DateTime
+
+
+#region Event Time
+
+    public static bool IsWeekend()
+    {
+        DateTime nowDt = DateTime.Now;
+        return nowDt.DayOfWeek == DayOfWeek.Saturday || nowDt.DayOfWeek == DayOfWeek.Sunday || nowDt.DayOfWeek == DayOfWeek.Wednesday;
+    }
+
+    public static bool IsExpired(DateTime date)
+    {
+        return DateTime.Now.Subtract(date).TotalSeconds >= 0;
+    }
+
+    public static int GetSeconds_UntilTommorow()
+    {
+        TimeSpan sp = DateTime.Today.AddDays(1) - DateTime.Now;
+        return (int)sp.TotalSeconds;
+    }
+
+    public static int GetSeconds_UntilMonday()
+    {
+        for(int i=1; i < 7; i++)
+        {
+            if (DateTime.Today.AddDays(i).DayOfWeek == DayOfWeek.Monday)
+            {
+                TimeSpan sp = DateTime.Today.AddDays(i) - DateTime.Now;
+                return (int)sp.TotalSeconds;
+            }
+        }
+        
+        return 0;
+    }
+
+    public static DateTime GetNextWeekendStart()
+    {
+        for(int i=1; i < 7; i++)
+        {
+            if (DateTime.Today.AddDays(i).DayOfWeek == DayOfWeek.Saturday)
+            {
+                return DateTime.Today.AddDays(i);
+            }
+        }
+
+        return DateTime.Today.AddDays(7);
+    }
+
+    /*public static bool IsHardBundleTime(int level)
+    {
+        int index = gameManager.levelSummaries.FindIndex(item => item.level == level);
+        if (index > -1)
+        {
+            if (gameManager.levelSummaries[index].difficulty != 0)
+            {
+                //Debug.Log(CodeManager.GetMethodName() + string.Format("Hard Bundle Time : {0}", ObscuredPrefs.GetString("HARD_BUNDLE_TIME", "none")));
+                if (IsRefreshTime(ObscuredPrefs.GetString("HARD_BUNDLE_TIME", "none")))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public static bool IsRefreshTime(string date)
+    {
+        if (DateTime.TryParse(date, out DateTime o))
+            return IsRefreshTime(o);
+        else
+            return true;
+    }*/
+
+#endregion Event Time
 }

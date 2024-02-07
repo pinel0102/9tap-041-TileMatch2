@@ -12,12 +12,7 @@ public static partial class GlobalDefine
             dailyRewardIndex: dailyIndex);
     }
 
-    public static bool IsOpenDailyRewards()
-    {
-        return globalData.userManager.Current.Level >= Constant.User.LEVEL_DAILY_REWARD_START;
-    }
-
-    public static bool IsEnableDailyRewards()
+    public static bool IsEnable_DailyRewards()
     {
 #if UNITY_EDITOR
         if(testAutoPopupEditor)
@@ -27,7 +22,7 @@ public static partial class GlobalDefine
         }
 #endif
 
-        bool levelCheck = IsOpenDailyRewards();
+        bool levelCheck = IsOpen_DailyRewards();
         if (!levelCheck) 
             return false;
 

@@ -5,7 +5,7 @@ using System;
 
 public static partial class GlobalDefine
 {
-    public static bool IsEnableReviewPopup(int level)
+    public static bool IsEnable_Review(int level)
     {
 #if UNITY_EDITOR
         if(testAutoPopupEditor)
@@ -48,7 +48,7 @@ public static partial class GlobalDefine
                 reviewPopupDate: DateTime.Today.ToString(dateFormat_HHmmss)
             );
 
-            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Expired] Reset to {0}</color>", globalData.userManager.Current.ReviewPopupDate));
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Expired] Last ReviewPopup : {0}</color>", globalData.userManager.Current.ReviewPopupDate));
         }
     }
 

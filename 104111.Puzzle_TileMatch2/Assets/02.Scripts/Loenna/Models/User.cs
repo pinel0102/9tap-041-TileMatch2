@@ -1,16 +1,13 @@
 using UnityEngine;
-
 using System;
 using System.Collections.Generic;
-
 using Newtonsoft.Json;
-
 using NineTap.Common;
-using System.Linq;
 
 [Serializable]
 public record User
 (
+    // GDPR
     bool AgreePrivacy,
     bool AgreeService,
     bool AgreeCMP,
@@ -43,14 +40,49 @@ public record User
 	long EndChargeLifeTime, // 하트가 모두 충전되는 시간
     string DailyRewardDate, // 마지막으로 출석체크 보상을 받은 시각.
     int DailyRewardIndex, // 받을 수 있는 출석체크 보상의 인덱스. == 이번 주기에서 수령한 누적 횟수.
+    int PuzzleOpenPopupIndex,
 
+    // Review Popup
     bool IsRated,
     string ReviewPopupDate,
     int ReviewPopupCount,
-    int PuzzleOpenPopupIndex,
 
+    // RemoveAds Popup
     string RemoveAdsPopupDate,
     int RemoveAdsPopupCount,
+
+    // 자동 팝업 띄움 여부.
+    bool ShowedPopupBeginner,
+    bool ShowedPopupWeekend1,
+    bool ShowedPopupWeekend2,
+
+    // 팝업이 마지막으로 뜬 시각.
+    string LastPopupDateBeginner,
+    string LastPopupDateWeekend1,
+    string LastPopupDateWeekend2,
+    string LastPopupDateHard,
+    string LastPopupDateCheerup1,
+    string LastPopupDateCheerup2,
+
+    // 번들 구매 여부.
+    bool PurchasedBeginner,
+    bool PurchasedWeekend1,
+    bool PurchasedWeekend2,
+    bool PurchasedHard,
+    bool PurchasedCheerup1,
+    bool PurchasedCheerup2,
+
+    // 번들 구매 시각.
+    string PurchasedDateBeginner,
+    string PurchasedDateWeekend1,
+    string PurchasedDateWeekend2,
+    string PurchasedDateHard,
+    string PurchasedDateCheerup1,
+    string PurchasedDateCheerup2,
+    
+    // 주말 번들 유효 기간.
+    string WeekendStartDate,
+    string WeekendEndDate,
     
     // 게임 현황
 	int Level, // 플레이할 레벨
@@ -112,7 +144,30 @@ public record User
         SendInterstitalViewCount: false,
         SendRewardViewCount: false,
         RemoveAdsPopupCount: 0,
-        RemoveAdsPopupDate: GlobalDefine.dateDefault_HHmmss
+        RemoveAdsPopupDate: GlobalDefine.dateDefault_HHmmss,
+        ShowedPopupBeginner: false,
+        ShowedPopupWeekend1: false,
+        ShowedPopupWeekend2: false,
+        LastPopupDateBeginner: GlobalDefine.dateDefault_HHmmss,
+        LastPopupDateWeekend1: GlobalDefine.dateDefault_HHmmss,
+        LastPopupDateWeekend2: GlobalDefine.dateDefault_HHmmss,
+        LastPopupDateHard: GlobalDefine.dateDefault_HHmmss,
+        LastPopupDateCheerup1: GlobalDefine.dateDefault_HHmmss,
+        LastPopupDateCheerup2: GlobalDefine.dateDefault_HHmmss,
+        PurchasedBeginner: false,
+        PurchasedWeekend1: false,
+        PurchasedWeekend2: false,
+        PurchasedHard: false,
+        PurchasedCheerup1: false,
+        PurchasedCheerup2: false,
+        PurchasedDateBeginner: GlobalDefine.dateDefault_HHmmss,
+        PurchasedDateWeekend1: GlobalDefine.dateDefault_HHmmss,
+        PurchasedDateWeekend2: GlobalDefine.dateDefault_HHmmss,
+        PurchasedDateHard: GlobalDefine.dateDefault_HHmmss,
+        PurchasedDateCheerup1: GlobalDefine.dateDefault_HHmmss,
+        PurchasedDateCheerup2: GlobalDefine.dateDefault_HHmmss,
+        WeekendStartDate: GlobalDefine.dateDefault_HHmmss,
+        WeekendEndDate: GlobalDefine.dateDefault_HHmmss
 	);
 
 	[JsonIgnore]
@@ -161,7 +216,30 @@ public record User
         in Optional<bool> sendInterstitalViewCount = default,
         in Optional<bool> sendRewardViewCount = default,
         in Optional<int> removeAdsPopupCount = default,
-        in Optional<string> removeAdsPopupDate = default
+        in Optional<string> removeAdsPopupDate = default,
+        in Optional<bool> showedPopupBeginner = default,
+        in Optional<bool> showedPopupWeekend1 = default,
+        in Optional<bool> showedPopupWeekend2 = default,
+        in Optional<bool> purchasedBeginner = default,
+        in Optional<bool> purchasedWeekend1 = default,
+        in Optional<bool> purchasedWeekend2 = default,
+        in Optional<bool> purchasedHard = default,
+        in Optional<bool> purchasedCheerup1 = default,
+        in Optional<bool> purchasedCheerup2 = default,
+        in Optional<string> lastPopupDateBeginner = default,
+        in Optional<string> lastPopupDateWeekend1 = default,
+        in Optional<string> lastPopupDateWeekend2 = default,
+        in Optional<string> lastPopupDateHard = default,
+        in Optional<string> lastPopupDateCheerup1 = default,
+        in Optional<string> lastPopupDateCheerup2 = default,
+        in Optional<string> purchasedDateBeginner = default,
+        in Optional<string> purchasedDateWeekend1 = default,
+        in Optional<string> purchasedDateWeekend2 = default,
+        in Optional<string> purchasedDateHard = default,
+        in Optional<string> purchasedDateCheerup1 = default,
+        in Optional<string> purchasedDateCheerup2 = default,
+        in Optional<string> weekendStartDate = default,
+        in Optional<string> weekendEndDate = default
 	)
 	{
         DateTimeOffset now = DateTimeOffset.Now;
@@ -238,7 +316,30 @@ public record User
             SendInterstitalViewCount: sendInterstitalViewCount.GetValueOrDefault(SendInterstitalViewCount),
             SendRewardViewCount: sendRewardViewCount.GetValueOrDefault(SendRewardViewCount),
             RemoveAdsPopupCount: removeAdsPopupCount.GetValueOrDefault(RemoveAdsPopupCount),
-            RemoveAdsPopupDate: removeAdsPopupDate.GetValueOrDefault(RemoveAdsPopupDate)
+            RemoveAdsPopupDate: removeAdsPopupDate.GetValueOrDefault(RemoveAdsPopupDate),
+            ShowedPopupBeginner: showedPopupBeginner.GetValueOrDefault(ShowedPopupBeginner),
+            ShowedPopupWeekend1: showedPopupWeekend1.GetValueOrDefault(ShowedPopupWeekend1),
+            ShowedPopupWeekend2: showedPopupWeekend2.GetValueOrDefault(ShowedPopupWeekend2),
+            LastPopupDateBeginner: lastPopupDateBeginner.GetValueOrDefault(LastPopupDateBeginner),
+            LastPopupDateWeekend1: lastPopupDateWeekend1.GetValueOrDefault(LastPopupDateWeekend1),
+            LastPopupDateWeekend2: lastPopupDateWeekend2.GetValueOrDefault(LastPopupDateWeekend2),
+            LastPopupDateHard: lastPopupDateHard.GetValueOrDefault(LastPopupDateHard),
+            LastPopupDateCheerup1: lastPopupDateCheerup1.GetValueOrDefault(LastPopupDateCheerup1),
+            LastPopupDateCheerup2: lastPopupDateCheerup2.GetValueOrDefault(LastPopupDateCheerup2),
+            PurchasedBeginner: purchasedBeginner.GetValueOrDefault(PurchasedBeginner),
+            PurchasedWeekend1: purchasedWeekend1.GetValueOrDefault(PurchasedWeekend1),
+            PurchasedWeekend2: purchasedWeekend2.GetValueOrDefault(PurchasedWeekend2),
+            PurchasedHard: purchasedHard.GetValueOrDefault(PurchasedHard),
+            PurchasedCheerup1: purchasedCheerup1.GetValueOrDefault(PurchasedCheerup1),
+            PurchasedCheerup2: purchasedCheerup2.GetValueOrDefault(PurchasedCheerup2),
+            PurchasedDateBeginner: purchasedDateBeginner.GetValueOrDefault(PurchasedDateBeginner),
+            PurchasedDateWeekend1: purchasedDateWeekend1.GetValueOrDefault(PurchasedDateWeekend1),
+            PurchasedDateWeekend2: purchasedDateWeekend2.GetValueOrDefault(PurchasedDateWeekend2),
+            PurchasedDateHard: purchasedDateHard.GetValueOrDefault(PurchasedDateHard),
+            PurchasedDateCheerup1: purchasedDateCheerup1.GetValueOrDefault(PurchasedDateCheerup1),
+            PurchasedDateCheerup2: purchasedDateCheerup2.GetValueOrDefault(PurchasedDateCheerup2),
+            WeekendStartDate: weekendStartDate.GetValueOrDefault(WeekendStartDate),
+            WeekendEndDate: weekendEndDate.GetValueOrDefault(WeekendEndDate)
 		);
 
         //Debug.Log(CodeManager.GetMethodName() + string.Format("Life : {0} / EndChargeLifeAt : {1}", user.Life, user.EndChargeLifeAt.LocalDateTime));

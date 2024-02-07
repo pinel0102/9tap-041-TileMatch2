@@ -112,52 +112,6 @@ public partial class GlobalData
         );
     }
 
-    public async UniTask ShowDailyRewardPopup()
-    {
-        Debug.Log(CodeManager.GetMethodName());
-
-        bool popupClosed = false;
-
-        UIManager.ShowPopupUI<DailyRewardPopup>(
-            new DailyRewardPopupParameter(
-                userManager.Current.DailyRewardDate,
-                userManager.Current.DailyRewardIndex,
-                () => { popupClosed = true; },
-                VisibleHUD: HUDType.ALL
-            )
-        );
-
-        await UniTask.WaitUntil(() => popupClosed);
-    }
-
-    public async UniTask ShowRemoveAdsPopup()
-    {
-        Debug.Log(CodeManager.GetMethodName() + userManager.Current.RemoveAdsPopupCount);
-
-        SDKManager.SetRemoveAdsPopup(false);
-
-        if (tableManager.ProductDataTable.TryGetValue(GlobalDefine.ADBlockProduct, out var product))
-        {
-            bool popupClosed = false;
-
-            userManager.UpdateRemoveAdsPopup(
-                RemoveAdsPopupCount: userManager.Current.RemoveAdsPopupCount + 1
-            );
-
-            UIManager.ShowPopupUI<RemoveAdsPopup>(
-                new RemoveAdsPopupParameter(
-                    Title: $"{product.FullName}",
-                    Message: $"{product.Description}",                    
-                    PopupCloseCallback: () => { popupClosed = true; },
-                    Product: product,
-                    VisibleHUD: HUDType.ALL
-                )
-            );
-
-            await UniTask.WaitUntil(() => popupClosed);
-        }
-    }
-
     public void ShowPuzzleOpenPopup()
     {
         UIManager.ShowPopupUI<PuzzleOpenPopup>(
@@ -176,7 +130,7 @@ public partial class GlobalData
                 PopupType: RewardPopupType.PRESENT,
                 Reward: product.ToRewardData(),
                 NewLandmark: 0,
-                isADBlockProduct: product.Index.Equals(GlobalDefine.ADBlockProduct),
+                isADBlockProduct: product.Index.Equals(GlobalDefine.ProductIndex_ADBlock),
                 OnComplete: onComplete,
                 VisibleHUD: HUDType.NONE
             )
@@ -228,61 +182,5 @@ public partial class GlobalData
             )
         );
 #endif
-    }
-
-    public async UniTask ShowReviewPopup()
-    {
-        //SetTouchLock_MainScene(true);
-
-        userManager.UpdateReviewPopup(
-            reviewPopupCount: userManager.Current.ReviewPopupCount + 1
-        );
-
-        Debug.Log(CodeManager.GetMethodName() + string.Format("ReviewPopupCount : {0}", userManager.Current.ReviewPopupCount));
-
-        bool popupClosed = false;
-
-        UIManager.ShowPopupUI<ReviewPopup>(
-            new ReviewPopupParameter(
-                Title: NineTap.Constant.Text.Popup.Title.REVIEW,
-                Message: NineTap.Constant.Text.Popup.Message.REVIEW_1,
-                Message2: NineTap.Constant.Text.Popup.Message.REVIEW_2,
-                ExitParameter: new ExitBaseParameter(() => popupClosed = true, false),
-                BaseButtonParameter: new UITextButtonParameter {
-                    ButtonText = NineTap.Constant.Text.Button.SURE,
-                    OnClick = SetRated
-                },
-                LeftButtonParameter: new UITextButtonParameter {
-                    ButtonText = NineTap.Constant.Text.Button.NO_THANKS,
-                    OnClick = () => {
-                        UIManager.ClosePopupUI_Force();
-                        popupClosed = true;
-                    }
-                },
-                CloseButtonParameter: new UITextButtonParameter {
-                    ButtonText = NineTap.Constant.Text.Button.OK,
-                    OnClick = () => {
-                        UIManager.ClosePopupUI_Force();
-                        popupClosed = true;
-                    }
-                },
-                HUDTypes: HUDType.ALL
-            )
-        );
-
-        await UniTask.WaitUntil(() => popupClosed);
-
-        //SetTouchLock_MainScene(false);
-
-        void SetRated()
-        {            
-            userManager.UpdateReviewPopup(
-                isRated: true,
-                reviewPopupCount: 1000,
-                reviewPopupDate: DateTime.Today.AddYears(1000).ToString(GlobalDefine.dateFormat_HHmmss)
-            );
-
-            Debug.Log(CodeManager.GetMethodName() + string.Format("IsRated : {0}", userManager.Current.IsRated));
-        }
     }
 }

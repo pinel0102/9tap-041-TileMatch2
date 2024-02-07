@@ -146,7 +146,30 @@ public class UserManager : IDisposable
                 SendInterstitalViewCount: false,
                 SendRewardViewCount: false,
                 RemoveAdsPopupCount: 0,
-                RemoveAdsPopupDate: GlobalDefine.dateDefault_HHmmss
+                RemoveAdsPopupDate: GlobalDefine.dateDefault_HHmmss,
+                ShowedPopupBeginner: false,
+                ShowedPopupWeekend1: false,
+                ShowedPopupWeekend2: false,
+                LastPopupDateBeginner: GlobalDefine.dateDefault_HHmmss,
+                LastPopupDateWeekend1: GlobalDefine.dateDefault_HHmmss,
+                LastPopupDateWeekend2: GlobalDefine.dateDefault_HHmmss,
+                LastPopupDateHard: GlobalDefine.dateDefault_HHmmss,
+                LastPopupDateCheerup1: GlobalDefine.dateDefault_HHmmss,
+                LastPopupDateCheerup2: GlobalDefine.dateDefault_HHmmss,
+                PurchasedBeginner: false,
+                PurchasedWeekend1: false,
+                PurchasedWeekend2: false,
+                PurchasedHard: false,
+                PurchasedCheerup1: false,
+                PurchasedCheerup2: false,
+                PurchasedDateBeginner: GlobalDefine.dateDefault_HHmmss,
+                PurchasedDateWeekend1: GlobalDefine.dateDefault_HHmmss,
+                PurchasedDateWeekend2: GlobalDefine.dateDefault_HHmmss,
+                PurchasedDateHard: GlobalDefine.dateDefault_HHmmss,
+                PurchasedDateCheerup1: GlobalDefine.dateDefault_HHmmss,
+                PurchasedDateCheerup2: GlobalDefine.dateDefault_HHmmss,
+                WeekendStartDate: GlobalDefine.dateDefault_HHmmss,
+                WeekendEndDate: GlobalDefine.dateDefault_HHmmss
 			);
 		}
 	}
@@ -536,6 +559,66 @@ public class UserManager : IDisposable
 			user => user.Update(
 				removeAdsPopupCount: RemoveAdsPopupCount,
 				removeAdsPopupDate: RemoveAdsPopupDate
+			)
+		);
+    }
+
+    public void UpdateBundle(
+        Optional<bool> ShowedPopupBeginner = default,
+        Optional<bool> ShowedPopupWeekend1 = default,
+        Optional<bool> ShowedPopupWeekend2 = default,
+        Optional<bool> PurchasedBeginner = default,
+        Optional<bool> PurchasedWeekend1 = default,
+        Optional<bool> PurchasedWeekend2 = default,
+        Optional<bool> PurchasedHard = default,
+        Optional<bool> PurchasedCheerup1 = default,
+        Optional<bool> PurchasedCheerup2 = default,
+        Optional<string> LastPopupDateBeginner = default,
+        Optional<string> LastPopupDateWeekend1 = default,
+        Optional<string> LastPopupDateWeekend2 = default,
+        Optional<string> LastPopupDateHard = default,
+        Optional<string> LastPopupDateCheerup1 = default,
+        Optional<string> LastPopupDateCheerup2 = default,
+        Optional<string> PurchasedDateBeginner = default,
+        Optional<string> PurchasedDateWeekend1 = default,
+        Optional<string> PurchasedDateWeekend2 = default,
+        Optional<string> PurchasedDateHard = default,
+        Optional<string> PurchasedDateCheerup1 = default,
+        Optional<string> PurchasedDateCheerup2 = default,
+        Optional<string> WeekendStartDate = default,
+        Optional<string> WeekendEndDate = default
+    )
+    {
+        if (m_user?.Value == null)
+		{
+			return;
+		}
+
+		m_user.Update(
+			user => user.Update(
+				showedPopupBeginner: ShowedPopupBeginner,
+                showedPopupWeekend1: ShowedPopupWeekend1,
+				showedPopupWeekend2: ShowedPopupWeekend2,
+                purchasedBeginner: PurchasedBeginner,
+                purchasedWeekend1: PurchasedWeekend1,
+                purchasedWeekend2: PurchasedWeekend2,
+                purchasedHard: PurchasedHard,
+                purchasedCheerup1: PurchasedCheerup1,
+                purchasedCheerup2: PurchasedCheerup2,
+                lastPopupDateBeginner: LastPopupDateBeginner,
+                lastPopupDateWeekend1: LastPopupDateWeekend1,
+                lastPopupDateWeekend2: LastPopupDateWeekend2,
+                lastPopupDateHard: LastPopupDateHard,
+                lastPopupDateCheerup1: LastPopupDateCheerup1,
+                lastPopupDateCheerup2: LastPopupDateCheerup2,
+                purchasedDateBeginner: PurchasedDateBeginner,
+                purchasedDateWeekend1: PurchasedDateWeekend1,
+                purchasedDateWeekend2: PurchasedDateWeekend2,
+                purchasedDateHard: PurchasedDateHard,
+                purchasedDateCheerup1: PurchasedDateCheerup1,
+                purchasedDateCheerup2: PurchasedDateCheerup2,
+                weekendStartDate: WeekendStartDate,
+                weekendEndDate: WeekendEndDate
 			)
 		);
     }

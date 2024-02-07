@@ -45,7 +45,7 @@ public static partial class GlobalDefine
         SDKManager.Instance.ShowRewardVideo(num, onSuccess);
     }
 
-    public static bool IsEnableRemoveAdsPopup()
+    public static bool IsEnable_RemoveAdsPopup()
     {
 #if UNITY_EDITOR
         if(testAutoPopupEditor)
