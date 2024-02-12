@@ -27,7 +27,7 @@ public class PuzzlePieceGenerator : MonoBehaviour
     public EncodeFormat _encodeFormat = EncodeFormat.PNG;
     [Range(0, 100)]
     public int _jpgQuality = 100;
-    public string outputFolder = "Resources/Images/Puzzle/Piece/";
+    public string outputFolder = "Resources/Images/Puzzle/PieceDefault/";
     private string fullPathFolder;
     private string ext;
 
@@ -75,11 +75,21 @@ public class PuzzlePieceGenerator : MonoBehaviour
         Debug.Log(CodeManager.GetMethodName() + fullPathFolder);
     }
 
+    private void ClearPieces()
+    {
+        for(int i = m_parent.childCount-1; i >= 0; i--)
+        {
+            Destroy(m_parent.GetChild(i).gameObject);
+        }
+    }
+
     private void CreatePuzzle()
 	{
-		m_background.texture = m_texture;
-		m_pieces.Clear();
+        m_background.texture = m_texture;
+        m_pieces.Clear();
         m_sprites.Clear();
+        
+        ClearPieces();
 
 		var puzzlePieces = PuzzlePieceMaker.CreatePieceSources(source: m_texture, 5, 5);
 

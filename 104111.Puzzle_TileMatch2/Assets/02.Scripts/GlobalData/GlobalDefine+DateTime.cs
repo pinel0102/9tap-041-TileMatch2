@@ -56,7 +56,7 @@ public static partial class GlobalDefine
     public static bool IsWeekend()
     {
         DateTime nowDt = DateTime.Now;
-        return nowDt.DayOfWeek == DayOfWeek.Saturday || nowDt.DayOfWeek == DayOfWeek.Sunday || nowDt.DayOfWeek == DayOfWeek.Wednesday;
+        return nowDt.DayOfWeek == DayOfWeek.Saturday || nowDt.DayOfWeek == DayOfWeek.Sunday;
     }
 
     public static bool IsExpired(DateTime date)
