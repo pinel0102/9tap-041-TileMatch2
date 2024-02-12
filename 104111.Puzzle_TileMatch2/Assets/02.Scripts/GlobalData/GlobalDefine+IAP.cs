@@ -16,8 +16,8 @@ public static partial class GlobalDefine
     
     public static bool IsPurchasePending()
     {
-        bool mainPending = globalData.mainScene?.m_purchasing.activeSelf ?? false;
-        bool popupPending = globalData.storeScene?.m_purchasing.activeSelf ?? false;
+        bool mainPending = globalData?.mainScene?.m_purchasing.activeSelf ?? false;
+        bool popupPending = globalData?.storeScene?.m_purchasing.activeSelf ?? false;
         
         return mainPending || popupPending;
     }
@@ -26,8 +26,8 @@ public static partial class GlobalDefine
     {
         Debug.Log(CodeManager.GetMethodName());
 
-        globalData.mainScene?.m_purchasing.SetActive(true);
-        globalData.storeScene?.m_purchasing.SetActive(true);
+        globalData?.mainScene?.m_purchasing.SetActive(true);
+        globalData?.storeScene?.m_purchasing.SetActive(true);
 
         ActivityIndicatorManager.StartActivityIndicator();
     }
@@ -36,8 +36,8 @@ public static partial class GlobalDefine
     {
         Debug.Log(CodeManager.GetMethodName());
 
-        globalData.mainScene?.m_purchasing.SetActive(false);
-        globalData.storeScene?.m_purchasing.SetActive(false);
+        globalData?.mainScene?.m_purchasing.SetActive(false);
+        globalData?.storeScene?.m_purchasing.SetActive(false);
 
         ActivityIndicatorManager.StopActivityIndicator();
     }
