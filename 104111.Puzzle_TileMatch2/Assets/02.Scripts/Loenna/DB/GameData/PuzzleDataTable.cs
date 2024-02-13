@@ -9,12 +9,18 @@ public class PuzzleDataTable : Table<int, PuzzleData>
 	private Dictionary<string, List<PuzzleData>> m_collections;
 
 	public IReadOnlyList<string> CollectionKeys => m_collections?.Keys?.ToArray() ?? Array.Empty<string>();
+    private int LastLevel;
 
 	public PuzzleDataTable(string path) : base(path)
 	{
 		m_collections = new();
 	}
 
+    public void SetLastLevel(int lastLevel)
+    {
+        LastLevel = lastLevel;
+    }
+    
     public override async UniTask LoadAsync(string[] array, string index = "")
 	{
 		JsonImporter<PiecesData> jsonImporter = new JsonImporter<PiecesData>();
@@ -36,13 +42,16 @@ public class PuzzleDataTable : Table<int, PuzzleData>
 
 		foreach (var (_, data) in m_rowDataDic)
 		{
-			string code = data.CountryCode;
-			if (!m_collections.ContainsKey(code))
-			{
-				m_collections.Add(code, new());
-			}
+            if (data.Level <= LastLevel)
+            {
+                string code = data.CountryCode;
+                if (!m_collections.ContainsKey(code))
+                {
+                    m_collections.Add(code, new());
+                }
 
-			m_collections[code].Add(data);
+                m_collections[code].Add(data);
+            }
 		}
 
 		//foreach (var data in m_rowDataDic.Values)

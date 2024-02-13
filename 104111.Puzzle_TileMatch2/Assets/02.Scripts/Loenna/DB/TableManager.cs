@@ -46,6 +46,7 @@ public class TableManager
     private void Initialize()
     {
         LoadGameConfig();
+        m_puzzleDataTable.SetLastLevel(LastLevel);
     }
 
 	public async UniTask<bool> LoadGameData()
@@ -57,7 +58,7 @@ public class TableManager
 		PuzzleDataTable.Load();
 		RewardDataTable.Load();
 		ItemDataTable.Load();
-		ProductDataTable.Load();        
+		ProductDataTable.Load();
 
 		TextAsset[] piecesDataAssets = Resources.LoadAll<TextAsset>("DB/GameDataTable/PuzzlePieceDatas");
 		await UniTask.Defer(() => PuzzleDataTable.LoadAsync(piecesDataAssets.Select(asset => asset.text).ToArray()));
