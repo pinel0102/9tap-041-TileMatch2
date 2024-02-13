@@ -76,6 +76,8 @@ public class MainSceneFragmentContent_Home : ScrollViewFragmentContent
         var levelData = globalData.tableManager.LevelDataTable.FirstOrDefault(index => index == globalData.userManager.Current.Level);
         bool isHardLevel = isPlayable && (levelData?.HardMode ?? false);
 
+        GlobalData.Instance.CURRENT_DIFFICULTY = isHardLevel ? 1 : 0;
+
         m_playButton.SetInteractable(isPlayable);
         hardModeIcon.SetActive(isHardLevel);
     }

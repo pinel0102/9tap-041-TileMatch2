@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEditor;
 
 public static partial class GlobalDefine
 {
@@ -65,8 +66,6 @@ public static partial class GlobalDefine
     }
 
 
-
-
     public static bool IsEnable_HardBundle()
     {
 #if UNITY_EDITOR
@@ -77,22 +76,15 @@ public static partial class GlobalDefine
         }
 #endif
 
-        bool levelCheck = IsOpen_DailyRewards();
-        if (!levelCheck) 
+        bool difficultyCheck = GlobalData.Instance.CURRENT_DIFFICULTY > 0;
+        if (!difficultyCheck) 
             return false;
 
-        bool difficultyCheck = false;
-
-        CheckDailyRewardExpired();
+        bool dateCheck = IsExpired(ToDateTime(globalData.userManager.Current.NextPopupDateHard));
         
-        DateTime lastTime = ToDateTime(globalData.userManager.Current.DailyRewardDate);
-        TimeSpan ts = DateTime.Now.Subtract(lastTime);
-        bool dateCheck = ts.TotalDays > 0;
-
-        //if (levelCheck && dateCheck)
-        //    Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1} -> {2}</color>", levelCheck && dateCheck, lastTime, DateTime.Now));
+        //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}]</color>", difficultyCheck && dateCheck));
         
-        return levelCheck && difficultyCheck && dateCheck;
+        return difficultyCheck && dateCheck;
     }
 
     public static bool IsEnable_CheerUp()
@@ -140,13 +132,4 @@ public static partial class GlobalDefine
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Expired] Next Weekend : {0} ~ {1}</color>", globalData.userManager.Current.WeekendStartDate, globalData.userManager.Current.WeekendEndDate));
         }
     }
-
-    /*private static bool IsExpired(string startDate, int days)
-    {
-        DateTime lastTime = ToDateTime(startDate);
-        TimeSpan ts = DateTime.Now.Subtract(lastTime);
-        bool expired = ts.TotalDays > days;
-
-        return expired;
-    }*/
 }

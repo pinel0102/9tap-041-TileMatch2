@@ -91,6 +91,20 @@ public class ProductPopup : PopupBase
         base.OnShow();
     }
 
+    public override void OnHide()
+    {
+        base.OnHide();
+
+        //Debug.Log(CodeManager.GetMethodName());
+
+        if (GlobalData.Instance.CURRENT_SCENE == GlobalDefine.SCENE_PLAY)
+            GlobalData.Instance.HUD.Hide();
+        else
+            GlobalData.Instance.HUD.Show(HUDType.ALL);
+
+        m_popupCloseCallback?.Invoke();
+    }
+
     public void OnPurchased()
     {
         m_purchasedCallback?.Invoke();
@@ -102,11 +116,6 @@ public class ProductPopup : PopupBase
 	{
         base.OnClickClose();
 
-        if (GlobalData.Instance.CURRENT_SCENE == GlobalDefine.SCENE_PLAY)
-            GlobalData.Instance.HUD.Hide();
-        else
-            GlobalData.Instance.HUD.Show(HUDType.ALL);
-
-        m_popupCloseCallback?.Invoke();
+        //Debug.Log(CodeManager.GetMethodName());
 	}
 }

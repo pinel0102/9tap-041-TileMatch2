@@ -39,7 +39,7 @@ public class LobbyManager : IDisposable
         SDKManager.SendAnalytics_I_Puzzle(puzzleData.Index);
 	}
 
-	public void OnCheckShowPopup(Action onMoveShop)
+	public async void OnCheckShowPopup(Action onMoveShop)
 	{
 		User user = m_userManager.Current;
 
@@ -50,6 +50,11 @@ public class LobbyManager : IDisposable
             SDKManager.SendAnalytics_C_Scene(Text.Button.STORE);
             onMoveShop?.Invoke();
             return;
+        }
+
+        if (GlobalDefine.IsEnable_HardBundle())
+        {
+            await GlobalData.Instance.ShowPopup_HardLevel();
         }
 
         SDKManager.SendAnalytics_C_Scene(Text.Button.PLAY);

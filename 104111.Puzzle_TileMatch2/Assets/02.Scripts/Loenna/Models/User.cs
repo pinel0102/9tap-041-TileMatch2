@@ -83,7 +83,12 @@ public record User
     // 주말 번들 유효 기간.
     string WeekendStartDate,
     string WeekendEndDate,
-    
+
+    // 팝업이 다음에 뜰 시각.
+    string NextPopupDateHard,
+    string NextPopupDateCheerup1,
+    string NextPopupDateCheerup2,
+
     // 게임 현황
 	int Level, // 플레이할 레벨
 	int CurrentPlayingPuzzleIndex, // 플레이 중인 퍼즐
@@ -167,7 +172,10 @@ public record User
         PurchasedDateCheerup1: GlobalDefine.dateDefault_HHmmss,
         PurchasedDateCheerup2: GlobalDefine.dateDefault_HHmmss,
         WeekendStartDate: GlobalDefine.dateDefault_HHmmss,
-        WeekendEndDate: GlobalDefine.dateDefault_HHmmss
+        WeekendEndDate: GlobalDefine.dateDefault_HHmmss,
+        NextPopupDateHard: GlobalDefine.dateDefault_HHmmss,
+        NextPopupDateCheerup1: GlobalDefine.dateDefault_HHmmss,
+        NextPopupDateCheerup2: GlobalDefine.dateDefault_HHmmss
 	);
 
 	[JsonIgnore]
@@ -239,7 +247,10 @@ public record User
         in Optional<string> purchasedDateCheerup1 = default,
         in Optional<string> purchasedDateCheerup2 = default,
         in Optional<string> weekendStartDate = default,
-        in Optional<string> weekendEndDate = default
+        in Optional<string> weekendEndDate = default,
+        in Optional<string> nextPopupDateHard = default,
+        in Optional<string> nextPopupDateCheerup1 = default,
+        in Optional<string> nextPopupDateCheerup2 = default
 	)
 	{
         DateTimeOffset now = DateTimeOffset.Now;
@@ -339,7 +350,10 @@ public record User
             PurchasedDateCheerup1: purchasedDateCheerup1.GetValueOrDefault(PurchasedDateCheerup1),
             PurchasedDateCheerup2: purchasedDateCheerup2.GetValueOrDefault(PurchasedDateCheerup2),
             WeekendStartDate: weekendStartDate.GetValueOrDefault(WeekendStartDate),
-            WeekendEndDate: weekendEndDate.GetValueOrDefault(WeekendEndDate)
+            WeekendEndDate: weekendEndDate.GetValueOrDefault(WeekendEndDate),
+            NextPopupDateHard: nextPopupDateHard.GetValueOrDefault(NextPopupDateHard),
+            NextPopupDateCheerup1: nextPopupDateCheerup1.GetValueOrDefault(NextPopupDateCheerup1),
+            NextPopupDateCheerup2: nextPopupDateCheerup2.GetValueOrDefault(NextPopupDateCheerup2)
 		);
 
         //Debug.Log(CodeManager.GetMethodName() + string.Format("Life : {0} / EndChargeLifeAt : {1}", user.Life, user.EndChargeLifeAt.LocalDateTime));

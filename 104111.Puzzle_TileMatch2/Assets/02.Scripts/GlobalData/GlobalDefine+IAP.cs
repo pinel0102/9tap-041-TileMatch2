@@ -15,6 +15,11 @@ public static partial class GlobalDefine
     public const int ProductIndex_PiggyBank = 20301;
     public const int ProductIndex_ADBlock = 29901;
     public const int ProductIndex_DailyBonus = 30000;
+
+    public static readonly TimeSpan bundleDelay_Hard_Purchased = new TimeSpan(3, 0, 0);
+    public static readonly TimeSpan bundleDelay_Hard_Default = new TimeSpan(0, 15, 0);
+    public static readonly TimeSpan bundleDelay_Cheerup_Purchased = new TimeSpan(6, 0, 0);
+    public static readonly TimeSpan bundleDelay_Cheerup_Default = new TimeSpan(0, 15, 0);
     
     public static bool IsPurchasePending()
     {

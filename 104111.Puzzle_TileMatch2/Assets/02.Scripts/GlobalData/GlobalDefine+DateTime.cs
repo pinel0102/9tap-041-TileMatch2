@@ -97,6 +97,11 @@ public static partial class GlobalDefine
         return DateTime.Today.AddDays(7);
     }
 
+    public static DateTime GetNextBundleTime(TimeSpan addTime)
+    {
+        return DateTime.Now.Add(addTime);
+    }
+
     /*public static bool IsHardBundleTime(int level)
     {
         int index = gameManager.levelSummaries.FindIndex(item => item.level == level);

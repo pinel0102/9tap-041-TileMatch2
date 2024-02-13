@@ -132,17 +132,22 @@ public partial class GlobalData
         if (tableManager.ProductDataTable.TryGetValue(GlobalDefine.ProductIndex_HardLevel, out var productData))
         {
             userManager.UpdateBundle(
-                LastPopupDateHard: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss)
+                PurchasedHard: false,
+                LastPopupDateHard: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss),
+                NextPopupDateHard: DateTime.Now.Add(GlobalDefine.bundleDelay_Hard_Default).ToString(GlobalDefine.dateFormat_HHmmss)
             );
 
             await ShowProductPopup(productData, "Hard", string.Empty, "02", OnPurchased);
+
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] Next Popup : {1}</color>", userManager.Current.PurchasedHard, userManager.Current.NextPopupDateHard));
         }
 
         void OnPurchased()
         {
             userManager.UpdateBundle(
                 PurchasedHard: true,
-                PurchasedDateHard: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss)
+                PurchasedDateHard: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss),
+                NextPopupDateHard: DateTime.Now.Add(GlobalDefine.bundleDelay_Hard_Purchased).ToString(GlobalDefine.dateFormat_HHmmss)
             );
         }
     }
@@ -158,7 +163,8 @@ public partial class GlobalData
         if (tableManager.ProductDataTable.TryGetValue(GlobalDefine.ProductIndex_Cheerup1, out var productData))
         {
             userManager.UpdateBundle(
-                LastPopupDateCheerup1: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss)
+                LastPopupDateCheerup1: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss),
+                NextPopupDateCheerup1: DateTime.Now.Add(GlobalDefine.bundleDelay_Cheerup_Default).ToString(GlobalDefine.dateFormat_HHmmss)
             );
 
             await ShowProductPopup(productData, "Cheerup_01", string.Empty, "02", OnPurchased);
@@ -168,7 +174,8 @@ public partial class GlobalData
         {
             userManager.UpdateBundle(
                 PurchasedCheerup1: true,
-                PurchasedDateCheerup1: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss)
+                PurchasedDateCheerup1: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss),
+                NextPopupDateCheerup2: DateTime.Now.Add(GlobalDefine.bundleDelay_Cheerup_Purchased).ToString(GlobalDefine.dateFormat_HHmmss)
             );
         }
     }
@@ -184,7 +191,8 @@ public partial class GlobalData
         if (tableManager.ProductDataTable.TryGetValue(GlobalDefine.ProductIndex_Cheerup2, out var productData))
         {
             userManager.UpdateBundle(
-                LastPopupDateCheerup2: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss)
+                LastPopupDateCheerup2: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss),
+                NextPopupDateCheerup1: DateTime.Now.Add(GlobalDefine.bundleDelay_Cheerup_Default).ToString(GlobalDefine.dateFormat_HHmmss)
             );
 
             await ShowProductPopup(productData, "Cheerup_02", string.Empty, "03", OnPurchased);
@@ -194,7 +202,8 @@ public partial class GlobalData
         {
             userManager.UpdateBundle(
                 PurchasedCheerup2: true,
-                PurchasedDateCheerup2: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss)
+                PurchasedDateCheerup2: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss),
+                NextPopupDateCheerup1: DateTime.Now.Add(GlobalDefine.bundleDelay_Cheerup_Purchased).ToString(GlobalDefine.dateFormat_HHmmss)
             );
         }
     }

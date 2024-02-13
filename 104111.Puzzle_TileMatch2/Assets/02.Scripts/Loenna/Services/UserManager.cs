@@ -169,7 +169,10 @@ public class UserManager : IDisposable
                 PurchasedDateCheerup1: GlobalDefine.dateDefault_HHmmss,
                 PurchasedDateCheerup2: GlobalDefine.dateDefault_HHmmss,
                 WeekendStartDate: GlobalDefine.dateDefault_HHmmss,
-                WeekendEndDate: GlobalDefine.dateDefault_HHmmss
+                WeekendEndDate: GlobalDefine.dateDefault_HHmmss,
+                NextPopupDateHard: GlobalDefine.dateDefault_HHmmss,
+                NextPopupDateCheerup1: GlobalDefine.dateDefault_HHmmss,
+                NextPopupDateCheerup2: GlobalDefine.dateDefault_HHmmss
 			);
 		}
 	}
@@ -586,7 +589,10 @@ public class UserManager : IDisposable
         Optional<string> PurchasedDateCheerup1 = default,
         Optional<string> PurchasedDateCheerup2 = default,
         Optional<string> WeekendStartDate = default,
-        Optional<string> WeekendEndDate = default
+        Optional<string> WeekendEndDate = default,
+        Optional<string> NextPopupDateHard = default,
+        Optional<string> NextPopupDateCheerup1 = default,
+        Optional<string> NextPopupDateCheerup2 = default
     )
     {
         if (m_user?.Value == null)
@@ -618,7 +624,10 @@ public class UserManager : IDisposable
                 purchasedDateCheerup1: PurchasedDateCheerup1,
                 purchasedDateCheerup2: PurchasedDateCheerup2,
                 weekendStartDate: WeekendStartDate,
-                weekendEndDate: WeekendEndDate
+                weekendEndDate: WeekendEndDate,
+                nextPopupDateHard: NextPopupDateHard,
+                nextPopupDateCheerup1: NextPopupDateCheerup1,
+                nextPopupDateCheerup2: NextPopupDateCheerup2
 			)
 		);
     }
