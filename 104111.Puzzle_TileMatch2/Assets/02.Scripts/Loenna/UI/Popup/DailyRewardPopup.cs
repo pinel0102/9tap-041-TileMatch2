@@ -176,7 +176,7 @@ public class DailyRewardPopup : UIPopup
     private void OnClick_RewardVideo()
     {
 #if !UNITY_EDITOR
-        if (!isButtonInteractable || !GlobalDefine.IsEnableDailyRewards() || !GlobalDefine.IsRewardVideoReady())
+        if (!isButtonInteractable || !GlobalDefine.IsEnable_DailyRewards() || !GlobalDefine.IsRewardVideoReady())
             return;
 #endif
 

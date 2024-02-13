@@ -81,7 +81,7 @@ namespace NineTap.Payment
 		{
 #if UNITY_STANDALONE
             return UniTask.FromResult(true);
-#endif
+#else
 
             if (IsInitialized())
                 return UniTask.FromResult(true);
@@ -113,6 +113,7 @@ namespace NineTap.Payment
 			UnityPurchasing.Initialize(this, builder);
 
 			return UniTask.FromResult(true);
+#endif
 		}
 
         private bool IsInitialized()

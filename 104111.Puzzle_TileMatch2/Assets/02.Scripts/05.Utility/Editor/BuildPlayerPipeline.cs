@@ -21,7 +21,7 @@ using UnityEngine.Purchasing;
 #endif
 
 /// <author>Pinelia Luna</author>
-/// <Summary>BuildPlayerPipeline v1.5.0
+/// <Summary>BuildPlayerPipeline v1.6.0
 /// <para>빌드 메뉴 제공 및 플랫폼 빌드 파이프라인 클래스.</para>
 /// </Summary>
 [InitializeOnLoad]
@@ -29,7 +29,7 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
 {
 #region Parameters
 
-    private static string version = "1.5.0";
+    private const string version = "1.6.0";
 
     private static BuildPlayerPipeline buildPlayerOptionsObject
     {
@@ -648,6 +648,8 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
     static void RequestBuildPlayer()
     {
         CheckScriptableObject();
+
+        PlayerSettings.SetAdditionalIl2CppArgs("--compiler-flags=\"-fbracket-depth=1024\"");
 
         buildPlayerOptionsObject.buildOptions = currentOptions.options;
         buildPlayerOptionsObject.buildLocationPathName = currentOptions.locationPathName;

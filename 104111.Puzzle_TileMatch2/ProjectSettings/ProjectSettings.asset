@@ -142,6 +142,7 @@ PlayerSettings:
   bundleVersion: 1.0.1
   preloadedAssets:
   - {fileID: 0}
+  - {fileID: 0}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -834,6 +835,7 @@ PlayerSettings:
     iPhone: UNITASK_DOTWEEN_SUPPORT;ENABLE_INPUT_SYSTEM;UNITY_POST_PROCESSING_STACK_V2
     tvOS: UNITY_POST_PROCESSING_STACK_V2
   additionalCompilerArguments:
+    Android: []
     Standalone: []
   platformArchitecture: {}
   scriptingBackend:
@@ -860,7 +862,7 @@ PlayerSettings:
   suppressCommonWarnings: 1
   allowUnsafeCode: 0
   useDeterministicCompilation: 1
-  additionalIl2CppArgs: 
+  additionalIl2CppArgs: --compiler-flags="-fbracket-depth=1024"
   scriptingRuntimeVersion: 1
   gcIncremental: 1
   gcWBarrierValidation: 0
