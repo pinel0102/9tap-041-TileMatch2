@@ -257,6 +257,7 @@ public class MainScene : UIScene
     private async void CheckAutoPopups()
     {
         GlobalData.Instance.SetTouchLock_MainScene(true);
+        GlobalData.Instance.fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); });
 
         if (CachedParameter is MainSceneRewardParameter rewardParameter)
         {

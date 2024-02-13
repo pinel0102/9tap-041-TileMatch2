@@ -12,7 +12,9 @@ public static partial class GlobalDefine
     public const int ProductIndex_Cheerup2 = 20210;
     public const int ProductIndex_Weekend1 = 20211;
     public const int ProductIndex_Weekend2 = 20212;
+    public const int ProductIndex_PiggyBank = 20301;
     public const int ProductIndex_ADBlock = 29901;
+    public const int ProductIndex_DailyBonus = 30000;
     
     public static bool IsPurchasePending()
     {

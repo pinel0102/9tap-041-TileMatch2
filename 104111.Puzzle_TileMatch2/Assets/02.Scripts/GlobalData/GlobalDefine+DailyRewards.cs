@@ -12,6 +12,9 @@ public static partial class GlobalDefine
             dailyRewardIndex: dailyIndex);
     }
 
+    /// <Summary>
+    /// Required Level &amp; Not Claimed
+    /// </Summary>
     public static bool IsEnable_DailyRewards()
     {
 #if UNITY_EDITOR

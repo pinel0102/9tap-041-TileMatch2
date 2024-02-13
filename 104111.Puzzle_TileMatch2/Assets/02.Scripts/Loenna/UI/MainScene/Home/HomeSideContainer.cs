@@ -19,7 +19,10 @@ public class HomeSideContainer : CachedBehaviour
     private List<EventCircleIcon> m_cachedIcons = new List<EventCircleIcon>();
     public List<EventCircleIcon> CachedIcons => m_cachedIcons;
 
-    public EventCircleIcon dailyRewardIcon;
+    private EventCircleIcon dailyRewardIcon;
+    private EventCircleIcon beginnerBundleIcon;
+    private EventCircleIcon weekend1BundleIcon;
+    private EventCircleIcon weekend2BundleIcon;
 
 	public void OnSetup()
 	{
@@ -36,12 +39,15 @@ public class HomeSideContainer : CachedBehaviour
         switch (m_direction)
 		{
 			case Direction.LEFT:
-                m_cachedIcons.Add(dailyRewardIcon = CreateIcon(30000, async () => { await GlobalData.Instance.ShowPopup_DailyRewards(); }));
+                m_cachedIcons.Add(dailyRewardIcon = CreateIcon(GlobalDefine.ProductIndex_DailyBonus, async () => { await GlobalData.Instance.ShowPopup_DailyRewards(); }));
 				//CreateIcon(20301); // Piggy Bank
 				break;
 			case Direction.RIGHT:
 				//CreateIcon(20207); // Beginner
-				//CreateIcon(20211); // Weekend
+				//CreateIcon(20211); // Weekend 1
+                m_cachedIcons.Add(beginnerBundleIcon = CreateIcon(GlobalDefine.ProductIndex_Beginner, async () => { await GlobalData.Instance.ShowPopup_Beginner(); }));
+                m_cachedIcons.Add(weekend1BundleIcon = CreateIcon(GlobalDefine.ProductIndex_Weekend1, async () => { await GlobalData.Instance.ShowPopup_Weekend1(); }));
+                m_cachedIcons.Add(weekend2BundleIcon = CreateIcon(GlobalDefine.ProductIndex_Weekend2, async () => { await GlobalData.Instance.ShowPopup_Weekend2(); }));
 				break;
 		}
 
@@ -78,6 +84,52 @@ public class HomeSideContainer : CachedBehaviour
                 else
                 {
                     dailyRewardIcon.gameObject.SetActive(false);
+                }
+                break;
+
+            case Direction.RIGHT:
+                if (GlobalDefine.IsOpen_BeginnerBundle())
+                {
+                    beginnerBundleIcon.gameObject.SetActive(true);
+                    beginnerBundleIcon.RefreshTime(false, string.Empty);
+                }
+                else
+                {
+                    beginnerBundleIcon.gameObject.SetActive(false);
+                }
+
+                if (GlobalDefine.IsWeekend())
+                {
+                    if (GlobalDefine.IsOpen_Weekend1Bundle())
+                    {
+                        weekend1BundleIcon.gameObject.SetActive(true);
+                        
+                        DateTime targetTime = GlobalDefine.ToDateTime(GlobalData.Instance.userManager.Current.WeekendEndDate);
+                        TimeSpan ts = targetTime.Subtract(DateTime.Now);
+                        weekend1BundleIcon.RefreshTime(true, string.Format(GlobalDefine.remainTimeFormat, ts.Hours, ts.Minutes, ts.Seconds));
+                    }
+                    else
+                    {
+                        weekend1BundleIcon.gameObject.SetActive(false);
+
+                        if (GlobalDefine.IsOpen_Weekend2Bundle())
+                        {
+                            weekend2BundleIcon.gameObject.SetActive(true);
+                            
+                            DateTime targetTime = GlobalDefine.ToDateTime(GlobalData.Instance.userManager.Current.WeekendEndDate);
+                            TimeSpan ts = targetTime.Subtract(DateTime.Now);
+                            weekend2BundleIcon.RefreshTime(true, string.Format(GlobalDefine.remainTimeFormat, ts.Hours, ts.Minutes, ts.Seconds));
+                        }
+                        else
+                        {
+                            weekend2BundleIcon.gameObject.SetActive(false);
+                        }
+                    }
+                }
+                else
+                {
+                    weekend1BundleIcon.gameObject.SetActive(false);
+                    weekend2BundleIcon.gameObject.SetActive(false);
                 }
                 break;
         }

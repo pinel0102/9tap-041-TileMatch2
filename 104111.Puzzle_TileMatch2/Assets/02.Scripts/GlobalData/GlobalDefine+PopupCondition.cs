@@ -37,6 +37,8 @@ public static partial class GlobalDefine
         bool openCheck = IsOpen_Weekend1Bundle();
         bool notShowedCheck = !globalData.userManager.Current.ShowedPopupWeekend1;
         
+        //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} / {1} / {2}</color>", weekendCheck, openCheck, notShowedCheck));
+        
         return weekendCheck && openCheck && notShowedCheck;
     }
 
@@ -57,6 +59,8 @@ public static partial class GlobalDefine
         bool notShowedCheck = !globalData.userManager.Current.ShowedPopupWeekend2;
         bool prevBundleCheck = globalData.userManager.Current.PurchasedWeekend1;
 
+        //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} / {1} / {2} / {3}</color>", weekendCheck, openCheck, notShowedCheck, prevBundleCheck));
+        
         return weekendCheck && openCheck && notShowedCheck && prevBundleCheck;
     }
 

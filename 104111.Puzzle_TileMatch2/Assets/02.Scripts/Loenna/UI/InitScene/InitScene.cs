@@ -67,7 +67,7 @@ public class InitScene : UIScene
                     
 					UIManager.ShowSceneUI<MainScene>(new MainSceneParameter(PuzzleManager: result.manager));
 
-                    if (GlobalData.Instance.userManager.Current.AppOpenCount == 1)
+                    if (GlobalData.Instance.userManager.Current.AppOpenCount == 1 || GlobalData.Instance.userManager.Current.Level <= 1)
                     {
                         Debug.Log(CodeManager.GetMethodName() + "Play Level 1");
                         SDKManager.SendAnalytics_C_Scene(NineTap.Constant.Text.Button.PLAY);

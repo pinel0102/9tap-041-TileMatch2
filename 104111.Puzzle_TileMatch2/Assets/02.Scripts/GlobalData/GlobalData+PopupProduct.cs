@@ -58,6 +58,8 @@ public partial class GlobalData
                 PurchasedBeginner: true,
                 PurchasedDateBeginner: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss)
             );
+
+            fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); });
         }
     }
 
@@ -85,6 +87,8 @@ public partial class GlobalData
                 PurchasedWeekend1: true,
                 PurchasedDateWeekend1: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss)
             );
+
+            fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); });
         }
     }
 
@@ -112,6 +116,8 @@ public partial class GlobalData
                 PurchasedWeekend2: true,
                 PurchasedDateWeekend2: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss)
             );
+
+            fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); });
         }
     }
 
