@@ -171,8 +171,7 @@ public class UserManager : IDisposable
                 WeekendStartDate: GlobalDefine.dateDefault_HHmmss,
                 WeekendEndDate: GlobalDefine.dateDefault_HHmmss,
                 NextPopupDateHard: GlobalDefine.dateDefault_HHmmss,
-                NextPopupDateCheerup1: GlobalDefine.dateDefault_HHmmss,
-                NextPopupDateCheerup2: GlobalDefine.dateDefault_HHmmss
+                NextPopupDateCheerup: GlobalDefine.dateDefault_HHmmss
 			);
 		}
 	}
@@ -290,6 +289,7 @@ public class UserManager : IDisposable
 		bool onBooster = Current.IsBoosterTime();
         int oldLife = Current.Life;
         int newLife = onBooster ? Current.Life : Current.Life - 1;
+        long oldCoin = Current.Coin;
 
 		m_user.Update(user => 
 			user.Update(
@@ -300,8 +300,10 @@ public class UserManager : IDisposable
 			)
 		);
 
-        if(requireLife)
-            Debug.Log(CodeManager.GetMethodName() + string.Format("[Life] {0} - {1} = {2} / Full : {3}", oldLife, onBooster ? 0 : 1, Current.Life, Current.EndChargeLifeAt.LocalDateTime));
+        if (requireLife)
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Life] {0} - {1} = {2} / Full : {3}</color=yellow>", oldLife, onBooster ? 0 : 1, Current.Life, Current.EndChargeLifeAt.LocalDateTime));
+        if (requireCoin.HasValue)
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Coin] {0} - {1} = {2}</color=yellow>", oldCoin, requireCoin.Value, Current.Coin));
 
 		DateTimeOffset CalcualteChargeLifeAt(long _oldEndChargeLifeTime, int _newLife, bool _requireLife)
 		{
@@ -591,8 +593,7 @@ public class UserManager : IDisposable
         Optional<string> WeekendStartDate = default,
         Optional<string> WeekendEndDate = default,
         Optional<string> NextPopupDateHard = default,
-        Optional<string> NextPopupDateCheerup1 = default,
-        Optional<string> NextPopupDateCheerup2 = default
+        Optional<string> NextPopupDateCheerup = default
     )
     {
         if (m_user?.Value == null)
@@ -626,8 +627,7 @@ public class UserManager : IDisposable
                 weekendStartDate: WeekendStartDate,
                 weekendEndDate: WeekendEndDate,
                 nextPopupDateHard: NextPopupDateHard,
-                nextPopupDateCheerup1: NextPopupDateCheerup1,
-                nextPopupDateCheerup2: NextPopupDateCheerup2
+                nextPopupDateCheerup: NextPopupDateCheerup
 			)
 		);
     }
@@ -643,6 +643,10 @@ public class UserManager : IDisposable
 		{
 			return;
 		}
+
+        long oldCoin = m_user.Value.Coin;
+        long oldBooster = m_user.Value.ExpiredLifeBoosterTime;
+        Dictionary<SkillItemType, int> oldItems = m_user.Value.OwnSkillItems;
 
         m_user.Update(
 			user => user.Update(
@@ -663,15 +667,15 @@ public class UserManager : IDisposable
 
         if(addCoin.GetValueOrDefault(0) != 0)
         {
-            LogGetItem("Coin", addCoin.Value);
+            LogGetItem("Coin", oldCoin, addCoin.Value, m_user.Value.Coin);
         }
         if(addSkillItems.HasValue)
         {
-            LogGetItems(addSkillItems.Value);
+            LogGetItems(oldItems, addSkillItems.Value, m_user.Value.OwnSkillItems);
         }
         if(addBooster.GetValueOrDefault(0) != 0)
         {
-            LogGetItem("Booster", addBooster.Value);
+            LogGetItem("Booster", oldBooster, addBooster.Value, m_user.Value.ExpiredLifeBoosterTime);
         }
 	}
 
@@ -792,19 +796,19 @@ public class UserManager : IDisposable
 
 #region SDK Log
 
-    private void LogGetItem(string itemName, long count)
+    private void LogGetItem(string itemName, long oldCount, long addCount, long newValue)
     {
         if (itemName.Contains("Booster"))
         {
-            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1}m</color>", itemName, count));
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1} + {2} = {3}m</color>", itemName, oldCount, addCount, newValue));
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Booster Time] {0}</color>", Current.ExpiredLifeBoosterAt));
         }
         else
         {
-            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1}</color>", itemName, count));
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1} + {2} = {3}</color>", itemName, oldCount, addCount, newValue));
         }
 
-        SDKManager.SendAnalytics_C_Item_Get(itemName, (int)count);
+        SDKManager.SendAnalytics_C_Item_Get(itemName, (int)addCount);
     }
 
     private void LogGetItems(Dictionary<ProductType, long> rewards)
@@ -840,13 +844,13 @@ public class UserManager : IDisposable
         }
     }
 
-    private void LogGetItems(Dictionary<SkillItemType, int> rewards)
+    private void LogGetItems(Dictionary<SkillItemType, int> oldItems, Dictionary<SkillItemType, int> rewards, Dictionary<SkillItemType, int> newValue)
     {
         foreach(var item in rewards)
         {
             if (item.Value != 0)
             {
-                Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1}</color>", item.Key, item.Value));
+                Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1} + {2} = {3}</color>", item.Key, oldItems[item.Key], item.Value, newValue[item.Key]));
                 
                 string itemName = "Unknown";
                 switch(item.Key)

@@ -22,7 +22,7 @@ public partial class GlobalData
             CoinImage: coinImage,
             PurchasedCallback: onPurchased,
             PopupCloseCallback: CloseCallback,
-            HUDTypes: HUDType.ALL
+            HUDTypes: CURRENT_SCENE == GlobalDefine.SCENE_PLAY ? HUDType.NONE : HUDType.ALL
         ));
 
         await UniTask.WaitUntil(() => popupClosed);
@@ -38,7 +38,7 @@ public partial class GlobalData
     /// 등장 2 : 15 시작 (게임 / 자동)
     /// 조건 만족시 자동 등장 (반복 X).
     /// </summary>
-    public async UniTask ShowPopup_Beginner(Action onPopupClose = null)
+    public async UniTask ShowPopup_Beginner(Action onPurchased = null)
     {
         Debug.Log(CodeManager.GetMethodName());
 
@@ -59,7 +59,7 @@ public partial class GlobalData
                 PurchasedDateBeginner: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss)
             );
 
-            fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); });
+            onPurchased?.Invoke();
         }
     }
 
@@ -67,7 +67,7 @@ public partial class GlobalData
     /// 첫 등장 : 10 클리어 + 주말 (메인 / 자동)
     /// 조건 만족시 자동 등장 반복.
     /// </summary>
-    public async UniTask ShowPopup_Weekend1(Action onPopupClose = null)
+    public async UniTask ShowPopup_Weekend1(Action onPurchased = null)
     {
         Debug.Log(CodeManager.GetMethodName());
 
@@ -88,7 +88,7 @@ public partial class GlobalData
                 PurchasedDateWeekend1: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss)
             );
 
-            fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); });
+            onPurchased?.Invoke();
         }
     }
 
@@ -96,7 +96,7 @@ public partial class GlobalData
     /// 첫 등장 : 10 클리어 + 주말 + Weekend1 구매 (메인 / 자동)
     /// 조건 만족시 자동 등장 반복.
     /// </summary>
-    public async UniTask ShowPopup_Weekend2(Action onPopupClose = null)
+    public async UniTask ShowPopup_Weekend2(Action onPurchased = null)
     {
         Debug.Log(CodeManager.GetMethodName());
 
@@ -117,7 +117,7 @@ public partial class GlobalData
                 PurchasedDateWeekend2: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss)
             );
 
-            fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); });
+            onPurchased?.Invoke();
         }
     }
 
@@ -125,7 +125,7 @@ public partial class GlobalData
     /// 첫 등장 : 하드 레벨 시작시 (메인 / 자동)
     /// 조건 만족시 자동 등장 반복.
     /// </summary>
-    public async UniTask ShowPopup_HardLevel(Action onPopupClose = null)
+    public async UniTask ShowPopup_HardLevel(Action onPurchased = null)
     {
         Debug.Log(CodeManager.GetMethodName());
 
@@ -149,6 +149,8 @@ public partial class GlobalData
                 PurchasedDateHard: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss),
                 NextPopupDateHard: DateTime.Now.Add(GlobalDefine.bundleDelay_Hard_Purchased).ToString(GlobalDefine.dateFormat_HHmmss)
             );
+
+            onPurchased?.Invoke();
         }
     }
 
@@ -156,27 +158,34 @@ public partial class GlobalData
     /// 첫 등장 : 레벨 실패시 (게임 / 자동)
     /// 조건 만족시 자동 등장 반복.
     /// </summary>
-    public async UniTask ShowPopup_Cheerup1(Action onPopupClose = null)
+    public async UniTask ShowPopup_Cheerup1(Action onPurchased = null)
     {
         Debug.Log(CodeManager.GetMethodName());
 
         if (tableManager.ProductDataTable.TryGetValue(GlobalDefine.ProductIndex_Cheerup1, out var productData))
         {
             userManager.UpdateBundle(
+                PurchasedCheerup1: false,
+                PurchasedCheerup2: false,
                 LastPopupDateCheerup1: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss),
-                NextPopupDateCheerup1: DateTime.Now.Add(GlobalDefine.bundleDelay_Cheerup_Default).ToString(GlobalDefine.dateFormat_HHmmss)
+                NextPopupDateCheerup: DateTime.Now.Add(GlobalDefine.bundleDelay_Cheerup_Default).ToString(GlobalDefine.dateFormat_HHmmss)
             );
 
             await ShowProductPopup(productData, "Cheerup_01", string.Empty, "02", OnPurchased);
+
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] Next Popup : {1}</color>", userManager.Current.PurchasedCheerup1, userManager.Current.NextPopupDateCheerup));
         }
 
         void OnPurchased()
         {
             userManager.UpdateBundle(
                 PurchasedCheerup1: true,
+                PurchasedCheerup2: false,
                 PurchasedDateCheerup1: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss),
-                NextPopupDateCheerup2: DateTime.Now.Add(GlobalDefine.bundleDelay_Cheerup_Purchased).ToString(GlobalDefine.dateFormat_HHmmss)
+                NextPopupDateCheerup: DateTime.Now.Add(GlobalDefine.bundleDelay_Cheerup_Purchased).ToString(GlobalDefine.dateFormat_HHmmss)
             );
+
+            onPurchased?.Invoke();
         }
     }
 
@@ -184,27 +193,34 @@ public partial class GlobalData
     /// 첫 등장 : 레벨 실패시 (게임 / 자동)
     /// 조건 만족시 자동 등장 반복.
     /// </summary>
-    public async UniTask ShowPopup_Cheerup2(Action onPopupClose = null)
+    public async UniTask ShowPopup_Cheerup2(Action onPurchased = null)
     {
         Debug.Log(CodeManager.GetMethodName());
 
         if (tableManager.ProductDataTable.TryGetValue(GlobalDefine.ProductIndex_Cheerup2, out var productData))
         {
             userManager.UpdateBundle(
+                PurchasedCheerup1: false,
+                PurchasedCheerup2: false,
                 LastPopupDateCheerup2: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss),
-                NextPopupDateCheerup1: DateTime.Now.Add(GlobalDefine.bundleDelay_Cheerup_Default).ToString(GlobalDefine.dateFormat_HHmmss)
+                NextPopupDateCheerup: DateTime.Now.Add(GlobalDefine.bundleDelay_Cheerup_Default).ToString(GlobalDefine.dateFormat_HHmmss)
             );
 
             await ShowProductPopup(productData, "Cheerup_02", string.Empty, "03", OnPurchased);
+
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] Next Popup : {1}</color>", userManager.Current.PurchasedCheerup2, userManager.Current.NextPopupDateCheerup));
         }
 
         void OnPurchased()
         {
             userManager.UpdateBundle(
+                PurchasedCheerup1: false,
                 PurchasedCheerup2: true,
                 PurchasedDateCheerup2: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss),
-                NextPopupDateCheerup1: DateTime.Now.Add(GlobalDefine.bundleDelay_Cheerup_Purchased).ToString(GlobalDefine.dateFormat_HHmmss)
+                NextPopupDateCheerup: DateTime.Now.Add(GlobalDefine.bundleDelay_Cheerup_Purchased).ToString(GlobalDefine.dateFormat_HHmmss)
             );
+
+            onPurchased?.Invoke();
         }
     }
 }

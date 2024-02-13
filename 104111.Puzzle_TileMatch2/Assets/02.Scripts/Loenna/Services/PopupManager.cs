@@ -259,7 +259,6 @@ public class PopupManager
         if(lastPopup.ignoreBackKey)
             return true;
 
-        Debug.Log(CodeManager.GetMethodName() + string.Format("Close Popup : {0}", lastPopup.name));
         ClosePopup(lastPopup);
 
 		return true;
@@ -273,7 +272,6 @@ public class PopupManager
 			return;
 		}
         
-        Debug.Log(CodeManager.GetMethodName() + string.Format("Close Popup : {0}", m_popups.LastOrDefault().name));
         ClosePopup(m_popups.LastOrDefault());
 	}
 
@@ -287,7 +285,6 @@ public class PopupManager
 
         for(int i = m_popups.Count - 1; i >= 0; i--)
         {
-            Debug.Log(CodeManager.GetMethodName() + string.Format("Close Popup : {0}", m_popups.LastOrDefault().name));
             ClosePopup(m_popups.LastOrDefault());
         }
 	}

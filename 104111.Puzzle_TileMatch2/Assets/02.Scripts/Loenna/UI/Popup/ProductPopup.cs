@@ -95,8 +95,6 @@ public class ProductPopup : PopupBase
     {
         base.OnHide();
 
-        //Debug.Log(CodeManager.GetMethodName());
-
         if (GlobalData.Instance.CURRENT_SCENE == GlobalDefine.SCENE_PLAY)
             GlobalData.Instance.HUD.Hide();
         else
@@ -111,11 +109,4 @@ public class ProductPopup : PopupBase
 
         OnClickClose();
     }
-
-    public override void OnClickClose()
-	{
-        base.OnClickClose();
-
-        //Debug.Log(CodeManager.GetMethodName());
-	}
 }

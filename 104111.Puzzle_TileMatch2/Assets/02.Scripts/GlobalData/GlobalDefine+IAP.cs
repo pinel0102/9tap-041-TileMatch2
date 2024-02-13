@@ -16,15 +16,15 @@ public static partial class GlobalDefine
     public const int ProductIndex_ADBlock = 29901;
     public const int ProductIndex_DailyBonus = 30000;
 
-    public static readonly TimeSpan bundleDelay_Hard_Purchased = new TimeSpan(3, 0, 0);
-    public static readonly TimeSpan bundleDelay_Hard_Default = new TimeSpan(0, 15, 0);
-    public static readonly TimeSpan bundleDelay_Cheerup_Purchased = new TimeSpan(6, 0, 0);
-    public static readonly TimeSpan bundleDelay_Cheerup_Default = new TimeSpan(0, 15, 0);
+    public static readonly TimeSpan bundleDelay_Hard_Default = new TimeSpan(0, 15, 0); // (0, 15, 0)
+    public static readonly TimeSpan bundleDelay_Hard_Purchased = new TimeSpan(3, 0, 0); // (3, 0, 0)    
+    public static readonly TimeSpan bundleDelay_Cheerup_Default = new TimeSpan(0, 15, 0); // (0, 15, 0)
+    public static readonly TimeSpan bundleDelay_Cheerup_Purchased = new TimeSpan(6, 0, 0); // (6, 0, 0)
     
     public static bool IsPurchasePending()
     {
-        bool mainPending = globalData?.mainScene?.m_purchasing.activeSelf ?? false;
-        bool popupPending = globalData?.storeScene?.m_purchasing.activeSelf ?? false;
+        bool mainPending = globalData?.mainScene?.m_purchasing?.activeSelf ?? false;
+        bool popupPending = globalData?.storeScene?.m_purchasing?.activeSelf ?? false;
         
         return mainPending || popupPending;
     }
@@ -33,8 +33,8 @@ public static partial class GlobalDefine
     {
         Debug.Log(CodeManager.GetMethodName());
 
-        globalData?.mainScene?.m_purchasing.SetActive(true);
-        globalData?.storeScene?.m_purchasing.SetActive(true);
+        globalData?.mainScene?.m_purchasing?.SetActive(true);
+        globalData?.storeScene?.m_purchasing?.SetActive(true);
 
         ActivityIndicatorManager.StartActivityIndicator();
     }
@@ -43,8 +43,8 @@ public static partial class GlobalDefine
     {
         Debug.Log(CodeManager.GetMethodName());
 
-        globalData?.mainScene?.m_purchasing.SetActive(false);
-        globalData?.storeScene?.m_purchasing.SetActive(false);
+        globalData?.mainScene?.m_purchasing?.SetActive(false);
+        globalData?.storeScene?.m_purchasing?.SetActive(false);
 
         ActivityIndicatorManager.StopActivityIndicator();
     }
@@ -143,7 +143,7 @@ public static partial class GlobalDefine
 
     public static void RefreshADFreeUI()
     {
-        globalData.fragmentStore.RefreshADFreeUI();
-        globalData.fragmentStore_popup?.RefreshADFreeUI();
+        globalData?.fragmentStore?.RefreshADFreeUI();
+        globalData?.fragmentStore_popup?.RefreshADFreeUI();
     }
 }

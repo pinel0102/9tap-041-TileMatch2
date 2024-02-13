@@ -280,21 +280,21 @@ public class MainScene : UIScene
         // [Level >= 10] && [not purchased]
         if (GlobalDefine.IsEnable_BeginnerBundle())
         {
-            await GlobalData.Instance.ShowPopup_Beginner();
+            await GlobalData.Instance.ShowPopup_Beginner(() => GlobalData.Instance.fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); }));
         }
 
         // [Level >= 1] && [Weekend]
         if (GlobalDefine.IsEnable_Weekend1Bundle())
         {
             // [TODO] ShowPopup_Weekend1
-            await GlobalData.Instance.ShowPopup_Weekend1();
+            await GlobalData.Instance.ShowPopup_Weekend1(() => GlobalData.Instance.fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); }));
         }
 
         // [Level >= 1] && [Weekend]
         if (GlobalDefine.IsEnable_Weekend2Bundle())
         {
             // [TODO] ShowPopup_Weekend2
-            await GlobalData.Instance.ShowPopup_Weekend2();
+            await GlobalData.Instance.ShowPopup_Weekend2(() => GlobalData.Instance.fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); }));
         }
 
         // [Level >= 20] && [Interstitial AD]

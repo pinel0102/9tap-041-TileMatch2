@@ -89,30 +89,28 @@ partial class PlayScene
 		{
             SDKManager.SendAnalytics_C_Scene(Text.Button.CONTINUE);
             
+            Dictionary<SkillItemType, int> addSkillItems = new();
+            
             foreach (var itemType in itemTypes)
 			{
-				if (itemType is SkillItemType.Stash)
-				{
-					m_gameManager.UseSkillItem(itemType, false);
-				}
+                switch(itemType)
+                {
+                    case SkillItemType.Stash:
+                        m_gameManager.UseSkillItem(itemType, false);
+                        break;
+                    case SkillItemType.Undo:
+                    case SkillItemType.Shuffle:
+                        addSkillItems.Add(itemType, 1);
+                        break;
+                }
 			}
 
-			var types = itemTypes.Where(x => x != SkillItemType.Stash);
+            if (addSkillItems.Count > 0)
+            {
+                GlobalDefine.GetItems(addSkillItems: addSkillItems);
+            }
 
-			m_userManager.Update(
-				ownSkillItems: m_userManager.Current.OwnSkillItems.Select(
-					pair => {
-						if (types.Any(x => x == pair.Key))
-						{
-							return (key: pair.Key, value: pair.Value + 1);
-						}
-
-						return (key: pair.Key, value: pair.Value);
-					}
-				).ToDictionary(keySelector: tuple => tuple.key, elementSelector: tuple => tuple.value)
-			);
-
-			UIManager.ClosePopupUI();
+			UIManager.ClosePopupUI_ForceAll();
 			m_block.SetActive(false);
 		}
         else
@@ -363,25 +361,52 @@ partial class PlayScene
         );
     }
 
-    public void LevelFail(bool sendLog = true)
+    public async void LevelFail(bool isStartPopup = true)
     {
-        if (sendLog)
+        if (isStartPopup)
         {
-            Debug.Log(CodeManager.GetMethodName() + m_gameManager.CurrentLevel);
+            bool cheerupSkip = false;
+
+            if (GlobalDefine.IsEnable_CheerUp())
+            {
+                List<SkillItemType> item = new()
+                {
+                    SkillItemType.Stash
+                };
+
+                if (GlobalData.Instance.userManager.Current.PurchasedCheerup1)
+                {
+                    await GlobalData.Instance.ShowPopup_Cheerup2(() => {
+                        cheerupSkip = true;
+                        Continue(0, item);
+                    });
+                }
+                else
+                {
+                    await GlobalData.Instance.ShowPopup_Cheerup1(() => {
+                        cheerupSkip = true;
+                        Continue(0, item);
+                    });
+                }
+            }
+            
+            if (cheerupSkip)
+                return;
+
+            Debug.Log(CodeManager.GetMethodName() + string.Format("Level {0}", m_gameManager.CurrentLevel));
             SDKManager.SendAnalytics_I_Scene_Fail();
         }
 
         CurrentPlayState.Finished.State result = CurrentPlayState.Finished.State.OVER;
-        int coinAmount = m_gameManager.GetSkillPackageCoin(sendLog, out var itemTypes);
         
+        int coinAmount = m_gameManager.GetSkillPackageCoin(isStartPopup, out var itemTypes);
+        Debug.Log(CodeManager.GetMethodName() + string.Format("Required Coin : {0}", coinAmount));
+
         UIManager.ShowPopupUI<PlayEndPopup>(
             new PlayEndPopupParameter(
                 State: result,
                 ContinueButtonParameter: new UITextButtonParameter {
-                    OnClick = () => OnContinue(coinAmount, itemTypes, () => { 
-                        GlobalDefine.RequestAD_ShowBanner();
-                        LevelFail(false); 
-                    }),
+                    OnClick = () => Continue(coinAmount, itemTypes),
                     ButtonText = Text.Button.PLAY_ON,
                     SubWidgetBuilder = () => {
                         var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
@@ -392,6 +417,14 @@ partial class PlayScene
                 OnQuit: () => ShowAreYouSure(coinAmount, itemTypes)
             )
         );
+
+        void Continue(int _coinAmount, List<SkillItemType> _itemTypes)
+        {
+            OnContinue(_coinAmount, _itemTypes, () => { 
+                        GlobalDefine.RequestAD_ShowBanner();
+                        LevelFail(false); 
+            });
+        }
     }
 
     private void ShowAreYouSure(int coinAmount, List<SkillItemType> itemTypes)

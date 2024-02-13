@@ -137,7 +137,7 @@ public class RewardPopup : UIPopup
 				OnClick = () => { 
                     m_confirmButton.interactable = false;
                     m_confirmButton.Alpha = 0f;
-                    OnExit(HUDType.ALL);
+                    OnExit();
                 }
 			}
 		);
@@ -171,10 +171,14 @@ public class RewardPopup : UIPopup
 		UIManager.DetachAllHUD();
 	}
 
-    public void OnExit(HUDType hudType)
+    public void OnExit()
     {
         OnClickClose();
-        GlobalData.Instance.HUD_Show(hudType);
+
+        if (GlobalData.Instance.CURRENT_SCENE == GlobalDefine.SCENE_PLAY)
+            GlobalData.Instance.HUD_Hide();
+        else
+            GlobalData.Instance.HUD_Show(HUDType.ALL);
     }
 
     public override void OnClickClose()

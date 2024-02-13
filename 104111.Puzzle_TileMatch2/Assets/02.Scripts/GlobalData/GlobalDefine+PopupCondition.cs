@@ -6,6 +6,10 @@ using UnityEditor;
 
 public static partial class GlobalDefine
 {
+    /// <Summary>
+    /// <para>Not Showed Popup</para>
+    /// Required Level &amp; Not Purchased
+    /// </Summary>
     public static bool IsEnable_BeginnerBundle()
     {
 #if UNITY_EDITOR
@@ -22,6 +26,10 @@ public static partial class GlobalDefine
         return openCheck && notShowedCheck;
     }
 
+    /// <Summary>
+    /// <para>Weekend &amp; Not Showed Popup</para>
+    /// <para>Required Level &amp; Not Purchased</para>
+    /// </Summary>
     public static bool IsEnable_Weekend1Bundle()
     {
 #if UNITY_EDITOR
@@ -43,6 +51,10 @@ public static partial class GlobalDefine
         return weekendCheck && openCheck && notShowedCheck;
     }
 
+    /// <Summary>
+    /// <para>Weekend &amp; Not Showed Popup &amp; Purchased Weekend 1</para>
+    /// <para>Required Level &amp; Not Purchased</para>
+    /// </Summary>
     public static bool IsEnable_Weekend2Bundle()
     {
 #if UNITY_EDITOR
@@ -65,7 +77,9 @@ public static partial class GlobalDefine
         return weekendCheck && openCheck && notShowedCheck && prevBundleCheck;
     }
 
-
+    /// <Summary>
+    /// <para>Hard Level &amp; PopupDate Expired</para>
+    /// </Summary>
     public static bool IsEnable_HardBundle()
     {
 #if UNITY_EDITOR
@@ -82,11 +96,15 @@ public static partial class GlobalDefine
 
         bool dateCheck = IsExpired(ToDateTime(globalData.userManager.Current.NextPopupDateHard));
         
-        //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}]</color>", difficultyCheck && dateCheck));
+        if(!dateCheck)
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] Next Popup : {1}</color>", dateCheck, globalData.userManager.Current.NextPopupDateHard));
         
         return difficultyCheck && dateCheck;
     }
 
+    /// <Summary>
+    /// <para>PopupDate Expired</para>
+    /// </Summary>
     public static bool IsEnable_CheerUp()
     {
 #if UNITY_EDITOR
@@ -97,22 +115,13 @@ public static partial class GlobalDefine
         }
 #endif
 
-        bool levelCheck = IsOpen_DailyRewards();
-        if (!levelCheck) 
-            return false;
+        bool dateCheck = IsExpired(ToDateTime(globalData.userManager.Current.NextPopupDateCheerup));
 
-        CheckDailyRewardExpired();
+        if (!dateCheck)
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] Next Popup : {1}</color>", dateCheck, globalData.userManager.Current.NextPopupDateCheerup));
         
-        DateTime lastTime = ToDateTime(globalData.userManager.Current.DailyRewardDate);
-        TimeSpan ts = DateTime.Now.Subtract(lastTime);
-        bool dateCheck = ts.TotalDays > 0;
-
-        //if (levelCheck && dateCheck)
-        //    Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1} -> {2}</color>", levelCheck && dateCheck, lastTime, DateTime.Now));
-        
-        return levelCheck && dateCheck;
+        return dateCheck;
     }
-
 
     private static void CheckWeekendExpired()
     {

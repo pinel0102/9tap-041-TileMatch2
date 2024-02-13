@@ -490,17 +490,32 @@ public partial class GameManager : IDisposable
         if (checkCount)
 		    m_continueCount += 1;
 
+        Debug.Log(CodeManager.GetMethodName() + string.Format("Continue Count : {0}", m_continueCount));
+
 		skillItemTypes = new();
 
 		for (int i = 0; i < m_continueCount; i++)
 		{
-			skillItemTypes.Add((SkillItemType)(i + 1));
-
+            SkillItemType type = (SkillItemType)(i + 1);
+            switch(type)
+            {
+                case SkillItemType.Stash:
+                case SkillItemType.Undo:
+                case SkillItemType.Shuffle:
+                    skillItemTypes.Add(type);
+                    break;
+            }
+			
 			if (i > 0)
 			{
 				skillItemTypes.Add(SkillItemType.VAT);
 			}
 		}
+
+        /*for(int i=0; i < skillItemTypes.Count; i++)
+        {
+            Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : {1}", skillItemTypes[i], skillItemTypes[i].GetPaidCoin()));
+        }*/
 
 		return skillItemTypes.Sum(type => type.GetPaidCoin());
 	}

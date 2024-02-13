@@ -64,12 +64,14 @@ public class HUD
 
 	public void Show(params HUDType[] types)
 	{
+        //Debug.Log(CodeManager.GetMethodName());
 		m_behaviour.CachedGameObject.SetActive(true);
 		m_behaviour.OnShow(types);
 	}
 
 	public void Hide()
 	{
+        //Debug.Log(CodeManager.GetMethodName());
 		m_behaviour.CachedGameObject.SetActive(false);
 	}
 }

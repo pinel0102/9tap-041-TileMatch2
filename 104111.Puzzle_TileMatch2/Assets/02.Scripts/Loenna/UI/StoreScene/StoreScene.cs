@@ -12,6 +12,8 @@ public class StoreScene : UIScene
 
     public GameObject m_purchasing;
 
+    private GlobalData globalData { get { return GlobalData.Instance; } }
+
 	public override void OnSetup(UIParameter uiParameter)
 	{
 		base.OnSetup(uiParameter);
@@ -19,8 +21,32 @@ public class StoreScene : UIScene
 		if (uiParameter is StoreSceneParameter parameter)
 		{
 			m_storeFragment.OnSetup(parameter.StoreParam);
+            
+            if (globalData?.CURRENT_SCENE == GlobalDefine.SCENE_PLAY)
+            {
+                globalData.fragmentStore_popup = m_storeFragment;
+            }
 		}
 
-        GlobalData.Instance.storeScene = this;
+        globalData.storeScene = this;
 	}
+
+    public override void OnShow()
+    {
+        base.OnShow();
+
+        globalData.storeScene = this;
+    }
+
+    public override void OnHide()
+    {
+        base.OnHide();
+
+        globalData.storeScene = null;
+
+        if (globalData?.CURRENT_SCENE == GlobalDefine.SCENE_PLAY)
+        {
+            globalData.fragmentStore_popup = null;
+        }
+    }
 }

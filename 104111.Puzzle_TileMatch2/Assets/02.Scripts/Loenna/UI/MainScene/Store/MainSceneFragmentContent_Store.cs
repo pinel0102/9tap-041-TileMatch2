@@ -29,19 +29,14 @@ public class MainSceneFragmentContent_Store : ScrollViewFragmentContent
 
     public GameObject banner;
 
-	public override void OnSetup(ScrollViewFragmentContentParameter contentParameter)
+    public override void OnSetup(ScrollViewFragmentContentParameter contentParameter)
 	{
 		if (contentParameter is not MainSceneFragmentContentParameter_Store parameter) 
 		{
 			return;
 		}
 
-        if (GlobalData.Instance.CURRENT_SCENE == GlobalDefine.SCENE_PLAY)
-        {
-            GlobalData.Instance.fragmentStore_popup = this;
-        }
-
-		m_title.text = parameter.TitleText;
+        m_title.text = parameter.TitleText;
 
 		m_closeButton.OnSetup(parameter.CloseButtonParameter);
 
@@ -62,6 +57,6 @@ public class MainSceneFragmentContent_Store : ScrollViewFragmentContent
     {
         bool NoAD = GlobalData.Instance.userManager.Current.NoAD;
         
-        banner.SetActive(!NoAD);
+        banner?.SetActive(!NoAD);
     }
 }

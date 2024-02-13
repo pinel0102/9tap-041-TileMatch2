@@ -43,11 +43,9 @@ public class HomeSideContainer : CachedBehaviour
 				//CreateIcon(20301); // Piggy Bank
 				break;
 			case Direction.RIGHT:
-				//CreateIcon(20207); // Beginner
-				//CreateIcon(20211); // Weekend 1
-                m_cachedIcons.Add(beginnerBundleIcon = CreateIcon(GlobalDefine.ProductIndex_Beginner, async () => { await GlobalData.Instance.ShowPopup_Beginner(); }));
-                m_cachedIcons.Add(weekend1BundleIcon = CreateIcon(GlobalDefine.ProductIndex_Weekend1, async () => { await GlobalData.Instance.ShowPopup_Weekend1(); }));
-                m_cachedIcons.Add(weekend2BundleIcon = CreateIcon(GlobalDefine.ProductIndex_Weekend2, async () => { await GlobalData.Instance.ShowPopup_Weekend2(); }));
+				m_cachedIcons.Add(beginnerBundleIcon = CreateIcon(GlobalDefine.ProductIndex_Beginner, async () => { await GlobalData.Instance.ShowPopup_Beginner(RefreshIcons); }));
+                m_cachedIcons.Add(weekend1BundleIcon = CreateIcon(GlobalDefine.ProductIndex_Weekend1, async () => { await GlobalData.Instance.ShowPopup_Weekend1(RefreshIcons); }));
+                m_cachedIcons.Add(weekend2BundleIcon = CreateIcon(GlobalDefine.ProductIndex_Weekend2, async () => { await GlobalData.Instance.ShowPopup_Weekend2(RefreshIcons); }));
 				break;
 		}
 
