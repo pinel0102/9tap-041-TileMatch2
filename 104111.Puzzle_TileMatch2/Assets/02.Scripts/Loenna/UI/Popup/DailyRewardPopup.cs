@@ -240,11 +240,16 @@ public class DailyRewardPopup : UIPopup
         base.OnShow();
     }
 
+    public override void OnHide()
+    {
+        base.OnHide();
+
+        m_popupCloseCallback?.Invoke();
+    }
+
     public override void OnClickClose()
 	{
         base.OnClickClose();
-
-        m_popupCloseCallback?.Invoke();
 	}
 
     private void SetButtonInteractable(bool interactable)
