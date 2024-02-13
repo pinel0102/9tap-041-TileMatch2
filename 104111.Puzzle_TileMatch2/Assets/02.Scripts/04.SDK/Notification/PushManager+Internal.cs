@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System;
+using Gley.Notifications;
 
 public static partial class PushManager
 {
@@ -20,7 +21,7 @@ public static partial class PushManager
 
                 if (pushDelay.TotalSeconds > 0)
                 {
-                    GleyNotifications.SendNotification(m_appTitle, pushOnceList[i].PushText[j], pushDelay);
+                    API.SendNotification(m_appTitle, pushOnceList[i].PushText[j], pushDelay);
                     
                     if (m_showInternalLog)
                         Debug.Log(CodeManager.GetMethodName() + string.Format("pushStartTime[{0}][{1}] : {2} / pushDelay : {3} / text : {4}", i, j, pushStartTime, pushDelay, pushOnceList[i].PushText[j]));
@@ -42,7 +43,7 @@ public static partial class PushManager
                 TimeSpan pushDelay = pushStartTime.AddDays(j).Subtract(now);
                 if (pushDelay.TotalSeconds > 0)
                 {
-                    GleyNotifications.SendRepeatNotification(m_appTitle, pushRepeatList[i].PushText[j], pushDelay, pushRepeatList[i].Interval, null, null, string.Empty);
+                    API.SendRepeatNotification(m_appTitle, pushRepeatList[i].PushText[j], pushDelay, pushRepeatList[i].Interval, null, null, string.Empty);
                     
                     if (m_showInternalLog)
                         Debug.Log(CodeManager.GetMethodName() + string.Format("pushStartTime[{0}][{1}] : {2} / pushDelay : {3} / interval : {4} / text : {5}", i, j, pushStartTime.AddDays(j), pushDelay, pushRepeatList[i].Interval, pushRepeatList[i].PushText[j]));

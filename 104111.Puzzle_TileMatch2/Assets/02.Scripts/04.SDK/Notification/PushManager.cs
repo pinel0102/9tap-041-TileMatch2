@@ -1,8 +1,9 @@
 using UnityEngine;
 using System;
+using Gley.Notifications;
 
 /// <summary>
-/// Need Package : <see cref="GleyNotifications"/>
+/// Need Package : <see cref="Gley.Notifications"/>
 /// </summary>
 public static partial class PushManager
 {
@@ -39,7 +40,7 @@ public static partial class PushManager
             return;
         }
 
-        GleyNotifications.Initialize();
+        API.Initialize();
 
         if (agree)
         {
@@ -60,8 +61,8 @@ public static partial class PushManager
     {
         Debug.Log(CodeManager.GetMethodName());
 
-        GleyNotifications.SendNotification(m_appTitle, "test 1", new TimeSpan(0, 1, 0));
-        GleyNotifications.SendNotification(m_appTitle, "test 2", new TimeSpan(0, 2, 0));
-        GleyNotifications.SendNotification(m_appTitle, "test 3", new TimeSpan(0, 3, 0));
+        API.SendNotification(m_appTitle, "test 1", new TimeSpan(0, 1, 0));
+        API.SendNotification(m_appTitle, "test 2", new TimeSpan(0, 2, 0));
+        API.SendNotification(m_appTitle, "test 3", new TimeSpan(0, 3, 0));
     }
 }

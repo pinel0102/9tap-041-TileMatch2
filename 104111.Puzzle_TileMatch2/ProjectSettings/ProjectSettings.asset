@@ -143,6 +143,10 @@ PlayerSettings:
   preloadedAssets:
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 11400000, guid: d41f221147373264f81c8a56082db816, type: 2}
+  - {fileID: 11400000, guid: 6d9719275840cbc42a264413291adb15, type: 2}
+  - {fileID: 11400000, guid: 1e878b4aa3389bb408b5dc98b723be64, type: 2}
+  - {fileID: -6706180381895313924, guid: 69770f0d073689047a54ded72a4fa79d, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -820,7 +824,7 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Android: UNITASK_DOTWEEN_SUPPORT;ENABLE_INPUT_SYSTEM;UNITY_POST_PROCESSING_STACK_V2;EnableNotificationsAndroid
+    Android: UNITASK_DOTWEEN_SUPPORT;ENABLE_INPUT_SYSTEM;UNITY_POST_PROCESSING_STACK_V2;GLEY_NOTIFICATIONS_ANDROID
     EmbeddedLinux: UNITY_POST_PROCESSING_STACK_V2
     GameCoreXboxOne: UNITY_POST_PROCESSING_STACK_V2
     Nintendo Switch: UNITY_POST_PROCESSING_STACK_V2
@@ -832,7 +836,7 @@ PlayerSettings:
     VisionOS: UNITY_POST_PROCESSING_STACK_V2
     WebGL: UNITY_POST_PROCESSING_STACK_V2
     XboxOne: UNITY_POST_PROCESSING_STACK_V2
-    iPhone: UNITASK_DOTWEEN_SUPPORT;ENABLE_INPUT_SYSTEM;UNITY_POST_PROCESSING_STACK_V2;EnableNotificationsIos
+    iPhone: UNITASK_DOTWEEN_SUPPORT;ENABLE_INPUT_SYSTEM;UNITY_POST_PROCESSING_STACK_V2;GLEY_NOTIFICATIONS_IOS
     tvOS: UNITY_POST_PROCESSING_STACK_V2
   additionalCompilerArguments:
     Android: []
