@@ -43,6 +43,9 @@ public class LobbyManager : IDisposable
 	{
 		User user = m_userManager.Current;
 
+        if (user.Level > GlobalData.Instance.tableManager.LastLevel)
+            return;
+
         var (_, valid, _) = user.Valid();
 
         if (!valid)
