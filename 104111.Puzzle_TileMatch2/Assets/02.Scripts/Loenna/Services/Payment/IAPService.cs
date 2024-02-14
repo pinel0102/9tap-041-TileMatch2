@@ -286,7 +286,7 @@ namespace NineTap.Payment
 		public void OnPurchaseFailed(Product product, PurchaseFailureDescription failureDescription)
 		{
             #if IAP_DEBUG_LOG
-			Debug.LogError($"[IAPService.OnPurchaseFailed] ProductID: {failureDescription.productId} - Reason: {failureDescription.reason}");
+			Debug.Log($"[IAPService.OnPurchaseFailed] ProductID: {failureDescription.productId} - Reason: {failureDescription.reason}");
 			#endif
 			m_purchaseResult.Update(value => value = Error(failureDescription.reason));
 		}
@@ -294,7 +294,7 @@ namespace NineTap.Payment
 		public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
 		{
             #if IAP_DEBUG_LOG
-			Debug.LogError($"[IAPService.OnPurchaseFailed] ProductID: {product?.definition?.id} - Reason: {failureReason}");
+			Debug.Log($"[IAPService.OnPurchaseFailed] ProductID: {product?.definition?.id} - Reason: {failureReason}");
 			#endif
 			m_purchaseResult.Update(value => value = Error(failureReason));
 		}
