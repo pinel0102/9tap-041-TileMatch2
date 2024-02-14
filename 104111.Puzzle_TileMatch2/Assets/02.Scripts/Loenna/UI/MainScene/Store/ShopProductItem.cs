@@ -2,6 +2,7 @@ using UnityEngine;
 
 using NineTap.Payment;
 using NineTap.Common;
+using Cysharp.Threading.Tasks;
 
 public class ShopProductItem : CachedBehaviour
 {
@@ -16,9 +17,10 @@ public class ShopProductItem : CachedBehaviour
 		m_valueWidget.UpdateUI(product.UIType, product.GetShopItemImagePath(), $"{product.Coin} Golds");
 
         m_button.onClick.RemoveAllListeners();
-		m_button.OnSetup(
+        m_button.OnSetup(
 			new UITextButtonParameter {
-				ButtonText = product.GetPriceString(),
+				ButtonText = string.Empty,
+                ButtonTextBinder = new AsyncReactiveProperty<string>(product.GetPriceString()),
 				OnClick = () => {
                     GlobalDefine.Purchase(product);
                 }

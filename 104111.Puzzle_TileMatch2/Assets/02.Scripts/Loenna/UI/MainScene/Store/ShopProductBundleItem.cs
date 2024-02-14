@@ -9,6 +9,7 @@ using TMPro;
 
 using NineTap.Payment;
 using NineTap.Common;
+using Cysharp.Threading.Tasks;
 
 public class ShopProductBundleItem : CachedBehaviour
 {
@@ -72,7 +73,8 @@ public class ShopProductBundleItem : CachedBehaviour
 		m_button.onClick.RemoveAllListeners();
 		m_button.OnSetup(
 			new UITextButtonParameter {
-				ButtonText = product.GetPriceString(),
+				ButtonText = string.Empty,
+                ButtonTextBinder = new AsyncReactiveProperty<string>(product.GetPriceString()),
 				OnClick = () => {
                     GlobalDefine.Purchase(product);
                 }

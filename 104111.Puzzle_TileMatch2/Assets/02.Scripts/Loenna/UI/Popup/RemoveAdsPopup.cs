@@ -1,6 +1,7 @@
 using UnityEngine;
 using NineTap.Common;
 using System;
+using Cysharp.Threading.Tasks;
 
 public record RemoveAdsPopupParameter
 (
@@ -37,7 +38,8 @@ public class RemoveAdsPopup : UIPopup
             OnClick = () => {
                 GlobalDefine.Purchase(parameter.Product, onSuccess: OnClickClose);
             },
-            ButtonText = parameter.Product.GetPriceString(),
+            ButtonText = string.Empty,
+            ButtonTextBinder = new AsyncReactiveProperty<string>(parameter.Product.GetPriceString()),
             SubWidgetBuilder = null
         });
 	}

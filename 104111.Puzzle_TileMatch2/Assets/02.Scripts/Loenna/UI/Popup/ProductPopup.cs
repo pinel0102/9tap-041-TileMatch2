@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using NineTap.Common;
 using TMPro;
+using Cysharp.Threading.Tasks;
 
 public record ProductPopupParameter
 (
@@ -80,7 +81,8 @@ public class ProductPopup : PopupBase
                 OnClick = () => {
                     GlobalDefine.Purchase(productData, onSuccess: OnPurchased);
                 },
-                ButtonText = productData.GetPriceString(),
+                ButtonText = string.Empty,
+                ButtonTextBinder = new AsyncReactiveProperty<string>(productData.GetPriceString()),
                 SubWidgetBuilder = null
             });
 		}
