@@ -28,13 +28,14 @@ Puzzle - TileMatch2 클라이언트 프로젝트
 # ChangeLog
 
 <details>
-<summary markdown="span"><em>last update : 1.0.0</em></summary>
+<summary markdown="span"><em>last update : 1.0.1</em></summary>
 <br>
 
 ---
 + 1.0.1
    - 번들 팝업 추가
    - 레벨 추가
+   - 퍼즐 추가
 
 ---
 + 1.0.0
