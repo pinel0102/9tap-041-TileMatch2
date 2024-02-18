@@ -28,6 +28,9 @@ public static partial class PushManager
         pushRepeatList.Clear();
 
         InitPushText();
+
+        API.Initialize();
+        API.CancelAllNotifications();
         
         m_isInitialized = true;
     }
@@ -40,7 +43,7 @@ public static partial class PushManager
             return;
         }
 
-        API.Initialize();
+        API.CancelAllNotifications();
 
         if (agree)
         {
