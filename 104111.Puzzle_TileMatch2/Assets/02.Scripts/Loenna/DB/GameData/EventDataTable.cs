@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 public class EventDataTable : Table<long, EventData>
@@ -36,6 +37,8 @@ public class EventDataTable : Table<long, EventData>
             {
                 currentExp -= eventDatas[i].EXP;
                 currentLevel++;
+
+                UnityEngine.Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Level : {0} / Required Exp : {1} / Remain Exp : {2}/{3}</color>", currentLevel, eventDatas[i].EXP, currentExp, totalExp));
             }
             else break;
         }
@@ -82,7 +85,7 @@ public class EventDataTable : Table<long, EventData>
 			return false;
 		}
 
-		eventData = eventDatas.First(data => data.Level > currentLevel);
+		eventData = eventDatas.First(data => data.Level == currentLevel + 1);
 		return true;
 	}
 
