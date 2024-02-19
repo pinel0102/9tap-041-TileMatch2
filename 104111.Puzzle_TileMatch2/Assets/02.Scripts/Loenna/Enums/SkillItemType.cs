@@ -18,7 +18,8 @@ public enum ProductType
 	ShuffleItem,
 	HeartBooster,
     Landmark,
-    ADBlock
+    ADBlock,
+    DoubleTime
 }
 
 public static class ProductTypeExtensions

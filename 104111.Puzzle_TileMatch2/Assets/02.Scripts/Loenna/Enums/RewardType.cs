@@ -7,5 +7,6 @@ public enum RewardType: int
 	SpecialtyLevel = 3,
 	Daily = 4,
     IAP = 5,
-    PuzzleComplete = 6
+    PuzzleComplete = 6,
+    SweetHolic = 7,
 }
