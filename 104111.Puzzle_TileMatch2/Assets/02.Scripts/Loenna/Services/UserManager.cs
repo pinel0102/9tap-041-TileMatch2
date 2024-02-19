@@ -171,7 +171,11 @@ public class UserManager : IDisposable
                 WeekendStartDate: GlobalDefine.dateDefault_HHmmss,
                 WeekendEndDate: GlobalDefine.dateDefault_HHmmss,
                 NextPopupDateHard: GlobalDefine.dateDefault_HHmmss,
-                NextPopupDateCheerup: GlobalDefine.dateDefault_HHmmss
+                NextPopupDateCheerup: GlobalDefine.dateDefault_HHmmss,
+                Event_SweetHolic_TotalExp: 0,
+                Event_SweetHolic_ShowedPopup: false,
+                Event_SweetHolic_StartDate: GlobalDefine.dateDefault_HHmmss,
+                Event_SweetHolic_EndDate: GlobalDefine.dateDefault_HHmmss
 			);
 		}
 	}
@@ -628,6 +632,28 @@ public class UserManager : IDisposable
                 weekendEndDate: WeekendEndDate,
                 nextPopupDateHard: NextPopupDateHard,
                 nextPopupDateCheerup: NextPopupDateCheerup
+			)
+		);
+    }
+
+    public void UpdateEvent_SweetHolic(
+        Optional<int> TotalExp = default,
+        Optional<bool> ShowedPopup = default,
+        Optional<string> StartDate = default,
+        Optional<string> EndDate = default
+    )
+    {
+        if (m_user?.Value == null)
+		{
+			return;
+		}
+
+		m_user.Update(
+			user => user.Update(
+				event_SweetHolic_TotalExp: TotalExp,
+                event_SweetHolic_ShowedPopup: ShowedPopup,
+                event_SweetHolic_StartDate: StartDate,
+                event_SweetHolic_EndDate: EndDate
 			)
 		);
     }

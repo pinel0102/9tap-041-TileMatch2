@@ -88,6 +88,12 @@ public record User
     string NextPopupDateHard,
     string NextPopupDateCheerup,
 
+    // 이벤트.
+    int Event_SweetHolic_TotalExp,
+    bool Event_SweetHolic_ShowedPopup,
+    string Event_SweetHolic_StartDate,
+    string Event_SweetHolic_EndDate,
+
     // 게임 현황
 	int Level, // 플레이할 레벨
 	int CurrentPlayingPuzzleIndex, // 플레이 중인 퍼즐
@@ -173,7 +179,11 @@ public record User
         WeekendStartDate: GlobalDefine.dateDefault_HHmmss,
         WeekendEndDate: GlobalDefine.dateDefault_HHmmss,
         NextPopupDateHard: GlobalDefine.dateDefault_HHmmss,
-        NextPopupDateCheerup: GlobalDefine.dateDefault_HHmmss
+        NextPopupDateCheerup: GlobalDefine.dateDefault_HHmmss,
+        Event_SweetHolic_TotalExp: 0,
+        Event_SweetHolic_ShowedPopup: false,
+        Event_SweetHolic_StartDate: GlobalDefine.dateDefault_HHmmss,
+        Event_SweetHolic_EndDate: GlobalDefine.dateDefault_HHmmss
 	);
 
 	[JsonIgnore]
@@ -247,7 +257,11 @@ public record User
         in Optional<string> weekendStartDate = default,
         in Optional<string> weekendEndDate = default,
         in Optional<string> nextPopupDateHard = default,
-        in Optional<string> nextPopupDateCheerup = default
+        in Optional<string> nextPopupDateCheerup = default,
+        in Optional<int> event_SweetHolic_TotalExp = default,
+        in Optional<bool> event_SweetHolic_ShowedPopup = default,
+        in Optional<string> event_SweetHolic_StartDate = default,
+        in Optional<string> event_SweetHolic_EndDate = default
 	)
 	{
         DateTimeOffset now = DateTimeOffset.Now;
@@ -349,7 +363,11 @@ public record User
             WeekendStartDate: weekendStartDate.GetValueOrDefault(WeekendStartDate),
             WeekendEndDate: weekendEndDate.GetValueOrDefault(WeekendEndDate),
             NextPopupDateHard: nextPopupDateHard.GetValueOrDefault(NextPopupDateHard),
-            NextPopupDateCheerup: nextPopupDateCheerup.GetValueOrDefault(NextPopupDateCheerup)
+            NextPopupDateCheerup: nextPopupDateCheerup.GetValueOrDefault(NextPopupDateCheerup),
+            Event_SweetHolic_TotalExp: event_SweetHolic_TotalExp.GetValueOrDefault(Event_SweetHolic_TotalExp),
+            Event_SweetHolic_ShowedPopup: event_SweetHolic_ShowedPopup.GetValueOrDefault(Event_SweetHolic_ShowedPopup),
+            Event_SweetHolic_StartDate: event_SweetHolic_StartDate.GetValueOrDefault(Event_SweetHolic_StartDate),
+            Event_SweetHolic_EndDate: event_SweetHolic_EndDate.GetValueOrDefault(Event_SweetHolic_EndDate)
 		);
 
         //Debug.Log(CodeManager.GetMethodName() + string.Format("Life : {0} / EndChargeLifeAt : {1}", user.Life, user.EndChargeLifeAt.LocalDateTime));

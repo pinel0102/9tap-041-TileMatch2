@@ -205,7 +205,7 @@ public class GameClearPopup : UIPopup
                     openPuzzleIndex: openPuzzleIndex,
                     rewardCoin: rewardData.Coin,
                     rewardPuzzlePiece: rewardData.PuzzlePiece,
-                    rewardGoldPiece: GlobalData.Instance.missionCollected
+                    rewardSweetHolic: GlobalData.Instance.oldSweetHolic
                 ));
 			}
 			else

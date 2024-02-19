@@ -22,11 +22,11 @@ public partial class GlobalData
         oldPuzzlePiece += _getCount;
     }
 
-    public void HUD_LateUpdate_GoldPiece(int _getCount)
+    public void HUD_LateUpdate_EventItem(int _getCount)
     {
         if (_getCount <= 0) return;
 
-        oldGoldPiece += _getCount;
+        oldSweetHolic += _getCount;
     }
 
     private void HUD_LateUpdate(int _index, long _oldCount, int _getCount, float _startDelay = 0, bool autoTurnOff_IncreaseMode = true)
@@ -47,31 +47,23 @@ public partial class GlobalData
         );
     }
 
-    public async UniTask HUD_LateUpdate_MainSceneReward(int _clearedLevel, int _openPuzzleIndex, int _getCoin, int _getPuzzlePiece, int _getGoldPiece)
+    public async UniTask HUD_LateUpdate_MainSceneReward(int _clearedLevel, int _openPuzzleIndex, int _getCoin, int _getPuzzlePiece, int _getSweetHolic)
     {
-        Debug.Log(CodeManager.GetMethodName() + string.Format("Level {0} : {1} / {2} / {3} / {4}", _clearedLevel, _openPuzzleIndex, _getCoin, _getPuzzlePiece, _getGoldPiece));
-
-        // [TODO] 수집 이벤트 구현시 사용.
-        bool isGoldPieceActivated = false;
+        Debug.Log(CodeManager.GetMethodName() + string.Format("Level {0} : {1} / {2} / {3} / {4}", _clearedLevel, _openPuzzleIndex, _getCoin, _getPuzzlePiece, _getSweetHolic));
 
         long _oldCoin = oldCoin;
         int _oldPuzzle = oldPuzzlePiece;
-        int _oldGoldPiece = oldGoldPiece;
+        int _oldSweetHolic = oldSweetHolic;
 
         if(_getPuzzlePiece > 0)
             HUD?.behaviour.Fields[0].SetIncreaseText(_oldPuzzle);
         if(_getCoin > 0)
             HUD?.behaviour.Fields[2].SetIncreaseText(_oldCoin);
-        if(isGoldPieceActivated)
-        {
-            if(_getGoldPiece > 0)
-                fragmentHome.RefreshGoldPiece(_oldGoldPiece, GetGoldPiece_NextLevel());
-        }
+        if(_getSweetHolic > 0)
+            fragmentHome.eventBanner_SweetHolic.SetIncreaseText(_oldSweetHolic);
         
         float _startDelay = 0.5f;
         float _fxDuration = 1f;
-
-        //SetTouchLock_MainScene(true);
 
         if(_getPuzzlePiece > 0)
         {
@@ -99,21 +91,16 @@ public partial class GlobalData
             await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
         }
 
-        if(isGoldPieceActivated)
+        if(_getSweetHolic > 0)
         {
-            if(_getGoldPiece > 0)
-            {
-                Debug.Log(CodeManager.GetMethodName() + string.Format("[GoldPiece] {0} + {1} = {2}", _oldGoldPiece, _getGoldPiece, _oldGoldPiece + _getGoldPiece));
-                
-                CreateEffect("UI_Icon_GoldPuzzle_Big", Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, fragmentHome.rewardPosition_goldPiece, _fxDuration, () => {
-                    fragmentHome.IncreaseGoldPiece(_oldGoldPiece, _getGoldPiece, GetGoldPiece_NextLevel());
-                });
+            Debug.Log(CodeManager.GetMethodName() + string.Format("[SweetHolic] {0} + {1} = {2}", _oldSweetHolic, _getSweetHolic, _oldSweetHolic + _getSweetHolic));
+            
+            CreateEffect(GlobalDefine.GetSweetHolic_ItemPath(), Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, fragmentHome.eventBanner_SweetHolic.targetItemPosition, _fxDuration, () => {
+                fragmentHome.eventBanner_SweetHolic.IncreaseText(_oldSweetHolic, _getSweetHolic, onUpdate:fragmentHome.RefreshPuzzleBadge);
+            });
 
-                await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
-            }
+            await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
         }
-
-        //SetTouchLock_MainScene(false);
     }
 
     public void CreateEffect(string spriteName, string soundClip, Transform from, Transform to, float duration = 1f, Action onComplete = null, float sizeFrom = 70f, float sizeTo = 82f)

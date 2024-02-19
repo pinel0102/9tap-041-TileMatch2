@@ -102,31 +102,19 @@ public static partial class GlobalDefine
         return DateTime.Now.Add(addTime);
     }
 
-    /*public static bool IsHardBundleTime(int level)
+    public static string GetRemainEventTime(string endDate)
     {
-        int index = gameManager.levelSummaries.FindIndex(item => item.level == level);
-        if (index > -1)
-        {
-            if (gameManager.levelSummaries[index].difficulty != 0)
-            {
-                //Debug.Log(CodeManager.GetMethodName() + string.Format("Hard Bundle Time : {0}", ObscuredPrefs.GetString("HARD_BUNDLE_TIME", "none")));
-                if (IsRefreshTime(ObscuredPrefs.GetString("HARD_BUNDLE_TIME", "none")))
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+        return GetRemainEventTime(ToDateTime(endDate));
     }
 
-    public static bool IsRefreshTime(string date)
+    public static string GetRemainEventTime(DateTime endDate)
     {
-        if (DateTime.TryParse(date, out DateTime o))
-            return IsRefreshTime(o);
-        else
-            return true;
-    }*/
+        TimeSpan span = endDate.Subtract(DateTime.Now);
+        return span.Days > 0 ? string.Format("{0}d {1}h", span.Days, span.Hours) 
+            : span.Hours > 0 ?string.Format("{0}h {1}m", span.Hours, span.Minutes)
+            : span.Minutes > 0 ?string.Format("{0}m {1}s", span.Minutes, span.Seconds)
+            : string.Format("{0}s", span.Seconds);
+    }
 
 #endregion Event Time
 }

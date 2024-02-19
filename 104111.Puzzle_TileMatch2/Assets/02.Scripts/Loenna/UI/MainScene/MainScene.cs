@@ -15,7 +15,7 @@ public record MainSceneRewardParameter(
     int openPuzzleIndex = 0,
     int rewardCoin = 0,
     int rewardPuzzlePiece = 0,
-    int rewardGoldPiece = 0
+    int rewardSweetHolic = 0
     ) : MainSceneParameter();
 
 [ResourcePath("UI/Scene/MainScene")]
@@ -261,8 +261,8 @@ public class MainScene : UIScene
 
         if (CachedParameter is MainSceneRewardParameter rewardParameter)
         {
-            Debug.Log(CodeManager.GetMethodName() + string.Format("[Get Reward] {0} / {1} / {2}", rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardGoldPiece));
-            await GlobalData.Instance.HUD_LateUpdate_MainSceneReward(rewardParameter.clearedLevel, rewardParameter.openPuzzleIndex, rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardGoldPiece);
+            Debug.Log(CodeManager.GetMethodName() + string.Format("[Get Reward] {0} / {1} / {2}", rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardSweetHolic));
+            await GlobalData.Instance.HUD_LateUpdate_MainSceneReward(rewardParameter.clearedLevel, rewardParameter.openPuzzleIndex, rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardSweetHolic);
             await GlobalData.Instance.CheckPuzzleOpen(rewardParameter.openPuzzleIndex);
 
             if (GlobalDefine.IsEnable_Review(rewardParameter.clearedLevel))
@@ -301,6 +301,13 @@ public class MainScene : UIScene
         if (GlobalDefine.IsEnable_RemoveAdsPopup())
         {
             await GlobalData.Instance.ShowPopup_RemoveAds();
+        }
+
+        // [Level >= 21]
+        if (GlobalDefine.IsEnable_EventPopup_SweetHolic())
+        {
+            Debug.Log(CodeManager.GetMethodName() + "<color=yellow>Show Event Popup : SweetHolic</color>");
+            //
         }
 
         GlobalData.Instance.SetTouchLock_MainScene(false);

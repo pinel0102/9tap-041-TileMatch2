@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using UnityEngine;
 
 public class EventDataTable : Table<long, EventData>
 {
@@ -29,14 +30,14 @@ public class EventDataTable : Table<long, EventData>
     {
         var eventDatas = GetEventDatas(eventType);
         int currentLevel = 0;
-        int currentExp = totalExp;
+        int currentExp = Mathf.Clamp(totalExp, 0, GetMaxExp(eventType));
         
         for(int i=0; i < eventDatas.Length; i++)
         {
             if (currentExp >= eventDatas[i].EXP)
             {
                 currentExp -= eventDatas[i].EXP;
-                currentLevel++;
+                currentLevel = eventDatas[i].Level;
 
                 UnityEngine.Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Level : {0} / Required Exp : {1} / Remain Exp : {2}/{3}</color>", currentLevel, eventDatas[i].EXP, currentExp, totalExp));
             }
@@ -44,6 +45,29 @@ public class EventDataTable : Table<long, EventData>
         }
 
         return (currentLevel, currentExp);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="eventType"></param>
+    /// <returns>Max Level 까지 필요한 총 Exp.</returns>
+    public int GetMaxExp(GameEventType eventType)
+    {
+        var eventDatas = GetEventDatas(eventType);
+        return eventDatas.Sum(data => data.EXP);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="eventType"></param>
+    /// <param name="currentLevel"></param>
+    /// <returns>Max Level 여부.</returns>
+    public bool IsMaxLevel(GameEventType eventType, int currentLevel)
+    {
+        var eventDatas = GetEventDatas(eventType);
+        return !eventDatas.Any(data => data.Level > currentLevel);
     }
 
     /// <summary>
@@ -72,20 +96,24 @@ public class EventDataTable : Table<long, EventData>
     /// <returns>다음 레벨 존재 여부.</returns>
     public bool TryGetNextEventData(GameEventType eventType, int currentLevel, out EventData eventData)
 	{
+        UnityEngine.Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>111</color>"));
         eventData = default;
         var eventDatas = GetEventDatas(eventType);
 
 		if (eventDatas.Count() <= 0)
 		{
+            UnityEngine.Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>eventDatas.Count() : {0}</color>", eventDatas.Count()));
 			return false;
 		}
 
 		if (!eventDatas.Any(data => data.Level > currentLevel))
 		{
+            UnityEngine.Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>!eventDatas.Any(data => data.Level > currentLevel)/color>"));
 			return false;
 		}
 
 		eventData = eventDatas.First(data => data.Level == currentLevel + 1);
+        UnityEngine.Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>eventData.Level : {0} / EXP : {1}</color>", eventData.Level, eventData.EXP));
 		return true;
 	}
 

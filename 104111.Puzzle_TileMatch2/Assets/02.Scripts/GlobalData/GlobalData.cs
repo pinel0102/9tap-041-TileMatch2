@@ -25,8 +25,7 @@ public partial class GlobalData : SingletonMono<GlobalData>
     [Header("★ [Live] Old Items")]
     public long oldCoin = 0;
     public int oldPuzzlePiece = 0;
-    public int oldGoldPiece = 0;
-    public int missionCollected = 0;
+    public int oldSweetHolic = 0;
 
     [Header("★ [Settings] Shuffle")]
     public float shuffleRadiusMin = 200;
@@ -41,10 +40,9 @@ public partial class GlobalData : SingletonMono<GlobalData>
     {
         Debug.Log(CodeManager.GetMethodName());
 
-        missionCollected = 0;
         oldCoin = 0;
         oldPuzzlePiece = 0;
-        oldGoldPiece = 0;
+        oldSweetHolic = 0;
 
         m_particlePool = new ObjectPool<MissionCollectedFx>(
 			createFunc: () => {
@@ -89,13 +87,13 @@ public partial class GlobalData : SingletonMono<GlobalData>
         return (playScene != null) && playScene.m_block.activeInHierarchy;
     }
 
-    public void SetOldItems(long _coin, int _puzzlePiece, int _goldPiece)
+    public void SetOldItems(long _coin, int _puzzlePiece, int _oldEventItem)
     {
-        Debug.Log(CodeManager.GetMethodName() + string.Format("{0} / {1} / {2}", _coin, _puzzlePiece, _goldPiece));
+        Debug.Log(CodeManager.GetMethodName() + string.Format("{0} / {1} / {2}", _coin, _puzzlePiece, _oldEventItem));
 
         oldCoin = _coin;
         oldPuzzlePiece = _puzzlePiece;
-        oldGoldPiece = _goldPiece;
+        oldSweetHolic = _oldEventItem;
     }
 
     public int GetEnableLevel(int level)
@@ -104,10 +102,5 @@ public partial class GlobalData : SingletonMono<GlobalData>
             return Mathf.Clamp(level, 1, tableManager.LastLevel + 1);
         
         return Mathf.Min(1, level);
-    }
-
-    public int GetGoldPiece_NextLevel()
-    {
-        return 999;
     }
 }

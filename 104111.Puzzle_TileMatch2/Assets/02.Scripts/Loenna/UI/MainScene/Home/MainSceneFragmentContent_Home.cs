@@ -30,17 +30,14 @@ public class MainSceneFragmentContent_Home : ScrollViewFragmentContent
 
     public RectTransform objectPool;
     public RectTransform rewardPosition_puzzlePiece;
-    public RectTransform rewardPosition_goldPiece;
-    public TMP_Text goldPieceText;
 
-    [SerializeField]
-	private  Transform puzzleLockObject;
-    [SerializeField]
-	private  GameObject puzzleBadgeObject;
-    [SerializeField]
-	private  TMP_Text puzzleBadgeText;
-    [SerializeField]
-	private  GameObject hardModeIcon;
+    [SerializeField]	private  Transform puzzleLockObject;
+    [SerializeField]	private  GameObject puzzleBadgeObject;
+    [SerializeField]	private  TMP_Text puzzleBadgeText;
+    [SerializeField]	private  GameObject hardModeIcon;
+
+    [Header("★ [Reference] Sweet Holic")]
+    public EventBanner_SweetHolic eventBanner_SweetHolic;
 
     private GlobalData globalData { get { return GlobalData.Instance; } }
 
@@ -54,10 +51,10 @@ public class MainSceneFragmentContent_Home : ScrollViewFragmentContent
 		m_puzzleButton.OnSetup(parameter.PuzzleButtonParam);
 		m_playButton.OnSetup(parameter.PlayButtonParam);
         m_sideContainers.ForEach(container => container.OnSetup());
+        eventBanner_SweetHolic.Initialize(GlobalData.Instance.userManager.Current, globalData.tableManager);
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(CachedRectTransform);
         
-        RefreshGoldPiece(GlobalData.Instance.userManager.Current.GoldPiece, GlobalData.Instance.GetGoldPiece_NextLevel());
         RefreshPuzzleBadge(GlobalData.Instance.userManager.Current.Puzzle);
         RefreshPuzzleButton();
         RefreshPlayButton();
@@ -65,6 +62,7 @@ public class MainSceneFragmentContent_Home : ScrollViewFragmentContent
 
 	public override void OnUpdateUI(User user)
 	{
+        eventBanner_SweetHolic.OnUpdateUI(user);
         m_puzzleButton.OnUpdateUI(user);
         RefreshPuzzleButton();
         RefreshPlayButton();
@@ -95,9 +93,9 @@ public class MainSceneFragmentContent_Home : ScrollViewFragmentContent
         puzzleBadgeObject.SetActive(count > 0);
     }
 
-    public void RefreshGoldPiece(int count, int max)
+    /*public void RefreshGoldPiece(int count, int max)
     {
-        goldPieceText.SetText(string.Format("{0}/{1}", count, max));
+        //goldPieceText.SetText(string.Format("{0}/{1}", count, max));
     }
 
     public void IncreaseGoldPiece(int from, int count, int max, float duration = 0.5f)
@@ -121,5 +119,5 @@ public class MainSceneFragmentContent_Home : ScrollViewFragmentContent
         {
             return time/(float)amount;
         }
-    }
+    }*/
 }

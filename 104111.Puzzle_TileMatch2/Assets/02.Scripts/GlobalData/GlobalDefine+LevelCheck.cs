@@ -39,4 +39,12 @@ public static partial class GlobalDefine
     {
         return globalData.userManager.Current.Level >= Constant.User.MIN_OPENLEVEL_DAILY_REWARD;
     }
+
+    /// <Summary>
+    /// Required Level
+    /// </Summary>
+    public static bool IsOpen_Event_SweetHolic()
+    {
+        return globalData.userManager.Current.Level >= Constant.User.MIN_OPENLEVEL_EVENT_SWEETHOLIC;
+    }
 }
