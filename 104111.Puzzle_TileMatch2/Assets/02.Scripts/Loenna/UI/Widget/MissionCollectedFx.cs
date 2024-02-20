@@ -119,13 +119,13 @@ public class MissionCollectedFx : CachedBehaviour
 		m_cancellationTokenSource?.Dispose();
 	}
 
-    public Quaternion GetRotation(Vector2 from, Vector2 to)
+    private Quaternion GetRotation(Vector2 from, Vector2 to)
     {
         float angle = GetAngle(from, to);
         return Quaternion.Euler(new Vector3(0, 0, angle - 180f));
     }
 
-    public float GetAngle(Vector2 from, Vector2 to)
+    private float GetAngle(Vector2 from, Vector2 to)
     {
         Vector2 offset = to - from;
         return Mathf.Atan2(offset.y, offset.x) * Mathf.Rad2Deg;

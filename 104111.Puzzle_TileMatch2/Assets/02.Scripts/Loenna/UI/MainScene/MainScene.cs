@@ -233,11 +233,18 @@ public class MainScene : UIScene
         m_scrollView.MoveTo((int)type);
     }
 
-	public override void Show()
+    public override void Hide()
+    {
+        base.Hide();
+
+        GlobalData.Instance.ResetParticlePool();
+    }
+
+    public override void Show()
 	{
 		base.Show();
 
-		OnUpdateUI(m_userManager.Current);
+        OnUpdateUI(m_userManager.Current);
 
         if (CachedParameter is not MainSceneParameter parameter)
 		{

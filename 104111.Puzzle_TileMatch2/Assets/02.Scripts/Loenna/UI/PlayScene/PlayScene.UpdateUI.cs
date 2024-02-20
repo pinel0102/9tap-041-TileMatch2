@@ -24,10 +24,28 @@ partial class PlayScene
 	private int m_progressId = 0;
 	private Queue<UniTask> m_queue;
 
+    public void ResetParticlePool()
+    {
+        for(int i = m_particleParent?.childCount - 1 ?? -1; i >= 0; i--)
+        {
+            Destroy(m_particleParent.GetChild(i).gameObject);
+        }
+
+        m_particlePool = new ObjectPool<MissionCollectedFx>(
+			createFunc: () => {
+				var item = Instantiate(ResourcePathAttribute.GetResource<MissionCollectedFx>());
+				item.OnSetup();
+				return item;
+			},
+			actionOnRelease: item => item.OnRelease()
+		);
+    }
+
 	private void SetupInternal()
 	{
 		m_queue = new();
-		m_tileItemPool = new ObjectPool<TileItem>(
+		
+        m_tileItemPool = new ObjectPool<TileItem>(
 			createFunc: () => {
 				var item = Instantiate(ResourcePathAttribute.GetResource<TileItem>());
 				item.OnSetup(
@@ -47,14 +65,7 @@ partial class PlayScene
 
 		m_gameManager.UpdatedInfo.Queue().SubscribeAwait(state => OnUpdateUI(state.ToCurrentState()));
 
-		m_particlePool = new ObjectPool<MissionCollectedFx>(
-			createFunc: () => {
-				var item = Instantiate(ResourcePathAttribute.GetResource<MissionCollectedFx>());
-				item.OnSetup();
-				return item;
-			},
-			actionOnRelease: item => item.OnRelease()
-		);
+        ResetParticlePool();
 
 		m_gameManager.MissionCollected
 		.Subscribe(
@@ -64,34 +75,17 @@ partial class PlayScene
 					return;
 				}
 
-                MissionCollectedFx fx = m_particlePool.Get();
-				fx.CachedRectTransform.SetParentReset(m_particleParent, true);
-				
-				//Vector2 worldPosition = m_mainView.CurrentBoard.CachedTransform.TransformPoint(value.startPosition);
-				//Vector2 position = m_particleParent.InverseTransformPoint(worldPosition) / UIManager.SceneCanvas.scaleFactor;
-				//Vector2 direction = m_particleParent.InverseTransformPoint(m_topView.PuzzleIconTransform.position);
-
-				fx.Play(value.startPosition, m_topView.PuzzleIconTransform.position, 1f, () => {
-                        SoundManager soundManager = Game.Inst?.Get<SoundManager>();
-                        soundManager?.PlayFx(Constant.Sound.SFX_GOLD_PIECE);
-
-						m_particlePool.Release(fx);
-						m_topView.UpdateMissionCount(value.count, value.max);
-					}
-				);
-
-                /*GlobalData.Instance.CreateEffect(
+                GlobalData.Instance.CreateEffect(
                     m_particlePool,
+                    m_particleParent,
                     null,
                     Constant.Sound.SFX_GOLD_PIECE,
-                    m_particleParent, 
                     value.startPosition,
-                    m_topView.PuzzleIconTransform,
-                    1f,
+                    m_topView.PuzzleIconTransform.position,
                     onComplete: () => {
                         m_topView.UpdateMissionCount(value.count, value.max);
                     }
-                );*/
+                );
 			}
 		);
 
@@ -107,9 +101,9 @@ partial class PlayScene
 
                 GlobalData.Instance.CreateEffect(
                     m_particlePool,
+                    m_particleParent, 
                     GlobalDefine.GetSweetHolic_ItemPath(),
                     Constant.Sound.SFX_GOLD_PIECE,
-                    m_particleParent, 
                     value.startPosition,
                     m_topView.SweetHolicIconTransform,
                     0.75f,

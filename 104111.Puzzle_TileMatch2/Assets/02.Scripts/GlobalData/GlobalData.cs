@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Pool;
-using NineTap.Common;
 
 public partial class GlobalData : SingletonMono<GlobalData>
 {
@@ -36,7 +34,6 @@ public partial class GlobalData : SingletonMono<GlobalData>
     public float shuffleSpeed = 15;
     public float shuffleTime = 1;
     
-    private IObjectPool<MissionCollectedFx> m_particlePool;
     private WaitForSecondsRealtime wTimeDelay = new WaitForSecondsRealtime(1.0f);
 
     public void Initialize()
@@ -47,15 +44,7 @@ public partial class GlobalData : SingletonMono<GlobalData>
         oldPuzzlePiece = 0;
         eventSweetHolic = 0;
 
-        m_particlePool = new ObjectPool<MissionCollectedFx>(
-			createFunc: () => {
-				var item = Instantiate(ResourcePathAttribute.GetResource<MissionCollectedFx>());
-				item.OnSetup();
-				return item;
-			},
-			actionOnRelease: item => item.OnRelease()
-		);
-
+        ResetParticlePool();
         StartCoroutine(Co_RealTime());
     }
 

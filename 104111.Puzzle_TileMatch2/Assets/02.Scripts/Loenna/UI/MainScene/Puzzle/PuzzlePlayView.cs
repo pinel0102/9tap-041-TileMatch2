@@ -167,7 +167,6 @@ public class PuzzlePlayView : CachedBehaviour
 
         GlobalData.Instance.CreateEffect("UI_Icon_GoldPuzzle_Big", Constant.Sound.SFX_TILE_MATCH,
             GlobalData.Instance.HUD.behaviour.Fields[0].AttractorTarget,
-            GlobalData.Instance.HUD.behaviour.Fields[0].AttractorTarget,
             piece.transform, 
             Constant.Game.TWEENTIME_JIGSAW_MOVE,
             () => {

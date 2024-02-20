@@ -200,6 +200,7 @@ public partial class GameManager : IDisposable
 	{
         Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0}</color>", level));
 
+        GlobalData.Instance.playScene.ResetParticlePool();
         GlobalData.Instance.playScene.bottomView.RefreshSkillLocked(level);
         GlobalData.Instance.CURRENT_SCENE = GlobalDefine.SCENE_PLAY;
         GlobalData.Instance.CURRENT_LEVEL = level;

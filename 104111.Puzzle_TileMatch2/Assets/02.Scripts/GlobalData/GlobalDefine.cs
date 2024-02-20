@@ -79,4 +79,17 @@ public static partial class GlobalDefine
     {
         return globalData.userManager.Current.PuzzleOpenPopupIndex > 0;
     }
+
+    public static UnityEngine.Pool.IObjectPool<T> ResetObjectPool<T>(this UnityEngine.Pool.IObjectPool<T> objectPool, Transform parent, Func<T> createFunc, Action<T> actionOnRelease) where T : MonoBehaviour
+    {
+        for(int i = parent?.childCount - 1 ?? -1; i >= 0; i--)
+        {
+            GameObject.Destroy(parent?.GetChild(i).gameObject);
+        }
+
+        return new UnityEngine.Pool.ObjectPool<T>(
+			createFunc: createFunc,
+			actionOnRelease: actionOnRelease
+		);
+    }
 }
