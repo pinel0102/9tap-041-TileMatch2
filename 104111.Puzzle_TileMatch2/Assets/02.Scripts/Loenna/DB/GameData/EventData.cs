@@ -7,7 +7,7 @@ public record EventData
 (
 	long Index,
 	GameEventType EventType,
-	DifficultType DifficultType,
+	ChestType ChestType,
 	int Level,
 	int EXP,
 	int Coin,

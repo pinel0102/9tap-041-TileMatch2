@@ -26,7 +26,7 @@ public partial class GlobalData
     {
         if (_getCount <= 0) return;
 
-        oldSweetHolic += _getCount;
+        eventSweetHolic += _getCount;
     }
 
     private void HUD_LateUpdate(int _index, long _oldCount, int _getCount, float _startDelay = 0, bool autoTurnOff_IncreaseMode = true)
@@ -53,7 +53,7 @@ public partial class GlobalData
 
         long _oldCoin = oldCoin;
         int _oldPuzzle = oldPuzzlePiece;
-        int _oldSweetHolic = oldSweetHolic;
+        int _oldSweetHolic = eventSweetHolic;
 
         if(_getPuzzlePiece > 0)
             HUD?.behaviour.Fields[0].SetIncreaseText(_oldPuzzle);
@@ -72,8 +72,8 @@ public partial class GlobalData
             if (_startDelay > 0)
                 await UniTask.Delay(TimeSpan.FromSeconds(_startDelay));
 
-            CreateEffect("UI_Icon_GoldPuzzle_Big", Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, fragmentHome.rewardPosition_puzzlePiece, _fxDuration);
-            CreateEffect("UI_Icon_GoldPuzzle_Big", Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, HUD.behaviour.Fields[0].AttractorTarget, _fxDuration, () => { 
+            CreateEffect("UI_Icon_GoldPuzzle_Big", Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, fragmentHome.objectPool, fragmentHome.rewardPosition_puzzlePiece, _fxDuration);
+            CreateEffect("UI_Icon_GoldPuzzle_Big", Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, fragmentHome.objectPool, HUD.behaviour.Fields[0].AttractorTarget, _fxDuration, () => { 
                 HUD?.behaviour.Fields[0].IncreaseText(_oldPuzzle, _getPuzzlePiece, onUpdate:fragmentHome.RefreshPuzzleBadge);
             });
 
@@ -84,7 +84,7 @@ public partial class GlobalData
         {
             Debug.Log(CodeManager.GetMethodName() + string.Format("[Coin] {0} + {1} = {2}", _oldCoin, _getCoin, _oldCoin + _getCoin));
             
-            CreateEffect("UI_Icon_Coin", Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, HUD.behaviour.Fields[2].AttractorTarget, _fxDuration, () => {
+            CreateEffect("UI_Icon_Coin", Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, fragmentHome.objectPool, HUD.behaviour.Fields[2].AttractorTarget, _fxDuration, () => {
                 HUD?.behaviour.Fields[2].IncreaseText(_oldCoin, _getCoin);
             });
 
@@ -95,7 +95,7 @@ public partial class GlobalData
         {
             Debug.Log(CodeManager.GetMethodName() + string.Format("[SweetHolic] {0} + {1} = {2}", _oldSweetHolic, _getSweetHolic, _oldSweetHolic + _getSweetHolic));
             
-            CreateEffect(GlobalDefine.GetSweetHolic_ItemPath(), Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, fragmentHome.eventBanner_SweetHolic.targetItemPosition, _fxDuration, () => {
+            CreateEffect(GlobalDefine.GetSweetHolic_ItemPath(), Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, fragmentHome.objectPool, fragmentHome.eventBanner_SweetHolic.targetItemPosition, _fxDuration, () => {
                 fragmentHome.eventBanner_SweetHolic.IncreaseText(_oldSweetHolic, _getSweetHolic, onUpdate:fragmentHome.RefreshPuzzleBadge);
             });
 
@@ -103,19 +103,62 @@ public partial class GlobalData
         }
     }
 
-    public void CreateEffect(string spriteName, string soundClip, Transform from, Transform to, float duration = 1f, Action onComplete = null, float sizeFrom = 70f, float sizeTo = 82f)
+    /// <summary>
+    /// For MainScene
+    /// </summary>
+    /// <param name="spriteName"></param>
+    /// <param name="soundClip"></param>
+    /// <param name="parent"></param>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
+    /// <param name="duration"></param>
+    /// <param name="onComplete"></param>
+    /// <param name="sizeFrom"></param>
+    /// <param name="sizeTo"></param>
+    public void CreateEffect(string spriteName, string soundClip, Transform parent, Transform from, Transform to, float duration = 1f, Action onComplete = null, float sizeFrom = 70f, float sizeTo = 82f)
     {
         MissionCollectedFx fx = m_particlePool.Get();
         fx.SetImage(spriteName);
-        fx.CachedRectTransform.SetParentReset(from, true);
+        fx.CachedRectTransform.SetParentReset(parent, true);
         
-        Vector2 worldPosition = from.TransformPoint(Vector2.zero);
-        Vector2 position = from.InverseTransformPoint(worldPosition) / UIManager.SceneCanvas.scaleFactor;
-        Vector2 direction = from.InverseTransformPoint(to.position);
+        //Vector2 worldPosition = from.TransformPoint(Vector2.zero);
+        //Vector2 position = from.InverseTransformPoint(worldPosition) / UIManager.SceneCanvas.scaleFactor;
+        //Vector2 direction = from.InverseTransformPoint(to.position);
         
-        fx.Play(position, direction, duration, () => {
+        fx.Play(from.position, to.position, duration, () => {
                 soundManager?.PlayFx(soundClip);
                 m_particlePool.Release(fx);
+                onComplete?.Invoke();
+            }, sizeFrom, sizeTo
+        );
+    }
+
+    /// <summary>
+    /// For GameScene
+    /// </summary>
+    /// <param name="fx"></param>
+    /// <param name="spriteName"></param>
+    /// <param name="soundClip"></param>
+    /// <param name="parent"></param>
+    /// <param name="from"></param>
+    /// <param name="to"></param>
+    /// <param name="duration"></param>
+    /// <param name="onComplete"></param>
+    /// <param name="sizeFrom"></param>
+    /// <param name="sizeTo"></param>
+    public void CreateEffect(UnityEngine.Pool.IObjectPool<MissionCollectedFx> particlePool, string spriteName, string soundClip, Transform parent, Transform from, Transform to, float duration = 1f, Action onComplete = null, float sizeFrom = 70f, float sizeTo = 82f)
+    {
+        MissionCollectedFx fx = particlePool.Get();
+        fx.SetImage(spriteName);
+        fx.CachedRectTransform.SetParentReset(parent, true);
+        
+        //Vector2 worldPosition = from.TransformPoint(Vector2.zero);
+        //Vector2 position = from.InverseTransformPoint(worldPosition) / UIManager.SceneCanvas.scaleFactor;
+        //Vector2 direction = from.InverseTransformPoint(to.position);
+        
+        fx.Play(from.position, to.position, duration, () => {
+                soundManager?.PlayFx(soundClip);
+                particlePool.Release(fx);
                 onComplete?.Invoke();
             }, sizeFrom, sizeTo
         );

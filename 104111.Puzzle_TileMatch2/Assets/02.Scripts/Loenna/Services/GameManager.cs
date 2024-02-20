@@ -21,8 +21,10 @@ public partial class GameManager : IDisposable
 	private InternalState BoardInfo => m_boardInfo.Value;
 
 	// 현재까지 모은 미션
-	private readonly IDisposableAsyncReactiveProperty<int> m_collectedMissionCount;
+    private readonly IDisposableAsyncReactiveProperty<int> m_collectedMissionCount;
+    private readonly IDisposableAsyncReactiveProperty<int> m_collectedSweetHolicCount;
 	private readonly IDisposableAsyncReactiveProperty<Vector2> m_missionCollectedFx;
+    private readonly IDisposableAsyncReactiveProperty<Transform> m_sweetHolicCollectedFx;
 
 	private int m_continueCount = 0;
 
@@ -36,6 +38,19 @@ public partial class GameManager : IDisposable
 					m_missionCollectedFx
 					.WithoutCurrent(),
 					(count, position) => (count, position, BoardInfo.MissionTileCount)
+				);
+		}
+	}
+    public IUniTaskAsyncEnumerable<(int count, Transform startPosition)> SweetHolicCollected 
+	{
+		get
+		{
+			return m_collectedSweetHolicCount
+				.WithoutCurrent()
+				.CombineLatest(
+					m_sweetHolicCollectedFx
+					.WithoutCurrent(),
+					(count, position) => (count, position)
 				);
 		}
 	}
@@ -53,8 +68,10 @@ public partial class GameManager : IDisposable
 		m_userManager = userManager;
 
 		m_collectedMissionCount = new AsyncReactiveProperty<int>(0).WithDispatcher();
+        m_collectedSweetHolicCount = new AsyncReactiveProperty<int>(0).WithDispatcher();
 		m_missionCollectedFx = new AsyncReactiveProperty<Vector2>(Vector2.zero).WithDispatcher();
-
+        m_sweetHolicCollectedFx = new AsyncReactiveProperty<Transform>(null).WithDispatcher();
+        
 		m_basketNotEmpty = new(false);
 
 		m_boardInfo = new AsyncReactiveProperty<InternalState>(InternalState.Empty)
@@ -130,7 +147,7 @@ public partial class GameManager : IDisposable
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("Level {0}", CurrentLevel));
 
-        GlobalData.Instance.SetOldItems(m_userManager.Current.Coin, m_userManager.Current.Puzzle, m_userManager.Current.GoldPiece);
+        GlobalData.Instance.SetOldItems(m_userManager.Current.Coin, m_userManager.Current.Puzzle);
 
         RewardDataTable rewardDataTable = m_tableManager.RewardDataTable;
         Dictionary<ProductType, long> collectRewardAll = new Dictionary<ProductType, long>();
@@ -174,6 +191,7 @@ public partial class GameManager : IDisposable
 		m_boardInfo?.Dispose();
 		m_basketNotEmpty?.Dispose();
 		m_collectedMissionCount?.Dispose();
+        m_collectedSweetHolicCount?.Dispose();
 	}
 	#endregion
 
@@ -185,10 +203,12 @@ public partial class GameManager : IDisposable
         GlobalData.Instance.playScene.bottomView.RefreshSkillLocked(level);
         GlobalData.Instance.CURRENT_SCENE = GlobalDefine.SCENE_PLAY;
         GlobalData.Instance.CURRENT_LEVEL = level;
+        GlobalData.Instance.eventSweetHolic = 0;
 
         m_continueCount = 0;
 		m_boardInfo.Update(info => InternalState.Empty);
 		m_collectedMissionCount.Value = 0;
+        m_collectedSweetHolicCount.Value = 0;
 
 		// 로컬에 저장된 레벨 데이터를 불러온다
 		if (!LevelDataTable.TryGetValue(level, out var levelData))

@@ -42,6 +42,9 @@ public class MissionCollectedFx : CachedBehaviour
 
     public void SetImage(string spriteName)
     {
+        if (string.IsNullOrEmpty(spriteName))
+            return;
+        
         var sprite = SpriteManager.GetSprite(spriteName);
 		m_image.sprite = sprite;
     }
@@ -52,7 +55,8 @@ public class MissionCollectedFx : CachedBehaviour
 		DOTween.Kill(m_moveRectTransform, true);
 		DOTween.Kill(m_rotateRectTransform, true);
 
-        m_moveRectTransform.SetLocalPosition(startPosition * UIManager.SceneCanvas.scaleFactor);
+        //m_moveRectTransform.SetLocalPosition(startPosition * UIManager.SceneCanvas.scaleFactor);
+        m_moveRectTransform.SetPosition(startPosition);
 		m_rotateRectTransform.SetSize(sizeFrom);
 		m_rotateRectTransform.SetRotation(Quaternion.identity);
 		
@@ -81,7 +85,8 @@ public class MissionCollectedFx : CachedBehaviour
 							.ToUniTask(),
 						m_moveRectTransform
 							//.DOLocalMove(direction, duration)
-                            .DOLocalJump(direction, 0.5f, 1, duration)
+                            //.DOLocalJump(direction, 0.5f, 1, duration)
+                            .DOJump(direction, 0.5f, 1, duration)
 							.SetDelay(0.25f)
 							.SetEase(Ease.OutExpo)
 							.ToUniTask(),

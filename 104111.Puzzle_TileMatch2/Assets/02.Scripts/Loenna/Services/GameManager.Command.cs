@@ -297,4 +297,14 @@ partial class GameManager
 		m_commandInvoker.ClearHistories();
 	}
 	#endregion
+
+    public void EventCollect_SweetHolic(Transform from)
+    {
+        int addCount = 1;
+
+        GlobalData.Instance.eventSweetHolic += addCount;
+
+        m_sweetHolicCollectedFx.Update(_ => from);
+        m_collectedSweetHolicCount.Update(count => count + addCount);
+    }
 }

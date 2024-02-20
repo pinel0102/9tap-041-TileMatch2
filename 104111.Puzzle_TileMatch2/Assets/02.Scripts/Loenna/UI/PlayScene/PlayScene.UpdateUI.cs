@@ -64,14 +64,14 @@ partial class PlayScene
 					return;
 				}
 
-				MissionCollectedFx fx = m_particlePool.Get();
+                MissionCollectedFx fx = m_particlePool.Get();
 				fx.CachedRectTransform.SetParentReset(m_particleParent, true);
 				
-				Vector2 worldPosition = m_mainView.CurrentBoard.CachedTransform.TransformPoint(value.startPosition);
-				Vector2 position = m_particleParent.InverseTransformPoint(worldPosition) / UIManager.SceneCanvas.scaleFactor;
-				Vector2 direction = m_particleParent.InverseTransformPoint(m_topView.PuzzleIconTransform.position);
+				//Vector2 worldPosition = m_mainView.CurrentBoard.CachedTransform.TransformPoint(value.startPosition);
+				//Vector2 position = m_particleParent.InverseTransformPoint(worldPosition) / UIManager.SceneCanvas.scaleFactor;
+				//Vector2 direction = m_particleParent.InverseTransformPoint(m_topView.PuzzleIconTransform.position);
 
-				fx.Play(position, direction, 1f, () => {
+				fx.Play(value.startPosition, m_topView.PuzzleIconTransform.position, 1f, () => {
                         SoundManager soundManager = Game.Inst?.Get<SoundManager>();
                         soundManager?.PlayFx(Constant.Sound.SFX_GOLD_PIECE);
 
@@ -79,6 +79,44 @@ partial class PlayScene
 						m_topView.UpdateMissionCount(value.count, value.max);
 					}
 				);
+
+                /*GlobalData.Instance.CreateEffect(
+                    m_particlePool,
+                    null,
+                    Constant.Sound.SFX_GOLD_PIECE,
+                    m_particleParent, 
+                    value.startPosition,
+                    m_topView.PuzzleIconTransform,
+                    1f,
+                    onComplete: () => {
+                        m_topView.UpdateMissionCount(value.count, value.max);
+                    }
+                );*/
+			}
+		);
+
+        m_gameManager.SweetHolicCollected
+		.Subscribe(
+			value => {
+                //GlobalData.Instance.eventSweetHolic = value.count;
+
+				if (value.count <= 0)
+				{
+					return;
+				}
+
+                GlobalData.Instance.CreateEffect(
+                    m_particlePool,
+                    GlobalDefine.GetSweetHolic_ItemPath(),
+                    Constant.Sound.SFX_GOLD_PIECE,
+                    m_particleParent, 
+                    value.startPosition,
+                    m_topView.SweetHolicIconTransform,
+                    0.75f,
+                    onComplete: () => {
+                        m_topView.UpdateSweetHolicCount();
+                    }
+                );
 			}
 		);
 	}

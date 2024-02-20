@@ -83,6 +83,8 @@ public class TileItem : CachedBehaviour
 		}
 	}
 
+    public string tileName;
+
 	private TileDataTable m_tileDataTable;
 
 	[SerializeField]
@@ -318,7 +320,7 @@ public class TileItem : CachedBehaviour
 		Sprite sprite = SpriteManager.GetSprite(path);
 		m_icon.sprite = sprite;
 
-        string tileName = path.Replace("UI_Img_", string.Empty);
+        tileName = path.Replace("UI_Img_", string.Empty);
 
         (m_tmpText.text, m_icon.enabled) = m_icon.sprite switch {
 			null => (tileName, false),
@@ -359,6 +361,17 @@ public class TileItem : CachedBehaviour
                 m_positionTween?.OnChangeValue(m_originWorldPosition, duration) 
                 ?? UniTask.CompletedTask,
 			(LocationType.POOL, _) => m_scaleTween?.OnChangeValue(Vector3.zero, 0.15f, () => {
+                    
+                    if (GlobalDefine.IsOpen_Event_SweetHolic())
+                    {
+                        // [TODO] 매칭된 타일이 수집 이벤트 대상이면.
+                        if(tileName.Equals(GlobalDefine.GetSweetHolic_ItemName()))
+                        {
+                            Debug.Log(CodeManager.GetMethodName() + string.Format("Matching : {0}", tileName));
+                            GlobalData.Instance.playScene.gameManager.EventCollect_SweetHolic(transform);
+                        }
+                    }
+
                     m_disappearEffect.SetActive(true);
                     m_view.SetLocalScale(0);
 
