@@ -9,9 +9,12 @@ using NineTap.Common;
 
 public class EventBanner_SweetHolic : MonoBehaviour
 {
+    [Header("★ [Reference] Sweet Holic Locked")]
+    [SerializeField]	private GameObject sweetHolicLock;
+    [SerializeField]	private TMP_Text m_lockedText;
+
     [Header("★ [Reference] Sweet Holic")]
     [SerializeField]	private GameObject sweetHolicUnlock;
-    [SerializeField]	private GameObject sweetHolicLock;
     [SerializeField]	private Slider expSlider;
     [SerializeField]	private TMP_Text m_text;
     [SerializeField]	private TMP_Text m_textIncrease;
@@ -32,11 +35,12 @@ public class EventBanner_SweetHolic : MonoBehaviour
     private const string textFormatExp = "{0}/{1}";
     private const string textExpMax = "Complete!";
     private const string textFormatTime = "";
+    private const string textFormatLocked = "Unlock at Level {0}!";
 
     public void Initialize(User user, TableManager _tableManager)
     {
         tableManager = _tableManager;
-
+        m_lockedText.SetText(string.Format(textFormatLocked, Constant.User.MIN_OPENLEVEL_EVENT_SWEETHOLIC));
         RefreshEventState(user);
     }
 
@@ -50,7 +54,7 @@ public class EventBanner_SweetHolic : MonoBehaviour
     }
 
     /// <summary>
-    /// 강제 새로 고침.
+    /// 1회 새로 고침.
     /// </summary>
     /// <param name="user"></param>
     public void Refresh(User user)
@@ -70,7 +74,7 @@ public class EventBanner_SweetHolic : MonoBehaviour
         RefreshItemIcon();
         RefreshTimeText(user.Event_SweetHolic_EndDate);
 
-        itemName = GlobalDefine.GetSweetHolic_ItemName();
+        itemName = GlobalData.Instance.eventSweetHolic_ItemName;
         totalExp = user.Event_SweetHolic_TotalExp;
 
         (currentLevel, currentExp) = tableManager.EventDataTable.GetCurrentLevel(GameEventType.SweetHolic, totalExp);
@@ -97,7 +101,7 @@ public class EventBanner_SweetHolic : MonoBehaviour
 
     private void RefreshItemIcon()
     {
-        targetItemImage.sprite = SpriteManager.GetSprite(GlobalDefine.GetSweetHolic_ItemPath());
+        targetItemImage.sprite = SpriteManager.GetSprite(GlobalDefine.GetSweetHolic_ItemImagePath());
     }
 
     public void RefreshTimeText(string endDate)

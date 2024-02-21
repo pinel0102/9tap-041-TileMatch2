@@ -17,6 +17,23 @@ public static partial class GlobalDefine
 
     private static GlobalData globalData { get { return GlobalData.Instance; } }
 
+    public static void Initialize()
+    {
+        CheckEventActivate();
+    }
+
+    public static void CheckEventActivate()
+    {
+        Debug.Log(CodeManager.GetMethodName());
+
+        if(globalData?.userManager?.Current != null)
+        {
+            globalData.eventSweetHolic_Activate = IsOpen_Event_SweetHolic() && !IsExpired(ToDateTime(globalData.userManager.Current.Event_SweetHolic_EndDate));
+        }
+        
+        SweetHolic_RefreshItemName();
+    }
+
     public static string GetNewUserGroup()
     {
         string group = "A";

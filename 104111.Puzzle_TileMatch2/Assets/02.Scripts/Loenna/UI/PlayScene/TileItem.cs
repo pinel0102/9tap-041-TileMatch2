@@ -365,7 +365,7 @@ public class TileItem : CachedBehaviour
                     if (GlobalDefine.IsOpen_Event_SweetHolic())
                     {
                         // [TODO] 매칭된 타일이 수집 이벤트 대상이면.
-                        if(tileName.Equals(GlobalDefine.GetSweetHolic_ItemName()))
+                        if(tileName.Equals(GlobalData.Instance.eventSweetHolic_ItemName))
                         {
                             Debug.Log(CodeManager.GetMethodName() + string.Format("Matching : {0}", tileName));
                             GlobalData.Instance.playScene.gameManager.EventCollect_SweetHolic(transform);

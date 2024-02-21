@@ -253,6 +253,8 @@ public class MainScene : UIScene
 
         GlobalData.Instance.CURRENT_LEVEL = m_userManager.Current.Level;
         GlobalData.Instance.CURRENT_DIFFICULTY = 0;
+        GlobalData.Instance.fragmentHome?.Refresh(m_userManager.Current);
+
         m_scrollView.MoveTo((int)parameter.ShowMenuType);
 
         SDKManager.SendAnalytics_I_Scene();
@@ -260,9 +262,11 @@ public class MainScene : UIScene
 
         CheckAutoPopups();
 	}
-
+    
     private async void CheckAutoPopups()
     {
+        GlobalDefine.CheckEventActivate();
+
         GlobalData.Instance.SetTouchLock_MainScene(true);
         GlobalData.Instance.fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); });
 

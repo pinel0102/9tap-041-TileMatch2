@@ -59,7 +59,7 @@ public class MainSceneFragmentContent_Home : ScrollViewFragmentContent
         RefreshPuzzleButton();
         RefreshPlayButton();
 	}
-
+    
 	public override void OnUpdateUI(User user)
 	{
         eventBanner_SweetHolic.OnUpdateUI(user);
@@ -67,6 +67,11 @@ public class MainSceneFragmentContent_Home : ScrollViewFragmentContent
         RefreshPuzzleButton();
         RefreshPlayButton();
 	}
+
+    public void Refresh(User user)
+    {
+        eventBanner_SweetHolic.Refresh(user);
+    }
 
     public void RefreshPlayButton()
     {

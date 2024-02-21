@@ -204,7 +204,7 @@ public partial class GameManager : IDisposable
         GlobalData.Instance.playScene.bottomView.RefreshSkillLocked(level);
         GlobalData.Instance.CURRENT_SCENE = GlobalDefine.SCENE_PLAY;
         GlobalData.Instance.CURRENT_LEVEL = level;
-        GlobalData.Instance.eventSweetHolic = 0;
+        GlobalData.Instance.eventSweetHolic_GetCount = 0;
 
         m_continueCount = 0;
 		m_boardInfo.Update(info => InternalState.Empty);

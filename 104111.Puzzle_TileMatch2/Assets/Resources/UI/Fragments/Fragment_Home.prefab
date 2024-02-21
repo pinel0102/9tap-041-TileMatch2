@@ -3665,8 +3665,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88a1edfcc2d9c4432ab404a86879bf33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sweetHolicUnlock: {fileID: 4142310785926625592}
   sweetHolicLock: {fileID: 3676723162039126945}
+  m_lockedText: {fileID: 396031349065897155}
+  sweetHolicUnlock: {fileID: 4142310785926625592}
   expSlider: {fileID: 8739687161711712114}
   m_text: {fileID: 7274300226885657314}
   m_textIncrease: {fileID: 6010508533984304792}
@@ -3674,6 +3675,7 @@ MonoBehaviour:
   targetItemImage: {fileID: 551585807357106867}
   targetItemPosition: {fileID: 4883304834255017591}
   isUnlocked: 0
+  itemName: 
   currentLevel: 0
   currentExp: 0
   totalExp: 0

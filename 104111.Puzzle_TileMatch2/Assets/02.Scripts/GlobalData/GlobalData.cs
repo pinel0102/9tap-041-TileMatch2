@@ -25,9 +25,6 @@ public partial class GlobalData : SingletonMono<GlobalData>
     public int oldPuzzlePiece = 0;
     //public int oldGoldPiece = 0;
 
-    [Header("★ [Live] Event Items")]
-    public int eventSweetHolic = 0;
-
     [Header("★ [Settings] Shuffle")]
     public float shuffleRadiusMin = 200;
     public float shuffleRadiusMax = 350;
@@ -42,9 +39,11 @@ public partial class GlobalData : SingletonMono<GlobalData>
 
         oldCoin = 0;
         oldPuzzlePiece = 0;
-        eventSweetHolic = 0;
+        eventSweetHolic_GetCount = 0;
 
+        GlobalDefine.Initialize();
         ResetParticlePool();
+
         StartCoroutine(Co_RealTime());
     }
 

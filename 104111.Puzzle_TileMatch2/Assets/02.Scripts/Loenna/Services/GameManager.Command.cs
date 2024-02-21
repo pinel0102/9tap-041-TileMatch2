@@ -300,9 +300,9 @@ partial class GameManager
 
     public void EventCollect_SweetHolic(Transform from)
     {
-        int addCount = 1;
+        int addCount = GlobalData.Instance.eventSweetHolic_IsBoosterTime ? 2 : 1;
 
-        GlobalData.Instance.eventSweetHolic += addCount;
+        GlobalData.Instance.eventSweetHolic_GetCount += addCount;
 
         m_sweetHolicCollectedFx.Update(_ => from);
         m_collectedSweetHolicCount.Update(count => count + addCount);

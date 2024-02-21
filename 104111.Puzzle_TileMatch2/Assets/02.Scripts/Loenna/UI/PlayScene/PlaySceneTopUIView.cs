@@ -29,8 +29,8 @@ public class PlaySceneTopUIView : CachedBehaviour
 		m_hardIcon.SetActive(hardMode);
 
 		m_missionCountView.alpha = 0f;//includedMission? 1f : 0f;
-        m_sweetHolicCountView.alpha = GlobalData.Instance.eventSweetHolic > 0 ? 1f : 0f;
-        m_sweetHolicIconImage.sprite = SpriteManager.GetSprite(GlobalDefine.GetSweetHolic_ItemPath());
+        m_sweetHolicCountView.alpha = GlobalData.Instance.eventSweetHolic_GetCount > 0 ? 1f : 0f;
+        m_sweetHolicIconImage.sprite = SpriteManager.GetSprite(GlobalDefine.GetSweetHolic_ItemImagePath());
 	}
 
 	public void UpdateMissionCount(int count, int maxCount)
@@ -45,7 +45,7 @@ public class PlaySceneTopUIView : CachedBehaviour
 
     public void UpdateSweetHolicCount()
 	{
-        int count = GlobalData.Instance.eventSweetHolic;
+        int count = GlobalData.Instance.eventSweetHolic_GetCount;
 
         DOTween.Kill(m_sweetHolicIconTransform);
 		m_sweetHolicIconTransform.SetLocalScale(Vector2.one);

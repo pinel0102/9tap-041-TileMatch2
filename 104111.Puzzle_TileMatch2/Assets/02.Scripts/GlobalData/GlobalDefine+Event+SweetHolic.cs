@@ -5,7 +5,7 @@ using System;
 
 public static partial class GlobalDefine
 {
-    public readonly static Dictionary<DayOfWeek, string> EventCycle_SweetHolic = new Dictionary<DayOfWeek, string>()
+    private readonly static Dictionary<DayOfWeek, string> EventCycle_SweetHolic = new Dictionary<DayOfWeek, string>()
     {
         [DayOfWeek.Monday]    = "Juice",
         [DayOfWeek.Tuesday]   = "Juice",
@@ -32,14 +32,14 @@ public static partial class GlobalDefine
         return openCheck && notShowedCheck;
     }
 
-    public static string GetSweetHolic_ItemName()
+    public static void SweetHolic_RefreshItemName()
     {
-        return EventCycle_SweetHolic[DateTime.Today.DayOfWeek];
+        globalData.eventSweetHolic_ItemName = EventCycle_SweetHolic[DateTime.Today.DayOfWeek];
     }
 
-    public static string GetSweetHolic_ItemPath()
+    public static string GetSweetHolic_ItemImagePath()
     {
-        return string.Format("UI_Img_{0}", GetSweetHolic_ItemName());
+        return string.Format("UI_Img_{0}", globalData.eventSweetHolic_ItemName);
     }
 
     private static void CheckSweetHolicExpired()
@@ -52,7 +52,8 @@ public static partial class GlobalDefine
                 TotalExp: 0,
                 ShowedPopup: false,
                 StartDate: TimeToString(StartDate),
-                EndDate: TimeToString(EndDate)
+                EndDate: TimeToString(EndDate),
+                BoosterEndDate: TimeToString(StartDate)
             );
 
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Expired] Event Time : {0} ~ {1} / ItemName : {2}</color>", globalData.userManager.Current.Event_SweetHolic_StartDate, globalData.userManager.Current.Event_SweetHolic_EndDate, ItemName));

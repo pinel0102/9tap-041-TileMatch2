@@ -102,7 +102,7 @@ partial class PlayScene
                 GlobalData.Instance.CreateEffect(
                     m_particlePool,
                     m_particleParent, 
-                    GlobalDefine.GetSweetHolic_ItemPath(),
+                    GlobalDefine.GetSweetHolic_ItemImagePath(),
                     Constant.Sound.SFX_GOLD_PIECE,
                     value.startPosition,
                     m_topView.SweetHolicIconTransform,
