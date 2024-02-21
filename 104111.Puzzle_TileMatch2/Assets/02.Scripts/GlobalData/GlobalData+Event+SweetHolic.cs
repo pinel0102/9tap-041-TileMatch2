@@ -5,6 +5,7 @@ using UnityEngine;
 public partial class GlobalData
 {
     [Header("★ [Event] Sweet Holic")]
+    public ExpTable eventSweetHolic_ExpTable;
     public bool eventSweetHolic_Activate;
     public string eventSweetHolic_ItemName;
     public int eventSweetHolic_ItemIndex;

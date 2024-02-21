@@ -4,6 +4,12 @@ using UnityEngine;
 
 public partial class GlobalData : SingletonMono<GlobalData>
 {
+    [Header("★ [Settings] Activated Events")]
+    public List<GameEventType> activatedEvents = new List<GameEventType>()
+    {
+        GameEventType.SweetHolic
+    };
+
     [HideInInspector] public MainScene mainScene = default;
     [HideInInspector] public PlayScene playScene = default;
     [HideInInspector] public StoreScene storeScene = default;
@@ -59,6 +65,21 @@ public partial class GlobalData : SingletonMono<GlobalData>
             
             yield return wTimeDelay;
         }
+    }
+
+    public void CreateExpTable()
+    {
+        var eventDataTable = tableManager.EventDataTable;
+        activatedEvents.ForEach(eventType => {
+            int MinLevel = eventDataTable.GetMinLevel(eventType);
+            int MaxLevel = eventDataTable.GetMaxLevel(eventType);
+            List<int> ExpList = eventDataTable.GetExpList(eventType);
+
+            switch(eventType)
+            {
+                case GameEventType.SweetHolic:  eventSweetHolic_ExpTable = new ExpTable(MinLevel, MaxLevel, ExpList); break;
+            }
+        });
     }
 
     public void SetTouchLock_MainScene(bool active)

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static partial class ExpManager
@@ -9,24 +10,61 @@ public static partial class ExpManager
     /// </summary>
     /// <param name="totalExp"></param>
     /// <param name="addExp"></param>
-    /// <param name="maxExp"></param>
     /// <param name="currentLevel"></param>
-    /// <param name="maxLevel"></param>
-    /// <param name="expList"></param>
-    /// <returns>currentLevel, currentExp, requiredExp, isLevelUp</returns>
-    public static (int, int, int, bool) GetEXP(int totalExp, int addExp, int maxExp, int currentLevel, int minLevel, int maxLevel, List<int> expList)
+    /// <param name="expTable"></param>
+    /// <returns>totalExp, currentLevel, currentExp, requiredExp, isLevelUp</returns>
+    public static (int, int, int, int, bool) GetEXP(int totalExp, int addExp, int currentLevel, ExpTable expTable)
     {
-        if (totalExp >= maxExp || addExp < 0) 
+        if (totalExp >= expTable.ExpLimit || addExp < 0) 
         {
-            var (_currentLevel, _currentExp, _requiredExp, _) = CalculateLevel(totalExp, -1, minLevel, maxLevel, expList, false);
-            return (_currentLevel, _currentExp, _requiredExp, false);
+            var (_defLevel, _defExp, _defReqExp, _) = CalculateLevel(totalExp, -1, expTable.MinLevel, expTable.MaxLevel, expTable.ExpList, false);
+            return (totalExp, _defLevel, _defExp, _defReqExp, false);
         }
 
-        totalExp = Mathf.Min(maxExp, totalExp + addExp);
+        totalExp = Mathf.Min(expTable.ExpLimit, totalExp + addExp);
         
         Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Get Exp : {0}</color>", addExp));
 
-        return CalculateLevel(totalExp, currentLevel, minLevel, maxLevel, expList, true);
+        var (_resultLevel, _resultExp, _resultReqExp, _isLevelup) =  CalculateLevel(totalExp, currentLevel, expTable.MinLevel, expTable.MaxLevel, expTable.ExpList, true);
+        return (totalExp, _resultLevel, _resultExp, _resultReqExp, _isLevelup);
+    }
+
+    /// <summary>
+    /// 경험치를 획득하고 레벨을 계산한다.
+    /// </summary>
+    /// <param name="totalExp"></param>
+    /// <param name="addExp"></param>
+    /// <param name="expLimit"></param>
+    /// <param name="currentLevel"></param>
+    /// <param name="maxLevel"></param>
+    /// <param name="expList"></param>
+    /// <returns>totalExp, currentLevel, currentExp, requiredExp, isLevelUp</returns>
+    public static (int, int, int, int, bool) GetEXP(int totalExp, int addExp, int currentLevel, int minLevel, int maxLevel, int expLimit, List<int> expList)
+    {
+        if (totalExp >= expLimit || addExp < 0) 
+        {
+            var (_defLevel, _defExp, _defReqExp, _) = CalculateLevel(totalExp, -1, minLevel, maxLevel, expList, false);
+            return (totalExp, _defLevel, _defExp, _defReqExp, false);
+        }
+
+        totalExp = Mathf.Min(expLimit, totalExp + addExp);
+        
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Get Exp : {0}</color>", addExp));
+
+        var (_resultLevel, _resultExp, _resultReqExp, _isLevelup) = CalculateLevel(totalExp, currentLevel, minLevel, maxLevel, expList, true);
+        return (totalExp, _resultLevel, _resultExp, _resultReqExp, _isLevelup);
+    }
+
+    /// <summary>
+    /// TotalExp 를 레벨과 경험치로 환산한다.
+    /// </summary>
+    /// <param name="totalExp"></param>
+    /// <param name="expTable"></param>
+    /// <returns>currentLevel, currentExp, requiredExp</returns>
+    public static (int, int, int) CalculateLevel(int totalExp, ExpTable expTable)
+    {
+        var (_currentLevel, _currentExp, _requiredExp, _) = CalculateLevel(totalExp, -1, expTable.MinLevel, expTable.MaxLevel, expTable.ExpList, false);
+        return (_currentLevel, _currentExp, _requiredExp);
     }
 
     /// <summary>
@@ -86,5 +124,22 @@ public static partial class ExpManager
         }
 
         return (currentLevel, currentExp, requiredExp, isLevelUp);
+    }
+}
+
+[System.Serializable]
+public struct ExpTable
+{
+    public int MinLevel;
+    public int MaxLevel;
+    public int ExpLimit;
+    public List<int> ExpList;
+
+    public ExpTable(int minLevel, int maxLevel, List<int> expList)
+    {
+        MinLevel = minLevel;
+        MaxLevel = maxLevel;
+        ExpList = expList;
+        ExpLimit = expList.Sum();
     }
 }

@@ -171,6 +171,19 @@ public partial class GameManager : IDisposable
 
         m_userManager.Update(level: CurrentLevel + 1, collectRewardAll);
         GlobalData.Instance.CURRENT_LEVEL = m_userManager.Current.Level;
+
+        if (GlobalData.Instance.eventSweetHolic_Activate)
+        {
+            int getExp = GlobalData.Instance.eventSweetHolic_TestMode ? GlobalData.Instance.eventSweetHolic_TestExp :
+                         GlobalData.Instance.eventSweetHolic_GetCount;
+
+            var (totalExp, _, _, _, _) = ExpManager.GetEXP(GlobalData.Instance.oldSweetHolicExp, 
+                getExp,
+                GlobalData.Instance.fragmentHome.eventBanner_SweetHolic.currentLevel,
+                GlobalData.Instance.eventSweetHolic_ExpTable);
+
+            m_userManager.UpdateEvent_SweetHolic(TotalExp:totalExp);
+        }
     }
 
     void AddRewards(Dictionary<ProductType, long> dict, List<IReward> rewards)

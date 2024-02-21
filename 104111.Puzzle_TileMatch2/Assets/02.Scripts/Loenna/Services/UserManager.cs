@@ -87,6 +87,7 @@ public class UserManager : IDisposable
         SDKManager.Instance.Initialize(m_user.Value.AppOpenCount, m_user.Value.InstallDate, m_user.Value.UserGroup, m_user.Value.NoAD);
         PushManager.Initialize(ProjectManager.productName, GlobalDefine.ToDateTime(m_user.Value.InstallDate));
 
+        GlobalData.Instance.CreateExpTable();
         GlobalDefine.CheckEventActivate();
 
 #if !UNITY_STANDALONE

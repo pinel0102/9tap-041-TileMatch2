@@ -25,8 +25,6 @@ public partial class GlobalData
     public void HUD_LateUpdate_EventItem(int _getCount)
     {
         if (_getCount <= 0) return;
-
-        eventSweetHolic_GetCount += _getCount;
     }
 
     private void HUD_LateUpdate(int _index, long _oldCount, int _getCount, float _startDelay = 0, bool autoTurnOff_IncreaseMode = true)
@@ -55,10 +53,8 @@ public partial class GlobalData
         int _oldPuzzle = oldPuzzlePiece;
         int _oldSweetHolicExp = oldSweetHolicExp;
 
-        if (eventSweetHolic_TestMode)
-        {
+        if(eventSweetHolic_TestMode)
             _getSweetHolicExp = eventSweetHolic_TestExp;
-        }
 
         if(_getPuzzlePiece > 0)
             HUD?.behaviour.Fields[0].SetIncreaseText(_oldPuzzle);
@@ -99,11 +95,14 @@ public partial class GlobalData
         if(_getSweetHolicExp > 0)
         {
             Debug.Log(CodeManager.GetMethodName() + string.Format("[SweetHolic] {0} + {1} = {2}", _oldSweetHolicExp, _getSweetHolicExp, _oldSweetHolicExp + _getSweetHolicExp));
+
+            bool increaseExpFinished = false;
             
-            CreateEffect(GlobalDefine.GetSweetHolic_ItemImagePath(), Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, fragmentHome.eventBanner_SweetHolic.targetItemPosition, _fxDuration, () => {
-                fragmentHome.eventBanner_SweetHolic.IncreaseText(_oldSweetHolicExp, _getSweetHolicExp);
+            CreateEffect(GlobalDefine.GetSweetHolic_ItemImagePath(), Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, fragmentHome.eventBanner_SweetHolic.targetItemPosition, _fxDuration, async () => {
+                increaseExpFinished = await fragmentHome.eventBanner_SweetHolic.IncreaseText(_oldSweetHolicExp, _getSweetHolicExp);
             });
 
+            await UniTask.WaitUntil(() => increaseExpFinished);
             await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
         }
     }

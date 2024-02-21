@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System;
 using TMPro;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using NineTap.Common;
 
 public class EventBanner_SweetHolic : MonoBehaviour
@@ -33,10 +34,9 @@ public class EventBanner_SweetHolic : MonoBehaviour
     private GameEventType eventType = GameEventType.SweetHolic;
 
     private TableManager tableManager;
-    private EventDataTable eventDataTable;
-    private int MinLevel = -1;
-    private int MaxLevel = -1;
-    private List<int> ExpList = default;
+    private EventDataTable eventDataTable;    
+    private ExpTable ExpTable;
+    private GlobalData globalData { get { return GlobalData.Instance; } }
 
     private const string textFormatExp = "{0}/{1}";
     private const string textExpMax = "Complete!";
@@ -47,10 +47,7 @@ public class EventBanner_SweetHolic : MonoBehaviour
     {
         tableManager = _tableManager;
         eventDataTable = tableManager.EventDataTable;
-        
-        MinLevel = eventDataTable.GetMinLevel(eventType);
-        MaxLevel = eventDataTable.GetMaxLevel(eventType);
-        ExpList = eventDataTable.GetExpList(eventType);
+        ExpTable = globalData.eventSweetHolic_ExpTable;
 
         m_lockedText.SetText(string.Format(textFormatLocked, Constant.User.MIN_OPENLEVEL_EVENT_SWEETHOLIC));
         RefreshEventState(user);
@@ -82,6 +79,8 @@ public class EventBanner_SweetHolic : MonoBehaviour
 
         if (!isUnlocked)
             return;
+
+        Debug.Log(CodeManager.GetMethodName());
         
         RefreshItemIcon();
         RefreshTimeText(user.Event_SweetHolic_EndDate);
@@ -89,7 +88,7 @@ public class EventBanner_SweetHolic : MonoBehaviour
         itemName = GlobalData.Instance.eventSweetHolic_ItemName;
         totalExp = user.Event_SweetHolic_TotalExp;
 
-        (currentLevel, currentExp, requiredExp) = ExpManager.CalculateLevel(totalExp, MinLevel, MaxLevel, ExpList);
+        (currentLevel, currentExp, requiredExp) = ExpManager.CalculateLevel(totalExp, ExpTable);
 
         if(eventDataTable.IsMaxLevel(eventType, currentLevel))
         {
@@ -119,14 +118,24 @@ public class EventBanner_SweetHolic : MonoBehaviour
         expSlider.value = percent;
     }
 
+    private void MoveExpSlider(int _currentExp, int _nextExp, float duration)
+    {
+        if (_nextExp <= 0) return;
+
+        float percent = (float)_currentExp / (float)_nextExp;
+        expSlider.DOValue(percent, duration);
+    }
+
     private void RefreshExpText(int _currentExp, int _nextExp)
     {
         m_text.SetText(string.Format(textFormatExp, _currentExp, _nextExp));
     }
 
-    public void SetIncreaseText(int _currentExp)
+    public void SetIncreaseText(int _totalExp)
     {
-        SetIncreaseText(_currentExp, requiredExp);
+        var (oldLevel, oldExp, oldReqExp) = ExpManager.CalculateLevel(_totalExp, ExpTable);
+        RefreshExpSlider(oldExp, oldReqExp);
+        SetIncreaseText(oldExp, oldReqExp);
     }
 
     private void SetIncreaseText(int _currentExp, int _requiredExp, bool autoTurnOn_IncreaseMode = true)
@@ -137,34 +146,68 @@ public class EventBanner_SweetHolic : MonoBehaviour
             SetIncreaseMode(true);
     }
 
-    public void IncreaseText(int fromCount, int addCount, float duration = 0.5f, bool autoTurnOff_IncreaseMode = true, Action<int> onUpdate = null)
+    public async UniTask<bool> IncreaseText(int totalExp, int addExp, float duration = 0.5f, bool autoTurnOff_IncreaseMode = true, Action<int> onUpdate = null)
     {
-        SetIncreaseText(fromCount, requiredExp);
-        onUpdate?.Invoke(fromCount);
+        duration = 3f;
 
+        var (fromLevel, fromExp, fromReqExp) = ExpManager.CalculateLevel(totalExp, ExpTable);
+        var (toLevel, toExp, toReqExp) = ExpManager.CalculateLevel(globalData.userManager.Current.Event_SweetHolic_TotalExp, ExpTable);
+
+        RefreshExpSlider(fromExp, fromReqExp);
+        SetIncreaseText(fromExp, fromReqExp);
         SetIncreaseMode(true);
 
-        UniTask.Void(
-			async token => {
-                float delay = GetDelay(duration, addCount);
+        float delay = GetDelay(duration, addExp);
 
-                for(int i=1; i <= addCount; i++)
-                {
-                    SetIncreaseText(fromCount + i, requiredExp);
-                    onUpdate?.Invoke(fromCount + i);
-                    await UniTask.Delay(TimeSpan.FromSeconds(delay));
-                }
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Start Level : {0} ({1}/{2})</color>", fromLevel, fromExp, fromReqExp));
 
-                if (autoTurnOff_IncreaseMode)
-                    SetIncreaseMode(false);
-            },
-			this.GetCancellationTokenOnDestroy()
-        );
+        int resExp = totalExp;
+        while(addExp > 0)
+        {
+            int oldLevel = fromLevel;
+            int addExpSlice = Mathf.Min(addExp, fromReqExp - fromExp);            
+            addExp -= addExpSlice;
+            resExp += addExpSlice;
+
+            bool increaseFinished = await IncreaseText_UntilLevelUp(fromExp, addExpSlice, fromReqExp, delay);            
+            await UniTask.WaitUntil(() => increaseFinished);
+
+            (fromLevel, fromExp, fromReqExp) = ExpManager.CalculateLevel(resExp, ExpTable);
+
+            if (fromLevel > oldLevel)
+            {
+                Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Level Up : {0} ({1}/{2})</color>", fromLevel, fromExp, fromReqExp));
+            }
+            else
+            {
+                Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Increase Finished : {0} ({1}/{2})</color>", fromLevel, fromExp, fromReqExp));
+            }
+        }
+
+        if (autoTurnOff_IncreaseMode)
+            SetIncreaseMode(false);
+
+        return true;
 
         float GetDelay(float time, int amount)
         {
             return time/(float)amount;
         }
+    }
+
+    private async UniTask<bool> IncreaseText_UntilLevelUp(int fromCount, int addCount, int reqExp, float delay)
+    {
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} + {1} = {2}/{3}</color>", fromCount, addCount, fromCount + addCount, reqExp));
+
+        for(int i=1; i <= addCount; i++)
+        {
+            MoveExpSlider(fromCount + i, reqExp, delay);
+            SetIncreaseText(fromCount + i, reqExp);
+
+            await UniTask.Delay(TimeSpan.FromSeconds(delay));
+        }
+
+        return true;
     }
 
 
