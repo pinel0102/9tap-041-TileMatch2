@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 
 public static partial class GlobalDefine
 {
@@ -35,6 +36,7 @@ public static partial class GlobalDefine
     public static void SweetHolic_RefreshItemName()
     {
         globalData.eventSweetHolic_ItemName = EventCycle_SweetHolic[DateTime.Today.DayOfWeek];
+        globalData.eventSweetHolic_ItemIndex = globalData?.tableManager?.TileDataTable?.Dic?.FirstOrDefault(item => item.Value.Name.Equals(globalData.eventSweetHolic_ItemName)).Value.Index ?? 0;
     }
 
     public static string GetSweetHolic_ItemImagePath()

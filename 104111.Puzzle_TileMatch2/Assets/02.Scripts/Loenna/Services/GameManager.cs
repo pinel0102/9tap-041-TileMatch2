@@ -200,6 +200,8 @@ public partial class GameManager : IDisposable
 	{
         Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0}</color>", level));
 
+        GlobalDefine.InitRandomSeed();
+
         GlobalData.Instance.playScene.ResetParticlePool();
         GlobalData.Instance.playScene.bottomView.RefreshSkillLocked(level);
         GlobalData.Instance.CURRENT_SCENE = GlobalDefine.SCENE_PLAY;
@@ -282,25 +284,59 @@ public partial class GameManager : IDisposable
 		List<TileItemModel> CreateTileItemModels(int level, string countryCode, Board board)
 		{
 			List<TileItemModel> tileItemModelAll = new();
-			int missionTileCount = board.MissionTileCount;
+            int missionTileCount = board.MissionTileCount;			
+            int specialTileTypes = 0;
 
-			int goldTileIcon = board.MissionTileCount > 0? board.GoldTileIcon : 0;
+            #region Gold Tile
+			int goldTileIcon = board.MissionTileCount > 0? board.GoldTileIcon : 0;       
+            if (goldTileIcon > 0)
+                specialTileTypes++;
+            #endregion Gold Tile
 
-			int tileCount = board.Layers.Sum(Layer => Layer?.Tiles?.Count ?? 0);
+            #region Sweet Holic Tile
+            int sweetHolicTileIndex = 0;
+            
+            if (GlobalData.Instance.eventSweetHolic_Activate)
+            {
+                bool containsSweetHolicTile = UnityEngine.Random.Range(0, 100) < GlobalData.Instance.eventSweetHolic_TilePercent;
+                if (containsSweetHolicTile)
+                {
+                    sweetHolicTileIndex = GlobalData.Instance.eventSweetHolic_ItemIndex;
+            
+                    if (sweetHolicTileIndex > 0 && goldTileIcon != sweetHolicTileIndex)
+                        specialTileTypes++;
+
+                    Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Sweet Holic] Contains Event Tile [{1}] : {0}</color>", containsSweetHolicTile, sweetHolicTileIndex));
+                }
+                else
+                {
+                    Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Sweet Holic] Contains Event Tile : {0}</color>", containsSweetHolicTile));
+                }
+            }
+            #endregion Sweet Holic Tile
+            
+            int tileCount = board.Layers.Sum(Layer => Layer?.Tiles?.Count ?? 0);
 			int requiredTypeCount = tileCount / Constant.Game.REQUIRED_MATCH_COUNT;
-			int randomCount = Mathf.Clamp(board.NumberOfTileTypes, 1, requiredTypeCount);
+			int randomCount = Mathf.Clamp(board.NumberOfTileTypes - specialTileTypes, 1, requiredTypeCount);
 
 			var randomIcons = TileDataTable
 				.GetIndexes(level, countryCode)
 				.Shuffle()
-				.Where(index => index != goldTileIcon)
-				.Take(goldTileIcon > 0? randomCount -1 : randomCount)
+				.Where(index => index != goldTileIcon && index != sweetHolicTileIndex)
+				.Take(randomCount)
 				.ToList();
 			
 			if (goldTileIcon > 0)
 			{
-				randomIcons.Insert(0, goldTileIcon);
+                if (!randomIcons.Contains(goldTileIcon))
+				    randomIcons.Insert(0, goldTileIcon);
 			}
+
+            if (sweetHolicTileIndex > 0)
+            {
+                if (!randomIcons.Contains(sweetHolicTileIndex))
+                    randomIcons.Insert(0, sweetHolicTileIndex);
+            }
 
 			List<int> randoms = new List<int>();
 			for (int i = 0, count = requiredTypeCount; i < count; i++)

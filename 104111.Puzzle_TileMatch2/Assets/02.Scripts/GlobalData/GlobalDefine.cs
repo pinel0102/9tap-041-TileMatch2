@@ -19,7 +19,13 @@ public static partial class GlobalDefine
 
     public static void Initialize()
     {
+        InitRandomSeed();
         CheckEventActivate();
+    }
+
+    public static void InitRandomSeed()
+    {
+        UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
     }
 
     public static void CheckEventActivate()
