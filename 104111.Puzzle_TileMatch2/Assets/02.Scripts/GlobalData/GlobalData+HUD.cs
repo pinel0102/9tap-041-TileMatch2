@@ -47,20 +47,25 @@ public partial class GlobalData
         );
     }
 
-    public async UniTask HUD_LateUpdate_MainSceneReward(int _clearedLevel, int _openPuzzleIndex, int _getCoin, int _getPuzzlePiece, int _getSweetHolic)
+    public async UniTask HUD_LateUpdate_MainSceneReward(int _clearedLevel, int _openPuzzleIndex, int _getCoin, int _getPuzzlePiece, int _getSweetHolicExp)
     {
-        Debug.Log(CodeManager.GetMethodName() + string.Format("Level {0} : {1} / {2} / {3} / {4}", _clearedLevel, _openPuzzleIndex, _getCoin, _getPuzzlePiece, _getSweetHolic));
+        Debug.Log(CodeManager.GetMethodName() + string.Format("Level {0} : {1} / {2} / {3} / {4}", _clearedLevel, _openPuzzleIndex, _getCoin, _getPuzzlePiece, _getSweetHolicExp));
 
         long _oldCoin = oldCoin;
         int _oldPuzzle = oldPuzzlePiece;
-        int _oldSweetHolic = eventSweetHolic_GetCount;
+        int _oldSweetHolicExp = oldSweetHolicExp;
+
+        if (eventSweetHolic_TestMode)
+        {
+            _getSweetHolicExp = eventSweetHolic_TestExp;
+        }
 
         if(_getPuzzlePiece > 0)
             HUD?.behaviour.Fields[0].SetIncreaseText(_oldPuzzle);
         if(_getCoin > 0)
             HUD?.behaviour.Fields[2].SetIncreaseText(_oldCoin);
-        if(_getSweetHolic > 0)
-            fragmentHome.eventBanner_SweetHolic.SetIncreaseText(_oldSweetHolic);
+        if(_getSweetHolicExp > 0)
+            fragmentHome.eventBanner_SweetHolic.SetIncreaseText(_oldSweetHolicExp);
         
         float _startDelay = 0.5f;
         float _fxDuration = 1f;
@@ -91,12 +96,12 @@ public partial class GlobalData
             await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
         }
 
-        if(_getSweetHolic > 0)
+        if(_getSweetHolicExp > 0)
         {
-            Debug.Log(CodeManager.GetMethodName() + string.Format("[SweetHolic] {0} + {1} = {2}", _oldSweetHolic, _getSweetHolic, _oldSweetHolic + _getSweetHolic));
+            Debug.Log(CodeManager.GetMethodName() + string.Format("[SweetHolic] {0} + {1} = {2}", _oldSweetHolicExp, _getSweetHolicExp, _oldSweetHolicExp + _getSweetHolicExp));
             
             CreateEffect(GlobalDefine.GetSweetHolic_ItemImagePath(), Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, fragmentHome.eventBanner_SweetHolic.targetItemPosition, _fxDuration, () => {
-                fragmentHome.eventBanner_SweetHolic.IncreaseText(_oldSweetHolic, _getSweetHolic, onUpdate:fragmentHome.RefreshPuzzleBadge);
+                fragmentHome.eventBanner_SweetHolic.IncreaseText(_oldSweetHolicExp, _getSweetHolicExp);
             });
 
             await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));

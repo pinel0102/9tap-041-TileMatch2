@@ -273,7 +273,9 @@ public class MainScene : UIScene
         if (CachedParameter is MainSceneRewardParameter rewardParameter)
         {
             Debug.Log(CodeManager.GetMethodName() + string.Format("[Get Reward] {0} / {1} / {2}", rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardSweetHolic));
-            await GlobalData.Instance.HUD_LateUpdate_MainSceneReward(rewardParameter.clearedLevel, rewardParameter.openPuzzleIndex, rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardSweetHolic);
+            await GlobalData.Instance.HUD_LateUpdate_MainSceneReward(rewardParameter.clearedLevel, rewardParameter.openPuzzleIndex, 
+                                                                    rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, 
+                                                                    rewardParameter.rewardSweetHolic);
             await GlobalData.Instance.CheckPuzzleOpen(rewardParameter.openPuzzleIndex);
 
             if (GlobalDefine.IsEnable_Review(rewardParameter.clearedLevel))
@@ -317,7 +319,7 @@ public class MainScene : UIScene
         // [Level >= 21]
         if (GlobalDefine.IsEnable_EventPopup_SweetHolic())
         {
-            Debug.Log(CodeManager.GetMethodName() + "<color=yellow>Show Event Popup : SweetHolic</color>");
+            Debug.Log(CodeManager.GetMethodName() + "<color=yellow>Show New Event Popup : Sweet Holic</color>");
             //
         }
 

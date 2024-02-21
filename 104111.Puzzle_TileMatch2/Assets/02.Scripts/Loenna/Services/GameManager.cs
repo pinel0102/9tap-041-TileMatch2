@@ -147,7 +147,8 @@ public partial class GameManager : IDisposable
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("Level {0}", CurrentLevel));
 
-        GlobalData.Instance.SetOldItems(m_userManager.Current.Coin, m_userManager.Current.Puzzle);
+        GlobalData.Instance.SetOldItems(m_userManager.Current.Coin, m_userManager.Current.Puzzle, 
+                                        m_userManager.Current.Event_SweetHolic_TotalExp);
 
         RewardDataTable rewardDataTable = m_tableManager.RewardDataTable;
         Dictionary<ProductType, long> collectRewardAll = new Dictionary<ProductType, long>();

@@ -27,10 +27,16 @@ public class EventBanner_SweetHolic : MonoBehaviour
     public string itemName;
     public int currentLevel;
     public int currentExp;
+    public int requiredExp;
     public int totalExp;
     public EventData nextEventData;
+    private GameEventType eventType = GameEventType.SweetHolic;
 
     private TableManager tableManager;
+    private EventDataTable eventDataTable;
+    private int MinLevel = -1;
+    private int MaxLevel = -1;
+    private List<int> ExpList = default;
 
     private const string textFormatExp = "{0}/{1}";
     private const string textExpMax = "Complete!";
@@ -40,6 +46,12 @@ public class EventBanner_SweetHolic : MonoBehaviour
     public void Initialize(User user, TableManager _tableManager)
     {
         tableManager = _tableManager;
+        eventDataTable = tableManager.EventDataTable;
+        
+        MinLevel = eventDataTable.GetMinLevel(eventType);
+        MaxLevel = eventDataTable.GetMaxLevel(eventType);
+        ExpList = eventDataTable.GetExpList(eventType);
+
         m_lockedText.SetText(string.Format(textFormatLocked, Constant.User.MIN_OPENLEVEL_EVENT_SWEETHOLIC));
         RefreshEventState(user);
     }
@@ -77,46 +89,29 @@ public class EventBanner_SweetHolic : MonoBehaviour
         itemName = GlobalData.Instance.eventSweetHolic_ItemName;
         totalExp = user.Event_SweetHolic_TotalExp;
 
-        (currentLevel, currentExp) = tableManager.EventDataTable.GetCurrentLevel(GameEventType.SweetHolic, totalExp);
+        (currentLevel, currentExp, requiredExp) = ExpManager.CalculateLevel(totalExp, MinLevel, MaxLevel, ExpList);
 
-        if(tableManager.EventDataTable.IsMaxLevel(GameEventType.SweetHolic, currentLevel))
+        if(eventDataTable.IsMaxLevel(eventType, currentLevel))
         {
-            RefreshExpText(textExpMax);
             RefreshExpSlider(1, 1);
+            RefreshExpText(textExpMax);
         }
         else
         {
-            if(tableManager.EventDataTable.TryGetNextEventData(GameEventType.SweetHolic, currentLevel, out nextEventData))
+            if(eventDataTable.TryGetNextEventData(eventType, currentLevel, out nextEventData))
             {
-                RefreshExpText(currentExp, nextEventData.EXP);
                 RefreshExpSlider(currentExp, nextEventData.EXP);
+                RefreshExpText(currentExp, nextEventData.EXP);
             }
             else
             {
-                RefreshExpText(string.Empty);
                 RefreshExpSlider(0, 1);
+                RefreshExpText(string.Empty);
             }
         }
     }
 
-    private void RefreshItemIcon()
-    {
-        targetItemImage.sprite = SpriteManager.GetSprite(GlobalDefine.GetSweetHolic_ItemImagePath());
-    }
-
-    public void RefreshTimeText(string endDate)
-    {
-        timeText.SetText(GlobalDefine.GetRemainEventTime(endDate));
-    }
-
-
-    public void RefreshExp(long count)
-    {
-        //puzzleBadgeText.SetText(count.ToString());
-        //puzzleBadgeObject.SetActive(count > 0);
-    }
-
-    public void RefreshExpSlider(int _currentExp, int _nextExp)
+    private void RefreshExpSlider(int _currentExp, int _nextExp)
     {
         if (_nextExp <= 0) return;
 
@@ -124,36 +119,39 @@ public class EventBanner_SweetHolic : MonoBehaviour
         expSlider.value = percent;
     }
 
-    public void RefreshExpText(int _currentExp, int _nextExp)
+    private void RefreshExpText(int _currentExp, int _nextExp)
     {
         m_text.SetText(string.Format(textFormatExp, _currentExp, _nextExp));
     }
 
-
-
-    public void SetIncreaseText(long _text, bool autoTurnOn_IncreaseMode = true)
+    public void SetIncreaseText(int _currentExp)
     {
-        //SetIncreaseText(string.Format(textFormatExp, _text, _nextExp));
+        SetIncreaseText(_currentExp, requiredExp);
+    }
+
+    private void SetIncreaseText(int _currentExp, int _requiredExp, bool autoTurnOn_IncreaseMode = true)
+    {
+        SetIncreaseText(string.Format(textFormatExp, _currentExp, _requiredExp));
         
         if (autoTurnOn_IncreaseMode)
             SetIncreaseMode(true);
     }
 
-    public void IncreaseText(long from, int count, float duration = 0.5f, bool autoTurnOff_IncreaseMode = true, Action<long> onUpdate = null)
+    public void IncreaseText(int fromCount, int addCount, float duration = 0.5f, bool autoTurnOff_IncreaseMode = true, Action<int> onUpdate = null)
     {
-        SetIncreaseText(from);
-        onUpdate?.Invoke(from);
+        SetIncreaseText(fromCount, requiredExp);
+        onUpdate?.Invoke(fromCount);
 
         SetIncreaseMode(true);
 
         UniTask.Void(
 			async token => {
-                float delay = GetDelay(duration, count);
+                float delay = GetDelay(duration, addCount);
 
-                for(int i=1; i <= count; i++)
+                for(int i=1; i <= addCount; i++)
                 {
-                    SetIncreaseText(from + i);
-                    onUpdate?.Invoke(from + i);
+                    SetIncreaseText(fromCount + i, requiredExp);
+                    onUpdate?.Invoke(fromCount + i);
                     await UniTask.Delay(TimeSpan.FromSeconds(delay));
                 }
 
@@ -172,6 +170,16 @@ public class EventBanner_SweetHolic : MonoBehaviour
 
 #region Privates
     
+    private void RefreshItemIcon()
+    {
+        targetItemImage.sprite = SpriteManager.GetSprite(GlobalDefine.GetSweetHolic_ItemImagePath());
+    }
+
+    private void RefreshTimeText(string endDate)
+    {
+        timeText.SetText(GlobalDefine.GetRemainEventTime(endDate));
+    }
+
     private void RefreshExpText(string text)
     {
         m_text.SetText(text);

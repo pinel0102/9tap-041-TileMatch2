@@ -24,6 +24,7 @@ public partial class GlobalData : SingletonMono<GlobalData>
     public long oldCoin = 0;
     public int oldPuzzlePiece = 0;
     //public int oldGoldPiece = 0;
+    public int oldSweetHolicExp = 0;
 
     [Header("★ [Settings] Shuffle")]
     public float shuffleRadiusMin = 200;
@@ -39,6 +40,8 @@ public partial class GlobalData : SingletonMono<GlobalData>
 
         oldCoin = 0;
         oldPuzzlePiece = 0;
+        oldSweetHolicExp = 0;
+
         eventSweetHolic_GetCount = 0;
 
         GlobalDefine.Initialize();
@@ -78,12 +81,13 @@ public partial class GlobalData : SingletonMono<GlobalData>
         return (playScene != null) && playScene.m_block.activeInHierarchy;
     }
 
-    public void SetOldItems(long _coin, int _puzzlePiece)
+    public void SetOldItems(long _coin, int _puzzlePiece, int _sweetHolicExp)
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("{0} / {1}", _coin, _puzzlePiece));
 
         oldCoin = _coin;
         oldPuzzlePiece = _puzzlePiece;
+        oldSweetHolicExp = _sweetHolicExp;
     }
 
     public int GetEnableLevel(int level)
