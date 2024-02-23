@@ -50,7 +50,7 @@ public static class Constant
 
 	public static class Game
 	{
-        public const int LEVEL_PUZZLE_START = 6; // 5 클리어시 해금.
+        public const int LEVEL_PUZZLE_START = 4; // 오픈시 해금.
 		public const float TILE_WIDTH = 88f;
 		public const float TILE_HEIGHT = 92f;
         public const float TILE_WIDTH_HALF = 44f;

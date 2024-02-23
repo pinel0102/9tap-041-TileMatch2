@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using NineTap.Common;
 using System.Linq;
+using TMPro;
 
 public class PuzzlePieceItemData
 {
@@ -36,6 +37,11 @@ public class PuzzlePlayView : CachedBehaviour
     [SerializeField]
 	private GameObject m_lockedObject;
 
+    [SerializeField]
+	private TMP_Text m_lockedText;
+
+    private const string formatLocked = "Clear Level {0} to Unlock";
+
     private JigsawPuzzlePiece m_piecePrefab;
 	private PuzzleManager m_puzzleManager;
     
@@ -43,6 +49,7 @@ public class PuzzlePlayView : CachedBehaviour
 	{
 		m_puzzleManager = puzzleManager;
 		m_piecePrefab = ResourcePathAttribute.GetResource<JigsawPuzzlePiece>();
+        m_lockedText.SetText(formatLocked, Constant.Game.LEVEL_PUZZLE_START - 1);
 		m_pieceSlotContainer.OnSetup();
 		m_backButton.OnSetup(
 			new UIImageButtonParameter

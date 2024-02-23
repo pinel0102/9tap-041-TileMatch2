@@ -70,6 +70,7 @@ public partial class DebugPanel : MonoBehaviour
         Debug.Log(CodeManager.GetMethodName() + string.Format(logFormat2, "Set Puzzle", count));
 
         m_userManager?.Update(puzzle: count);
+        GlobalData.Instance.fragmentHome?.RefreshPuzzleBadge(m_userManager.Current.Puzzle);
     }
 
     private void Debug_SetHeart(int count)

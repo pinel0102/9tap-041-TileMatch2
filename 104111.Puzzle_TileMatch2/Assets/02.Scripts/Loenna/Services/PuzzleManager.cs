@@ -56,7 +56,7 @@ public class PuzzleManager : IDisposable
             PieceCost: puzzleData.Cost
 		);
 
-        Debug.Log(CodeManager.GetMethodName() + string.Format("{0} / {1} / {2}", puzzleData.Index, puzzleData.Cost, puzzleData.Level));
+        Debug.Log(CodeManager.GetMethodName() + string.Format("PuzzleData.Index : {0} / PuzzleData.Level : {1}", puzzleData.Index, puzzleData.Level));
 
 		return true;
 	}

@@ -19,6 +19,7 @@ public class TutorialPuzzlePopup : UIPopup
     [SerializeField]    private RectTransform m_unmask = default!;
     [SerializeField]    private List<GameObject> m_tutorialObject = default!;
     [SerializeField]    private List<RectTransform> m_tutorialPanel = default!;
+    [SerializeField]    private TMP_Text m_badgeCount = default!;
     [SerializeField]    private TMP_Text m_puzzleCount = default!;
     [SerializeField]    private Image m_pieceImage = default!;
     [SerializeField]    private Image m_pieceImageSSU = default!;
@@ -82,6 +83,7 @@ public class TutorialPuzzlePopup : UIPopup
         switch (currentIndex)
         {
             case 0: // Main Button
+                m_badgeCount.SetText(GlobalData.Instance.userManager.Current.Puzzle.ToString());
                 m_tutorialPanel[currentIndex].position = GlobalData.Instance.fragmentHome.PuzzleButton.position;
                 m_tutorialObject[currentIndex].SetActive(true);
                 SetButtonInteractable(true);
