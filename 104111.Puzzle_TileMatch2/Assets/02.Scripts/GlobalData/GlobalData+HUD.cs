@@ -57,13 +57,15 @@ public partial class GlobalData
         if(eventSweetHolic_TestMode)
             _getSweetHolicExp = eventSweetHolic_TestExp;
 #endif
+        if(tableManager.EventDataTable.IsMaxLevel(GameEventType.SweetHolic, fragmentHome.eventBanner_SweetHolic.currentLevel))
+            _getSweetHolicExp = 0;
 
         if(_getPuzzlePiece > 0)
             HUD?.behaviour.Fields[0].SetIncreaseText(_oldPuzzle);
         if(_getCoin > 0)
             HUD?.behaviour.Fields[2].SetIncreaseText(_oldCoin);
         if(_getSweetHolicExp > 0)
-            fragmentHome.eventBanner_SweetHolic.SetIncreaseText(_oldSweetHolicExp);
+            fragmentHome.eventBanner_SweetHolic.eventSlider.SetIncreaseText(_oldSweetHolicExp);
         
         float _startDelay = 0.5f;
         float _fxDuration = 1f;
@@ -101,7 +103,7 @@ public partial class GlobalData
             bool increaseExpFinished = false;
             
             CreateEffect(GlobalDefine.GetSweetHolic_ItemImagePath(), Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, fragmentHome.eventBanner_SweetHolic.targetItemPosition, _fxDuration, async () => {
-                increaseExpFinished = await fragmentHome.eventBanner_SweetHolic.IncreaseText(_oldSweetHolicExp, _getSweetHolicExp);
+                increaseExpFinished = await fragmentHome.eventBanner_SweetHolic.eventSlider.IncreaseText(_oldSweetHolicExp, _getSweetHolicExp);
             });
 
             await UniTask.WaitUntil(() => increaseExpFinished);

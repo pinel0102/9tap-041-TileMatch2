@@ -37,6 +37,8 @@ public class MainScene : UIScene
     public GameObject m_block;
     public GameObject m_purchasing;
 
+    private GlobalData globalData { get { return GlobalData.Instance; } }
+
 	public override void OnSetup(UIParameter uiParameter)
 	{
 		base.OnSetup(uiParameter);
@@ -46,12 +48,12 @@ public class MainScene : UIScene
 			return;
 		}
 
-        GlobalData.Instance.mainScene = this;
-        GlobalData.Instance.fragmentHome = m_scrollView.Contents[(int)MainMenuType.HOME] as MainSceneFragmentContent_Home;
-        GlobalData.Instance.fragmentCollection = m_scrollView.Contents[(int)MainMenuType.COLLECTION] as MainSceneFragmentContent_Collection;
-        GlobalData.Instance.fragmentPuzzle = m_scrollView.Contents[(int)MainMenuType.JIGSAW_PUZZLE] as MainSceneFragmentContent_Puzzle;
-        GlobalData.Instance.fragmentStore = m_scrollView.Contents[(int)MainMenuType.STORE] as MainSceneFragmentContent_Store;
-        GlobalData.Instance.fragmentSettings = m_scrollView.Contents[(int)MainMenuType.SETTINGS] as MainSceneFragmentContent_Settings;
+        globalData.mainScene = this;
+        globalData.fragmentHome = m_scrollView.Contents[(int)MainMenuType.HOME] as MainSceneFragmentContent_Home;
+        globalData.fragmentCollection = m_scrollView.Contents[(int)MainMenuType.COLLECTION] as MainSceneFragmentContent_Collection;
+        globalData.fragmentPuzzle = m_scrollView.Contents[(int)MainMenuType.JIGSAW_PUZZLE] as MainSceneFragmentContent_Puzzle;
+        globalData.fragmentStore = m_scrollView.Contents[(int)MainMenuType.STORE] as MainSceneFragmentContent_Store;
+        globalData.fragmentSettings = m_scrollView.Contents[(int)MainMenuType.SETTINGS] as MainSceneFragmentContent_Settings;
 
         m_userManager = Game.Inst.Get<UserManager>();
 		m_lobbyManager = new LobbyManager(
@@ -71,7 +73,7 @@ public class MainScene : UIScene
                     if (IsEnableShowPopup())
                     {
                         soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
-                        m_lobbyManager.OnCheckShowPopup(() => GlobalData.Instance.ShowBuyHeartPopup());
+                        m_lobbyManager.OnCheckShowPopup(() => globalData.ShowBuyHeartPopup());
                     } 
                 }
             ),
@@ -81,7 +83,7 @@ public class MainScene : UIScene
                                             && !m_userManager.Current.IsFullLife())
                     {
                         soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
-                        GlobalData.Instance.ShowBuyHeartPopup();
+                        globalData.ShowBuyHeartPopup();
                     }
                 }
             ),
@@ -117,7 +119,7 @@ public class MainScene : UIScene
 						new MainSceneFragmentContentParameter_Puzzle{
 							PuzzleManager = parameter.PuzzleManager,
 							OnUpdated = m_lobbyManager.OnUpdatePuzzle,
-							OnClick = () => m_lobbyManager.OnCheckShowPopup(() => GlobalData.Instance.ShowBuyHeartPopup())
+							OnClick = () => m_lobbyManager.OnCheckShowPopup(() => globalData.ShowBuyHeartPopup())
 						}
 					),
 					new ScrollViewFragmentParameter(
@@ -127,7 +129,7 @@ public class MainScene : UIScene
 							PuzzleButtonParam = new HomeFragmentLargeButtonParameter{
 								ButtonText = string.Empty,
 								OnClick = () => {
-                                    GlobalData.Instance.MoveToLatestPuzzle();
+                                    globalData.MoveToLatestPuzzle();
                                     m_scrollView.MoveTo((int)MainMenuType.JIGSAW_PUZZLE);
                                 },
 								GaugeBarParameter = new UIProgressBarParameter {
@@ -137,7 +139,7 @@ public class MainScene : UIScene
 							},
 							PlayButtonParam = new UITextButtonParameter{
 								ButtonText = string.Empty,
-								OnClick = () => m_lobbyManager.OnCheckShowPopup(() => GlobalData.Instance.ShowBuyHeartPopup()),
+								OnClick = () => m_lobbyManager.OnCheckShowPopup(() => globalData.ShowBuyHeartPopup()),
 								ButtonTextBinder = m_lobbyManager.CurrentLevel
 							}
 						}
@@ -211,11 +213,11 @@ public class MainScene : UIScene
 			new MainSceneNavigationViewParameter{
 				OnClickTab = type => {  soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
                                         if (type == MainMenuType.COLLECTION)
-                                            GlobalData.Instance.fragmentCollection.RefreshLockState();
+                                            globalData.fragmentCollection.RefreshLockState();
                                         else if (type == MainMenuType.JIGSAW_PUZZLE)
                                         {
-                                            if (GlobalData.Instance.CURRENT_SCENE != GlobalDefine.SCENE_PUZZLE)
-                                                GlobalData.Instance.MoveToLatestPuzzle();
+                                            if (globalData.CURRENT_SCENE != GlobalDefine.SCENE_PUZZLE)
+                                                globalData.MoveToLatestPuzzle();
                                         }
 
                                         m_scrollView.MoveTo((int)type);}
@@ -237,7 +239,7 @@ public class MainScene : UIScene
     {
         base.Hide();
 
-        GlobalData.Instance.ResetParticlePool();
+        globalData.ResetParticlePool();
     }
 
     public override void Show()
@@ -251,10 +253,9 @@ public class MainScene : UIScene
 			return;
 		}
 
-        GlobalData.Instance.CURRENT_LEVEL = m_userManager.Current.Level;
-        GlobalData.Instance.CURRENT_DIFFICULTY = 0;
-        GlobalData.Instance.fragmentHome?.Refresh(m_userManager.Current);
-
+        globalData.CURRENT_LEVEL = m_userManager.Current.Level;
+        globalData.CURRENT_DIFFICULTY = 0;
+        
         m_scrollView.MoveTo((int)parameter.ShowMenuType);
 
         SDKManager.SendAnalytics_I_Scene();
@@ -267,57 +268,61 @@ public class MainScene : UIScene
     {
         GlobalDefine.CheckEventActivate();
 
-        GlobalData.Instance.SetTouchLock_MainScene(true);
-        GlobalData.Instance.fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); });
+        globalData.SetTouchLock_MainScene(true);
+        globalData.fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); });
 
         if (CachedParameter is MainSceneRewardParameter rewardParameter)
         {
             Debug.Log(CodeManager.GetMethodName() + string.Format("[Get Reward] {0} / {1} / {2}", rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardSweetHolic));
-            bool increaseFinished = await GlobalData.Instance.HUD_LateUpdate_MainSceneReward(
+            bool increaseFinished = await globalData.HUD_LateUpdate_MainSceneReward(
                 rewardParameter.clearedLevel, rewardParameter.openPuzzleIndex, 
                 rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, 
                 rewardParameter.rewardSweetHolic);
 
             await UniTask.WaitUntil(() => increaseFinished);
 
-            await GlobalData.Instance.CheckPuzzleOpen(rewardParameter.openPuzzleIndex);
+            await globalData.CheckPuzzleOpen(rewardParameter.openPuzzleIndex);
 
             if (GlobalDefine.IsEnable_Review(rewardParameter.clearedLevel))
             {
-                await GlobalData.Instance.ShowPopup_Review();
+                await globalData.ShowPopup_Review();
             }
+        }
+        else
+        {
+            globalData.fragmentHome?.Refresh(m_userManager.Current);
         }
 
         // [Level >= 15] && [not claimed] && [RewardVideo Ready]
         if (GlobalDefine.IsEnable_DailyRewards() && GlobalDefine.IsRewardVideoReady())
         {
-            await GlobalData.Instance.ShowPopup_DailyRewards();
+            await globalData.ShowPopup_DailyRewards();
         }
 
         // [Level >= 10] && [not purchased]
         if (GlobalDefine.IsEnable_BeginnerBundle())
         {
-            await GlobalData.Instance.ShowPopup_Beginner(() => GlobalData.Instance.fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); }));
+            await globalData.ShowPopup_Beginner(() => globalData.fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); }));
         }
 
         // [Level >= 1] && [Weekend]
         if (GlobalDefine.IsEnable_Weekend1Bundle())
         {
             // [TODO] ShowPopup_Weekend1
-            await GlobalData.Instance.ShowPopup_Weekend1(() => GlobalData.Instance.fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); }));
+            await globalData.ShowPopup_Weekend1(() => globalData.fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); }));
         }
 
         // [Level >= 1] && [Weekend]
         if (GlobalDefine.IsEnable_Weekend2Bundle())
         {
             // [TODO] ShowPopup_Weekend2
-            await GlobalData.Instance.ShowPopup_Weekend2(() => GlobalData.Instance.fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); }));
+            await globalData.ShowPopup_Weekend2(() => globalData.fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); }));
         }
 
         // [Level >= 20] && [Interstitial AD]
         if (GlobalDefine.IsEnable_RemoveAdsPopup())
         {
-            await GlobalData.Instance.ShowPopup_RemoveAds();
+            await globalData.ShowPopup_RemoveAds();
         }
 
         // [Level >= 21]
@@ -327,7 +332,7 @@ public class MainScene : UIScene
             //
         }
 
-        GlobalData.Instance.SetTouchLock_MainScene(false);
+        globalData.SetTouchLock_MainScene(false);
     }
 
 	private void OnDestroy()
@@ -342,9 +347,9 @@ public class MainScene : UIScene
 
     private bool IsEnableShowPopup()
     {
-        return GlobalData.Instance.CURRENT_SCENE != GlobalDefine.SCENE_PLAY &&
+        return globalData.CURRENT_SCENE != GlobalDefine.SCENE_PLAY &&
             transform.root.childCount < 2 && 
-            !GlobalData.Instance.IsTouchLockNow_MainScene() &&
+            !globalData.IsTouchLockNow_MainScene() &&
             !GlobalDefine.IsPurchasePending();
     }
 }

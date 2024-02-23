@@ -30,7 +30,7 @@ public static class ProductTypeExtensions
 			ProductType.Coin => "UI_Icon_Coin",
 			ProductType.PuzzlePiece => "UI_Icon_GoldPuzzle_Big",
 			ProductType.StashItem => "UI_Shop_Icon_Hint",
-			ProductType.UndoItem => "UI_Btn_Undo",
+			ProductType.UndoItem => "UI_Shop_Icon_Undo",
 			ProductType.ShuffleItem => "UI_Shop_Icon_Shuffle",
 			ProductType.HeartBooster or ProductType.Heart => "UI_Shop_Icon_Heart",
             ProductType.Landmark => "UI_Icon_LandmarkPuzzle",
