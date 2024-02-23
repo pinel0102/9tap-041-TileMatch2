@@ -179,6 +179,8 @@ public class UserManager : IDisposable
                 Event_SweetHolic_ShowedPopup: false,
                 Event_SweetHolic_StartDate: GlobalDefine.dateDefault_HHmmss,
                 Event_SweetHolic_EndDate: GlobalDefine.dateDefault_HHmmss,
+                ExpiredSweetHolicBoosterTime: 0L,
+
                 Event_SweetHolic_BoosterEndDate: GlobalDefine.dateDefault_HHmmss
 			);
 		}
@@ -324,50 +326,7 @@ public class UserManager : IDisposable
 		return true;
 	}
 
-	public void Update(int level, Dictionary<ProductType, long> rewards)
-	{
-		if (m_user?.Value == null || rewards?.Count <= 0)
-		{
-			return;
-		}
-
-		TimeSpan booster = TimeSpan.Zero;
-
-		if (rewards.TryGetValue(ProductType.HeartBooster, out var minutes))
-		{
-			booster = TimeSpan.FromMinutes(minutes);
-		}
-
-		m_user.Update(
-			user => user.Update(
-				level: GlobalData.Instance.GetEnableLevel(level),
-				coin: user.Coin + GetValue(ProductType.Coin),
-				puzzle: user.Puzzle + GetValue(ProductType.PuzzlePiece),
-				ownSkillItems: user.OwnSkillItems.Select(
-					pair => {
-						int value = pair.Value + GetValue(pair.Key.GetProductType());
-						return KeyValuePair.Create(pair.Key, value);
-					}
-				)
-				.ToDictionary(keySelector: pair => pair.Key, elementSelector: pair => pair.Value),
-				expiredLifeBoosterAt: user.ExpiredLifeBoosterAt + booster
-			)
-		);
-
-        LogGetItems(rewards);
-
-		int GetValue(ProductType type)
-		{
-			if (rewards.TryGetValue(type, out long value))
-			{
-				return (int)value;
-			}
-
-			return 0;
-		}
-	}
-
-    public void UpdateRewards(Dictionary<ProductType, long> rewards)
+	public void UpdateRewards(Dictionary<ProductType, long> rewards, int updateLevel = -1)
 	{
 		if (m_user?.Value == null || rewards?.Count <= 0)
 		{
@@ -375,14 +334,20 @@ public class UserManager : IDisposable
 		}
 
 		TimeSpan addBooster = TimeSpan.Zero;
+        TimeSpan sweetHolicBooster = TimeSpan.Zero;
 
 		if (rewards.TryGetValue(ProductType.HeartBooster, out var minutes))
 		{
 			addBooster = TimeSpan.FromMinutes(minutes);
 		}
+        if (rewards.TryGetValue(ProductType.DoubleTime, out var eventMinutes))
+		{
+			sweetHolicBooster = TimeSpan.FromMinutes(eventMinutes);
+		}
 
 		m_user.Update(
 			user => user.Update(
+                level: updateLevel > 0 ? GlobalData.Instance.GetEnableLevel(updateLevel) : default,
 				coin: user.Coin + GetValue(ProductType.Coin),
 				puzzle: user.Puzzle + GetValue(ProductType.PuzzlePiece),
 				ownSkillItems: user.OwnSkillItems.Select(
@@ -393,7 +358,10 @@ public class UserManager : IDisposable
 				)
 				.ToDictionary(keySelector: pair => pair.Key, elementSelector: pair => pair.Value),
 				expiredLifeBoosterAt: Current.IsBoosterTime() ? user.ExpiredLifeBoosterAt + addBooster
-                                                              : DateTimeOffset.Now + addBooster
+                                                              : DateTimeOffset.Now + addBooster,
+                expiredSweetHolicBoosterAt: Current.IsEventBoosterTime(GameEventType.SweetHolic)
+                                                              ? user.ExpiredSweetHolicBoosterAt + sweetHolicBooster
+                                                              : DateTimeOffset.Now + sweetHolicBooster
 			)
 		);
 
@@ -416,8 +384,7 @@ public class UserManager : IDisposable
 		Optional<int> life = default,
 		Optional<int> puzzle = default,
         Optional<int> goldPiece = default,
-		//Optional<DateTimeOffset> expiredLifeBoosterAt = default,
-        Optional<DateTimeOffset> endChargeLifeAt = default,
+		Optional<DateTimeOffset> endChargeLifeAt = default,
         Optional<int> level = default,
         Optional<(int, uint)> unlockedPuzzlePiece = default,
 		Optional<List<int>> clearedPuzzleCollection = default,
@@ -436,8 +403,7 @@ public class UserManager : IDisposable
 				life: life,
 				puzzle: puzzle,
                 goldPiece: goldPiece,
-				//expiredLifeBoosterAt: expiredLifeBoosterAt,
-                endChargeLifeAt: endChargeLifeAt,
+				endChargeLifeAt: endChargeLifeAt,
 				level: level,
                 unlockedPuzzlePiece: unlockedPuzzlePiece,
 				clearedPuzzleCollection: clearedPuzzleCollection,
@@ -645,6 +611,9 @@ public class UserManager : IDisposable
         Optional<bool> ShowedPopup = default,
         Optional<string> StartDate = default,
         Optional<string> EndDate = default,
+        Optional<DateTimeOffset> ExpiredSweetHolicBoosterAt = default,
+
+
         Optional<string> BoosterEndDate = default
     )
     {
@@ -659,6 +628,8 @@ public class UserManager : IDisposable
                 event_SweetHolic_ShowedPopup: ShowedPopup,
                 event_SweetHolic_StartDate: StartDate,
                 event_SweetHolic_EndDate: EndDate,
+                expiredSweetHolicBoosterAt: ExpiredSweetHolicBoosterAt,
+
                 event_SweetHolic_BoosterEndDate: BoosterEndDate
 			)
 		);
@@ -854,7 +825,14 @@ public class UserManager : IDisposable
                     Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1}m</color>", item.Key, item.Value));
                     Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Booster Time] {0}</color>", Current.ExpiredLifeBoosterAt));
                     
-                    SDKManager.SendAnalytics_C_Item_Get("Booster", (int)item.Value);
+                    SDKManager.SendAnalytics_C_Item_Get(item.Key.ToString(), (int)item.Value);
+                }
+                else if (item.Key == ProductType.DoubleTime)
+                {   
+                    Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] {1}m</color>", item.Key, item.Value));
+                    Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Booster Time] {0}</color>", Current.ExpiredSweetHolicBoosterAt));
+                    
+                    SDKManager.SendAnalytics_C_Item_Get(item.Key.ToString(), (int)item.Value);
                 }
                 else
                 {

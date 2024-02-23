@@ -93,6 +93,8 @@ public record User
     bool Event_SweetHolic_ShowedPopup,
     string Event_SweetHolic_StartDate,
     string Event_SweetHolic_EndDate,
+    long ExpiredSweetHolicBoosterTime,
+
     string Event_SweetHolic_BoosterEndDate,
 
     // 게임 현황
@@ -185,11 +187,15 @@ public record User
         Event_SweetHolic_ShowedPopup: false,
         Event_SweetHolic_StartDate: GlobalDefine.dateDefault_HHmmss,
         Event_SweetHolic_EndDate: GlobalDefine.dateDefault_HHmmss,
+        ExpiredSweetHolicBoosterTime: 0L,
+
         Event_SweetHolic_BoosterEndDate: GlobalDefine.dateDefault_HHmmss
 	);
 
 	[JsonIgnore]
 	public DateTimeOffset ExpiredLifeBoosterAt => DateTimeOffset.FromUnixTimeMilliseconds(ExpiredLifeBoosterTime);
+    [JsonIgnore]
+	public DateTimeOffset ExpiredSweetHolicBoosterAt => DateTimeOffset.FromUnixTimeMilliseconds(ExpiredSweetHolicBoosterTime);
 	[JsonIgnore]
 	public DateTimeOffset EndChargeLifeAt => DateTimeOffset.FromUnixTimeMilliseconds(EndChargeLifeTime);
 
@@ -264,6 +270,7 @@ public record User
         in Optional<bool> event_SweetHolic_ShowedPopup = default,
         in Optional<string> event_SweetHolic_StartDate = default,
         in Optional<string> event_SweetHolic_EndDate = default,
+        in Optional<DateTimeOffset> expiredSweetHolicBoosterAt = default,
         in Optional<string> event_SweetHolic_BoosterEndDate = default
 	)
 	{
@@ -371,6 +378,8 @@ public record User
             Event_SweetHolic_ShowedPopup: event_SweetHolic_ShowedPopup.GetValueOrDefault(Event_SweetHolic_ShowedPopup),
             Event_SweetHolic_StartDate: event_SweetHolic_StartDate.GetValueOrDefault(Event_SweetHolic_StartDate),
             Event_SweetHolic_EndDate: event_SweetHolic_EndDate.GetValueOrDefault(Event_SweetHolic_EndDate),
+            ExpiredSweetHolicBoosterTime: expiredSweetHolicBoosterAt.GetValueOrDefault(ExpiredSweetHolicBoosterAt).ToUnixTimeMilliseconds(),
+
             Event_SweetHolic_BoosterEndDate: event_SweetHolic_BoosterEndDate.GetValueOrDefault(Event_SweetHolic_BoosterEndDate)
 		);
 
@@ -400,13 +409,16 @@ public record User
         switch(type)
         {
             case GameEventType.SweetHolic:
-                return !GlobalDefine.IsExpired(GlobalDefine.ToDateTime(Event_SweetHolic_BoosterEndDate));
+                return ExpiredSweetHolicBoosterAt >= DateTime.Now;
             default:
                 return false;
         }
     }
     
     private const string timeFormat_d = @"%d'd'";
+    private const string timeFormat_h = @"%h'h'";
+    private const string timeFormat_m = @"%m'm'";
+    private const string timeFormat_s = @"%s's'";
     private const string timeFormat_hhmmss = @"hh\:mm\:ss";
     private const string timeFormat_hmmss = @"h\:mm\:ss";
     private const string timeFormat_mmss = @"mm\:ss";
@@ -461,6 +473,39 @@ public record User
                         : span.Hours > 9 ? span.ToString(timeFormat_hhmmss) 
                         : span.Hours > 0 ? span.ToString(timeFormat_hmmss)
                         : span.ToString(timeFormat_mmss));
+        }
+        else
+        {
+            return (false, string.Empty);
+        }
+    }
+
+    /// <summary>
+    /// 이벤트 부스터 상태를 갱신한다.
+    /// </summary>
+    /// <returns>
+    /// <para>Item1 : 부스터 여부.</para>
+    /// <para>Item2 : (Item1 == true) ? 부스터 남은 시간.)</para>
+    /// </returns>
+    public (bool, string) GetEventBoosterStatus(GameEventType eventType)
+    {   
+        if (IsEventBoosterTime(eventType))
+        {
+            TimeSpan span = TimeSpan.Zero;
+
+            switch(eventType)
+            {
+                case GameEventType.SweetHolic:
+                    span = ExpiredSweetHolicBoosterAt - DateTime.Now;
+                    break;
+                default:
+                    break;
+            }
+
+            return (true, span.Days > 0 ? span.ToString(timeFormat_d)
+                        : span.Hours > 0 ? span.ToString(timeFormat_h)
+                        : span.Minutes > 0 ? span.ToString(timeFormat_m)
+                        : span.ToString(timeFormat_s));
         }
         else
         {

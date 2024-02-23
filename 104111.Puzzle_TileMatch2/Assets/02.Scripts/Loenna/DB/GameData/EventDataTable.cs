@@ -84,6 +84,17 @@ public class EventDataTable : Table<long, EventData>
 			);
 	}
 
+    public EventData[] GetEventDatas(GameEventType eventType, int fromLevel_exclusive, int toLevel_inclusive)
+	{
+		return m_rowDataDic
+			.Values?
+			.Where(
+				data => 
+					data.EventType == eventType && 
+                    data.Level > fromLevel_exclusive && data.Level <= toLevel_inclusive
+			).ToArray();
+	}
+
     /// <summary>
     /// 다음 레벨의 EventData가 존재하면 가져온다.
     /// </summary>

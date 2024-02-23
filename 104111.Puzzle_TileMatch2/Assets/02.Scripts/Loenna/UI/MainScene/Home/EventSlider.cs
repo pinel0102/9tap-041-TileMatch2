@@ -112,7 +112,7 @@ public class EventSlider : MonoBehaviour
         RefreshExpText(fromExp, fromReqExp);
         
         // Test Value
-        duration = 3f;
+        //duration = 3f;
 
         float delay = GetDelay(duration, addExp);
 

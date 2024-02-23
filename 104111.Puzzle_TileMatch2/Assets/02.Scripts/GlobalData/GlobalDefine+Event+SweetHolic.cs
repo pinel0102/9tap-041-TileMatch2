@@ -59,6 +59,8 @@ public static partial class GlobalDefine
                 ShowedPopup: false,
                 StartDate: TimeToString(StartDate),
                 EndDate: TimeToString(EndDate),
+                ExpiredSweetHolicBoosterAt: DateTimeOffset.Now,
+                
                 BoosterEndDate: TimeToString(StartDate)
             );
 

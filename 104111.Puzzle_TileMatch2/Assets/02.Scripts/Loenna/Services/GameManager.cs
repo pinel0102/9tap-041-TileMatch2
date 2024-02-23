@@ -151,6 +151,7 @@ public partial class GameManager : IDisposable
                                         m_userManager.Current.Event_SweetHolic_TotalExp);
 
         RewardDataTable rewardDataTable = m_tableManager.RewardDataTable;
+        EventDataTable eventDataTable = m_tableManager.EventDataTable;
         Dictionary<ProductType, long> collectRewardAll = new Dictionary<ProductType, long>();
 
         RewardData rewardData = rewardDataTable.GetDefaultReward(BoardInfo.HardMode);
@@ -169,9 +170,6 @@ public partial class GameManager : IDisposable
             AddRewards(collectRewardAll, chestRewardData.Rewards);
         }
 
-        m_userManager.Update(level: CurrentLevel + 1, collectRewardAll);
-        GlobalData.Instance.CURRENT_LEVEL = m_userManager.Current.Level;
-
         if (GlobalData.Instance.eventSweetHolic_Activate)
         {
             int getExp = GlobalData.Instance.eventSweetHolic_GetCount;
@@ -181,13 +179,30 @@ public partial class GameManager : IDisposable
                 getExp = GlobalData.Instance.eventSweetHolic_TestExp;
 #endif
 
-            var (totalExp, _, _, _, _) = ExpManager.GetEXP(GlobalData.Instance.oldSweetHolicExp, 
+            int oldLevel = GlobalData.Instance.fragmentHome.eventBanner_SweetHolic.currentLevel;
+            var (totalExp, newLevel, _, _, isLevelUp) = ExpManager.GetEXP(GlobalData.Instance.oldSweetHolicExp, 
                 getExp,
-                GlobalData.Instance.fragmentHome.eventBanner_SweetHolic.currentLevel,
+                oldLevel,
                 GlobalData.Instance.eventSweetHolic_ExpTable);
 
             m_userManager.UpdateEvent_SweetHolic(TotalExp:totalExp);
+
+            if (isLevelUp)
+            {
+                var eventDatas = eventDataTable.GetEventDatas(GameEventType.SweetHolic, oldLevel, newLevel);
+                foreach(var eventData in eventDatas)
+                {
+                    foreach(var item in eventData.Rewards)
+                    {
+                        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Event Reward] {0} x {1}</color>", item.Type, item.GetAmount()));
+                    }
+                    AddRewards(collectRewardAll, eventData.Rewards);
+                }
+            }
         }
+
+        m_userManager.UpdateRewards(collectRewardAll, CurrentLevel + 1);
+        GlobalData.Instance.CURRENT_LEVEL = m_userManager.Current.Level;
     }
 
     void AddRewards(Dictionary<ProductType, long> dict, List<IReward> rewards)

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks.Linq;
 using TMPro;
 
 public class EventBanner_SweetHolic : MonoBehaviour
@@ -31,6 +33,7 @@ public class EventBanner_SweetHolic : MonoBehaviour
     [Header("★ [Parameter] Privates")]
     private EventDataTable m_eventDataTable;
     private ExpTable m_expTable;
+    private IUniTaskAsyncEnumerable<(bool, string)> BoosterStatus;
     private GlobalData globalData { get { return GlobalData.Instance; } }
     private const string textFormatLocked = "Unlock at Level {0}!";
     
@@ -42,6 +45,13 @@ public class EventBanner_SweetHolic : MonoBehaviour
         m_lockedText.SetText(string.Format(textFormatLocked, Constant.User.MIN_OPENLEVEL_EVENT_SWEETHOLIC));
         eventSlider.Initialize(eventType, m_eventDataTable, m_expTable);
         RefreshEventState(user);
+
+        BoosterStatus = globalData.HUD.MessageBroker.Subscribe().Select(user => user.GetEventBoosterStatus(eventType));
+        BoosterStatus.BindTo(m_boosterTimeText, (component, status) => {
+            m_boosterTimeBadge.SetActive(status.Item1);
+            component.text = status.Item2;
+            //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Booster Time] {0}</color>", user.ExpiredSweetHolicBoosterAt));
+        });
     }
 
     /// <summary>
@@ -99,11 +109,11 @@ public class EventBanner_SweetHolic : MonoBehaviour
 
     private void RefreshBoosterTime(User user)
     {
-        bool isActivated = globalData.eventSweetHolic_Activate && 
+        /*bool isActivated = globalData.eventSweetHolic_Activate && 
                            globalData.eventSweetHolic_IsBoosterTime &&
                            globalData.eventSweetHolic_TargetIndex == targetIndex;
         
         m_boosterTimeBadge.SetActive(isActivated);
-        m_boosterTimeText.SetText(isActivated ? GlobalDefine.GetRemainEventTime_OneFormat(user.Event_SweetHolic_BoosterEndDate) : string.Empty);
+        m_boosterTimeText.SetText(isActivated ? GlobalDefine.GetRemainEventTime_OneFormat(user.Event_SweetHolic_BoosterEndDate) : string.Empty);*/
     }
 }
