@@ -362,12 +362,13 @@ public class TileItem : CachedBehaviour
                 ?? UniTask.CompletedTask,
 			(LocationType.POOL, _) => m_scaleTween?.OnChangeValue(Vector3.zero, 0.15f, () => {
                     
+                    // [Event] Sweet Holic
                     if (GlobalDefine.IsOpen_Event_SweetHolic())
                     {
-                        // [TODO] 매칭된 타일이 수집 이벤트 대상이면.
-                        if(tileName.Equals(GlobalData.Instance.eventSweetHolic_TargetName))
+                        // 매칭된 타일이 수집 이벤트 대상이면.
+                        if(Current.Icon.Equals(GlobalData.Instance.eventSweetHolic_TargetIndex))
                         {
-                            Debug.Log(CodeManager.GetMethodName() + string.Format("Matching : {0}", tileName));
+                            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Matching [{0}] {1}</color>", Current.Icon, tileName));
                             GlobalData.Instance.playScene.gameManager.EventCollect_SweetHolic(transform);
                         }
                     }

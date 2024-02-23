@@ -8,41 +8,50 @@ using NineTap.Common;
 
 public class ClearRewardListContainer : CachedBehaviour
 {
-	[SerializeField]
-	private GameObject m_container;
-
-	[SerializeField]
-	private CanvasGroup m_canvasGroup;
-
-	[SerializeField]
-	private Transform m_parent;
-
+	[SerializeField]	private GameObject m_container;
+	[SerializeField]	private CanvasGroup m_canvasGroup;
+	[SerializeField]	private Transform m_parent;
+    private RewardGoodsItem prefab;
+    private GlobalData globalData { get { return GlobalData.Instance; } }
 	public float Alpha { set => m_canvasGroup.alpha = value; }
 
 	public void OnSetup(RewardData rewardData)
 	{
 		m_container.SetActive(rewardData != null);
 
-		var prefab = ResourcePathAttribute.GetResource<RewardGoodsItem>();
+		prefab = ResourcePathAttribute.GetResource<RewardGoodsItem>();
 
 		rewardData.Rewards.ForEach(
 			reward => {
                 if (reward.Type != ProductType.PuzzlePiece)
                 {
-                    var item = Instantiate(prefab);
-                    item.OnSetup(
-                        new RewardGoodsItemParameter{
-                            Animated = false,
-                            IconSize = 100,
-                            FontSize = 49
-                        }
-                    );
-                    item.CachedTransform.SetParentReset(m_parent);
-                    item.UpdateUI(reward.Type.GetIconName(), reward.GetAmountString());
+                    CreateRewardIcon(reward.Type.GetIconName(), reward.GetAmountString());
                 }
 			}
 		);
+
+        if(globalData.eventSweetHolic_Activate)
+        {
+            if(globalData.eventSweetHolic_GetCount > 0)
+            {
+                CreateRewardIcon(GlobalDefine.GetSweetHolic_ItemImagePath(), globalData.eventSweetHolic_GetCount.ToString(), 130);
+            }
+        }
 	}
+
+    private void CreateRewardIcon(string spriteName, string count, int iconSize = 100)
+    {
+        var item = Instantiate(prefab);
+        item.OnSetup(
+            new RewardGoodsItemParameter{
+                Animated = false,
+                IconSize = iconSize,
+                FontSize = 48
+            }
+        );
+        item.CachedTransform.SetParentReset(m_parent);
+        item.UpdateUI(spriteName, count);
+    }
 
 	public UniTask ShowAsync()
 	{

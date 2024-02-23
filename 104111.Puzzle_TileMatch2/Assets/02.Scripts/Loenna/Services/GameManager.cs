@@ -221,6 +221,8 @@ public partial class GameManager : IDisposable
         GlobalData.Instance.CURRENT_SCENE = GlobalDefine.SCENE_PLAY;
         GlobalData.Instance.CURRENT_LEVEL = level;
         GlobalData.Instance.eventSweetHolic_GetCount = 0;
+        GlobalData.Instance.SetOldItems(m_userManager.Current.Coin, m_userManager.Current.Puzzle, 
+                                        m_userManager.Current.Event_SweetHolic_TotalExp);
 
         m_continueCount = 0;
 		m_boardInfo.Update(info => InternalState.Empty);
