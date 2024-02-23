@@ -174,8 +174,12 @@ public partial class GameManager : IDisposable
 
         if (GlobalData.Instance.eventSweetHolic_Activate)
         {
-            int getExp = GlobalData.Instance.eventSweetHolic_TestMode ? GlobalData.Instance.eventSweetHolic_TestExp :
-                         GlobalData.Instance.eventSweetHolic_GetCount;
+            int getExp = GlobalData.Instance.eventSweetHolic_GetCount;
+            
+#if UNITY_EDITOR
+            if(GlobalData.Instance.eventSweetHolic_TestMode)
+                getExp = GlobalData.Instance.eventSweetHolic_TestExp;
+#endif
 
             var (totalExp, _, _, _, _) = ExpManager.GetEXP(GlobalData.Instance.oldSweetHolicExp, 
                 getExp,

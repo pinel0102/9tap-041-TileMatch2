@@ -53,8 +53,10 @@ public partial class GlobalData
         int _oldPuzzle = oldPuzzlePiece;
         int _oldSweetHolicExp = oldSweetHolicExp;
 
+#if UNITY_EDITOR
         if(eventSweetHolic_TestMode)
             _getSweetHolicExp = eventSweetHolic_TestExp;
+#endif
 
         if(_getPuzzlePiece > 0)
             HUD?.behaviour.Fields[0].SetIncreaseText(_oldPuzzle);

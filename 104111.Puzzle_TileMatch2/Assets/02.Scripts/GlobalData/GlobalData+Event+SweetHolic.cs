@@ -14,6 +14,8 @@ public partial class GlobalData
 
     [Header("★ [Settings] Sweet Holic")]
     public int eventSweetHolic_TilePercent = 80;
+
+    [Header("★ [Settings] Editor Test")]
     public bool eventSweetHolic_TestMode = false;
     public int eventSweetHolic_TestExp;
 }
