@@ -88,7 +88,7 @@ public class UserManager : IDisposable
         PushManager.Initialize(ProjectManager.productName, GlobalDefine.ToDateTime(m_user.Value.InstallDate));
 
         GlobalData.Instance.CreateExpTable();
-        GlobalDefine.CheckEventActivate();
+        GlobalDefine.Initialize();
 
 #if !UNITY_STANDALONE
         await CheckAgrees(waitPanel);

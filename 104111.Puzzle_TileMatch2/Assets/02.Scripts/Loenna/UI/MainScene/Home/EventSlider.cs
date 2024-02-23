@@ -11,7 +11,6 @@ public class EventSlider : MonoBehaviour
 {
     [SerializeField]	private Slider m_expSlider;
     [SerializeField]	private TMP_Text m_expText;
-    [SerializeField]	private TMP_Text m_expTextIncrease;    
     [SerializeField]	private Image m_targetItemImage;
     [SerializeField]	private Image m_rewardItemImage;
     [SerializeField]	private RectTransform m_rewardItemRect;
@@ -19,13 +18,15 @@ public class EventSlider : MonoBehaviour
     [SerializeField]	private GameObject m_doubleObject;
     [SerializeField]	private TMP_Text m_rewardItemtext;
     [SerializeField]	private TMP_Text m_timeText;
+
+    [SerializeField]	private int m_realTotalExp;
+    [SerializeField]	private string m_targetImagePath;
     
     [Header("★ [Parameter] Privates")]
     private GameEventType m_eventType;
     private EventDataTable m_eventDataTable;
     private ExpTable m_expTable;
     private EventData nextEventData;
-    private GlobalData globalData { get { return GlobalData.Instance; } }
     private const string textFormatExp = "{0}/{1}";
     private const string spriteBox = "UI_Img_Box_05";
     private const string textExpMax = "Complete!";
@@ -44,11 +45,12 @@ public class EventSlider : MonoBehaviour
 
 #region Publics
 
-    public void RefreshEventState(string endDate, int currentLevel, int currentExp, int requiredExp, int totalExp)
+    public void RefreshEventState(string targetImagePath, string endDate, int currentLevel, int currentExp, int requiredExp, int totalExp)
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("Level {0} ({1}/{2})", currentLevel, currentExp, requiredExp));
 
-        RefreshTargetIcon();
+        RefreshTargetIcon(targetImagePath);
+        RefreshRealTotalExp(totalExp);
         RefreshTimeText(endDate);
 
         if(m_eventDataTable.IsMaxLevel(m_eventType, currentLevel))
@@ -74,6 +76,11 @@ public class EventSlider : MonoBehaviour
         }
     }
 
+    public void RefreshRealTotalExp(int _totalExp)
+    {
+        m_realTotalExp = _totalExp;
+    }
+
     public void RefreshTimeText(string endDate)
     {
         if (!string.IsNullOrEmpty(endDate))
@@ -87,24 +94,23 @@ public class EventSlider : MonoBehaviour
             return;
         
         RefreshExpSlider(oldExp, oldReqExp);
-        SetIncreaseText(oldExp, oldReqExp);
+        RefreshExpText(oldExp, oldReqExp);
     }
 
-    public async UniTask<bool> IncreaseText(int totalExp, int addExp, float duration = 0.5f, bool autoTurnOff_IncreaseMode = true, Action<int> onUpdate = null)
+    public async UniTask<bool> IncreaseText(int fromTotalExp, int addExp, float duration = 0.5f, Action<int> onLevelUp = null, Action onComplete = null)
     {
-        var (fromLevel, fromExp, fromReqExp) = ExpManager.CalculateLevel(totalExp, m_expTable);
+        var (fromLevel, fromExp, fromReqExp) = ExpManager.CalculateLevel(fromTotalExp, m_expTable);
         if(m_eventDataTable.IsMaxLevel(m_eventType, fromLevel))
         {
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Level is Max : {0}</color>", fromLevel));
             return true;
         }
 
-        var (toLevel, toExp, toReqExp) = ExpManager.CalculateLevel(globalData.userManager.Current.Event_SweetHolic_TotalExp, m_expTable);
+        var (toLevel, toExp, toReqExp) = ExpManager.CalculateLevel(m_realTotalExp, m_expTable);
 
         RefreshExpSlider(fromExp, fromReqExp);
-        SetIncreaseText(fromExp, fromReqExp);
-        SetIncreaseMode(true);
-
+        RefreshExpText(fromExp, fromReqExp);
+        
         // Test Value
         duration = 3f;
 
@@ -112,7 +118,7 @@ public class EventSlider : MonoBehaviour
 
         Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Start Level : {0} ({1}/{2})</color>", fromLevel, fromExp, fromReqExp));
 
-        int resExp = totalExp;
+        int resExp = fromTotalExp;
         while(addExp > 0)
         {
             int oldLevel = fromLevel;
@@ -130,10 +136,12 @@ public class EventSlider : MonoBehaviour
                 Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Level Up : {0} ({1}/{2})</color>", fromLevel, fromExp, fromReqExp));
                 
                 //bool getReward = await ShowRewardPopup(fromLevel);
+                
+                onLevelUp?.Invoke(fromLevel);
 
                 await UniTask.Delay(TimeSpan.FromSeconds(2f));
 
-                RefreshEventState(string.Empty, fromLevel, fromExp, fromReqExp, resExp);
+                RefreshEventState(string.Empty, string.Empty, fromLevel, fromExp, fromReqExp, m_realTotalExp);
 
                 if(m_eventDataTable.IsMaxLevel(m_eventType, fromLevel))
                 {
@@ -147,8 +155,7 @@ public class EventSlider : MonoBehaviour
             }
         }
 
-        if (autoTurnOff_IncreaseMode)
-            SetIncreaseMode(false);
+        onComplete?.Invoke();
 
         return true;
 
@@ -163,14 +170,6 @@ public class EventSlider : MonoBehaviour
 
 #region Privates
 
-    private void SetIncreaseText(int _currentExp, int _requiredExp, bool autoTurnOn_IncreaseMode = true)
-    {
-        SetIncreaseText(string.Format(textFormatExp, _currentExp, _requiredExp));
-        
-        if (autoTurnOn_IncreaseMode)
-            SetIncreaseMode(true);
-    }
-
     private async UniTask<bool> IncreaseText_UntilLevelUp(int fromCount, int addCount, int reqExp, float delay)
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} + {1} = {2}/{3}</color>", fromCount, addCount, fromCount + addCount, reqExp));
@@ -178,13 +177,13 @@ public class EventSlider : MonoBehaviour
         if (fromCount == 0)
         {
             RefreshExpSlider(0, reqExp);
-            SetIncreaseText(0, reqExp);
+            RefreshExpText(0, reqExp);
         }
         
         for(int i=1; i <= addCount; i++)
         {
             MoveExpSlider(fromCount + i, reqExp, delay);
-            SetIncreaseText(fromCount + i, reqExp);
+            RefreshExpText(fromCount + i, reqExp);
 
             await UniTask.Delay(TimeSpan.FromSeconds(delay));
         }
@@ -209,7 +208,7 @@ public class EventSlider : MonoBehaviour
                 default:
                     if (reward.Type == ProductType.DoubleTime)
                     {
-                        RefreshRewardIcon(GlobalDefine.GetSweetHolic_ItemImagePath(), reward.GetAmountString(), 100, true, true);
+                        RefreshRewardIcon(m_targetImagePath, reward.GetAmountString(), 100, true, true);
                     }
                     else
                     {
@@ -233,14 +232,13 @@ public class EventSlider : MonoBehaviour
         m_doubleObject.SetActive(isDouble);
     }
 
-    private void RefreshTargetIcon()
+    private void RefreshTargetIcon(string targetImagePath)
     {
-        m_targetItemImage.sprite = SpriteManager.GetSprite(GlobalDefine.GetSweetHolic_ItemImagePath());
-    }
-
-    private void RefreshExpText(string text)
-    {
-        m_expText.SetText(text);
+        if(string.IsNullOrEmpty(targetImagePath))
+            return;
+        
+        m_targetImagePath = targetImagePath;
+        m_targetItemImage.sprite = SpriteManager.GetSprite(m_targetImagePath);
     }
 
     private void RefreshExpSlider(int _currentExp, int _nextExp)
@@ -259,24 +257,14 @@ public class EventSlider : MonoBehaviour
         m_expSlider.DOValue(percent, duration);
     }
 
+    private void RefreshExpText(string text)
+    {
+        m_expText.SetText(text);
+    }
+
     private void RefreshExpText(int _currentExp, int _nextExp)
     {
         m_expText.SetText(string.Format(textFormatExp, _currentExp, _nextExp));
-    }
-    
-    private void SetIncreaseMode(bool isIncrease)
-    {
-        if(m_expTextIncrease == null) return;
-
-        m_expTextIncrease.gameObject.SetActive(isIncrease);
-        m_expText.gameObject.SetActive(!isIncrease);
-    }
-
-    private void SetIncreaseText(string _text)
-    {
-        if(m_expTextIncrease == null) return;
-        
-        m_expTextIncrease.SetText(_text);
     }
 
 #endregion Privates

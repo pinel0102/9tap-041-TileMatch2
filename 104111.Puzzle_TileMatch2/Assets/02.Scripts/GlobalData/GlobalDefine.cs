@@ -20,7 +20,9 @@ public static partial class GlobalDefine
     public static void Initialize()
     {
         InitRandomSeed();
+
         CheckEventActivate();
+        CheckEventRefresh();
     }
 
     public static void InitRandomSeed()
@@ -36,6 +38,11 @@ public static partial class GlobalDefine
         {
             globalData.eventSweetHolic_Activate = IsOpen_Event_SweetHolic() && !IsExpired(ToDateTime(globalData.userManager.Current.Event_SweetHolic_EndDate));
         }
+    }
+
+    public static void CheckEventRefresh()
+    {
+        Debug.Log(CodeManager.GetMethodName());
         
         SweetHolic_RefreshTarget();
     }

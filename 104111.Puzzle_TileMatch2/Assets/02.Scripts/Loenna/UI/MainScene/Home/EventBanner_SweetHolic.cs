@@ -45,6 +45,7 @@ public class EventBanner_SweetHolic : MonoBehaviour
     /// <param name="user"></param>
     public void OnUpdateUI(User user)
     {
+        eventSlider.RefreshRealTotalExp(user.Event_SweetHolic_TotalExp);
         eventSlider.RefreshTimeText(user.Event_SweetHolic_EndDate);
     }
 
@@ -68,12 +69,12 @@ public class EventBanner_SweetHolic : MonoBehaviour
 
         Debug.Log(CodeManager.GetMethodName());
 
-        targetName = GlobalData.Instance.eventSweetHolic_TargetName;
-        targetIndex = GlobalData.Instance.eventSweetHolic_TargetIndex;
+        targetName = globalData.eventSweetHolic_TargetName;
+        targetIndex = globalData.eventSweetHolic_TargetIndex;
 
         totalExp = user.Event_SweetHolic_TotalExp;
         (currentLevel, currentExp, requiredExp) = ExpManager.CalculateLevel(totalExp, m_expTable);
 
-        eventSlider.RefreshEventState(user.Event_SweetHolic_EndDate, currentLevel, currentExp, requiredExp, totalExp);
+        eventSlider.RefreshEventState(GlobalDefine.GetSweetHolic_ItemImagePath(), user.Event_SweetHolic_EndDate, currentLevel, currentExp, requiredExp, totalExp);
     }
 }

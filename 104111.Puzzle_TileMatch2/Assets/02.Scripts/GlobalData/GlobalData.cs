@@ -50,7 +50,6 @@ public partial class GlobalData : SingletonMono<GlobalData>
 
         eventSweetHolic_GetCount = 0;
 
-        GlobalDefine.Initialize();
         ResetParticlePool();
 
         StartCoroutine(Co_RealTime());

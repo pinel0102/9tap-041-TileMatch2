@@ -60,6 +60,7 @@ public partial class DebugPanel : MonoBehaviour
         UIManager.ClosePopupUI_ForceAll();
         UIManager.ShowSceneUI<MainScene>(new NineTap.Common.DefaultParameter());
         GlobalDefine.CheckEventActivate();
+        GlobalDefine.CheckEventRefresh();
         GlobalData.Instance.fragmentHome.Refresh(m_userManager.Current);
     }
 

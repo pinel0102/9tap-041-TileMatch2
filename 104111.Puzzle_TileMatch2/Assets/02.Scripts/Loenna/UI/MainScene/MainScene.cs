@@ -281,6 +281,9 @@ public class MainScene : UIScene
 
             await UniTask.WaitUntil(() => increaseFinished);
 
+            GlobalDefine.CheckEventRefresh();
+            globalData.fragmentHome?.Refresh(m_userManager.Current);
+
             await globalData.CheckPuzzleOpen(rewardParameter.openPuzzleIndex);
 
             if (GlobalDefine.IsEnable_Review(rewardParameter.clearedLevel))
@@ -290,6 +293,7 @@ public class MainScene : UIScene
         }
         else
         {
+            GlobalDefine.CheckEventRefresh();
             globalData.fragmentHome?.Refresh(m_userManager.Current);
         }
 
