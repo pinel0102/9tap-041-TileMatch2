@@ -25,7 +25,8 @@ public class EventBanner_SweetHolic : MonoBehaviour
 
     [Header("★ [Live] Sweet Holic")]
     public bool isUnlocked;
-    public string itemName;
+    public string targetName;
+    public int targetIndex;
     public int currentLevel;
     public int currentExp;
     public int requiredExp;
@@ -85,7 +86,8 @@ public class EventBanner_SweetHolic : MonoBehaviour
         RefreshItemIcon();
         RefreshTimeText(user.Event_SweetHolic_EndDate);
 
-        itemName = GlobalData.Instance.eventSweetHolic_ItemName;
+        targetName = GlobalData.Instance.eventSweetHolic_TargetName;
+        targetIndex = GlobalData.Instance.eventSweetHolic_TargetIndex;
         totalExp = user.Event_SweetHolic_TotalExp;
 
         (currentLevel, currentExp, requiredExp) = ExpManager.CalculateLevel(totalExp, ExpTable);

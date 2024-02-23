@@ -37,7 +37,7 @@ public static partial class GlobalDefine
             globalData.eventSweetHolic_Activate = IsOpen_Event_SweetHolic() && !IsExpired(ToDateTime(globalData.userManager.Current.Event_SweetHolic_EndDate));
         }
         
-        SweetHolic_RefreshItemName();
+        SweetHolic_RefreshTarget();
     }
 
     public static string GetNewUserGroup()

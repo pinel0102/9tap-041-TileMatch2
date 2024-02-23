@@ -33,22 +33,26 @@ public static partial class GlobalDefine
         return openCheck && notShowedCheck;
     }
 
-    public static void SweetHolic_RefreshItemName()
+    /// <summary>
+    /// <para>Target Item 갱신.</para>
+    /// <para>PlayScene 중에는 이벤트가 바뀌어도 이전 Target을 유지한다.</para>
+    /// </summary>
+    public static void SweetHolic_RefreshTarget()
     {
-        globalData.eventSweetHolic_ItemName = EventCycle_SweetHolic[DateTime.Today.DayOfWeek];
-        globalData.eventSweetHolic_ItemIndex = globalData?.tableManager?.TileDataTable?.Dic?.FirstOrDefault(item => item.Value.Name.Equals(globalData.eventSweetHolic_ItemName)).Value.Index ?? 0;
+        globalData.eventSweetHolic_TargetName = EventCycle_SweetHolic[DateTime.Today.DayOfWeek];
+        globalData.eventSweetHolic_TargetIndex = globalData?.tableManager?.TileDataTable?.Dic?.FirstOrDefault(item => item.Value.Name.Equals(globalData.eventSweetHolic_TargetName)).Value.Index ?? 0;
     }
 
     public static string GetSweetHolic_ItemImagePath()
     {
-        return string.Format("UI_Img_{0}", globalData.eventSweetHolic_ItemName);
+        return string.Format("UI_Img_{0}", globalData.eventSweetHolic_TargetName);
     }
 
     private static void CheckSweetHolicExpired()
     {
         if (IsExpired(ToDateTime(globalData.userManager.Current.Event_SweetHolic_EndDate)))
         {
-            var (StartDate, EndDate, ItemName) = GetNextEventTime();
+            var (StartDate, EndDate, TargetName) = GetNextEventTime();
 
             globalData.userManager.UpdateEvent_SweetHolic(
                 TotalExp: 0,
@@ -58,23 +62,23 @@ public static partial class GlobalDefine
                 BoosterEndDate: TimeToString(StartDate)
             );
 
-            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Expired] Event Time : {0} ~ {1} / ItemName : {2}</color>", globalData.userManager.Current.Event_SweetHolic_StartDate, globalData.userManager.Current.Event_SweetHolic_EndDate, ItemName));
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Expired] Event Time : {0} ~ {1} / ItemName : {2}</color>", globalData.userManager.Current.Event_SweetHolic_StartDate, globalData.userManager.Current.Event_SweetHolic_EndDate, TargetName));
         }
 
         (DateTime, DateTime, string) GetNextEventTime()
         {
             DateTime startDate = DateTime.Today;
-            string itemName = EventCycle_SweetHolic[startDate.DayOfWeek];
+            string targetName = EventCycle_SweetHolic[startDate.DayOfWeek];
 
             for(int i=1; i < 7; i++)
             {
-                if (EventCycle_SweetHolic[startDate.AddDays(i).DayOfWeek] != itemName)
+                if (EventCycle_SweetHolic[startDate.AddDays(i).DayOfWeek] != targetName)
                 {
-                    return (startDate, startDate.AddDays(i), itemName);
+                    return (startDate, startDate.AddDays(i), targetName);
                 }
             }
 
-            return (startDate, startDate.AddDays(7), itemName);
+            return (startDate, startDate.AddDays(7), targetName);
         }
     }
 }

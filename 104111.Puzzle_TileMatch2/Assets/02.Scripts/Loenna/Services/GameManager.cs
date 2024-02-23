@@ -315,7 +315,7 @@ public partial class GameManager : IDisposable
                 bool containsSweetHolicTile = UnityEngine.Random.Range(0, 100) < GlobalData.Instance.eventSweetHolic_TilePercent;
                 if (containsSweetHolicTile)
                 {
-                    sweetHolicTileIndex = GlobalData.Instance.eventSweetHolic_ItemIndex;
+                    sweetHolicTileIndex = GlobalData.Instance.eventSweetHolic_TargetIndex;
             
                     if (sweetHolicTileIndex > 0 && goldTileIcon != sweetHolicTileIndex)
                         specialTileTypes++;

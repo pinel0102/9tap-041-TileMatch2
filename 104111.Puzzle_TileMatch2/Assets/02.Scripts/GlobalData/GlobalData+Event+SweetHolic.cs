@@ -7,8 +7,8 @@ public partial class GlobalData
     [Header("★ [Event] Sweet Holic")]
     public ExpTable eventSweetHolic_ExpTable;
     public bool eventSweetHolic_Activate;
-    public string eventSweetHolic_ItemName;
-    public int eventSweetHolic_ItemIndex;
+    public string eventSweetHolic_TargetName;
+    public int eventSweetHolic_TargetIndex;
     public int eventSweetHolic_GetCount = 0;
     public bool eventSweetHolic_IsBoosterTime => userManager?.Current?.IsEventBoosterTime(GameEventType.SweetHolic) ?? false;
 
