@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class EventBanner_SweetHolic : MonoBehaviour
@@ -13,6 +14,9 @@ public class EventBanner_SweetHolic : MonoBehaviour
     [SerializeField]	private GameObject sweetHolicLock;
     [SerializeField]	private GameObject sweetHolicUnlock;
     [SerializeField]	private TMP_Text m_lockedText;
+    [SerializeField]	private GameObject m_boosterTimeBadge;
+    [SerializeField]	private Image m_boosterTimeImage;
+    [SerializeField]	private TMP_Text m_boosterTimeText;
     
     [Header("★ [Live] Sweet Holic")]
     public bool isUnlocked;
@@ -22,6 +26,7 @@ public class EventBanner_SweetHolic : MonoBehaviour
     public int currentExp;
     public int requiredExp;
     public int totalExp;
+    private string m_targetImagePath;
     
     [Header("★ [Parameter] Privates")]
     private EventDataTable m_eventDataTable;
@@ -47,6 +52,8 @@ public class EventBanner_SweetHolic : MonoBehaviour
     {
         eventSlider.RefreshRealTotalExp(user.Event_SweetHolic_TotalExp);
         eventSlider.RefreshTimeText(user.Event_SweetHolic_EndDate);
+        
+        RefreshBoosterTime(user);
     }
 
     /// <summary>
@@ -64,6 +71,9 @@ public class EventBanner_SweetHolic : MonoBehaviour
         sweetHolicUnlock.SetActive(isUnlocked);
         sweetHolicLock.SetActive(!isUnlocked);
 
+        RefreshBoosterIcon(GlobalDefine.GetSweetHolic_ItemImagePath());
+        RefreshBoosterTime(user);
+
         if (!isUnlocked)
             return;
 
@@ -75,6 +85,25 @@ public class EventBanner_SweetHolic : MonoBehaviour
         totalExp = user.Event_SweetHolic_TotalExp;
         (currentLevel, currentExp, requiredExp) = ExpManager.CalculateLevel(totalExp, m_expTable);
 
-        eventSlider.RefreshEventState(GlobalDefine.GetSweetHolic_ItemImagePath(), user.Event_SweetHolic_EndDate, currentLevel, currentExp, requiredExp, totalExp);
+        eventSlider.RefreshEventState(m_targetImagePath, user.Event_SweetHolic_EndDate, currentLevel, currentExp, requiredExp, totalExp);
+    }
+
+    private void RefreshBoosterIcon(string targetImagePath)
+    {
+        if(string.IsNullOrEmpty(targetImagePath))
+            return;
+        
+        m_targetImagePath = targetImagePath;
+        m_boosterTimeImage.sprite = SpriteManager.GetSprite(m_targetImagePath);
+    }
+
+    private void RefreshBoosterTime(User user)
+    {
+        bool isActivated = globalData.eventSweetHolic_Activate && 
+                           globalData.eventSweetHolic_IsBoosterTime &&
+                           globalData.eventSweetHolic_TargetIndex == targetIndex;
+        
+        m_boosterTimeBadge.SetActive(isActivated);
+        m_boosterTimeText.SetText(isActivated ? GlobalDefine.GetRemainEventTime_OneFormat(user.Event_SweetHolic_BoosterEndDate) : string.Empty);
     }
 }

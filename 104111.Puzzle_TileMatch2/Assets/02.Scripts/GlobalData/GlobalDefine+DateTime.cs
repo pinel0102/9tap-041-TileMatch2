@@ -116,5 +116,19 @@ public static partial class GlobalDefine
             : string.Format("{0}s", span.Seconds);
     }
 
+    public static string GetRemainEventTime_OneFormat(string endDate)
+    {
+        return GetRemainEventTime_OneFormat(ToDateTime(endDate));
+    }
+
+    public static string GetRemainEventTime_OneFormat(DateTime endDate)
+    {
+        TimeSpan span = endDate.Subtract(DateTime.Now);
+        return span.Days > 0 ? string.Format("{0}d", span.Days) 
+            : span.Hours > 0 ?string.Format("{0}h", span.Hours)
+            : span.Minutes > 0 ?string.Format("{0}m", span.Minutes)
+            : string.Format("{0}s", span.Seconds);
+    }
+
 #endregion Event Time
 }

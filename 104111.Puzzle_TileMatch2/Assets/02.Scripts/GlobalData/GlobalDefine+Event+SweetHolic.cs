@@ -63,6 +63,9 @@ public static partial class GlobalDefine
             );
 
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Expired] Event Time : {0} ~ {1} / ItemName : {2}</color>", globalData.userManager.Current.Event_SweetHolic_StartDate, globalData.userManager.Current.Event_SweetHolic_EndDate, TargetName));
+
+            CheckEventRefresh();
+            globalData.fragmentHome?.Refresh(globalData.userManager.Current);
         }
 
         (DateTime, DateTime, string) GetNextEventTime()
