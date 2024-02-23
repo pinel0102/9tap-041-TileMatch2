@@ -77,7 +77,7 @@ public class HUD_Field : CachedBehaviour
         m_button.onClick.AddListener(() => {    OnClick?.Invoke();  });
     }
 
-    private void SetIncreaseMode(bool isIncrease)
+    public void SetIncreaseMode(bool isIncrease)
     {
         if(m_textIncrease == null) return;
 

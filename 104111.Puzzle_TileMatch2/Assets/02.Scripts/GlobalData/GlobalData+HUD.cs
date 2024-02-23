@@ -45,7 +45,7 @@ public partial class GlobalData
         );
     }
 
-    public async UniTask HUD_LateUpdate_MainSceneReward(int _clearedLevel, int _openPuzzleIndex, int _getCoin, int _getPuzzlePiece, int _getSweetHolicExp)
+    public async UniTask<bool> HUD_LateUpdate_MainSceneReward(int _clearedLevel, int _openPuzzleIndex, int _getCoin, int _getPuzzlePiece, int _getSweetHolicExp)
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("Level {0} : {1} / {2} / {3} / {4}", _clearedLevel, _openPuzzleIndex, _getCoin, _getPuzzlePiece, _getSweetHolicExp));
 
@@ -88,7 +88,7 @@ public partial class GlobalData
             CreateEffect("UI_Icon_Coin", Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, HUD.behaviour.Fields[2].AttractorTarget, _fxDuration, () => {
                 HUD?.behaviour.Fields[2].IncreaseText(_oldCoin, _getCoin);
             });
-
+            
             await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
         }
 
@@ -105,6 +105,8 @@ public partial class GlobalData
             await UniTask.WaitUntil(() => increaseExpFinished);
             await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
         }
+
+        return true;
     }
 
     public void HUD_Show(params HUDType[] types)

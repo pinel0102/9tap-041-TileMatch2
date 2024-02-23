@@ -100,7 +100,7 @@ public class GameClearPopup : UIPopup
                     if (isInteractable)
                     {
                         OnClickClose();
-					    OnExit();
+                        OnExit();
                     }
 				}
 			}
@@ -199,14 +199,21 @@ public class GameClearPopup : UIPopup
 			{
                 SDKManager.SendAnalytics_C_Scene_Clear(existNextLevel ? "Next" : "Close");
                 GlobalDefine.RequestAD_Interstitial();
-                
-                UIManager.ShowSceneUI<MainScene>(new MainSceneRewardParameter(
-                    clearedLevel: clearedLevel,
-                    openPuzzleIndex: openPuzzleIndex,
-                    rewardCoin: rewardData.Coin,
-                    rewardPuzzlePiece: rewardData.PuzzlePiece,
-                    rewardSweetHolic: GlobalData.Instance.eventSweetHolic_GetCount
-                ));
+
+                if (clearedLevel < Constant.Game.LEVEL_PUZZLE_START - 1)
+                {
+                    parameter.OnContinue.Invoke(clearedLevel + 1);
+                }
+                else
+                {
+                    UIManager.ShowSceneUI<MainScene>(new MainSceneRewardParameter(
+                        clearedLevel: clearedLevel,
+                        openPuzzleIndex: openPuzzleIndex,
+                        rewardCoin: rewardData.Coin,
+                        rewardPuzzlePiece: rewardData.PuzzlePiece,
+                        rewardSweetHolic: GlobalData.Instance.eventSweetHolic_GetCount
+                    ));
+                }
 			}
 			else
 			{

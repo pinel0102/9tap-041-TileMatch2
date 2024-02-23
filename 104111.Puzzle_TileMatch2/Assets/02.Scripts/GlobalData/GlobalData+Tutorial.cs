@@ -13,18 +13,15 @@ public partial class GlobalData
             return;
         }
 
-        //SetTouchLock_MainScene(true);
-
         Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Open Puzzle {0}</color>", openPuzzleIndex));
 
         fragmentCollection.RefreshLockState();
 
         if (GlobalDefine.IsTutorialPuzzle(openPuzzleIndex))
         {
+            await UniTask.Delay(TimeSpan.FromSeconds(1f));
             await ShowTutorial_Puzzle();
         }
-
-        //SetTouchLock_MainScene(false);
     }
 
     public void ShowTutorial_Play(int level)

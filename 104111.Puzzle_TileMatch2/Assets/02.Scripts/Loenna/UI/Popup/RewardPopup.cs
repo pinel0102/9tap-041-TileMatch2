@@ -75,8 +75,7 @@ public class RewardPopup : UIPopup
     private void SetupChest(RewardPopupParameter parameter, CancellationToken token)
     {
         rewardCoin = parameter.Reward.Coin;
-        if (rewardCoin > 0)
-            GlobalData.Instance.HUD?.behaviour.Fields[2].SetIncreaseText(GlobalData.Instance.oldCoin);
+        GlobalData.Instance.HUD?.behaviour.Fields[2].SetIncreaseText(GlobalData.Instance.oldCoin);
 
         m_animatedRewardContainer.OnSetup(
 			new AnimatedRewardContainerParameter {
@@ -137,7 +136,7 @@ public class RewardPopup : UIPopup
 				OnClick = () => { 
                     m_confirmButton.interactable = false;
                     m_confirmButton.Alpha = 0f;
-                    OnExit();
+                    OnClickClose();
                 }
 			}
 		);
@@ -171,19 +170,16 @@ public class RewardPopup : UIPopup
 		UIManager.DetachAllHUD();
 	}
 
-    public void OnExit()
+    public override void OnClickClose()
     {
-        OnClickClose();
+        base.OnClickClose();
+        onComplete?.Invoke();
+
+        GlobalData.Instance.HUD?.behaviour.Fields[2].SetIncreaseMode(false);
 
         if (GlobalData.Instance.CURRENT_SCENE == GlobalDefine.SCENE_PLAY)
             GlobalData.Instance.HUD_Hide();
         else
             GlobalData.Instance.HUD_Show(HUDType.ALL);
-    }
-
-    public override void OnClickClose()
-    {
-        base.OnClickClose();
-        onComplete?.Invoke();
     }
 }

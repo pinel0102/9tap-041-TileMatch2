@@ -273,9 +273,13 @@ public class MainScene : UIScene
         if (CachedParameter is MainSceneRewardParameter rewardParameter)
         {
             Debug.Log(CodeManager.GetMethodName() + string.Format("[Get Reward] {0} / {1} / {2}", rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, rewardParameter.rewardSweetHolic));
-            await GlobalData.Instance.HUD_LateUpdate_MainSceneReward(rewardParameter.clearedLevel, rewardParameter.openPuzzleIndex, 
-                                                                    rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, 
-                                                                    rewardParameter.rewardSweetHolic);
+            bool increaseFinished = await GlobalData.Instance.HUD_LateUpdate_MainSceneReward(
+                rewardParameter.clearedLevel, rewardParameter.openPuzzleIndex, 
+                rewardParameter.rewardCoin, rewardParameter.rewardPuzzlePiece, 
+                rewardParameter.rewardSweetHolic);
+
+            await UniTask.WaitUntil(() => increaseFinished);
+
             await GlobalData.Instance.CheckPuzzleOpen(rewardParameter.openPuzzleIndex);
 
             if (GlobalDefine.IsEnable_Review(rewardParameter.clearedLevel))
