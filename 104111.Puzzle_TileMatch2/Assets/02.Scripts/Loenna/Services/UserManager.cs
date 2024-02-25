@@ -179,9 +179,7 @@ public class UserManager : IDisposable
                 Event_SweetHolic_ShowedPopup: false,
                 Event_SweetHolic_StartDate: GlobalDefine.dateDefault_HHmmss,
                 Event_SweetHolic_EndDate: GlobalDefine.dateDefault_HHmmss,
-                ExpiredSweetHolicBoosterTime: 0L,
-
-                Event_SweetHolic_BoosterEndDate: GlobalDefine.dateDefault_HHmmss
+                ExpiredSweetHolicBoosterTime: 0L
 			);
 		}
 	}
@@ -611,10 +609,7 @@ public class UserManager : IDisposable
         Optional<bool> ShowedPopup = default,
         Optional<string> StartDate = default,
         Optional<string> EndDate = default,
-        Optional<DateTimeOffset> ExpiredSweetHolicBoosterAt = default,
-
-
-        Optional<string> BoosterEndDate = default
+        Optional<DateTimeOffset> ExpiredSweetHolicBoosterAt = default
     )
     {
         if (m_user?.Value == null)
@@ -628,9 +623,7 @@ public class UserManager : IDisposable
                 event_SweetHolic_ShowedPopup: ShowedPopup,
                 event_SweetHolic_StartDate: StartDate,
                 event_SweetHolic_EndDate: EndDate,
-                expiredSweetHolicBoosterAt: ExpiredSweetHolicBoosterAt,
-
-                event_SweetHolic_BoosterEndDate: BoosterEndDate
+                expiredSweetHolicBoosterAt: ExpiredSweetHolicBoosterAt
 			)
 		);
     }

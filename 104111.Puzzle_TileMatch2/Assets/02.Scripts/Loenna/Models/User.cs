@@ -95,8 +95,6 @@ public record User
     string Event_SweetHolic_EndDate,
     long ExpiredSweetHolicBoosterTime,
 
-    string Event_SweetHolic_BoosterEndDate,
-
     // 게임 현황
 	int Level, // 플레이할 레벨
 	int CurrentPlayingPuzzleIndex, // 플레이 중인 퍼즐
@@ -187,9 +185,7 @@ public record User
         Event_SweetHolic_ShowedPopup: false,
         Event_SweetHolic_StartDate: GlobalDefine.dateDefault_HHmmss,
         Event_SweetHolic_EndDate: GlobalDefine.dateDefault_HHmmss,
-        ExpiredSweetHolicBoosterTime: 0L,
-
-        Event_SweetHolic_BoosterEndDate: GlobalDefine.dateDefault_HHmmss
+        ExpiredSweetHolicBoosterTime: 0L
 	);
 
 	[JsonIgnore]
@@ -270,8 +266,7 @@ public record User
         in Optional<bool> event_SweetHolic_ShowedPopup = default,
         in Optional<string> event_SweetHolic_StartDate = default,
         in Optional<string> event_SweetHolic_EndDate = default,
-        in Optional<DateTimeOffset> expiredSweetHolicBoosterAt = default,
-        in Optional<string> event_SweetHolic_BoosterEndDate = default
+        in Optional<DateTimeOffset> expiredSweetHolicBoosterAt = default
 	)
 	{
         DateTimeOffset now = DateTimeOffset.Now;
@@ -378,9 +373,7 @@ public record User
             Event_SweetHolic_ShowedPopup: event_SweetHolic_ShowedPopup.GetValueOrDefault(Event_SweetHolic_ShowedPopup),
             Event_SweetHolic_StartDate: event_SweetHolic_StartDate.GetValueOrDefault(Event_SweetHolic_StartDate),
             Event_SweetHolic_EndDate: event_SweetHolic_EndDate.GetValueOrDefault(Event_SweetHolic_EndDate),
-            ExpiredSweetHolicBoosterTime: expiredSweetHolicBoosterAt.GetValueOrDefault(ExpiredSweetHolicBoosterAt).ToUnixTimeMilliseconds(),
-
-            Event_SweetHolic_BoosterEndDate: event_SweetHolic_BoosterEndDate.GetValueOrDefault(Event_SweetHolic_BoosterEndDate)
+            ExpiredSweetHolicBoosterTime: expiredSweetHolicBoosterAt.GetValueOrDefault(ExpiredSweetHolicBoosterAt).ToUnixTimeMilliseconds()
 		);
 
         //Debug.Log(CodeManager.GetMethodName() + string.Format("Life : {0} / EndChargeLifeAt : {1}", user.Life, user.EndChargeLifeAt.LocalDateTime));
