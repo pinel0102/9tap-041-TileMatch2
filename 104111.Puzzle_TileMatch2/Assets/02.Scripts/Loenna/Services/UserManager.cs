@@ -22,6 +22,8 @@ public class UserManager : IDisposable
 
 	public UserManager(TimeManager timeManager)
 	{
+        GlobalDefine.SetUserLoaded(false);
+
 		m_timeManager = timeManager;
 		m_user = new AsyncReactiveProperty<User>(User.NewUser).WithDispatcher();
 
@@ -38,7 +40,7 @@ public class UserManager : IDisposable
 	{
         Debug.Log(CodeManager.GetAsyncName());
 
-		if (editorMode)
+        if (editorMode)
 		{
 			int level = PlayerPrefs.GetInt(Constant.Editor.LATEST_LEVEL_KEY, 1);
 			CreateDummy(level);
@@ -84,11 +86,14 @@ public class UserManager : IDisposable
         LogUserData();
 
         Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>LevelPlayCount : {0} / TotalPlayTime : {1} / TotalPayment : {2}</color>", m_user.Value.LevelPlayCount, m_user.Value.TotalPlayTime, m_user.Value.TotalPayment));
+        
         SDKManager.Instance.Initialize(m_user.Value.AppOpenCount, m_user.Value.InstallDate, m_user.Value.UserGroup, m_user.Value.NoAD);
         PushManager.Initialize(ProjectManager.productName, GlobalDefine.ToDateTime(m_user.Value.InstallDate));
 
         GlobalData.Instance.CreateExpTable();
+        
         GlobalDefine.Initialize();
+        GlobalDefine.SetUserLoaded(true);
 
 #if !UNITY_STANDALONE
         await CheckAgrees(waitPanel);

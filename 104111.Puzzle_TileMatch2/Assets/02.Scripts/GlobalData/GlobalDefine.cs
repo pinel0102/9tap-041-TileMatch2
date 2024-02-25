@@ -8,6 +8,7 @@ public static partial class GlobalDefine
 {
     private static bool testAutoPopupEditor = false;
 
+    public static bool IsUserLoaded { get; private set; }
     public const string SCENE_MAIN = "Main";
     public const string SCENE_COLLECTION = "Collection";
     public const string SCENE_PUZZLE = "Puzzle";
@@ -26,6 +27,11 @@ public static partial class GlobalDefine
         CheckEventRefresh();
     }
 
+    public static void SetUserLoaded(bool userLoaded)
+    {
+        IsUserLoaded = userLoaded;
+    }
+
     public static void InitRandomSeed()
     {
         UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
@@ -37,7 +43,7 @@ public static partial class GlobalDefine
     /// </summary>
     public static void CheckEventActivate()
     {
-        if(globalData?.userManager?.Current != null)
+        if(IsUserLoaded)
         {
             Debug.Log(CodeManager.GetMethodName());
 
@@ -51,7 +57,7 @@ public static partial class GlobalDefine
     /// </summary>
     public static void CheckEventExpired()
     {
-        if(globalData?.userManager?.Current != null && globalData.CURRENT_SCENE != SCENE_PLAY && !globalData.isAutoPopupPending)
+        if(IsUserLoaded && globalData.CURRENT_SCENE != SCENE_PLAY && !globalData.isAutoPopupPending)
         {
             //Debug.Log(CodeManager.GetMethodName());
 

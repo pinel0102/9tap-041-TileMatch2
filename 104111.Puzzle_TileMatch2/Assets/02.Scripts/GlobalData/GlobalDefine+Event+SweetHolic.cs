@@ -38,8 +38,9 @@ public static partial class GlobalDefine
     /// </summary>
     public static void SweetHolic_RefreshTarget()
     {
-        globalData.eventSweetHolic_TargetName = EventCycle_SweetHolic[DateTime.Today.DayOfWeek];
-        globalData.eventSweetHolic_TargetIndex = globalData?.tableManager?.TileDataTable?.Dic?.FirstOrDefault(item => item.Value.Name.Equals(globalData?.eventSweetHolic_TargetName ?? "-1")).Value?.Index ?? 0;
+        string target = EventCycle_SweetHolic[DateTime.Today.DayOfWeek];
+        globalData.eventSweetHolic_TargetName = target;
+        globalData.eventSweetHolic_TargetIndex = globalData?.tableManager?.TileDataTable?.Dic?.FirstOrDefault(item => item.Value.Name.Equals(target)).Value?.Index ?? 0;
     }
 
     public static string GetSweetHolic_ItemImagePath()
