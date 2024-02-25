@@ -35,12 +35,11 @@ public static partial class GlobalDefine
 
     /// <summary>
     /// <para>Target Item 갱신.</para>
-    /// <para>PlayScene 중에는 이벤트가 바뀌어도 이전 Target을 유지한다.</para>
     /// </summary>
     public static void SweetHolic_RefreshTarget()
     {
         globalData.eventSweetHolic_TargetName = EventCycle_SweetHolic[DateTime.Today.DayOfWeek];
-        globalData.eventSweetHolic_TargetIndex = globalData?.tableManager?.TileDataTable?.Dic?.FirstOrDefault(item => item.Value.Name.Equals(globalData.eventSweetHolic_TargetName)).Value.Index ?? 0;
+        globalData.eventSweetHolic_TargetIndex = globalData?.tableManager?.TileDataTable?.Dic?.FirstOrDefault(item => item.Value.Name.Equals(globalData?.eventSweetHolic_TargetName ?? "-1")).Value?.Index ?? 0;
     }
 
     public static string GetSweetHolic_ItemImagePath()

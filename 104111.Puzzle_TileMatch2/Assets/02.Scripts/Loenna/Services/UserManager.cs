@@ -347,7 +347,7 @@ public class UserManager : IDisposable
 
 		m_user.Update(
 			user => user.Update(
-                level: updateLevel > 0 ? GlobalData.Instance.GetEnableLevel(updateLevel) : default,
+                level: updateLevel > 0 ? GlobalData.Instance.GetEnableLevel(updateLevel) : m_user.Value.Level,
 				coin: user.Coin + GetValue(ProductType.Coin),
 				puzzle: user.Puzzle + GetValue(ProductType.PuzzlePiece),
 				ownSkillItems: user.OwnSkillItems.Select(

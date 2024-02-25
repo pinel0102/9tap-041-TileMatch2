@@ -55,6 +55,8 @@ public class LobbyManager : IDisposable
             return;
         }
 
+        GlobalData.Instance.eventSweetHolic_IsBoosterTime = user.IsEventBoosterTime(GameEventType.SweetHolic);
+
         if (GlobalDefine.IsEnable_HardBundle())
         {
             await GlobalData.Instance.ShowPopup_HardLevel();

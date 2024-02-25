@@ -10,7 +10,7 @@ public partial class GlobalData
     public string eventSweetHolic_TargetName;
     public int eventSweetHolic_TargetIndex;
     public int eventSweetHolic_GetCount = 0;
-    public bool eventSweetHolic_IsBoosterTime => userManager?.Current?.IsEventBoosterTime(GameEventType.SweetHolic) ?? false;
+    public bool eventSweetHolic_IsBoosterTime;
 
     [Header("★ [Settings] Sweet Holic")]
     public int eventSweetHolic_TilePercent = 80;

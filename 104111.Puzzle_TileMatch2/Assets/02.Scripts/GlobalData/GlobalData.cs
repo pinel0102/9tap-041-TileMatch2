@@ -25,6 +25,7 @@ public partial class GlobalData : SingletonMono<GlobalData>
     public TableManager tableManager => Game.Inst?.Get<TableManager>();
     public HUD HUD => Game.Inst?.Get<HUD>();
     public bool isLevelEditor => PlayerPrefs.GetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, Constant.Scene.CLIENT) == Constant.Scene.EDITOR;
+    public bool isAutoPopupPending;
 
     [Header("★ [Live] Old Items")]
     public long oldCoin = 0;
@@ -61,6 +62,7 @@ public partial class GlobalData : SingletonMono<GlobalData>
         {
             userManager?.UpdateLog(totalPlayTime: userManager.Current.TotalPlayTime + 1);
             fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); });
+            GlobalDefine.CheckEventExpired();
             
             yield return wTimeDelay;
         }

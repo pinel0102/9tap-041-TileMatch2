@@ -255,6 +255,7 @@ public class MainScene : UIScene
 
         globalData.CURRENT_LEVEL = m_userManager.Current.Level;
         globalData.CURRENT_DIFFICULTY = 0;
+        globalData.eventSweetHolic_IsBoosterTime = false;
         
         m_scrollView.MoveTo((int)parameter.ShowMenuType);
 
@@ -269,6 +270,8 @@ public class MainScene : UIScene
         GlobalDefine.CheckEventActivate();
 
         globalData.SetTouchLock_MainScene(true);
+        globalData.isAutoPopupPending = true;
+        
         globalData.fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); });
 
         if (CachedParameter is MainSceneRewardParameter rewardParameter)
@@ -337,6 +340,7 @@ public class MainScene : UIScene
         }
 
         globalData.SetTouchLock_MainScene(false);
+        globalData.isAutoPopupPending = false;
     }
 
 	private void OnDestroy()

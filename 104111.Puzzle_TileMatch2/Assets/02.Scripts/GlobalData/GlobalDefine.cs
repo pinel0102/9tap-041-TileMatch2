@@ -22,6 +22,7 @@ public static partial class GlobalDefine
         InitRandomSeed();
 
         CheckEventActivate();
+        CheckEventExpired();
         CheckEventRefresh();
     }
 
@@ -30,16 +31,38 @@ public static partial class GlobalDefine
         UnityEngine.Random.InitState((int)DateTime.Now.Ticks);
     }
 
+    /// <summary>
+    /// <para>이벤트 오픈 체크.</para>
+    /// <para>메인 씬으로 돌아올 때 1회 체크한다.</para>
+    /// </summary>
     public static void CheckEventActivate()
     {
-        Debug.Log(CodeManager.GetMethodName());
-
         if(globalData?.userManager?.Current != null)
         {
+            Debug.Log(CodeManager.GetMethodName());
+
             globalData.eventSweetHolic_Activate = IsOpen_Event_SweetHolic() && !IsExpired(ToDateTime(globalData.userManager.Current.Event_SweetHolic_EndDate));
         }
     }
 
+    /// <summary>
+    /// <para>이벤트 만료 체크. (초마다 체크.)</para>
+    /// <para>PlayScene 또는 AutoPopups 중에는 체크하지 않는다.</para>
+    /// </summary>
+    public static void CheckEventExpired()
+    {
+        if(globalData?.userManager?.Current != null && globalData.CURRENT_SCENE != SCENE_PLAY && !globalData.isAutoPopupPending)
+        {
+            //Debug.Log(CodeManager.GetMethodName());
+
+            CheckSweetHolicExpired();
+        }
+    }
+
+    /// <summary>
+    /// <para>이벤트 상태 갱신.</para>
+    /// <para>이벤트가 변경되었을 경우 새로운 내용으로 갱신한다.</para>
+    /// </summary>
     public static void CheckEventRefresh()
     {
         Debug.Log(CodeManager.GetMethodName());

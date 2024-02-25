@@ -9,15 +9,12 @@ public class HomeFragmentLargeButtonParameter : UIButtonParameter
 public class HomeFragmentLargeButton : UITextButton
 {
 	private UIProgressBar m_gaugeBar;
-	private PuzzleDataTable m_puzzleDataTable;
-
+	
 	public override void OnSetup(UIButtonParameter buttonParameter)
 	{
 		base.OnSetup(buttonParameter);
 
 		m_gaugeBar = m_subWidgetParent.GetComponentInChildren<UIProgressBar>();
-
-		m_puzzleDataTable = Game.Inst.Get<TableManager>()?.PuzzleDataTable;
 
 		if (buttonParameter is HomeFragmentLargeButtonParameter parameter)
 		{
