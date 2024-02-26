@@ -93,7 +93,7 @@ public partial class GlobalData
             Debug.Log(CodeManager.GetMethodName() + string.Format("[Coin] {0} + {1} = {2}", _oldCoin, _getCoin, _oldCoin + _getCoin));
             
             CreateEffect("UI_Icon_Coin", Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, HUD.behaviour.Fields[2].AttractorTarget, _fxDuration, () => {
-                HUD?.behaviour.Fields[2].IncreaseText(_oldCoin, _getCoin);
+                HUD?.behaviour.Fields[2].IncreaseText(_oldCoin, _getCoin, autoTurnOff_IncreaseMode: _getSweetHolicExp > 0 ? false : true);
             });
             
             await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
@@ -104,14 +104,23 @@ public partial class GlobalData
             Debug.Log(CodeManager.GetMethodName() + string.Format("[SweetHolic] {0} + {1} = {2}", _oldSweetHolicExp, _getSweetHolicExp, _oldSweetHolicExp + _getSweetHolicExp));
 
             bool increaseExpFinished = false;
+            bool popupAllClosed = false;
             
             CreateEffect(GlobalDefine.GetSweetHolic_ItemImagePath(), Constant.Sound.SFX_GOLD_PIECE, fragmentHome.objectPool, fragmentHome.eventBanner_SweetHolic.targetItemPosition, _fxDuration, async () => {
                 increaseExpFinished = await fragmentHome.eventBanner_SweetHolic.eventSlider.IncreaseText(_oldSweetHolicExp, _getSweetHolicExp,
-                    onLevelUp: null
+                    onLevelUp: async (newLevel) => {
+                        bool popupClosed = await ShowPopup_EventRewards(GameEventType.SweetHolic, RewardPopupType.SWEETHOLIC, newLevel);
+                        await UniTask.WaitUntil(() => popupClosed);
+                        fragmentHome.eventBanner_SweetHolic.eventSlider.SetResume(true);
+                    },
+                    onComplete: () => {
+                        HUD?.behaviour.Fields[2].SetIncreaseMode(false);
+                        popupAllClosed = true;
+                    }
                 );
             });
 
-            await UniTask.WaitUntil(() => increaseExpFinished);
+            await UniTask.WaitUntil(() => increaseExpFinished && popupAllClosed);
             await UniTask.Delay(TimeSpan.FromSeconds(_fxDuration));
         }
 

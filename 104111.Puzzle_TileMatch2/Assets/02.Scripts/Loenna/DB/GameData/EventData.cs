@@ -26,7 +26,7 @@ public record EventData
         m_rewards.Clear();
     }
 
-	public void CreateRewards()
+    public void CreateRewards()
 	{
 		List<IReward> result = new();
 		PropertyInfo[] infos = typeof(EventData).GetProperties();

@@ -19,6 +19,7 @@ public class AnimatedRewardContainerParameter
 	public List<IReward> Rewards = new();
     public int NewLandmark;
     public bool IsADBlockProduct;
+    public bool ShowBlank;
 	public Action OnFinishedAnimation;
 }
 
@@ -33,6 +34,7 @@ public class AnimatedRewardContainer : CachedBehaviour
 	private List<RewardGoodsItem> m_rewardGoodsItems = new();
     private RewardGoodsItem prefab;
     private int m_animationCount;
+    private bool m_showBlank;
 
 	public float Alpha { set => m_canvasGroup.alpha = value; }
 
@@ -43,9 +45,13 @@ public class AnimatedRewardContainer : CachedBehaviour
         m_animationCount = 0;
         m_canvasGroup.alpha = 0f;
         m_popupType = parameter.PopupType;
+        m_showBlank = parameter.ShowBlank;
 
         int rewardCount = parameter.Rewards.Count + (parameter.NewLandmark > 0 ? 1 : 0);
         int currentCount = 0;
+
+        if (m_showBlank)
+            return;
 
         for(int i=0; i < parameter.Rewards.Count; i++)
         {

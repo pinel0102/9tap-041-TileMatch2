@@ -21,10 +21,15 @@ public class AnimatedBox : CachedBehaviour
 	[SerializeField]
 	private RectTransform m_box;
 
+    [SerializeField]
+	private CanvasGroup m_canvasGroup;
+
 	public RewardPopupType Type => m_type;
 
 	public async UniTask PlayAsync(CancellationToken token)
 	{
+        m_canvasGroup.alpha = 1;
+
 		CancellationTokenSource cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, this.GetCancellationTokenOnDestroy());
 		CancellationToken cancellationToken = cancellationTokenSource.Token;
 
@@ -48,4 +53,12 @@ public class AnimatedBox : CachedBehaviour
 			)
 		).AttachExternalCancellation(cancellationToken);
 	}
+
+    public void HideImage()
+    {
+        m_canvasGroup.alpha = 0;
+
+        SoundManager soundManager = Game.Inst?.Get<SoundManager>();
+        soundManager?.PlayFx(Constant.Sound.SFX_REWARD_OPEN);
+    }
 }

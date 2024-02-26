@@ -4,7 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
+using System.Threading;
 using TMPro;
+using DG.Tweening;
+using System;
 
 public class EventBanner_SweetHolic : MonoBehaviour
 {
@@ -13,6 +16,15 @@ public class EventBanner_SweetHolic : MonoBehaviour
     [Header("★ [Reference] Sweet Holic")]
     public EventSlider eventSlider;
     public RectTransform targetItemPosition;
+
+    [Header("★ [Reference] Reward Item")]
+    public Canvas rewardCanvas;
+    public CanvasGroup rewardCanvasGroup;
+    public RectTransform rewardItemRect;
+    public CanvasGroup rewardHalo;
+    public RectTransform rewardIconRect;
+
+    [Header("★ [Reference] Privates")]
     [SerializeField]	private GameObject sweetHolicLock;
     [SerializeField]	private GameObject sweetHolicUnlock;
     [SerializeField]	private TMP_Text m_lockedText;
@@ -31,6 +43,8 @@ public class EventBanner_SweetHolic : MonoBehaviour
     private string m_targetImagePath;
     
     [Header("★ [Parameter] Privates")]
+    private bool enableHalo;
+    private CancellationTokenSource tokenSource = new CancellationTokenSource();
     private EventDataTable m_eventDataTable;
     private ExpTable m_expTable;
     private IUniTaskAsyncEnumerable<(bool, string)> BoosterStatus;
@@ -41,6 +55,7 @@ public class EventBanner_SweetHolic : MonoBehaviour
     {
         m_eventDataTable = tableManager.EventDataTable;
         m_expTable = globalData.eventSweetHolic_ExpTable;
+        RewardIconReset();
 
         m_lockedText.SetText(string.Format(textFormatLocked, Constant.User.MIN_OPENLEVEL_EVENT_SWEETHOLIC));
         eventSlider.Initialize(eventType, m_eventDataTable, m_expTable);
@@ -62,8 +77,6 @@ public class EventBanner_SweetHolic : MonoBehaviour
     {
         eventSlider.RefreshRealTotalExp(user.Event_SweetHolic_TotalExp);
         eventSlider.RefreshTimeText(user.Event_SweetHolic_EndDate);
-        
-        RefreshBoosterTime(user);
     }
 
     /// <summary>
@@ -82,8 +95,7 @@ public class EventBanner_SweetHolic : MonoBehaviour
         sweetHolicLock.SetActive(!isUnlocked);
 
         RefreshBoosterIcon(GlobalDefine.GetSweetHolic_ItemImagePath());
-        RefreshBoosterTime(user);
-
+        
         if (!isUnlocked)
             return;
 
@@ -107,13 +119,89 @@ public class EventBanner_SweetHolic : MonoBehaviour
         m_boosterTimeImage.sprite = SpriteManager.GetSprite(m_targetImagePath);
     }
 
-    private void RefreshBoosterTime(User user)
+    public void RewardIconReset()
     {
-        /*bool isActivated = globalData.eventSweetHolic_Activate && 
-                           globalData.eventSweetHolic_IsBoosterTime &&
-                           globalData.eventSweetHolic_TargetIndex == targetIndex;
+        if (tokenSource.Token.CanBeCanceled)
+        {
+            tokenSource.Cancel();
+            tokenSource.Dispose();
+        }
         
-        m_boosterTimeBadge.SetActive(isActivated);
-        m_boosterTimeText.SetText(isActivated ? GlobalDefine.GetRemainEventTime_OneFormat(user.Event_SweetHolic_BoosterEndDate) : string.Empty);*/
+        rewardCanvas.sortingOrder = 1;
+        rewardCanvasGroup.alpha = 1;
+
+        rewardItemRect.anchoredPosition = Vector2.zero;
+        rewardIconRect.SetLocalScale(1f);
+
+        rewardHalo.alpha = 0;
+        rewardHalo.gameObject.SetActive(false);
+        enableHalo = false;
     }
+
+    public async UniTask RewardIconCenter(ChestType chestType, Action onComplete, float duration = 0.3f)
+    {
+        tokenSource = new CancellationTokenSource();
+
+        rewardCanvas.sortingOrder = 300;
+        rewardCanvasGroup.alpha = 1;
+
+        rewardItemRect.anchoredPosition = Vector2.zero;
+        rewardIconRect.SetLocalScale(1f);
+
+        rewardHalo.alpha = 0;
+        rewardHalo.gameObject.SetActive(true);
+        
+        if (chestType == ChestType.Chest)
+        {
+            enableHalo = false;
+
+            await rewardItemRect.DOMove(globalData.fragmentHome.CachedTransform.position, duration)
+            .OnStart(() => {
+                rewardIconRect.DOScale(2f, duration);
+                rewardCanvasGroup.DOFade(0, duration);
+            })
+            .OnComplete(() => { 
+                onComplete?.Invoke();
+            })
+            .ToUniTask(cancellationToken:tokenSource.Token);
+        }
+        else
+        {
+            enableHalo = true;
+
+            await rewardItemRect.DOMove(globalData.fragmentHome.CachedTransform.position, duration)
+            .OnStart(() => {
+                rewardIconRect.DOScale(2f, duration);
+            })
+            .OnComplete(async () => { 
+                onComplete?.Invoke();
+                await PlayHalo();
+            })
+            .ToUniTask(cancellationToken:tokenSource.Token);
+        }
+    }
+
+    public async UniTask PlayHalo(float delay = 0.2f)
+	{
+		await UniTask.Delay(TimeSpan.FromSeconds(delay), cancellationToken:tokenSource.Token);
+
+		await rewardHalo
+			.DOFade(1f, 0.25f)
+			.ToUniTask(cancellationToken:tokenSource.Token)
+			.SuppressCancellationThrow();
+
+		await UniTaskAsyncEnumerable
+			.EveryUpdate(PlayerLoopTiming.LastPostLateUpdate) 
+			.ForEachAsync(
+				_ => {
+					if (!enableHalo)
+					{
+						return;
+					}
+
+					ObjectUtility.GetRawObject(rewardHalo)?.transform.Rotate(Vector3.forward * 0.1f);
+				},
+                cancellationToken:tokenSource.Token
+			);
+	}
 }

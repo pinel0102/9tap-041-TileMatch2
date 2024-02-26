@@ -121,4 +121,36 @@ public partial class GlobalData
             await UniTask.WaitUntil(() => popupClosed);
         }
     }
+
+    /// <summary>
+    /// 첫 등장 : 레벨업 (메인 / 자동)
+    /// 조건 만족시 자동 등장 반복.
+    /// </summary>
+    public async UniTask<bool> ShowPopup_EventRewards(GameEventType eventType, RewardPopupType popupType, int eventLevel)
+    {
+        Debug.Log(CodeManager.GetMethodName() + string.Format("[{0}] Level : {1}", eventType, eventLevel));
+
+        bool popupClosed = false;
+
+        var eventData = tableManager.EventDataTable.GetEventData(eventType, eventLevel);
+
+        await fragmentHome.eventBanner_SweetHolic.RewardIconCenter(eventData.ChestType, () => {
+            UIManager.ShowPopupUI<RewardPopup>(
+                new EventRewardPopupParameter (
+                    PopupType: popupType,
+                    ChestType: eventData.ChestType,
+                    Rewards: eventData.Rewards,
+                    OnComplete: () => { 
+                        fragmentHome.eventBanner_SweetHolic.RewardIconReset();
+                        popupClosed = true; 
+                    },
+                    VisibleHUD: HUDType.NONE
+                )
+            );
+        });
+
+        await UniTask.WaitUntil(() => popupClosed);
+
+        return true;
+    }
 }

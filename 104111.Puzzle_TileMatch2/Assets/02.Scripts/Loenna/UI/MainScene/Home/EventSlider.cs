@@ -27,6 +27,7 @@ public class EventSlider : MonoBehaviour
     private EventDataTable m_eventDataTable;
     private ExpTable m_expTable;
     private EventData nextEventData;
+    private bool m_resume;
     private const string textFormatExp = "{0}/{1}";
     private const string spriteBox = "UI_Img_Box_05";
     private const string textExpMax = "Complete!";
@@ -99,6 +100,8 @@ public class EventSlider : MonoBehaviour
 
     public async UniTask<bool> IncreaseText(int fromTotalExp, int addExp, float duration = 0.5f, Action<int> onLevelUp = null, Action onComplete = null)
     {
+        SetResume(false);
+
         var (fromLevel, fromExp, fromReqExp) = ExpManager.CalculateLevel(fromTotalExp, m_expTable);
         if(m_eventDataTable.IsMaxLevel(m_eventType, fromLevel))
         {
@@ -135,11 +138,12 @@ public class EventSlider : MonoBehaviour
             {
                 Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Level Up : {0} ({1}/{2})</color>", fromLevel, fromExp, fromReqExp));
                 
-                //bool getReward = await ShowRewardPopup(fromLevel);
-                
-                onLevelUp?.Invoke(fromLevel);
-
-                await UniTask.Delay(TimeSpan.FromSeconds(2f));
+                if (onLevelUp != null)
+                {
+                    SetResume(false);
+                    onLevelUp?.Invoke(fromLevel);
+                    await UniTask.WaitUntil(() => m_resume);
+                }
 
                 RefreshEventState(string.Empty, string.Empty, fromLevel, fromExp, fromReqExp, m_realTotalExp);
 
@@ -155,6 +159,7 @@ public class EventSlider : MonoBehaviour
             }
         }
 
+        SetResume(false);
         onComplete?.Invoke();
 
         return true;
@@ -163,6 +168,11 @@ public class EventSlider : MonoBehaviour
         {
             return time/(float)amount;
         }
+    }
+
+    public void SetResume(bool resume)
+    {
+        m_resume = resume;
     }
 
 #endregion Publics

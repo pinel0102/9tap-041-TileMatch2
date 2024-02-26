@@ -2538,11 +2538,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   eventSlider: {fileID: 1044841813682823828}
   targetItemPosition: {fileID: 4883304834255017591}
+  rewardCanvas: {fileID: 1133574928601146380}
+  rewardCanvasGroup: {fileID: 6647743909005409938}
+  rewardItemRect: {fileID: 3168104420873666566}
+  rewardHalo: {fileID: 2319285165066743646}
+  rewardIconRect: {fileID: 1546722569859071587}
   sweetHolicLock: {fileID: 3676723162039126945}
   sweetHolicUnlock: {fileID: 4142310785926625592}
   m_lockedText: {fileID: 396031349065897155}
-  m_boosterTimeImage: {fileID: 2651787681356753914}
   m_boosterTimeBadge: {fileID: 4492072469743924618}
+  m_boosterTimeImage: {fileID: 2651787681356753914}
   m_boosterTimeText: {fileID: 3193414586951088119}
   isUnlocked: 0
   targetName: 
@@ -2953,9 +2958,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8a28605cbe644c148ad867b7b1af186, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!223 &1133574928601146380 stripped
+Canvas:
+  m_CorrespondingSourceObject: {fileID: 4594324596148005188, guid: 988d13dc276b1482fb9ac9f8af0085b5, type: 3}
+  m_PrefabInstance: {fileID: 3492846645395230024}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &1546722569859071587 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2670100765585306411, guid: 988d13dc276b1482fb9ac9f8af0085b5, type: 3}
+  m_PrefabInstance: {fileID: 3492846645395230024}
+  m_PrefabAsset: {fileID: 0}
+--- !u!225 &2319285165066743646 stripped
+CanvasGroup:
+  m_CorrespondingSourceObject: {fileID: 1177361541093155350, guid: 988d13dc276b1482fb9ac9f8af0085b5, type: 3}
+  m_PrefabInstance: {fileID: 3492846645395230024}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &3168104420873666566 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1985607687155977550, guid: 988d13dc276b1482fb9ac9f8af0085b5, type: 3}
+  m_PrefabInstance: {fileID: 3492846645395230024}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &4883304834255017591 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8340084159938911039, guid: 988d13dc276b1482fb9ac9f8af0085b5, type: 3}
+  m_PrefabInstance: {fileID: 3492846645395230024}
+  m_PrefabAsset: {fileID: 0}
+--- !u!225 &6647743909005409938 stripped
+CanvasGroup:
+  m_CorrespondingSourceObject: {fileID: 7798143668153103322, guid: 988d13dc276b1482fb9ac9f8af0085b5, type: 3}
   m_PrefabInstance: {fileID: 3492846645395230024}
   m_PrefabAsset: {fileID: 0}
 --- !u!224 &8495253546165160606 stripped
