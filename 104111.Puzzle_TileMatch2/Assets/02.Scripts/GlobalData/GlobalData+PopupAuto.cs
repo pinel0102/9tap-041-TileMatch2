@@ -123,6 +123,31 @@ public partial class GlobalData
     }
 
     /// <summary>
+    /// 첫 등장 : 20 클리어 (메인 / 자동)
+    /// 조건 만족시 자동 등장 반복.
+    /// </summary>
+    public async UniTask ShowPopup_Event_SweetHolic()
+    {
+        userManager.UpdateEvent_SweetHolic(
+            ShowedPopup: true
+        );
+
+        Debug.Log(CodeManager.GetMethodName() + "<color=yellow>Show Event Popup : Sweet Holic</color>");
+        
+        bool popupClosed = false;
+
+        UIManager.ShowPopupUI<EventPopupSweetHolic>(
+            new EventPopupSweetHolicParameter(
+                Title: GlobalDefine.EventName_SweetHolic,
+                PopupCloseCallback: () => { popupClosed = true; },
+                VisibleHUD: HUDType.NONE
+            )
+        );
+
+        await UniTask.WaitUntil(() => popupClosed);
+    }
+
+    /// <summary>
     /// 첫 등장 : 레벨업 (메인 / 자동)
     /// 조건 만족시 자동 등장 반복.
     /// </summary>

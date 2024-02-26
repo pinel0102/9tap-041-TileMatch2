@@ -6,6 +6,8 @@ using System.Linq;
 
 public static partial class GlobalDefine
 {
+    public const string EventName_SweetHolic = "Sweet Holic";
+    
     private readonly static Dictionary<DayOfWeek, string> EventCycle_SweetHolic = new Dictionary<DayOfWeek, string>()
     {
         [DayOfWeek.Monday]    = "Juice",

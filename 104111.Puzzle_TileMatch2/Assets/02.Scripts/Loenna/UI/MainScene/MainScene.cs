@@ -333,10 +333,9 @@ public class MainScene : UIScene
         }
 
         // [Level >= 21]
-        if (GlobalDefine.IsEnable_EventPopup_SweetHolic())
+        //if (GlobalDefine.IsEnable_EventPopup_SweetHolic())
         {
-            Debug.Log(CodeManager.GetMethodName() + "<color=yellow>Show New Event Popup : Sweet Holic</color>");
-            //
+            await globalData.ShowPopup_Event_SweetHolic();
         }
 
         globalData.SetTouchLock_MainScene(false);
