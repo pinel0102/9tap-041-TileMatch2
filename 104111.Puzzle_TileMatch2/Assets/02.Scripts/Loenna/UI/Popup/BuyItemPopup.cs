@@ -46,13 +46,12 @@ public class BuyItemPopup : PopupBase
     public override void OnShow()
     {
         base.OnShow();
-
         GlobalData.Instance.SetTouchLock_PlayScene(false);
     }
 
-    public override void OnClickClose()
+    public override void OnHide()
 	{
-		UIManager.HUD.Hide();
-		base.OnClickClose();
+        base.OnHide();
+        GlobalData.Instance.HUD_Preferred();
 	}
 }

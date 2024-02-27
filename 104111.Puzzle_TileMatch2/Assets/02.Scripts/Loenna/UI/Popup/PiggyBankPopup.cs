@@ -35,9 +35,9 @@ public class PiggyBankPopup : PopupBase
 		}
 	}
 
-	public override void OnClickClose()
+	public override void OnHide()
 	{
-        UIManager.HUD.Show(HUDType.ALL);
-		base.OnClickClose();
+        base.OnHide();
+        GlobalData.Instance.HUD_Preferred();
 	}
 }

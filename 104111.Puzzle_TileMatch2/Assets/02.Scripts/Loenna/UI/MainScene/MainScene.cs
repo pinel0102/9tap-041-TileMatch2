@@ -312,14 +312,14 @@ public class MainScene : UIScene
             await globalData.ShowPopup_Beginner(() => globalData.fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); }));
         }
 
-        // [Level >= 1] && [Weekend]
+        // [Level >= 2] && [Weekend]
         if (GlobalDefine.IsEnable_Weekend1Bundle())
         {
             // [TODO] ShowPopup_Weekend1
             await globalData.ShowPopup_Weekend1(() => globalData.fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); }));
         }
 
-        // [Level >= 1] && [Weekend]
+        // [Level >= 2] && [Weekend]
         if (GlobalDefine.IsEnable_Weekend2Bundle())
         {
             // [TODO] ShowPopup_Weekend2
@@ -333,7 +333,7 @@ public class MainScene : UIScene
         }
 
         // [Level >= 21]
-        //if (GlobalDefine.IsEnable_EventPopup_SweetHolic())
+        if (GlobalDefine.IsEnable_EventPopup_SweetHolic())
         {
             await globalData.ShowPopup_Event_SweetHolic();
         }

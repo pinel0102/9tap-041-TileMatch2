@@ -22,9 +22,14 @@ public class ShopProductItem : CachedBehaviour
 				ButtonText = string.Empty,
                 ButtonTextBinder = new AsyncReactiveProperty<string>(product.GetPriceString()),
 				OnClick = () => {
-                    GlobalDefine.Purchase(product);
+                    GlobalDefine.Purchase(product, PurchasedCallback, PurchasedCallback);
                 }
 			}
 		);
+
+        void PurchasedCallback()
+        {
+            GlobalData.Instance.HUD_Show(GlobalData.Instance.CURRENT_SCENE == GlobalDefine.SCENE_PLAY ? HUDType.COIN : HUDType.ALL);
+        }
 	}
 }

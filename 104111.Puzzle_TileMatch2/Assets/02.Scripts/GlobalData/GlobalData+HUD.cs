@@ -127,6 +127,18 @@ public partial class GlobalData
         return true;
     }
 
+    /// <summary>
+    /// <para>MainScene 이면 HUD 전체를 보인다.</para>
+    /// <para>PlayScene 이면 HUD 전체를 숨긴다.</para>
+    /// </summary>
+    public void HUD_Preferred()
+    {
+        if (CURRENT_SCENE == GlobalDefine.SCENE_PLAY)
+            HUD_Hide();
+        else
+            HUD_Show(HUDType.ALL);
+    }
+
     public void HUD_Show(params HUDType[] types)
     {
         HUD?.Show(types);

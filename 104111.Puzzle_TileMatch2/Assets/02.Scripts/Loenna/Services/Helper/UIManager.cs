@@ -155,13 +155,13 @@ public static partial class UIManager
     public static void ClosePopupUI(params HUDType[] types)
     {
         s_implementation?.PopupManager?.ClosePopupUI();
-        GlobalData.Instance.HUD_Show(types);
+        s_implementation?.HUD?.Show(types);
     }
 
     public static void ClosePopupUI(UIPopup popup, params HUDType[] types)
 	{
 		s_implementation?.PopupManager?.ClosePopupUI(popup);
-        GlobalData.Instance.HUD_Show(types);
+        s_implementation?.HUD?.Show(types);
 	}
 
 	private static SceneManager CreateSceneManager()

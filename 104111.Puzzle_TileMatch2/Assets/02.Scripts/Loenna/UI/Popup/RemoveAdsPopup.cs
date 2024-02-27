@@ -49,9 +49,10 @@ public class RemoveAdsPopup : UIPopup
         base.OnShow();
     }
 
-    public override void OnClickClose()
+    public override void OnHide()
 	{
-		base.OnClickClose();
+		base.OnHide();
+        GlobalData.Instance.HUD_Preferred();
 
         m_popupCloseCallback?.Invoke();
 	}

@@ -139,8 +139,7 @@ public partial class GlobalData
         UIManager.ShowPopupUI<EventPopupSweetHolic>(
             new EventPopupSweetHolicParameter(
                 Title: GlobalDefine.EventName_SweetHolic,
-                PopupCloseCallback: () => { popupClosed = true; },
-                VisibleHUD: HUDType.NONE
+                PopupCloseCallback: () => { popupClosed = true; }
             )
         );
 

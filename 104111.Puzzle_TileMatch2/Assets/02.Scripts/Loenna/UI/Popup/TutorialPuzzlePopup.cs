@@ -11,7 +11,7 @@ using DG.Tweening;
 
 public record TutorialPuzzlePopupParameter(
     Action PopupCloseCallback
-): DefaultParameterWithoutHUD;
+): DefaultParameter;
 
 [ResourcePath("UI/Popup/TutorialPuzzlePopup")]
 public class TutorialPuzzlePopup : UIPopup
@@ -203,9 +203,9 @@ public class TutorialPuzzlePopup : UIPopup
         }
     }
 
-    public override void OnClickClose()
+    public override void OnHide()
 	{
-        base.OnClickClose();
+        base.OnHide();
 
         m_popupCloseCallback?.Invoke();
 	}

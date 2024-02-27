@@ -258,19 +258,15 @@ public class RewardPopup : UIPopup
 
 	public override void OnHide()
 	{
-		UIManager.DetachAllHUD();
+		base.OnHide();
+        GlobalData.Instance.HUD_Preferred();
 	}
 
     public override void OnClickClose()
     {
         base.OnClickClose();
+
         onComplete?.Invoke();
-
         GlobalData.Instance.HUD?.behaviour.Fields[2].SetIncreaseMode(false);
-
-        if (GlobalData.Instance.CURRENT_SCENE == GlobalDefine.SCENE_PLAY)
-            GlobalData.Instance.HUD_Hide();
-        else
-            GlobalData.Instance.HUD_Show(HUDType.ALL);
     }
 }

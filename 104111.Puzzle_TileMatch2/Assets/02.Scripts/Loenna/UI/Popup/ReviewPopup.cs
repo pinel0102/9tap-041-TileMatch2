@@ -65,4 +65,10 @@ public class ReviewPopup : PopupBase
         m_message.gameObject.SetActive(false);
         m_message2.gameObject.SetActive(true);
     }
+
+    public override void OnHide()
+	{
+		base.OnHide();
+        GlobalData.Instance.HUD_Preferred();
+	}
 }

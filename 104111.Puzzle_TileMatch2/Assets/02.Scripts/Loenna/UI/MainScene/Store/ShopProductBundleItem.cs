@@ -76,7 +76,7 @@ public class ShopProductBundleItem : CachedBehaviour
 				ButtonText = string.Empty,
                 ButtonTextBinder = new AsyncReactiveProperty<string>(product.GetPriceString()),
 				OnClick = () => {
-                    GlobalDefine.Purchase(product);
+                    GlobalDefine.Purchase(product, PurchasedCallback, PurchasedCallback);
                 }
 			}
 		);
@@ -103,5 +103,10 @@ public class ShopProductBundleItem : CachedBehaviour
 			
 			valueWidget.SetVisible(false);
 		}
+
+        void PurchasedCallback()
+        {
+            GlobalData.Instance.HUD_Show(GlobalData.Instance.CURRENT_SCENE == GlobalDefine.SCENE_PLAY ? HUDType.COIN : HUDType.ALL);
+        }
 	}
 }

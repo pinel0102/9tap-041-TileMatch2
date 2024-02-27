@@ -96,11 +96,7 @@ public class ProductPopup : PopupBase
     public override void OnHide()
     {
         base.OnHide();
-
-        if (GlobalData.Instance.CURRENT_SCENE == GlobalDefine.SCENE_PLAY)
-            GlobalData.Instance.HUD.Hide();
-        else
-            GlobalData.Instance.HUD.Show(HUDType.ALL);
+        GlobalData.Instance.HUD_Preferred();
 
         m_popupCloseCallback?.Invoke();
     }

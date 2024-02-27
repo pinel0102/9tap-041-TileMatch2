@@ -11,9 +11,8 @@ using DG.Tweening;
 public record EventPopupSweetHolicParameter
 (
 	string Title,
-	Action PopupCloseCallback,
-    params HUDType[] VisibleHUD
-) : UIParameter(VisibleHUD);
+	Action PopupCloseCallback
+) : DefaultParameter;
 
 
 [ResourcePath("UI/Popup/EventPopupSweetHolic")]
@@ -44,19 +43,15 @@ public class EventPopupSweetHolic : UIPopup
     {
         base.OnShow();
 
-        GlobalData.Instance.HUD_Hide();
+        //GlobalData.Instance.HUD_Hide();
     }
 
     public override void OnHide()
     {
         base.OnHide();
+        GlobalData.Instance.HUD_Preferred();
 
         m_popupCloseCallback?.Invoke();
-
-        if (GlobalData.Instance.CURRENT_SCENE == GlobalDefine.SCENE_PLAY)
-            GlobalData.Instance.HUD_Hide();
-        else
-            GlobalData.Instance.HUD_Show(HUDType.ALL);
     }
 
     public override void OnClickClose()

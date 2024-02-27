@@ -45,13 +45,12 @@ public class BuyHeartPopup : PopupBase
     public override void OnShow()
     {
         base.OnShow();
-
         globalData.SetTouchLock_MainScene(false);
     }
 
-    public override void OnClickClose()
+    public override void OnHide()
 	{
-        UIManager.HUD.Show(HUDType.ALL);
-		base.OnClickClose();
+        base.OnHide();
+        globalData.HUD_Preferred();
 	}
 }

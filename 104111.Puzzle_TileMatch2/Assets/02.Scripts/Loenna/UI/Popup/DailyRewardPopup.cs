@@ -243,6 +243,7 @@ public class DailyRewardPopup : UIPopup
     public override void OnHide()
     {
         base.OnHide();
+        GlobalData.Instance.HUD_Preferred();
 
         m_popupCloseCallback?.Invoke();
     }
