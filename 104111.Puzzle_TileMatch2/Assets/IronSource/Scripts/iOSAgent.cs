@@ -154,7 +154,7 @@ public class iOSAgent : IronSourceIAgent
 	//******************* Banner API *******************//
 
 	[DllImport("__Internal")]
-	private static extern void CFLoadBanner(string description, int width, int height, int position, string placementName, bool isAdaptive);
+	private static extern void CFLoadBanner(string description, int width, int height, int position, string placementName, bool isAdaptive,float containerWidth,float containerHeight);
 
 	[DllImport("__Internal")]
 	private static extern void CFDestroyBanner();
@@ -167,6 +167,14 @@ public class iOSAgent : IronSourceIAgent
 
 	[DllImport("__Internal")]
 	private static extern bool CFIsBannerPlacementCapped(string placementName);
+
+	[DllImport("__Internal")]
+	private static extern float CFIGetMaximalAdaptiveHeight(float width);
+	
+	[DllImport("__Internal")]
+	private static extern float CFIGetDeviceScreenWidth();
+
+	//******************* Segment And Consent *******************//
 
 	[DllImport("__Internal")]
 	private static extern void CFSetSegment(string json);
@@ -467,7 +475,7 @@ public class iOSAgent : IronSourceIAgent
 
 	public void loadBanner(IronSourceBannerSize size, IronSourceBannerPosition position, string placementName)
 	{
-		CFLoadBanner(size.Description, (int)size.Width, (int)size.Height, (int)position, placementName, (bool)size.IsAdaptiveEnabled());
+		CFLoadBanner(size.Description, (int)size.Width, (int)size.Height, (int)position, placementName, (bool)size.IsAdaptiveEnabled(),(float)size.getBannerContainerParams().Width,(float)size.getBannerContainerParams().Height);
 	}
 
 	public void destroyBanner()
@@ -490,6 +498,25 @@ public class iOSAgent : IronSourceIAgent
 		return CFIsBannerPlacementCapped(placementName);
 	}
 
+	/// <summary>
+	///  Get the adaptive height according to the width.
+	/// </summary>
+	/// <param name="getMaximalAdaptiveHeight">Returns the height maximal for adaptive banner </param>
+	public float getMaximalAdaptiveHeight(float width)
+	{
+		return CFIGetMaximalAdaptiveHeight(width);
+	}
+
+	
+	/// <summary>
+	///  Get device width in Point adjust to safe area
+	/// </summary>
+	/// <param name="getMaximalAdaptiveHeight">Returns the width of the device with safe area </param>
+	public float getDeviceScreenWidth()
+	{
+		return CFIGetDeviceScreenWidth();
+	}
+	
 	public void setSegment(IronSourceSegment segment)
 	{
 		Dictionary<string, string> dict = segment.getSegmentAsDict();
