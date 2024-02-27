@@ -41,7 +41,8 @@ public class EventBanner_SweetHolic : MonoBehaviour
     public int currentExp;
     public int requiredExp;
     public int totalExp;
-    private string m_targetImagePath;
+    public string targetImagePath;
+    public string boxImagePath;
     
     [Header("★ [Parameter] Privates")]
     private bool enableHalo;
@@ -54,12 +55,14 @@ public class EventBanner_SweetHolic : MonoBehaviour
     
     public void Initialize(User user, TableManager tableManager)
     {
+        boxImagePath = GlobalDefine.BoxName_SweetHolic;
+
         m_eventDataTable = tableManager.EventDataTable;
         m_expTable = globalData.eventSweetHolic_ExpTable;
         RewardIconReset();
 
         m_lockedText.SetText(string.Format(textFormatLocked, Constant.User.MIN_OPENLEVEL_EVENT_SWEETHOLIC));
-        eventSlider.Initialize(eventType, m_eventDataTable, m_expTable);
+        eventSlider.Initialize(eventType, m_eventDataTable, m_expTable, boxImagePath);
         RefreshEventState(user);
 
         BoosterStatus = globalData.HUD.MessageBroker.Subscribe().Select(user => user.GetEventBoosterStatus(eventType));
@@ -78,7 +81,10 @@ public class EventBanner_SweetHolic : MonoBehaviour
                 UIManager.ShowPopupUI<EventPopupSweetHolic>(
                 new EventPopupSweetHolicParameter(
                     Title: GlobalDefine.EventName_SweetHolic,
-                    PopupCloseCallback: null
+                    PopupCloseCallback: null,
+                    EventBanner: this,
+                    EventDataTable: m_eventDataTable,
+                    ExpTable: m_expTable
                 )
             );
             }
@@ -123,16 +129,16 @@ public class EventBanner_SweetHolic : MonoBehaviour
         totalExp = user.Event_SweetHolic_TotalExp;
         (currentLevel, currentExp, requiredExp) = ExpManager.CalculateLevel(totalExp, m_expTable);
 
-        eventSlider.RefreshEventState(m_targetImagePath, user.Event_SweetHolic_EndDate, currentLevel, currentExp, requiredExp, totalExp);
+        eventSlider.RefreshEventState(targetImagePath, user.Event_SweetHolic_EndDate, currentLevel, currentExp, requiredExp, totalExp);
     }
 
-    private void RefreshBoosterIcon(string targetImagePath)
+    private void RefreshBoosterIcon(string newTargetImagePath)
     {
-        if(string.IsNullOrEmpty(targetImagePath))
+        if(string.IsNullOrEmpty(newTargetImagePath))
             return;
         
-        m_targetImagePath = targetImagePath;
-        m_boosterTimeImage.sprite = SpriteManager.GetSprite(m_targetImagePath);
+        targetImagePath = newTargetImagePath;
+        m_boosterTimeImage.sprite = SpriteManager.GetSprite(targetImagePath);
     }
 
     public void RewardIconReset()
@@ -154,7 +160,7 @@ public class EventBanner_SweetHolic : MonoBehaviour
         enableHalo = false;
     }
 
-    public async UniTask RewardIconCenter(ChestType chestType, Action onComplete, float duration = 0.5f)
+    public async UniTask RewardIconCenter(ChestType chestType, Action onComplete, float duration = 0.3f)
     {
         tokenSource = new CancellationTokenSource();
 
@@ -206,7 +212,7 @@ public class EventBanner_SweetHolic : MonoBehaviour
 			.ToUniTask(cancellationToken:tokenSource.Token)
 			.SuppressCancellationThrow();
 
-		await UniTaskAsyncEnumerable
+		UniTaskAsyncEnumerable
 			.EveryUpdate(PlayerLoopTiming.LastPostLateUpdate) 
 			.ForEachAsync(
 				_ => {
@@ -218,6 +224,6 @@ public class EventBanner_SweetHolic : MonoBehaviour
 					ObjectUtility.GetRawObject(rewardHalo)?.transform.Rotate(Vector3.forward * 0.1f);
 				},
                 cancellationToken:tokenSource.Token
-			);
+			).Forget();
 	}
 }

@@ -139,7 +139,10 @@ public partial class GlobalData
         UIManager.ShowPopupUI<EventPopupSweetHolic>(
             new EventPopupSweetHolicParameter(
                 Title: GlobalDefine.EventName_SweetHolic,
-                PopupCloseCallback: () => { popupClosed = true; }
+                PopupCloseCallback: () => { popupClosed = true; },
+                EventBanner: fragmentHome.eventBanner_SweetHolic,
+                EventDataTable: tableManager.EventDataTable,
+                ExpTable: eventSweetHolic_ExpTable
             )
         );
 

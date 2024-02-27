@@ -7,6 +7,7 @@ using System.Linq;
 public static partial class GlobalDefine
 {
     public const string EventName_SweetHolic = "Sweet Holic";
+    public const string BoxName_SweetHolic = "UI_Img_Box_05";
     
     private readonly static Dictionary<DayOfWeek, string> EventCycle_SweetHolic = new Dictionary<DayOfWeek, string>()
     {

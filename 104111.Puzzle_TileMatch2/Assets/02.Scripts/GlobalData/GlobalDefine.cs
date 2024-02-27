@@ -141,14 +141,19 @@ public static partial class GlobalDefine
 
     public static UnityEngine.Pool.IObjectPool<T> ResetObjectPool<T>(this UnityEngine.Pool.IObjectPool<T> objectPool, Transform parent, Func<T> createFunc, Action<T> actionOnRelease) where T : MonoBehaviour
     {
-        for(int i = parent?.childCount - 1 ?? -1; i >= 0; i--)
-        {
-            GameObject.Destroy(parent?.GetChild(i).gameObject);
-        }
+        ClearChild(parent);
 
         return new UnityEngine.Pool.ObjectPool<T>(
 			createFunc: createFunc,
 			actionOnRelease: actionOnRelease
 		);
+    }
+
+    public static void ClearChild(Transform _transform)
+    {
+        for(int i = _transform?.childCount - 1 ?? -1; i >= 0; i--)
+        {
+            UnityEngine.Object.Destroy(_transform?.GetChild(i).gameObject);
+        }
     }
 }
