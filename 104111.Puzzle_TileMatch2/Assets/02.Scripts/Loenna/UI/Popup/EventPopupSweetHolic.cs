@@ -14,7 +14,6 @@ public record EventPopupSweetHolicParameter
 	Action PopupCloseCallback
 ) : DefaultParameter;
 
-
 [ResourcePath("UI/Popup/EventPopupSweetHolic")]
 public class EventPopupSweetHolic : UIPopup
 {

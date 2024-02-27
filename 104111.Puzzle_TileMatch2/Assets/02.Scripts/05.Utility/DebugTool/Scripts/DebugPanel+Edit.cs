@@ -58,7 +58,7 @@ public partial class DebugPanel : MonoBehaviour
         m_userManager?.Update(level: level);
         GlobalData.Instance.fragmentCollection.ContainerList.ForEach(item => item.RefreshLockState());
         UIManager.ClosePopupUI_ForceAll();
-        UIManager.ShowSceneUI<MainScene>(new NineTap.Common.DefaultParameter());
+        UIManager.ShowSceneUI<MainScene>(new MainSceneParameter { ShowMenuType = MainMenuType.HOME });
         GlobalDefine.CheckEventActivate();
         GlobalDefine.CheckEventRefresh();
         GlobalData.Instance.fragmentHome.Refresh(m_userManager.Current);

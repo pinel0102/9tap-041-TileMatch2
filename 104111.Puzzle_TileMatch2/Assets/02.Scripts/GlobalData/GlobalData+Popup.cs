@@ -8,6 +8,14 @@ using Cysharp.Threading.Tasks.Linq;
 
 public partial class GlobalData
 {
+    public bool IsEnableShowPopup_MainScene()
+    {
+        return CURRENT_SCENE != GlobalDefine.SCENE_PLAY &&
+            mainScene.transform.root.childCount < 2 && 
+            !IsTouchLockNow_MainScene() &&
+            !GlobalDefine.IsPurchasePending();
+    }
+
     public void ShowStorePopup(Action onStoreClosed = null)
     {
         UIManager.backKeyCallback = onStoreClosed;

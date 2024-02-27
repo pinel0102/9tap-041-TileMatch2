@@ -24,6 +24,8 @@ public class HomeSideContainer : CachedBehaviour
     private EventCircleIcon weekend1BundleIcon;
     private EventCircleIcon weekend2BundleIcon;
 
+    private GlobalData globalData { get { return GlobalData.Instance; } }
+
 	public void OnSetup()
 	{
 		m_productDataTable = Game.Inst.Get<TableManager>().ProductDataTable;
@@ -39,13 +41,13 @@ public class HomeSideContainer : CachedBehaviour
         switch (m_direction)
 		{
 			case Direction.LEFT:
-                m_cachedIcons.Add(dailyRewardIcon = CreateIcon(GlobalDefine.ProductIndex_DailyBonus, async () => { await GlobalData.Instance.ShowPopup_DailyRewards(); }));
+                m_cachedIcons.Add(dailyRewardIcon = CreateIcon(GlobalDefine.ProductIndex_DailyBonus, async () => { if (globalData.IsEnableShowPopup_MainScene()) await globalData.ShowPopup_DailyRewards(); }));
 				//CreateIcon(20301); // Piggy Bank
 				break;
 			case Direction.RIGHT:
-				m_cachedIcons.Add(beginnerBundleIcon = CreateIcon(GlobalDefine.ProductIndex_Beginner, async () => { await GlobalData.Instance.ShowPopup_Beginner(RefreshIcons); }));
-                m_cachedIcons.Add(weekend1BundleIcon = CreateIcon(GlobalDefine.ProductIndex_Weekend1, async () => { await GlobalData.Instance.ShowPopup_Weekend1(RefreshIcons); }));
-                m_cachedIcons.Add(weekend2BundleIcon = CreateIcon(GlobalDefine.ProductIndex_Weekend2, async () => { await GlobalData.Instance.ShowPopup_Weekend2(RefreshIcons); }));
+				m_cachedIcons.Add(beginnerBundleIcon = CreateIcon(GlobalDefine.ProductIndex_Beginner, async () => { if (globalData.IsEnableShowPopup_MainScene()) await globalData.ShowPopup_Beginner(RefreshIcons); }));
+                m_cachedIcons.Add(weekend1BundleIcon = CreateIcon(GlobalDefine.ProductIndex_Weekend1, async () => { if (globalData.IsEnableShowPopup_MainScene()) await globalData.ShowPopup_Weekend1(RefreshIcons); }));
+                m_cachedIcons.Add(weekend2BundleIcon = CreateIcon(GlobalDefine.ProductIndex_Weekend2, async () => { if (globalData.IsEnableShowPopup_MainScene()) await globalData.ShowPopup_Weekend2(RefreshIcons); }));
 				break;
 		}
 

@@ -28,6 +28,7 @@ public class EventBanner_SweetHolic : MonoBehaviour
     [SerializeField]	private GameObject sweetHolicLock;
     [SerializeField]	private GameObject sweetHolicUnlock;
     [SerializeField]	private TMP_Text m_lockedText;
+    [SerializeField]	private Button m_bannerButton;
     [SerializeField]	private GameObject m_boosterTimeBadge;
     [SerializeField]	private Image m_boosterTimeImage;
     [SerializeField]	private TMP_Text m_boosterTimeText;
@@ -66,6 +67,21 @@ public class EventBanner_SweetHolic : MonoBehaviour
             m_boosterTimeBadge.SetActive(status.Item1);
             component.text = status.Item2;
             //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Booster Time] {0}</color>", user.ExpiredSweetHolicBoosterAt));
+        });
+
+        m_bannerButton.onClick.RemoveAllListeners();
+        m_bannerButton.onClick.AddListener(() => {
+            if (GlobalDefine.IsOpen_Event_SweetHolic() && globalData.IsEnableShowPopup_MainScene())
+            {
+                Debug.Log(CodeManager.GetMethodName() + "<color=yellow>Show Event Popup : Sweet Holic</color>");
+                
+                UIManager.ShowPopupUI<EventPopupSweetHolic>(
+                new EventPopupSweetHolicParameter(
+                    Title: GlobalDefine.EventName_SweetHolic,
+                    PopupCloseCallback: null
+                )
+            );
+            }
         });
     }
 

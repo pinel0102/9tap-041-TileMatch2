@@ -34,8 +34,7 @@ public partial class GlobalData
     }
 
     /// <summary>
-    /// 등장 1 : 8 클리어 (메인 / 자동)
-    /// 등장 2 : 15 시작 (게임 / 자동)
+    /// 등장 1 : 9 클리어 (메인 / 자동)
     /// 조건 만족시 자동 등장 (반복 X).
     /// </summary>
     public async UniTask ShowPopup_Beginner(Action onPurchased = null)
@@ -64,7 +63,7 @@ public partial class GlobalData
     }
 
     /// <summary>
-    /// 첫 등장 : 10 클리어 + 주말 (메인 / 자동)
+    /// 첫 등장 : 1 클리어 + 주말 (메인 / 자동)
     /// 조건 만족시 자동 등장 반복.
     /// </summary>
     public async UniTask ShowPopup_Weekend1(Action onPurchased = null)
@@ -93,7 +92,7 @@ public partial class GlobalData
     }
 
     /// <summary>
-    /// 첫 등장 : 10 클리어 + 주말 + Weekend1 구매 (메인 / 자동)
+    /// 첫 등장 : 1 클리어 + 주말 + Weekend1 구매 (메인 / 자동)
     /// 조건 만족시 자동 등장 반복.
     /// </summary>
     public async UniTask ShowPopup_Weekend2(Action onPurchased = null)
