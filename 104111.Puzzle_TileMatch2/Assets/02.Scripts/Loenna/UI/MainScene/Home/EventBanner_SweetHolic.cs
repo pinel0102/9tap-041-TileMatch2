@@ -138,11 +138,11 @@ public class EventBanner_SweetHolic : MonoBehaviour
         enableHalo = false;
     }
 
-    public async UniTask RewardIconCenter(ChestType chestType, Action onComplete, float duration = 0.3f)
+    public async UniTask RewardIconCenter(ChestType chestType, Action onComplete, float duration = 0.5f)
     {
         tokenSource = new CancellationTokenSource();
 
-        rewardCanvas.sortingOrder = 300;
+        rewardCanvas.sortingOrder = 2000;
         rewardCanvasGroup.alpha = 1;
 
         rewardItemRect.anchoredPosition = Vector2.zero;
@@ -181,7 +181,7 @@ public class EventBanner_SweetHolic : MonoBehaviour
         }
     }
 
-    public async UniTask PlayHalo(float delay = 0.2f)
+    private async UniTask PlayHalo(float delay = 0.2f)
 	{
 		await UniTask.Delay(TimeSpan.FromSeconds(delay), cancellationToken:tokenSource.Token);
 

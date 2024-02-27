@@ -115,9 +115,7 @@ public class EventSlider : MonoBehaviour
         RefreshExpText(fromExp, fromReqExp);
         
         // Test Value
-        //duration = 3f;
-
-        float delay = GetDelay(duration, addExp);
+        //duration = 1f;
 
         Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Start Level : {0} ({1}/{2})</color>", fromLevel, fromExp, fromReqExp));
 
@@ -128,6 +126,8 @@ public class EventSlider : MonoBehaviour
             int addExpSlice = Mathf.Min(addExp, fromReqExp - fromExp);            
             addExp -= addExpSlice;
             resExp += addExpSlice;
+
+            float delay = GetDelay(duration, addExpSlice);
 
             bool increaseFinished = await IncreaseText_UntilLevelUp(fromExp, addExpSlice, fromReqExp, delay);            
             await UniTask.WaitUntil(() => increaseFinished);
