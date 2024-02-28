@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Gley.Notifications
+namespace Gley.Notifications.Internal
 {
     /// <summary>
     /// Used by Settings Window

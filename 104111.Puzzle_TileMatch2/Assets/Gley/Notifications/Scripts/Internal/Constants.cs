@@ -1,4 +1,4 @@
-﻿namespace Gley.Notifications
+﻿namespace Gley.Notifications.Internal
 {
     public class Constants
     {

@@ -64,12 +64,14 @@
         {
             assetStorePackages = new AssetStorePackage[]
             {
-                new AssetStorePackage("TrafficSystem", "Traffic System", iconReferences.trafficSystemIcon, "Highly performant and easy to use traffic system that can make any driving game more fun to play in just a few clicks.", 
-                "https://assetstore.unity.com/packages/slug/194888?aid=1011l8QY4"),
+                new AssetStorePackage("TrafficSystem", "Traffic System", iconReferences.trafficSystemIcon, "Highly performant and easy to use traffic system that can make any driving game more fun to play in just a few clicks.",
+                "https://assetstore.unity.com/packages/slug/277301?aid=1011l8QY4"),
                 new AssetStorePackage("JumpyCompleteGame", "Mobile Tools", iconReferences.mobileToolsIcon, "All you need to publish your finished game on the store and BONUS a free game with all of them already integrated", 
                 "https://assetstore.unity.com/packages/slug/266719?aid=1011l8QY4"),
                 new AssetStorePackage("Ads", "Mobile Ads", iconReferences.mobileAdsIcon, "Show ads inside your game with this easy to use, multiple advertisers support tool.", 
                 "https://assetstore.unity.com/packages/slug/266331?aid=1011l8QY4"),
+                 new AssetStorePackage("MobileTrafficTruck", "Traffic Truck", iconReferences.trafficTruckIcon, "Highly optimized, low-poly PBR pack containing a truck head, a tanker, a trailer, and a hangar garage",
+                "https://assetstore.unity.com/packages/slug/273684?aid=1011l8QY4"),
                 new AssetStorePackage("EasyIAP", "Easy IAP", iconReferences.easyIAPIcon, "Sell In App products inside your game with minimal setup and very little programming knowledge.", 
                 "https://assetstore.unity.com/packages/slug/264594?aid=1011l8QY4"),
                 new AssetStorePackage("Localization", "Localization (Multi-Language)", iconReferences.localizationIcon, "Make your app international and reach a greater audience by translating your app in multiple languages.", 

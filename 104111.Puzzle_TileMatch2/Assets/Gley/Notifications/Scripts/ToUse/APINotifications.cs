@@ -1,4 +1,4 @@
-﻿using Gley.Notifications;
+﻿using Gley.Notifications.Internal;
 using UnityEngine.Events;
 
 namespace Gley.Notifications

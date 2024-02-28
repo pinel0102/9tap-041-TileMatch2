@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Gley.Notifications
+namespace Gley.Notifications.Internal
 {
     public class NotificationsExample : MonoBehaviour
     {

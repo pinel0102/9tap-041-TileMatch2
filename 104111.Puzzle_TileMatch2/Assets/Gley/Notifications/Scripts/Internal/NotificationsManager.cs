@@ -11,7 +11,7 @@ using Unity.Notifications.iOS;
 using Unity.Notifications.Android;
 #endif
 
-namespace Gley.Notifications
+namespace Gley.Notifications.Internal
 {
     public class NotificationsManager : MonoBehaviour
     {

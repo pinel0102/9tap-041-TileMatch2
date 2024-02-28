@@ -1,5 +1,5 @@
 ﻿using Gley.Common;
-using Gley.Notifications;
+using Gley.Notifications.Internal;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -37,7 +37,7 @@ namespace Gley.Notifications.Editor
                 rootFolder = WindowLoader.GetRootFolder(new SettingsWindowProperties());
             }
 
-            notificationSettongs = EditorUtilities.LoadOrCreateDataAsset<NotificationsData>(rootFolder, Constants.RESOURCES_FOLDER, Constants.DATA_NAME_RUNTIME);
+            notificationSettongs = EditorUtilities.LoadOrCreateDataAsset<NotificationsData>(rootFolder, Internal.Constants.RESOURCES_FOLDER, Internal.Constants.DATA_NAME_RUNTIME);
 
             useForAndroid = notificationSettongs.useForAndroid;
             useForIos = notificationSettongs.useForIos;

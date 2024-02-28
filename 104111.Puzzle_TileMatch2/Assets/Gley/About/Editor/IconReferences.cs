@@ -26,6 +26,6 @@ namespace Gley.About
         public Texture2D vehiclesIcon;
         public Texture2D websiteIcon;
         public Texture2D youtubeIcon;
-
+        public Texture2D trafficTruckIcon;
     }
 }

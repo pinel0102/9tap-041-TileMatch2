@@ -2,7 +2,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-namespace Gley.Notifications
+namespace Gley.Notifications.Internal
 {
     [IncludeInSettings(true)]
     public static class NotificationsUVS
