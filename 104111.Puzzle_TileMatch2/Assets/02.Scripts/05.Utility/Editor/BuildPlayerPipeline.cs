@@ -12,6 +12,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using System.IO;
+using UnityEditor.Rendering;
+
 #if USE_ADDRESSABLE_ASSETS
 using UnityEditor.AddressableAssets.Settings;
 #endif
@@ -21,7 +23,7 @@ using UnityEngine.Purchasing;
 #endif
 
 /// <author>Pinelia Luna</author>
-/// <Summary>BuildPlayerPipeline v1.6.0
+/// <Summary>BuildPlayerPipeline v2.0.0
 /// <para>빌드 메뉴 제공 및 플랫폼 빌드 파이프라인 클래스.</para>
 /// </Summary>
 [InitializeOnLoad]
@@ -29,7 +31,7 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
 {
 #region Parameters
 
-    private const string version = "1.6.0";
+    private const string version = "1.7.0";
 
     private static BuildPlayerPipeline buildPlayerOptionsObject
     {
@@ -56,6 +58,8 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
     private static string buildName_iOS;
     private static string buildName_MacOS;
     private static string buildName_Windows;
+    private static string buildName_Internal;
+    private static string buildName_Expected;
     private const string SCENE_EDITOR = "Editor";
     private const string scriptableObjectFormat = "{0}{1}";
     private const string scriptableObjectFileName = "BuildPlayerPipeline.asset";
@@ -67,12 +71,39 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
     private const string folderName_Android = "Builds/Android";
     private const string folderName_iOS = "Builds/iOS";
     private const string folderName_Standalone = "Builds/Standalone";
+    private const string internalOutput = "InternalOutput";
     private const string junkSearchPattern = "*DoNotShip*";
-    private static readonly string fileNameFormat_Android = $"{folderName_Android}/{{0}}_{{1}}_v{{2}}_{{3}}.{{4}}"; // buildName_Release_v1.0.0_10.apk/aab
-    private static readonly string fileNameFormat_Amazon = $"{folderName_Android}/{{0}}_{{1}}_v{{2}}_{{3}}_Amazon.{{4}}"; // buildName_Release_v1.0.0_10_Amazon.apk
-    private static readonly string fileNameFormat_iOS = $"{folderName_iOS}/{{0}}_{{1}}_v{{2}}"; // buildName_Release_v1.0.0
-    private static readonly string fileNameFormat_Standalone_MacOS = $"{folderName_Standalone}/{{0}}_v{{1}}.app"; // buildName_v1.0.0.app
-    private static readonly string fileNameFormat_Standalone_Windows = $"{folderName_Standalone}/{{0}}_v{{1}}_win/{{2}}.exe"; // buildName_v1.0.0/productName.exe
+    private const string externalDatasFolder = "ExternalDatas";
+    
+    /// <summary>Android/InternalOutput.apk/aab</summary>
+    private static readonly string fileNameInternal_Android = $"{folderName_Android}/{internalOutput}.{{0}}";
+    /// <summary>Android/buildName_Release_v1.0.0_10.apk/aab</summary>
+    private static readonly string fileNameOutput_Android = $"{folderName_Android}/{{0}}_{{1}}_v{{2}}_{{3}}.{{4}}";
+    
+    /// <summary>Android/InternalOutput_Amazon.apk</summary>
+    private static readonly string fileNameInternal_Amazon = $"{folderName_Android}/{internalOutput}_Amazon.{{0}}";
+    /// <summary>Android/buildName_Release_v1.0.0_10_Amazon.apk</summary>
+    private static readonly string fileNameOutput_Amazon = $"{folderName_Android}/{{0}}_{{1}}_v{{2}}_{{3}}_Amazon.{{4}}";
+    
+    /// <summary>iOS/InternalOutput</summary>
+    private static readonly string folderNameInternal_iOS = $"{folderName_iOS}/{internalOutput}";
+    /// <summary>iOS/buildName_Release_v1.0.0</summary>
+    private static readonly string folderNameOutput_iOS = $"{folderName_iOS}/{{0}}_{{1}}_v{{2}}";
+    
+    /// <summary>Standalone/InternalOutput.app</summary>
+    private static readonly string folderNameInternal_Standalone_MacOS = $"{folderName_Standalone}/{internalOutput}.app";
+    /// <summary>Standalone/buildName_v1.0.0_mac</summary>
+    private static readonly string folderNameOutput_Standalone_MacOS = $"{folderName_Standalone}/{{0}}_v{{1}}_mac";
+    /// <summary>Standalone/buildName_v1.0.0_mac/buildName.app</summary>
+    private static readonly string fileNameFormat_Standalone_MacOS = $"{{0}}/{{1}}.app";
+
+    /// <summary>Standalone/InternalOutput</summary>
+    private static readonly string folderNameInternal_Standalone_Windows = $"{folderName_Standalone}/{internalOutput}";
+    /// <summary>Standalone/buildName_v1.0.0</summary>
+    private static readonly string folderNameOutput_Standalone_Windows = $"{folderName_Standalone}/{{0}}_v{{1}}_win";
+    /// <summary>Standalone/InternalOutput/productName.exe</summary>
+    private static readonly string fileNameFormat_Standalone_Windows = $"{{0}}/{{1}}.exe";
+
     private const string menu_Build_Android_Debug_APK = "Tools/Build/Android/Debug.apk";
     private const string menu_Build_Android_Debug_AAB = "Tools/Build/Android/Debug.aab";
     private const string menu_Build_Android_Release_APK = "Tools/Build/Android/Release.apk";
@@ -166,14 +197,18 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
 	{
         SetAndroidStore_Google();
 
-		isBuildEditorScene = false;
+        isBuildEditorScene = false;
         includeStreamingAssets = isBuildEditorScene;
         EditorUserBuildSettings.buildAppBundle = false;
 
         currentOptions = new BuildPlayerOptions();
         currentOptions.targetGroup = BuildTargetGroup.Android;
         currentOptions.target = BuildTarget.Android;
-        currentOptions.locationPathName = GetLocationPath(currentOptions.target);
+
+        buildName_Internal = GetInternalPath(currentOptions.target);
+        buildName_Expected = GetLocationPath(currentOptions.target);
+        
+        currentOptions.locationPathName = buildName_Internal;
         if (buildPlayerOptionsObject.useDevelopmentFlag)
             currentOptions.options = BuildOptions.Development;
         else
@@ -187,14 +222,18 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
 	{
         SetAndroidStore_Google();
 
-		isBuildEditorScene = false;
+        isBuildEditorScene = false;
         includeStreamingAssets = isBuildEditorScene;
         EditorUserBuildSettings.buildAppBundle = true;
 
         currentOptions = new BuildPlayerOptions();
         currentOptions.targetGroup = BuildTargetGroup.Android;
         currentOptions.target = BuildTarget.Android;
-        currentOptions.locationPathName = GetLocationPath(currentOptions.target);
+
+        buildName_Internal = GetInternalPath(currentOptions.target);
+        buildName_Expected = GetLocationPath(currentOptions.target);
+        
+        currentOptions.locationPathName = buildName_Internal;
         if (buildPlayerOptionsObject.useDevelopmentFlag)
             currentOptions.options = BuildOptions.Development;
         else
@@ -215,7 +254,11 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
         currentOptions = new BuildPlayerOptions();
         currentOptions.targetGroup = BuildTargetGroup.Android;
         currentOptions.target = BuildTarget.Android;
-        currentOptions.locationPathName = GetLocationPath(currentOptions.target, strRelease);
+
+        buildName_Internal = GetInternalPath(currentOptions.target, strRelease);
+        buildName_Expected = GetLocationPath(currentOptions.target, strRelease);
+        
+        currentOptions.locationPathName = buildName_Internal;
         currentOptions.options = buildPlayerOptionsObject.buildOptions_Android;
         
         RequestBuildPlayer();
@@ -226,14 +269,18 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
 	{
         SetAndroidStore_Google();
 
-		isBuildEditorScene = false;
+        isBuildEditorScene = false;
         includeStreamingAssets = isBuildEditorScene;
         EditorUserBuildSettings.buildAppBundle = true;
 
         currentOptions = new BuildPlayerOptions();
         currentOptions.targetGroup = BuildTargetGroup.Android;
         currentOptions.target = BuildTarget.Android;
-        currentOptions.locationPathName = GetLocationPath(currentOptions.target, strRelease);
+
+        buildName_Internal = GetInternalPath(currentOptions.target, strRelease);
+        buildName_Expected = GetLocationPath(currentOptions.target, strRelease);
+        
+        currentOptions.locationPathName = buildName_Internal;
         currentOptions.options = buildPlayerOptionsObject.buildOptions_Android;
         
         RequestBuildPlayer();
@@ -245,14 +292,18 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
 	{
         SetAndroidStore_Amazon();
 
-		isBuildEditorScene = false;
+        isBuildEditorScene = false;
         includeStreamingAssets = isBuildEditorScene;
         EditorUserBuildSettings.buildAppBundle = false;
 
         currentOptions = new BuildPlayerOptions();
         currentOptions.targetGroup = BuildTargetGroup.Android;
         currentOptions.target = BuildTarget.Android;
-        currentOptions.locationPathName = GetLocationPath(currentOptions.target, strRelease);
+
+        buildName_Internal = GetInternalPath(currentOptions.target, strRelease);
+        buildName_Expected = GetLocationPath(currentOptions.target, strRelease);
+        
+        currentOptions.locationPathName = buildName_Internal;
         currentOptions.options = buildPlayerOptionsObject.buildOptions_Android;
         
         RequestBuildPlayer();
@@ -262,13 +313,17 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
     [MenuItem(menu_Build_iOS_Debug, false, 101)]
 	public static void Build_iOS_Debug()
 	{
-		isBuildEditorScene = false;
+        isBuildEditorScene = false;
         includeStreamingAssets = isBuildEditorScene;
 
         currentOptions = new BuildPlayerOptions();
         currentOptions.targetGroup = BuildTargetGroup.iOS;
         currentOptions.target = BuildTarget.iOS;
-        currentOptions.locationPathName = GetLocationPath(currentOptions.target);
+
+        buildName_Internal = GetInternalPath(currentOptions.target);
+        buildName_Expected = GetLocationPath(currentOptions.target);
+        
+        currentOptions.locationPathName = buildName_Internal;
         if (buildPlayerOptionsObject.useDevelopmentFlag)
             currentOptions.options = BuildOptions.Development;
         else
@@ -286,7 +341,11 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
         currentOptions = new BuildPlayerOptions();
         currentOptions.targetGroup = BuildTargetGroup.iOS;
         currentOptions.target = BuildTarget.iOS;
-        currentOptions.locationPathName = GetLocationPath(currentOptions.target, strRelease);
+        
+        buildName_Internal = GetInternalPath(currentOptions.target, strRelease);
+        buildName_Expected = GetLocationPath(currentOptions.target, strRelease);
+        
+        currentOptions.locationPathName = buildName_Internal;
         currentOptions.options = buildPlayerOptionsObject.buildOptions_iOS;
         
         RequestBuildPlayer();
@@ -301,9 +360,13 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
         currentOptions = new BuildPlayerOptions();
         currentOptions.targetGroup = BuildTargetGroup.Standalone;
         currentOptions.target = BuildTarget.StandaloneOSX;
-        currentOptions.locationPathName = GetLocationPath(currentOptions.target);
-        currentOptions.options = buildPlayerOptionsObject.buildOptions_MacOS;
+
+        buildName_Internal = GetInternalPath(currentOptions.target);
+        buildName_Expected = GetLocationPath(currentOptions.target);
         
+        currentOptions.locationPathName = buildName_Internal;
+        currentOptions.options = buildPlayerOptionsObject.buildOptions_MacOS;
+
         RequestBuildPlayer();
 	}
 
@@ -316,9 +379,13 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
         currentOptions = new BuildPlayerOptions();
         currentOptions.targetGroup = BuildTargetGroup.Standalone;
         currentOptions.target = BuildTarget.StandaloneWindows64;
-        currentOptions.locationPathName = GetLocationPath(currentOptions.target);
-        currentOptions.options = buildPlayerOptionsObject.buildOptions_Windows;
+
+        buildName_Internal = GetInternalPath(currentOptions.target);
+        buildName_Expected = GetLocationPath(currentOptions.target);
         
+        currentOptions.locationPathName = buildName_Internal;
+        currentOptions.options = buildPlayerOptionsObject.buildOptions_Windows;
+
         RequestBuildPlayer();
 	}
 
@@ -362,7 +429,101 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
 
 
 #region File IO
-    static void MoveFolder(string folderName, string from, string to)
+    static void CleanInternalOutput(BuildTarget buildTarget, string from)
+    {
+        switch (buildTarget)
+        {
+            case BuildTarget.Android:
+                DeleteFile(from);
+                break;
+            case BuildTarget.iOS:
+                DeleteFolder(from, true);
+                break;
+            case BuildTarget.StandaloneOSX:
+                DeleteFolder(from, true);
+                break;
+            case BuildTarget.StandaloneWindows:
+            case BuildTarget.StandaloneWindows64:
+                DeleteFolder(folderNameInternal_Standalone_Windows, true);
+                break;
+        }
+    }
+
+    static void RenameOutput(BuildTarget buildTarget, string from, string to)
+    {
+        switch (buildTarget)
+        {
+            case BuildTarget.Android:
+                MoveOutputFile(from, to);
+                break;
+            case BuildTarget.iOS:
+                MoveOutputFolder(from, to);
+                break;
+            case BuildTarget.StandaloneOSX:
+                string newFolder = string.Format(folderNameOutput_Standalone_MacOS, buildName_MacOS, Application.version);
+                string newAppName = string.Format(fileNameFormat_Standalone_MacOS, newFolder, buildName_MacOS);
+                DeleteFolder(newFolder, true);
+                CreateFolder(newFolder);
+                MoveOutputFolder(from, newAppName);
+                break;
+            case BuildTarget.StandaloneWindows:
+            case BuildTarget.StandaloneWindows64:
+                MoveOutputFolder(folderNameInternal_Standalone_Windows, to);
+                break;
+        }
+    }
+
+    static void CopyExternalDatas(BuildTarget buildTarget, string from, string to)
+    {
+        if(!Directory.Exists(from))
+            return;
+        
+        string destFolder;
+
+        switch (buildTarget)
+        {
+            case BuildTarget.StandaloneOSX:
+                string newFolder = string.Format(folderNameOutput_Standalone_MacOS, buildName_MacOS, Application.version);
+                destFolder = Path.Combine(newFolder, from);
+
+                Debug.Log(CodeManager.GetMethodName() + destFolder);
+                CopyFolder(from, destFolder);
+
+                break;
+            case BuildTarget.StandaloneWindows:
+            case BuildTarget.StandaloneWindows64:
+                destFolder = Path.Combine(to, from);
+
+                Debug.Log(CodeManager.GetMethodName() + destFolder);
+                CopyFolder(from, destFolder);
+
+                break;
+        }
+    }
+
+    static void MoveOutputFolder(string from, string to)
+    {
+        if (Directory.Exists(from))
+        {
+            DeleteFolder(to, true);            
+            Directory.Move(from, to);
+
+            Debug.Log(CodeManager.GetMethodName() + to);
+        }
+    }
+
+    static void MoveOutputFile(string from, string to)
+    {
+        if (File.Exists(from))
+        {
+            DeleteFile(to);            
+            File.Move(from, to);
+
+            Debug.Log(CodeManager.GetMethodName() + to);
+        }
+    }
+
+    static void MoveExcludeFolder(string folderName, string from, string to)
     {
         if (Directory.Exists(string.Format(combinePathFormat, from, folderName)))
             Directory.Move(string.Format(combinePathFormat, from, folderName), string.Format(combinePathFormat, to, folderName));
@@ -370,7 +531,7 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
             File.Move(string.Format(combinePathFormatMeta, from, folderName), string.Format(combinePathFormatMeta, to, folderName));
     }
 
-    static void MoveFile(string fileName, string from, string to)
+    static void MoveExcludeFile(string fileName, string from, string to)
     {
         if (File.Exists(string.Format(combinePathFormat, from, fileName)))
             File.Move(string.Format(combinePathFormat, from, fileName), string.Format(combinePathFormat, to, fileName));
@@ -388,8 +549,57 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
     {
         if (Directory.Exists(folderFullPath))
             Directory.Delete(folderFullPath, isRecursive);
-        if (File.Exists(string.Format(fullPathFormatMeta, folderFullPath)))
-            File.Delete(string.Format(fullPathFormatMeta, folderFullPath));
+        
+        DeleteFile(string.Format(fullPathFormatMeta, folderFullPath));
+    }
+
+    static void DeleteFile(string fileFullPath)
+    {
+        if (File.Exists(fileFullPath))
+            File.Delete(fileFullPath);
+    }
+
+    static void CopyFolder(string sourceFolder, string destFolder)
+    {
+        if (destFolder.ContainsAny(buildPlayerOptionsObject.externalExcludeFolders.ToArray()))
+        {
+            //Debug.Log(string.Format("[Exclude Folder] {0}", destFolder));
+
+            if (Directory.Exists(destFolder))
+                Directory.Delete(destFolder);
+            
+            return;
+        }
+
+        if (!Directory.Exists(destFolder))
+            Directory.CreateDirectory(destFolder);
+        
+        string[] files = Directory.GetFiles(sourceFolder);
+        string[] folders = Directory.GetDirectories(sourceFolder);
+        
+        foreach (string file in files)
+        {
+            string name = Path.GetFileName(file);
+
+            if (name.ContainsAny(buildPlayerOptionsObject.externalExcludeFiles.ToArray()))
+            {
+                //Debug.Log(string.Format("[Exclude File] {0}", name));
+                continue;
+            }
+            
+            string dest = Path.Combine(destFolder, name);
+            
+            //Debug.Log(string.Format("<color=yellow>{0} => {1}</color>", file, dest));
+            
+            File.Copy(file, dest);
+        }
+        
+        foreach (string folder in folders)
+        {
+            string name = Path.GetFileName(folder);
+            string dest = Path.Combine(destFolder, name);
+            CopyFolder(folder, dest);
+        }
     }
 
 #endregion File IO
@@ -440,6 +650,40 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
         return definesList.ToArray();
     }
 
+    static string GetInternalPath(BuildTarget buildTarget, string buildType = strDebug)
+    {
+        SetBuildFileNames();
+
+        string internalPath = string.Empty;
+
+        switch (buildTarget)
+        {
+            case BuildTarget.Android:
+                string extension = EditorUserBuildSettings.buildAppBundle ? strAab : strApk;
+#if USE_AMAZON_BUILD
+                if (currentAppStore == AppStore.AmazonAppStore)
+                    internalPath = string.Format(fileNameInternal_Amazon, extension);
+                else
+                    internalPath = string.Format(fileNameInternal_Android, extension);                
+#else
+                internalPath = string.Format(fileNameInternal_Android, extension);
+#endif
+                break;
+            case BuildTarget.iOS:
+                internalPath = string.Format(folderNameInternal_iOS);
+                break;
+            case BuildTarget.StandaloneOSX:
+                internalPath = string.Format(folderNameInternal_Standalone_MacOS);
+                break;
+            case BuildTarget.StandaloneWindows:
+            case BuildTarget.StandaloneWindows64:
+                internalPath = string.Format(fileNameFormat_Standalone_Windows, folderNameInternal_Standalone_Windows, buildName_Windows);
+                break;
+        }
+
+        return internalPath;
+    }
+
     static string GetLocationPath(BuildTarget buildTarget, string buildType = strDebug)
     {
         SetBuildFileNames();
@@ -452,22 +696,22 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
                 string extension = EditorUserBuildSettings.buildAppBundle ? strAab : strApk;
 #if USE_AMAZON_BUILD
                 if (currentAppStore == AppStore.AmazonAppStore)
-                    locationPath = string.Format(fileNameFormat_Amazon, buildName_Android, buildType, Application.version, PlayerSettings.Android.bundleVersionCode, extension);
+                    locationPath = string.Format(fileNameOutput_Amazon, buildName_Android, buildType, Application.version, PlayerSettings.Android.bundleVersionCode, extension);
                 else
-                    locationPath = string.Format(fileNameFormat_Android, buildName_Android, buildType, Application.version, PlayerSettings.Android.bundleVersionCode, extension);                
+                    locationPath = string.Format(fileNameOutput_Android, buildName_Android, buildType, Application.version, PlayerSettings.Android.bundleVersionCode, extension);                
 #else
-                locationPath = string.Format(fileNameFormat_Android, buildName_Android, buildType, Application.version, PlayerSettings.Android.bundleVersionCode, extension);
+                locationPath = string.Format(fileNameOutput_Android, buildName_Android, buildType, Application.version, PlayerSettings.Android.bundleVersionCode, extension);
 #endif
                 break;
             case BuildTarget.iOS:
-                locationPath = string.Format(fileNameFormat_iOS, buildName_iOS, buildType, Application.version);
+                locationPath = string.Format(folderNameOutput_iOS, buildName_iOS, buildType, Application.version);
                 break;
             case BuildTarget.StandaloneOSX:
-                locationPath = string.Format(fileNameFormat_Standalone_MacOS, buildName_MacOS, Application.version);
+                locationPath = string.Format(fileNameFormat_Standalone_MacOS, string.Format(folderNameOutput_Standalone_MacOS, buildName_MacOS, Application.version), buildName_MacOS);
                 break;
             case BuildTarget.StandaloneWindows:
             case BuildTarget.StandaloneWindows64:
-                locationPath = string.Format(fileNameFormat_Standalone_Windows, buildName_Windows, Application.version, PlayerSettings.productName);
+                locationPath = string.Format(folderNameOutput_Standalone_Windows, buildName_Windows, Application.version);
                 break;
         }
 
@@ -530,11 +774,11 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
                 {
                     for (int i=0; i < buildPlayerOptionsObject.excludeFolders.Count; i++)
                     {
-                        MoveFolder(buildPlayerOptionsObject.excludeFolders[i], streamingAssetsExcludePath, streamingAssetsPath);
+                        MoveExcludeFolder(buildPlayerOptionsObject.excludeFolders[i], streamingAssetsExcludePath, streamingAssetsPath);
                     }
                     for (int i=0; i < buildPlayerOptionsObject.excludeFiles.Count; i++)
                     {
-                        MoveFile(buildPlayerOptionsObject.excludeFiles[i], streamingAssetsExcludePath, streamingAssetsPath);
+                        MoveExcludeFile(buildPlayerOptionsObject.excludeFiles[i], streamingAssetsExcludePath, streamingAssetsPath);
                     }
 
                     DeleteFolder(streamingAssetsExcludePath);
@@ -559,11 +803,11 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
                     
                     for (int i=0; i < buildPlayerOptionsObject.excludeFolders.Count; i++)
                     {
-                        MoveFolder(buildPlayerOptionsObject.excludeFolders[i], streamingAssetsPath, streamingAssetsExcludePath);
+                        MoveExcludeFolder(buildPlayerOptionsObject.excludeFolders[i], streamingAssetsPath, streamingAssetsExcludePath);
                     }
                     for (int i=0; i < buildPlayerOptionsObject.excludeFiles.Count; i++)
                     {
-                        MoveFile(buildPlayerOptionsObject.excludeFiles[i], streamingAssetsPath, streamingAssetsExcludePath);
+                        MoveExcludeFile(buildPlayerOptionsObject.excludeFiles[i], streamingAssetsPath, streamingAssetsExcludePath);
                     }
                 }
                 catch (Exception e)
@@ -586,11 +830,11 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
             {
                 for (int i=0; i < buildPlayerOptionsObject.excludeFolders.Count; i++)
                 {
-                    MoveFolder(buildPlayerOptionsObject.excludeFolders[i], streamingAssetsExcludePath, streamingAssetsPath);
+                    MoveExcludeFolder(buildPlayerOptionsObject.excludeFolders[i], streamingAssetsExcludePath, streamingAssetsPath);
                 }
                 for (int i=0; i < buildPlayerOptionsObject.excludeFiles.Count; i++)
                 {
-                    MoveFile(buildPlayerOptionsObject.excludeFiles[i], streamingAssetsExcludePath, streamingAssetsPath);
+                    MoveExcludeFile(buildPlayerOptionsObject.excludeFiles[i], streamingAssetsExcludePath, streamingAssetsPath);
                 }
 
                 DeleteFolder(streamingAssetsExcludePath);
@@ -637,6 +881,12 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
         }
     }
 
+    static void SetBuildName(string _internal, string _expected)
+    {
+        buildName_Internal = _internal;
+        buildName_Expected = _expected;
+    }
+
     static void BuildAddressable()
     {
 #if USE_ADDRESSABLE_ASSETS
@@ -655,6 +905,8 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
         buildPlayerOptionsObject.buildLocationPathName = currentOptions.locationPathName;
         buildPlayerOptionsObject.buildTargetGroup = currentOptions.targetGroup;
         buildPlayerOptionsObject.buildTarget = currentOptions.target;
+        buildPlayerOptionsObject.buildName_Internal = buildName_Internal;
+        buildPlayerOptionsObject.buildName_Expected = buildName_Expected;
 
         RefreshCurrentTarget();
         
@@ -675,6 +927,8 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
     {
         if (EditorPrefs.GetBool(Application.identifier + pref_RequestBuildAsync, false))
         {
+            SetBuildName(buildPlayerOptionsObject.buildName_Internal, buildPlayerOptionsObject.buildName_Expected);
+
             currentOptions = new BuildPlayerOptions();
             currentOptions.targetGroup = buildPlayerOptionsObject.buildTargetGroup;
             currentOptions.target = buildPlayerOptionsObject.buildTarget;
@@ -705,6 +959,7 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
             EditorPrefs.SetBool(Application.identifier + pref_RequestBuildAsync, false);
             buildOptions.scenes = SetBuildScenes();
 
+            CleanInternalOutput(buildOptions.target, buildName_Internal);
             ExcludeStreamingAssets();
             BuildAddressable();
 
@@ -720,7 +975,12 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
             if (summary.result == BuildResult.Succeeded)
             {
                 Debug.Log(CodeManager.GetMethodName() + summary.outputPath);
-                Debug.Log(CodeManager.GetMethodName() + string.Format("Build Success : {0} ({1:f1} seconds)", summary.platform, summary.totalTime.TotalSeconds));                
+                Debug.Log(CodeManager.GetMethodName() + string.Format("Build Success : {0} ({1:f1} seconds)", summary.platform, summary.totalTime.TotalSeconds));
+                
+                RenameOutput(buildOptions.target, buildName_Internal, buildName_Expected);
+
+                if (buildPlayerOptionsObject.includeExternalDatas)
+                    CopyExternalDatas(buildOptions.target, externalDatasFolder, buildName_Expected);
             }
             else if (summary.result == BuildResult.Failed)
             {
@@ -739,6 +999,7 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
             SetAndroidStore_Google();
             RecoverStreamingAssets();
             RemoveJunkFolders();
+            SetBuildName(string.Empty, string.Empty);
 
             if (buildPlayerOptionsObject.currentGroup != buildOptions.targetGroup || buildPlayerOptionsObject.currentTarget != buildOptions.target)
             {
@@ -785,7 +1046,7 @@ public class BuildPlayerPipeline : ScriptableObject
 
     [Header("★ [Settings] Build Options")]
     public BuildOptions buildOptions_Android = BuildOptions.CompressWithLz4;
-    public BuildOptions buildOptions_iOS = BuildOptions.None;
+    public BuildOptions buildOptions_iOS = BuildOptions.CompressWithLz4;
     public BuildOptions buildOptions_MacOS = BuildOptions.None;
     public BuildOptions buildOptions_Windows = BuildOptions.None;
 
@@ -793,6 +1054,11 @@ public class BuildPlayerPipeline : ScriptableObject
     public List<string> excludeFolders = new List<string>{"LevelData"};
     public List<string> excludeFiles = new List<string>{"StringData.csv", "LevelCount.txt", "LevelCount_Editor.txt"};
     public List<string> excludeScenes = new List<string>{"Editor"};
+
+    [Header("★ [Settings] Editor Include ExternalDats")]
+    public bool includeExternalDatas = true;
+    public List<string> externalExcludeFiles = new List<string>{".DS_Store", ".backup"};
+    public List<string> externalExcludeFolders = new List<string>{"Handover", "Backup"};
 
 #endregion Settings
 
@@ -809,6 +1075,9 @@ public class BuildPlayerPipeline : ScriptableObject
     [BPP_ReadOnly] public BuildTarget buildTarget = BuildTarget.Android;
     [BPP_ReadOnly] public BuildOptions buildOptions = BuildOptions.CompressWithLz4;
     [BPP_ReadOnly] public string buildLocationPathName = "Not build yet";
+
+    [HideInInspector] public string buildName_Internal;
+    [HideInInspector] public string buildName_Expected;
 
 #endregion Readonly
 }
