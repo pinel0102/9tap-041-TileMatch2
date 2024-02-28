@@ -77,6 +77,8 @@ public class EventBanner_SweetHolic : MonoBehaviour
             if (GlobalDefine.IsOpen_Event_SweetHolic() && globalData.IsEnableShowPopup_MainScene())
             {
                 Debug.Log(CodeManager.GetMethodName() + "<color=yellow>Show Event Popup : Sweet Holic</color>");
+
+                globalData.soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
                 
                 UIManager.ShowPopupUI<EventPopupSweetHolic>(
                 new EventPopupSweetHolicParameter(
