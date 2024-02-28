@@ -103,7 +103,7 @@ partial class PlayScene
                     m_particlePool,
                     m_particleParent, 
                     GlobalDefine.GetSweetHolic_ItemImagePath(),
-                    Constant.Sound.SFX_GOLD_PIECE,
+                    string.Empty,
                     value.startPosition,
                     m_topView.SweetHolicIconTransform,
                     0.75f,

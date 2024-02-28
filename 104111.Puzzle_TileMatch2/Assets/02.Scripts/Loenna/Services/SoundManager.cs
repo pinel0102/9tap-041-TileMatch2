@@ -80,6 +80,9 @@ public class SoundManager
 
 	public void PlayFx(string clipName)
 	{
+        if(string.IsNullOrEmpty(clipName))
+            return;
+        
 		var settings = m_userManager?.Current?.Settings;
 
 		if (settings == null || !settings.TryGetValue(SettingsType.Fx, out var fx))
