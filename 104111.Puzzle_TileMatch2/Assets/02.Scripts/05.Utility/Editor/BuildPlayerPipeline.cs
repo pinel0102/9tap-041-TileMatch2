@@ -31,7 +31,7 @@ public class BuildPlayerPipelineScript : IActiveBuildTargetChanged
 {
 #region Parameters
 
-    private const string version = "1.7.0";
+    private const string version = "2.0.0";
 
     private static BuildPlayerPipeline buildPlayerOptionsObject
     {
