@@ -103,7 +103,7 @@ namespace NineTap.Payment
                 var productID = productData.ProductId;
                 var type = productData.Consumable ? UnityEngine.Purchasing.ProductType.Consumable : UnityEngine.Purchasing.ProductType.NonConsumable;
                 
-                Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} ({1})</color>", productID, type));
+                //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} ({1})</color>", productID, type));
                 
                 AddProductToBuilder(ref builder, productID, type);
             });

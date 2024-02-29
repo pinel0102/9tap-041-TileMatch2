@@ -70,13 +70,16 @@ public class Game : MonoBehaviour
 	{
 		if (pauseStatus)
 		{
-			m_userManager.Save();
+            if(GlobalDefine.IsUserLoaded)
+			    m_userManager.Save();
 		}
 	}
 
 	private void OnApplicationQuit()
 	{
-		m_userManager.Save();
+        if(GlobalDefine.IsUserLoaded)
+		    m_userManager.Save();
+        
 		m_serviceRegistry.Dispose();
 	}
 

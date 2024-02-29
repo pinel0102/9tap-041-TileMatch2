@@ -56,7 +56,7 @@ public class UserManager : IDisposable
 				using (StreamReader sr = new StreamReader(fs))
 				{
 					string json = await sr.ReadToEndAsync().AsUniTask();
-					m_user.Value = JsonConvert.DeserializeObject<User>(json);
+                    m_user.Value = JsonConvert.DeserializeObject<User>(json);
 				}
 			}
 		}
@@ -90,8 +90,6 @@ public class UserManager : IDisposable
         SDKManager.Instance.Initialize(m_user.Value.AppOpenCount, m_user.Value.InstallDate, m_user.Value.UserGroup, m_user.Value.NoAD);
         PushManager.Initialize(ProjectManager.productName, GlobalDefine.ToDateTime(m_user.Value.InstallDate));
 
-        GlobalData.Instance.CreateExpTable();
-        
         GlobalDefine.Initialize();
         GlobalDefine.SetUserLoaded(true);
 
