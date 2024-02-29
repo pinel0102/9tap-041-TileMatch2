@@ -76,19 +76,20 @@ public class EventBanner_SweetHolic : MonoBehaviour
         m_bannerButton.onClick.AddListener(() => {
             if (GlobalDefine.IsOpen_Event_SweetHolic() && globalData.IsEnableShowPopup_MainScene())
             {
-                Debug.Log(CodeManager.GetMethodName() + "<color=yellow>Show Event Popup : Sweet Holic</color>");
-
                 globalData.soundManager?.PlayFx(Constant.Sound.SFX_BUTTON);
+                globalData.SetTouchLock_MainScene();
+
+                Debug.Log(CodeManager.GetMethodName() + "<color=yellow>Show Event Popup : Sweet Holic</color>");
                 
                 UIManager.ShowPopupUI<EventPopupSweetHolic>(
-                new EventPopupSweetHolicParameter(
-                    Title: GlobalDefine.EventName_SweetHolic,
-                    PopupCloseCallback: null,
-                    EventBanner: this,
-                    EventDataTable: m_eventDataTable,
-                    ExpTable: m_expTable
-                )
-            );
+                    new EventPopupSweetHolicParameter(
+                        Title: GlobalDefine.EventName_SweetHolic,
+                        PopupCloseCallback: null,
+                        EventBanner: this,
+                        EventDataTable: m_eventDataTable,
+                        ExpTable: m_expTable
+                    )
+                );
             }
         });
     }

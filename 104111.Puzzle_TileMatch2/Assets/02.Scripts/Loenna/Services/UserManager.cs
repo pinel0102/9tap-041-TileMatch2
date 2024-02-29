@@ -78,24 +78,23 @@ public class UserManager : IDisposable
         }
 
         UpdateLog(appOpenCount: Current.AppOpenCount + 1);
+
         Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>App Open Count : {0}</color>", Current.AppOpenCount));
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>LevelPlayCount : {0} / TotalPlayTime : {1} / TotalPayment : {2}</color>", m_user.Value.LevelPlayCount, m_user.Value.TotalPlayTime, m_user.Value.TotalPayment));
+        LogUserData();
 
         GlobalData.Instance.CURRENT_SCENE = GlobalDefine.SCENE_MAIN;
         GlobalData.Instance.CURRENT_LEVEL = Current.Level;
-
-        LogUserData();
-
-        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>LevelPlayCount : {0} / TotalPlayTime : {1} / TotalPayment : {2}</color>", m_user.Value.LevelPlayCount, m_user.Value.TotalPlayTime, m_user.Value.TotalPayment));
-        
-        SDKManager.Instance.Initialize(m_user.Value.AppOpenCount, m_user.Value.InstallDate, m_user.Value.UserGroup, m_user.Value.NoAD);
-        PushManager.Initialize(ProjectManager.productName, GlobalDefine.ToDateTime(m_user.Value.InstallDate));
-
-        GlobalDefine.Initialize();
         GlobalDefine.SetUserLoaded(true);
+        GlobalDefine.Initialize();
+        SDKManager.Instance.Initialize(m_user.Value.AppOpenCount, m_user.Value.InstallDate, m_user.Value.UserGroup, m_user.Value.NoAD);
 
 #if !UNITY_STANDALONE
         await CheckAgrees(waitPanel);
 #endif
+        
+        PushManager.Initialize(ProjectManager.productName, GlobalDefine.ToDateTime(m_user.Value.InstallDate));
+        
         waitPanel?.SetActive(false);
 
 		return true;

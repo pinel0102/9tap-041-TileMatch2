@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using Cysharp.Threading.Tasks;
 
 public partial class GlobalData : SingletonMono<GlobalData>
 {
@@ -84,6 +86,28 @@ public partial class GlobalData : SingletonMono<GlobalData>
                 case GameEventType.SweetHolic:  eventSweetHolic_ExpTable = new ExpTable(MinLevel, MaxLevel, ExpList); break;
             }
         });
+    }
+
+    public void SetTouchLock_MainScene(float activeTimeSeconds = 0.5f)
+    {
+        SetTouchLock_MainScene(true);
+        UniTask.Void(
+            async () => {
+                await UniTask.Delay(TimeSpan.FromSeconds(activeTimeSeconds));
+                SetTouchLock_MainScene(false);
+            }
+        );
+    }
+
+    public void SetTouchLock_PlayScene(float activeTimeSeconds = 0.5f)
+    {
+        SetTouchLock_PlayScene(true);
+        UniTask.Void(
+            async () => {
+                await UniTask.Delay(TimeSpan.FromSeconds(activeTimeSeconds));
+                SetTouchLock_PlayScene(false);
+            }
+        );
     }
 
     public void SetTouchLock_MainScene(bool active)
