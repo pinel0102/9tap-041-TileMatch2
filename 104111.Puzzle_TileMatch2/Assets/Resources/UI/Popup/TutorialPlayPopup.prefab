@@ -71,8 +71,8 @@ RectTransform:
   - {fileID: 3988572477560787878}
   m_Father: {fileID: 8722434339462777127}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 280, y: 0}
   m_SizeDelta: {x: 500, y: 0}
   m_Pivot: {x: 0.5, y: 1}
@@ -3922,7 +3922,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "You need to \nblow your mind and \nmatch 3 same blocks."
+  m_text: Match 3 same tiles to clear!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5370bfff1e4e869408d8342d978a11b8, type: 2}
   m_sharedMaterial: {fileID: 2165264599523013120, guid: 5370bfff1e4e869408d8342d978a11b8, type: 2}
@@ -3957,7 +3957,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: -2
   m_wordSpacing: 0
@@ -4005,9 +4005,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_IgnoreLayout: 0
   m_MinWidth: 500
-  m_MinHeight: -1
+  m_MinHeight: 100
   m_PreferredWidth: 500
-  m_PreferredHeight: -1
+  m_PreferredHeight: 100
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
@@ -4897,7 +4897,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1373621787135706201, guid: 2ee4a3de39235ce429ace47d84001e4d, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 343.45
+      value: 337.21002
       objectReference: {fileID: 0}
     - target: {fileID: 1373621787135706201, guid: 2ee4a3de39235ce429ace47d84001e4d, type: 3}
       propertyPath: m_SizeDelta.y
@@ -4969,15 +4969,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3913129410903036241, guid: 2ee4a3de39235ce429ace47d84001e4d, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 193.45
+      value: 187.21
       objectReference: {fileID: 0}
     - target: {fileID: 3913129410903036241, guid: 2ee4a3de39235ce429ace47d84001e4d, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 68.27
+      value: 66.07
       objectReference: {fileID: 0}
     - target: {fileID: 3913129410903036241, guid: 2ee4a3de39235ce429ace47d84001e4d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 171.725
+      value: 168.60501
       objectReference: {fileID: 0}
     - target: {fileID: 3913129410903036241, guid: 2ee4a3de39235ce429ace47d84001e4d, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -4997,7 +4997,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5963339498722824165, guid: 2ee4a3de39235ce429ace47d84001e4d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 268.45
+      value: 262.21002
       objectReference: {fileID: 0}
     - target: {fileID: 5963339498722824165, guid: 2ee4a3de39235ce429ace47d84001e4d, type: 3}
       propertyPath: m_AnchoredPosition.y
