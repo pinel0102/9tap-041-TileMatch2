@@ -25,7 +25,6 @@ public partial class SDKManager
     [SerializeField] private int currentTimeCount;
     /// <Summary>리워드 광고 보상 인덱스.</Summary>
     [SerializeField] private int rewardNum = -1;
-    private Action<bool> rewardVideoCallback;
     public bool IsAdFreeUser => m_isAdFreeUser;
     private static bool m_isBannerLoaded;
     public static bool IsBannerLoaded => m_isBannerLoaded;
@@ -34,7 +33,9 @@ public partial class SDKManager
     private static bool m_openRemoveAdsPopup;
     public static bool OpenRemoveAdsPopup => m_openRemoveAdsPopup;
     private static string ironSourceAppKey;
-    private static bool isInitialized_IronSource = false;    
+    private static bool isInitialized_IronSource = false;
+    private static Action m_InterstitialCallback;
+    private static Action<bool> m_RewardVideoCallback;
     private static WaitForSecondsRealtime wUpdateDelay = new WaitForSecondsRealtime(4f);
     private static WaitForSeconds wOneSecond = new WaitForSeconds(1f);
 
@@ -60,6 +61,8 @@ public partial class SDKManager
         SetAdFreeUser(isADFreeUser);
         SetRemoveAdsPopup(false);
 
+        m_InterstitialCallback = null;
+        m_RewardVideoCallback = null;
         m_isBannerLoaded = false;
         m_isRewardVideoLoaded = false;
         currentTimeCount = 0;
@@ -219,37 +222,53 @@ public partial class SDKManager
 #endif
     }
 
-    public void ShowInterstitial(bool openRemoveAdsPopup)
+    public void ShowInterstitial(bool openRemoveAdsPopup, Action onADComplete = null)
     {
 #if ENABLE_IRONSOURCE
-
-        if (m_isAdFreeUser) return;
+        
+        m_InterstitialCallback = null;
+        
+        if (m_isAdFreeUser)
+        {
+            onADComplete?.Invoke();
+            return;
+        }
 
         SetRemoveAdsPopup(false);
 
-        if (globalData.CURRENT_LEVEL > firstAdsFreeLevel)
-        {
-            if(currentTimeCount > interstitialDelay)
-            {
-#if UNITY_EDITOR
-                SetRemoveAdsPopup(openRemoveAdsPopup);
-                Interstitial_OnAdClosedEvent(null);
-                currentTimeCount = 0;
-#endif
-                if (IronSource.Agent.isInterstitialReady())
-                {
-                    SetRemoveAdsPopup(openRemoveAdsPopup);
-                    IronSource.Agent.showInterstitial();
-                    currentTimeCount = 0;
+        bool countCheck = currentTimeCount > interstitialDelay;
+        bool levelCheck = globalData.CURRENT_LEVEL > firstAdsFreeLevel;
 
-                    SendAnalytics_Interstitial_Ads_Show();
-                }
-                else
-                {
-                    LoadInterstitial();
-                }
+        if (countCheck && levelCheck)
+        {   
+#if UNITY_EDITOR
+            SetRemoveAdsPopup(openRemoveAdsPopup);
+            Interstitial_OnAdClosedEvent(null);
+            currentTimeCount = 0;
+            onADComplete?.Invoke();
+#endif
+            if (IronSource.Agent.isInterstitialReady())
+            {
+                m_InterstitialCallback = onADComplete;
+
+                SetRemoveAdsPopup(openRemoveAdsPopup);
+                IronSource.Agent.showInterstitial();
+                currentTimeCount = 0;
+
+                SendAnalytics_Interstitial_Ads_Show();
+            }
+            else
+            {
+                LoadInterstitial();
+                onADComplete?.Invoke();
             }
         }
+        else
+        {
+            onADComplete?.Invoke();
+        }
+#else
+        onADComplete?.Invoke();
 #endif
     }
 
@@ -268,7 +287,7 @@ public partial class SDKManager
     {
 #if ENABLE_IRONSOURCE
         rewardNum = num;
-        rewardVideoCallback = onRewardVideoComplete;
+        m_RewardVideoCallback = onRewardVideoComplete;
 
         if (IronSource.Agent.isRewardedVideoAvailable())
         {
@@ -290,8 +309,8 @@ public partial class SDKManager
     {
         Debug.Log(CodeManager.GetMethodName() + "Get Reward : " + rewardNum);
 
-        rewardVideoCallback?.Invoke(true);
-        rewardVideoCallback = null;
+        m_RewardVideoCallback?.Invoke(true);
+        m_RewardVideoCallback = null;
         SendAnalytics_Video_Ads_Reward(rewardNum);
     }
 
@@ -317,9 +336,9 @@ public partial class SDKManager
         IronSourceInterstitialEvents.onAdLoadFailedEvent += Interstitial_OnAdLoadFailedEvent;
         IronSourceInterstitialEvents.onAdClickedEvent += Interstitial_OnAdClickedEvent;
         IronSourceInterstitialEvents.onAdOpenedEvent += Interstitial_OnAdOpenedEvent;
-        IronSourceInterstitialEvents.onAdClosedEvent += Interstitial_OnAdClosedEvent;
         IronSourceInterstitialEvents.onAdShowSucceededEvent += Interstitial_OnAdShowSucceededEvent;
         IronSourceInterstitialEvents.onAdShowFailedEvent += Interstitial_OnAdShowFailedEvent;
+        IronSourceInterstitialEvents.onAdClosedEvent += Interstitial_OnAdClosedEvent;
         
         //Add Rewarded Video Events
         IronSourceRewardedVideoEvents.onAdAvailableEvent += RewardedVideo_OnAdAvailableEvent;
@@ -395,13 +414,6 @@ public partial class SDKManager
         Debug.Log(CodeManager.GetMethodName());
     }
 
-    private void Interstitial_OnAdClosedEvent(IronSourceAdInfo adInfo)
-    {
-        Debug.Log(CodeManager.GetMethodName());
-
-        LoadInterstitial();
-    }
-
     private void Interstitial_OnAdShowSucceededEvent(IronSourceAdInfo adInfo)
     {
         Debug.Log(CodeManager.GetMethodName());
@@ -412,6 +424,19 @@ public partial class SDKManager
         Debug.Log(CodeManager.GetMethodName() + string.Format("code: {0} / description : {1}", error.getCode(), error.getDescription()));
 
         LoadInterstitial();
+
+        m_InterstitialCallback?.Invoke();
+        m_InterstitialCallback = null;
+    }
+
+    private void Interstitial_OnAdClosedEvent(IronSourceAdInfo adInfo)
+    {
+        Debug.Log(CodeManager.GetMethodName());
+
+        LoadInterstitial();
+
+        m_InterstitialCallback?.Invoke();
+        m_InterstitialCallback = null;
     }
 
     /************* RewardedVideo Delegates *************/
@@ -448,8 +473,8 @@ public partial class SDKManager
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("code: {0} / description : {1}", error.getCode(), error.getDescription()));
 
-        rewardVideoCallback?.Invoke(false);
-        rewardVideoCallback = null;
+        m_RewardVideoCallback?.Invoke(false);
+        m_RewardVideoCallback = null;
     }
 
     private void RewardedVideo_OnAdRewardedEvent(IronSourcePlacement ssp, IronSourceAdInfo adInfo)

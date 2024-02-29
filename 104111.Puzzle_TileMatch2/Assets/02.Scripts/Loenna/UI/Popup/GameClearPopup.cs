@@ -198,28 +198,31 @@ public class GameClearPopup : UIPopup
 			if (mode == Constant.Scene.CLIENT)
 			{
                 SDKManager.SendAnalytics_C_Scene_Clear(existNextLevel ? "Next" : "Close");
-                GlobalDefine.RequestAD_Interstitial();
-
-                if (clearedLevel < Constant.Game.LEVEL_PUZZLE_START - 1)
-                {
-                    parameter.OnContinue.Invoke(clearedLevel + 1);
-                }
-                else
-                {
-                    UIManager.ShowSceneUI<MainScene>(new MainSceneRewardParameter(
-                        clearedLevel: clearedLevel,
-                        openPuzzleIndex: openPuzzleIndex,
-                        rewardCoin: rewardData.Coin,
-                        rewardPuzzlePiece: rewardData.PuzzlePiece,
-                        rewardSweetHolic: GlobalData.Instance.eventSweetHolic_GetCount
-                    ));
-                }
+                GlobalDefine.RequestAD_Interstitial(onADComplete:OnADComplete);
 			}
 			else
 			{
 				LoadScene(Constant.Scene.EDITOR);
 			}
 		}
+
+        void OnADComplete()
+        {
+            if (clearedLevel < Constant.Game.LEVEL_PUZZLE_START - 1)
+            {
+                parameter.OnContinue.Invoke(clearedLevel + 1);
+            }
+            else
+            {
+                UIManager.ShowSceneUI<MainScene>(new MainSceneRewardParameter(
+                    clearedLevel: clearedLevel,
+                    openPuzzleIndex: openPuzzleIndex,
+                    rewardCoin: rewardData.Coin,
+                    rewardPuzzlePiece: rewardData.PuzzlePiece,
+                    rewardSweetHolic: GlobalData.Instance.eventSweetHolic_GetCount
+                ));
+            }
+        }
     }
 
     public override void OnShow()

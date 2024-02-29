@@ -359,17 +359,20 @@ public partial class PlayScene : UIScene
 	private void OnExit(bool onJumpStore)
 	{
 		UIManager.ClosePopupUI();
-        GlobalDefine.RequestAD_Interstitial();
-        
-		string mode = PlayerPrefs.GetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, Constant.Scene.CLIENT);
+        GlobalDefine.RequestAD_Interstitial(onADComplete:OnADComplete);
 
-		if (mode == Constant.Scene.CLIENT)
-		{
-			UIManager.ShowSceneUI<MainScene>(new MainSceneParameter { ShowMenuType = onJumpStore? MainMenuType.STORE : MainMenuType.HOME });
-		}
-		else
-		{
-			LoadScene(Constant.Scene.EDITOR);
-		}
+        void OnADComplete()
+        {
+            string mode = PlayerPrefs.GetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, Constant.Scene.CLIENT);
+
+            if (mode == Constant.Scene.CLIENT)
+            {
+                UIManager.ShowSceneUI<MainScene>(new MainSceneParameter { ShowMenuType = onJumpStore? MainMenuType.STORE : MainMenuType.HOME });
+            }
+            else
+            {
+                LoadScene(Constant.Scene.EDITOR);
+            }
+        }
 	}
 }
