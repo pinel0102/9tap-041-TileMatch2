@@ -2,7 +2,7 @@
   "Guid": "05864019-505b-4210-bdab-b6f6c552335c",
   "Boards": [
     {
-      "NumberOfTileTypes": 4,
+      "NumberOfTileTypes": 7,
       "Layers": [
         {
           "Tiles": [
@@ -171,6 +171,24 @@
                 "y": -400.0
               },
               "IncludeMission": false
+            },
+            {
+              "Guid": "4d4325c3-f566-4abd-99fb-125ab568f3a3",
+              "Type": 0,
+              "Position": {
+                "x": 240.0,
+                "y": 240.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "1de19638-ad6d-4ecf-8411-eb62e9c77b15",
+              "Type": 0,
+              "Position": {
+                "x": -240.0,
+                "y": -240.0
+              },
+              "IncludeMission": false
             }
           ]
         },
@@ -288,6 +306,19 @@
               "Type": 0,
               "Position": {
                 "x": 80.0,
+                "y": -400.0
+              },
+              "IncludeMission": false
+            }
+          ]
+        },
+        {
+          "Tiles": [
+            {
+              "Guid": "cf464d36-ac74-4ecb-83f8-1f52b753d6ff",
+              "Type": 0,
+              "Position": {
+                "x": 0.0,
                 "y": -400.0
               },
               "IncludeMission": false

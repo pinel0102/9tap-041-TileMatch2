@@ -2,7 +2,7 @@
   "Guid": "59c39c26-6fcc-4f9f-97ef-ccfa3c99d136",
   "Boards": [
     {
-      "NumberOfTileTypes": 4,
+      "NumberOfTileTypes": 6,
       "Layers": [
         {
           "Tiles": [
@@ -319,10 +319,76 @@
         {
           "Tiles": [
             {
-              "Guid": "535f7b47-df6c-4209-96c8-8d747e3b47ad",
+              "Guid": "673a805c-30d3-4f71-8c5b-95268cb9c3e1",
               "Type": 0,
               "Position": {
                 "x": -200.0,
+                "y": -320.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "ed2f050e-c7ae-4384-ae24-13788609cba7",
+              "Type": 0,
+              "Position": {
+                "x": 200.0,
+                "y": -320.0
+              },
+              "IncludeMission": false
+            }
+          ]
+        },
+        {
+          "Tiles": [
+            {
+              "Guid": "824e722a-6246-4350-a265-6c7be2ec1b73",
+              "Type": 0,
+              "Position": {
+                "x": -180.0,
+                "y": -320.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "eee18ed9-71b0-41d9-b323-309c3946cbb0",
+              "Type": 0,
+              "Position": {
+                "x": 180.0,
+                "y": -320.0
+              },
+              "IncludeMission": false
+            }
+          ]
+        },
+        {
+          "Tiles": [
+            {
+              "Guid": "f31addd8-b932-4f1f-912d-50b98eacb241",
+              "Type": 0,
+              "Position": {
+                "x": -160.0,
+                "y": -320.0
+              },
+              "IncludeMission": false
+            },
+            {
+              "Guid": "4299bcc3-24a9-4ce6-9ee9-6536d6a2b9db",
+              "Type": 0,
+              "Position": {
+                "x": 160.0,
+                "y": -320.0
+              },
+              "IncludeMission": false
+            }
+          ]
+        },
+        {
+          "Tiles": [
+            {
+              "Guid": "b54a613f-0dca-4866-aaec-5c7d8e7b2e1b",
+              "Type": 0,
+              "Position": {
+                "x": 140.0,
                 "y": -320.0
               },
               "IncludeMission": false

@@ -2,7 +2,7 @@
   "Guid": "3e2aca04-4b7c-432e-aac7-c686173e17b2",
   "Boards": [
     {
-      "NumberOfTileTypes": 7,
+      "NumberOfTileTypes": 10,
       "Layers": [
         {
           "Tiles": [
@@ -741,14 +741,53 @@
               "IncludeMission": false
             }
           ]
+        },
+        {
+          "Tiles": [
+            {
+              "Guid": "7c4f976e-c7ab-41d5-a478-397f494c6809",
+              "Type": 0,
+              "Position": {
+                "x": 0.0,
+                "y": -420.0
+              },
+              "IncludeMission": false
+            }
+          ]
+        },
+        {
+          "Tiles": [
+            {
+              "Guid": "906858f9-b09f-4f0a-af12-e2eee55a66da",
+              "Type": 0,
+              "Position": {
+                "x": 0.0,
+                "y": -440.0
+              },
+              "IncludeMission": false
+            }
+          ]
+        },
+        {
+          "Tiles": [
+            {
+              "Guid": "6dfa1ca3-e5b5-4898-88b5-9ec27e50c8a2",
+              "Type": 0,
+              "Position": {
+                "x": 0.0,
+                "y": -460.0
+              },
+              "IncludeMission": false
+            }
+          ]
         }
       ],
-      "Difficult": 1,
+      "Difficult": 2,
       "MissionTileCount": 0,
       "GoldTileIcon": -1
     }
   ],
-  "HardMode": false,
-  "CountryCode": "default",
+  "HardMode": true,
+  "CountryCode": "au",
   "Key": 320
 }
