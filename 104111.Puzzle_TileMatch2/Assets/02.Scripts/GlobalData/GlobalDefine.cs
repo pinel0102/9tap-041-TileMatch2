@@ -16,6 +16,7 @@ public static partial class GlobalDefine
     public const string SCENE_SETTINGS = "Settings";
     public const string SCENE_PLAY = "Play";
 
+    public static bool isLevelEditor => PlayerPrefs.GetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, Constant.Scene.CLIENT) == Constant.Scene.EDITOR;
     private static GlobalData globalData { get { return GlobalData.Instance; } }
 
     public static void Initialize()

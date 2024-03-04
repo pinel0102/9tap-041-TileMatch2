@@ -64,7 +64,8 @@ public class TableManager
 		ProductDataTable.Load();
         EventDataTable.Load();
 
-        GlobalData.Instance.CreateExpTable();
+        if(!GlobalDefine.isLevelEditor)
+            GlobalData.Instance.CreateExpTable();
 
 		TextAsset[] piecesDataAssets = Resources.LoadAll<TextAsset>("DB/GameDataTable/PuzzlePieceDatas");
 		await UniTask.Defer(() => PuzzleDataTable.LoadAsync(piecesDataAssets.Select(asset => asset.text).ToArray()));
