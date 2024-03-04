@@ -142,12 +142,6 @@ public class PuzzlePlayView : CachedBehaviour
 
 	private void OnTryUnlock(JigsawPuzzlePiece piece, Action onComplete=null)
 	{
-        if (GlobalData.Instance.userManager.Current.Level > GlobalData.Instance.tableManager.LastLevel)
-        {
-            GlobalData.Instance.SetTouchLock_MainScene(false);
-            return;
-        }
-            
         //Debug.Log(CodeManager.GetMethodName() + itemData.Index);
         GlobalData.Instance.SetTouchLock_MainScene(true);
 
@@ -162,7 +156,14 @@ public class PuzzlePlayView : CachedBehaviour
 		}
         else
         {
-            GlobalData.Instance.ShowReadyPopup();
+            if (GlobalData.Instance.userManager.Current.Level <= GlobalData.Instance.tableManager.LastLevel)
+            {
+                GlobalData.Instance.ShowReadyPopup();
+            }
+            else
+            {
+                GlobalData.Instance.SetTouchLock_MainScene(false);
+            }
         }
 	}
 

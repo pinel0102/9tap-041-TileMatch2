@@ -319,14 +319,15 @@ public partial class GameManager : IDisposable
 		List<TileItemModel> CreateTileItemModels(int level, string countryCode, Board board)
 		{
 			List<TileItemModel> tileItemModelAll = new();
-            int missionTileCount = board.MissionTileCount;			
+            	
             int specialTileTypes = 0;
 
-            #region Gold Tile
+#if USE_GOLD_TILE_MISSION
+            int missionTileCount = board.MissionTileCount;
 			int goldTileIcon = board.MissionTileCount > 0? board.GoldTileIcon : 0;       
             if (goldTileIcon > 0)
                 specialTileTypes++;
-            #endregion Gold Tile
+#endif
 
             #region Sweet Holic Tile
             int sweetHolicTileIndex = 0;
@@ -337,9 +338,14 @@ public partial class GameManager : IDisposable
                 if (containsSweetHolicTile)
                 {
                     sweetHolicTileIndex = GlobalData.Instance.eventSweetHolic_TargetIndex;
-            
+
+#if USE_GOLD_TILE_MISSION            
                     if (sweetHolicTileIndex > 0 && goldTileIcon != sweetHolicTileIndex)
                         specialTileTypes++;
+#else
+                    if (sweetHolicTileIndex > 0)
+                        specialTileTypes++;
+#endif
 
                     Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Sweet Holic] Contains Event Tile [{1}] : {0}</color>", containsSweetHolicTile, sweetHolicTileIndex));
                 }
@@ -357,16 +363,23 @@ public partial class GameManager : IDisposable
 			var randomIcons = TileDataTable
 				.GetIndexes(level, countryCode)
 				.Shuffle()
-				.Where(index => index != goldTileIcon && index != sweetHolicTileIndex)
+				.Where(
+#if USE_GOLD_TILE_MISSION
+                    index => index != sweetHolicTileIndex && index != goldTileIcon
+#else
+                    index => index != sweetHolicTileIndex
+#endif                    
+                    )
 				.Take(randomCount)
 				.ToList();
-			
+
+#if USE_GOLD_TILE_MISSION
 			if (goldTileIcon > 0)
 			{
                 if (!randomIcons.Contains(goldTileIcon))
 				    randomIcons.Insert(0, goldTileIcon);
 			}
-
+#endif
             if (sweetHolicTileIndex > 0)
             {
                 if (!randomIcons.Contains(sweetHolicTileIndex))
@@ -379,6 +392,7 @@ public partial class GameManager : IDisposable
 				randoms.Add(randomIcons[i % randomCount]);
 			}
 
+#if USE_GOLD_TILE_MISSION
 			int requiredMissionWeight = Mathf.CeilToInt(board.MissionTileCount / (float)Constant.Game.REQUIRED_MATCH_COUNT);
 			if (randoms.Count(icon => icon == goldTileIcon) is int missionCount)
 			{
@@ -398,6 +412,7 @@ public partial class GameManager : IDisposable
 					).ToList();
 				}
 			}
+#endif
 
 			List<int> list = new List<int>(randoms.Concat(randoms).Concat(randoms).ToArray());
 			//StringBuilder builder = new StringBuilder();
@@ -459,11 +474,14 @@ public partial class GameManager : IDisposable
 
 							int icon = queue.Dequeue();
 							int mission = -1;
+
+                            #if USE_GOLD_TILE_MISSION
 							if (icon == goldTileIcon && missionTileCount > 0)
 							{
 								mission = Constant.Game.GOLD_PUZZLE_PIECE_COUNT;
 								missionTileCount -= 1;
 							}
+                            #endif
 
 							return new TileItemModel(
 								layerIndex,
