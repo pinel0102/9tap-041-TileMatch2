@@ -428,7 +428,7 @@ public class LevelDataManager : IDisposable
 
 		bool AddTileInLayer(Vector2 position, out int layerIndex, int index, Layer layer)
 		{
-			layer.Tiles.Add(new Tile(0, position));
+			layer.Tiles.Add(new Tile(position));
 			layerIndex = index;
 			m_saved.Value = false;
 			return true;
