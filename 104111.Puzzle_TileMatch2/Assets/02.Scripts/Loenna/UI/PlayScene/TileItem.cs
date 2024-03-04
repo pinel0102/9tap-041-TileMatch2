@@ -1,3 +1,5 @@
+//#define USE_GOLD_TILE_MISSION
+
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -87,29 +89,18 @@ public class TileItem : CachedBehaviour
 
 	private TileDataTable m_tileDataTable;
 
-	[SerializeField]
-	private RectTransform m_view;
-
-	[SerializeField]
-	private Image m_icon;
-
-	[SerializeField]
-	private EventTrigger m_trigger;
-
+	[SerializeField]	private RectTransform m_view;
+	[SerializeField]	private Image m_icon;
+	[SerializeField]	private EventTrigger m_trigger;
     public RectTransform m_triggerArea;
 
-	[SerializeField]
-	private MissionPiece m_missionTile;
+#if USE_GOLD_TILE_MISSION    
+	[SerializeField]	private MissionPiece m_missionTile;
+#endif
 
-	[SerializeField]
-	private CanvasGroup m_dim;
-
-    [SerializeField]
-	private Text m_tmpText; //이미지가 없을 경우 텍스트로
-
-	[SerializeField]
-	private GameObject m_disappearEffect;
-
+	[SerializeField]	private CanvasGroup m_dim;
+    [SerializeField]	private Text m_tmpText; //이미지가 없을 경우 텍스트로
+	[SerializeField]	private GameObject m_disappearEffect;
 	private TileItemModel m_current;
 	public TileItemModel Current => m_current;
 
@@ -256,7 +247,9 @@ public class TileItem : CachedBehaviour
 
 		m_trigger.triggers.AddRange(entries);
 
+#if USE_GOLD_TILE_MISSION  
 		ObjectUtility.GetRawObject(m_missionTile)?.SetVisible(false);
+#endif
 
         _shuffleCenter = GlobalData.Instance.playScene.mainView.transform;
 
@@ -326,7 +319,10 @@ public class TileItem : CachedBehaviour
 			null => (tileName, false),
 			_ => (string.Empty, true)
 		};
+
+#if USE_GOLD_TILE_MISSION
 		m_missionTile.OnUpdateUI(sprite, item.Location is LocationType.BOARD? item.GoldPuzzleCount : -1);
+#endif
 
         gameObject.name = tileName;
         
@@ -406,8 +402,10 @@ public class TileItem : CachedBehaviour
 			case LocationType.BOARD:
 				m_interactable = !overlapped;
 
+#if USE_GOLD_TILE_MISSION
 				ObjectUtility.GetRawObject(m_missionTile)?.SetVisible(!invisibleIcon);
-				
+#endif
+
 				if (overlapped)
 				{
 					Color color = Color.white.WithA(invisibleIcon && !ignoreInvisible? 0f : 1f);
