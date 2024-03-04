@@ -180,7 +180,7 @@ partial class PlayScene
                     bg_puzzle.SetActive(true);
 
                     m_puzzleData = m_puzzleDataTable.Dic.LastOrDefault(item => item.Value.Level <= level).Value;
-                    SetBackground(m_puzzleData.GetImagePath());
+                    SetBackground(m_puzzleData.GetGameImagePath());
                 }
 
                 m_progressId = 0;

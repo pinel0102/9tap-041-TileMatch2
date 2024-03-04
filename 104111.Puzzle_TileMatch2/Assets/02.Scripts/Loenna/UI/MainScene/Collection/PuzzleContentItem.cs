@@ -49,7 +49,6 @@ public class PuzzleContentItem : UIButton
     private UserManager m_userManager;
 	private bool m_isInitialized = false;
     private PuzzleData puzzleData;
-    private Texture2D texture;
     private JigsawCollectionPiece piecePrefab;
     private List<JigsawCollectionPiece> pieceList = new();
 
@@ -106,8 +105,7 @@ public class PuzzleContentItem : UIButton
         puzzleData = contentData.PuzzleData;
         puzzleName = puzzleData.Name;
         Index = puzzleData.Index;
-        texture = Resources.Load<Texture2D>(puzzleData.GetImagePath());
-		m_thumbnail.texture = texture;
+        m_thumbnail.texture = Resources.Load<Texture2D>(puzzleData.GetBaseImagePath());
 
         RefreshLockState();
 

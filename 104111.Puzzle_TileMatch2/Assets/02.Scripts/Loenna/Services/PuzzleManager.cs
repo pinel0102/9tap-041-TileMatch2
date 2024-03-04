@@ -37,8 +37,7 @@ public class PuzzleManager : IDisposable
 
 		m_userManager.Update(playingPuzzle: (m_puzzleIndex, m_placedPieces));
 
-		var req = Resources.LoadAsync<Texture2D>(puzzleData.GetImagePath());
-		m_background = await req.ToUniTask(cancellationToken: m_cancellationTokenSource.Token) as Texture2D;
+		m_background = Resources.Load<Texture2D>(puzzleData.GetBaseImagePath());
 
 		var puzzlePieces = PuzzlePieceMaker.LoadPieceSources(
 			//source: m_background, 
@@ -57,6 +56,8 @@ public class PuzzleManager : IDisposable
 		);
 
         Debug.Log(CodeManager.GetMethodName() + string.Format("PuzzleData.Index : {0} / PuzzleData.Level : {1}", puzzleData.Index, puzzleData.Level));
+
+        await UniTask.CompletedTask;
 
 		return true;
 	}

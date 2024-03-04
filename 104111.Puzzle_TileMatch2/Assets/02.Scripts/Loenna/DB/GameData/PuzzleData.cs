@@ -20,8 +20,8 @@ public record PuzzleData
         return Pieces.FirstOrDefault(piece => piece.Row == row && piece.Column == column);
     }
 
-	//public string GetImagePath() => System.IO.Path.Combine("Images/Puzzle", Path);
-    public string GetImagePath() => string.Format("Images/Background/UI_Ingame_BG_{0}", Path);
+	public string GetBaseImagePath() => string.Format("Images/Puzzle/Base/{0}", Path);
+    public string GetGameImagePath() => string.Format("Images/Puzzle/Game/UI_Ingame_BG_{0}", Path);
 }
 
 //퍼즐 제너레이터에서 제너레이트 후 조각의 정보를 json화 한다.
