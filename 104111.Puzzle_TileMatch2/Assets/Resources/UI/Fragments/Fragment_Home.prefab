@@ -1687,7 +1687,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1318088983504928670
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2606,6 +2606,7 @@ MonoBehaviour:
   requiredExp: 0
   totalExp: 0
   targetImagePath: 
+  boxImagePath: 
 --- !u!1 &8927261439922196210
 GameObject:
   m_ObjectHideFlags: 0
@@ -2811,7 +2812,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1431824067528146786, guid: 07f653003a35e014281a887fa822231f, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3903816385982447981, guid: 07f653003a35e014281a887fa822231f, type: 3}
       propertyPath: m_SizeDelta.x
@@ -2823,7 +2824,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4297444834279432372, guid: 07f653003a35e014281a887fa822231f, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
+      value: 48
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
