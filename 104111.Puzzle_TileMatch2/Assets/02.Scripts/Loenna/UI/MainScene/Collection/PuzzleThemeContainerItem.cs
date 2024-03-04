@@ -44,9 +44,11 @@ public class PuzzleThemeContainerItem : NestedInfiniteScrollItem
 					continue;
 				}
 
+                itemData.ContentDatas[i].ReloadPlacedPieces(userManager.Current);
+
 				item.Alpha = 1f;
 				item.OnSetup(userManager);
-				item.UpdateUI(itemData.ContentDatas[i]);
+                item.UpdateUI(itemData.ContentDatas[i]);
 			}
 		}
 	}

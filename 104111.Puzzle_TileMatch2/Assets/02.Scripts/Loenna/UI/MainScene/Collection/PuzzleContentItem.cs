@@ -11,6 +11,16 @@ public class PuzzleContentData
     public uint PlacedPiecesData;
 	public PuzzleData PuzzleData;
 	public Action onClick;
+
+    public void ReloadPlacedPieces(User user)
+    {
+        PlacedPiecesData = GetPlacedPieces(user, PuzzleData.Key);
+    }
+
+    private uint GetPlacedPieces(User user, int Key)
+    {
+        return user.PlayingPuzzleCollection.TryGetValue(Key, out uint result)? result : 0;
+    }
 }
 
 public class PuzzleContentItem : UIButton
@@ -137,6 +147,8 @@ public class PuzzleContentItem : UIButton
 		);
 
         pieceList.Clear();
+        GlobalDefine.ClearChild(m_pieceParent);
+
         Array.ForEach(
 			puzzlePieces, 
 			puzzlePiece => {
