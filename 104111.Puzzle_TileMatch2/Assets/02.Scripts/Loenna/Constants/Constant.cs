@@ -38,7 +38,7 @@ public static class Constant
 	{
         public const int MIN_OPENLEVEL_WEEKEND_BUNDLE = 2; // 오픈시 해금.
         public const int MIN_OPENLEVEL_BEGINNER_BUNDLE = 10; // 오픈시 해금.
-        public const int MIN_OPENLEVEL_DAILY_REWARD = 15; // 오픈시 해금.
+        public const int MIN_OPENLEVEL_DAILY_REWARD = 12; // 오픈시 해금.
         public const int MIN_OPENLEVEL_EVENT_SWEETHOLIC = 21; // 오픈시 해금.
 		public const int MAX_LIFE_COUNT = 5;
         public const int MAX_LIFE_COIN = 250;

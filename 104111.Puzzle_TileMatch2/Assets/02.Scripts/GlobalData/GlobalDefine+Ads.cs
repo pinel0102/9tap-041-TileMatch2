@@ -31,11 +31,11 @@ public static partial class GlobalDefine
         SDKManager.Instance.HideBanner();
     }
 
-    public static void RequestAD_Interstitial(bool openRemoveAdsPopup = true)
+    public static void RequestAD_Interstitial(bool openRemoveAdsPopup = true, Action onADComplete = null)
     {
         Debug.Log(string.Format(logAdFormat0, CodeManager.GetMethodName()));
         
-        SDKManager.Instance.ShowInterstitial(openRemoveAdsPopup);
+        SDKManager.Instance.ShowInterstitial(openRemoveAdsPopup, onADComplete);
     }
 
     public static void RequestAD_RewardVideo(int num, Action<bool> onSuccess = null)

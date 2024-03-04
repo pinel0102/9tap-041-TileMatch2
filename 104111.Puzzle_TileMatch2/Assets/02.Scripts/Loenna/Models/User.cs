@@ -126,9 +126,9 @@ public record User
 		PlayingPuzzleCollection: new Dictionary<int, uint>{{1001, 0}}, //퍼즐 하나는 무조건 언락되어 있는 상태
         UnlockedPuzzlePieceDic: new Dictionary<int, uint>(),
 		OwnSkillItems: new Dictionary<SkillItemType, int>{
-			{SkillItemType.Stash, 1},
-			{SkillItemType.Undo, 1},
-			{SkillItemType.Shuffle, 1}
+			{SkillItemType.Stash, 3},
+			{SkillItemType.Undo, 3},
+			{SkillItemType.Shuffle, 3}
 		},
 		Settings: new Dictionary<SettingsType, bool>{
 			{SettingsType.Fx, true},
