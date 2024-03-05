@@ -16,7 +16,6 @@ public static partial class GlobalDefine
     public const string SCENE_SETTINGS = "Settings";
     public const string SCENE_PLAY = "Play";
 
-    public static bool isLevelEditor => PlayerPrefs.GetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, Constant.Scene.CLIENT) == Constant.Scene.EDITOR;
     private static GlobalData globalData { get { return GlobalData.Instance; } }
 
     public static void Initialize()
@@ -26,6 +25,25 @@ public static partial class GlobalDefine
         CheckEventActivate();
         CheckEventExpired();
         CheckEventRefresh();
+    }
+
+    /// <summary>
+    /// <para>Constant.Scene.CLIENT</para>
+    /// <para>Constant.Scene.EDITOR</para>
+    /// </summary>
+    /// <param name="mode"></param>
+    public static void SetEditorMode(string mode)
+    {
+        PlayerPrefs.SetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, mode);
+    }
+
+    public static bool IsLevelEditor()
+    {
+#if UNITY_STANDALONE
+        return PlayerPrefs.GetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, Constant.Scene.CLIENT) == Constant.Scene.EDITOR;
+#else
+        return false;
+#endif
     }
 
     public static void SetUserLoaded(bool userLoaded)

@@ -231,7 +231,7 @@ public partial class PlayScene : UIScene
 					ButtonText = Text.Button.REPLAY,
 					OnClick = () =>
 					{
-                        if (GlobalData.Instance.isLevelEditor)
+                        if (GlobalDefine.IsLevelEditor())
                         {
                             m_gameManager.LoadLevel(m_gameManager.CurrentLevel, m_mainView.CachedRectTransform);
                         }
@@ -262,7 +262,7 @@ public partial class PlayScene : UIScene
 					ButtonText = Text.Button.HOME,
 					OnClick = () =>
 					{
-                        if (GlobalData.Instance.isLevelEditor)
+                        if (GlobalDefine.IsLevelEditor())
                         {
                             OnExit(false);
                         }
@@ -363,15 +363,13 @@ public partial class PlayScene : UIScene
 
         void OnADComplete()
         {
-            string mode = PlayerPrefs.GetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, Constant.Scene.CLIENT);
-
-            if (mode == Constant.Scene.CLIENT)
+            if (GlobalDefine.IsLevelEditor())
             {
-                UIManager.ShowSceneUI<MainScene>(new MainSceneParameter { ShowMenuType = onJumpStore? MainMenuType.STORE : MainMenuType.HOME });
+                LoadScene(Constant.Scene.EDITOR);
             }
             else
             {
-                LoadScene(Constant.Scene.EDITOR);
+                UIManager.ShowSceneUI<MainScene>(new MainSceneParameter { ShowMenuType = onJumpStore? MainMenuType.STORE : MainMenuType.HOME });
             }
         }
 	}

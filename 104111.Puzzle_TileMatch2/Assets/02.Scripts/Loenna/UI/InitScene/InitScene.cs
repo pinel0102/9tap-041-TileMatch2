@@ -33,10 +33,7 @@ public class InitScene : UIScene
 		m_splashView.alpha = 0f;
 		m_loadingView.OnSetup(Game.Inst.Get<TimeManager>());
 
-		string mode = PlayerPrefs.GetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, Constant.Scene.CLIENT);
-		bool editorMode = mode == Constant.Scene.EDITOR;
-
-		if (editorMode)
+		if (GlobalDefine.IsLevelEditor())
 		{
 			m_loadingView.Completed
 			.SubscribeAwait(
@@ -79,7 +76,7 @@ public class InitScene : UIScene
 
 		UniTask.Void(
 			async token => {
-				if (!editorMode)
+				if (!GlobalDefine.IsLevelEditor())
 				{
 					await UniTask.Defer(() => m_splashView.DOFade(1f, 1f).ToUniTask());
 					await UniTask.Defer(() => UniTask.Delay(TimeSpan.FromSeconds(1f)));
@@ -105,10 +102,7 @@ public class InitScene : UIScene
 
 	private UniTask Initialize(IProgress<float> progress)
 	{
-        string mode = PlayerPrefs.GetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, Constant.Scene.CLIENT);
-		bool editorMode = mode == Constant.Scene.EDITOR;
-
-        Debug.Log(CodeManager.GetAsyncName() + string.Format("<color=yellow>Current Mode : {0}</color>", mode));
+        Debug.Log(CodeManager.GetAsyncName() + string.Format("<color=yellow>Editor Mode : {0}</color>", GlobalDefine.IsLevelEditor()));
 
         TableManager tableManager = Game.Inst.Get<TableManager>();
 		UserManager userManager = Game.Inst.Get<UserManager>();
@@ -120,15 +114,15 @@ public class InitScene : UIScene
 
 		List<UniTask<bool>> tasks = new List<UniTask<bool>>
 		{
-			userManager.LoadAsync(editorMode, m_waitPanel),
+			userManager.LoadAsync(GlobalDefine.IsLevelEditor(), m_waitPanel),
 			tableManager.LoadGameData(),
-			tableManager.LoadLevelData(editorMode),
+			tableManager.LoadLevelData(GlobalDefine.IsLevelEditor()),
 		};
 
 		ProductDataTable productDataTable = tableManager.ProductDataTable;
 		tasks.Add(paymentService.LoadProducts(productDataTable));
 
-		if (!editorMode)
+		if (!GlobalDefine.IsLevelEditor())
 		{
 			tasks.Add(
 				UniTask.Defer(

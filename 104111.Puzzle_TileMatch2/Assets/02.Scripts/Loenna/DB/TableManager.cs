@@ -64,17 +64,19 @@ public class TableManager
 		ProductDataTable.Load();
         EventDataTable.Load();
 
-        if(!GlobalDefine.isLevelEditor)
+        if(!GlobalDefine.IsLevelEditor())
             GlobalData.Instance.CreateExpTable();
 
 		TextAsset[] piecesDataAssets = Resources.LoadAll<TextAsset>("DB/GameDataTable/PuzzlePieceDatas");
 		await UniTask.Defer(() => PuzzleDataTable.LoadAsync(piecesDataAssets.Select(asset => asset.text).ToArray()));
 
-		return true;
+        return true;
 	}
 
 	public async UniTask<bool> LoadLevelData(bool editorMode)
 	{
+        Debug.Log(CodeManager.GetAsyncName());
+
         string path = PlayerPrefs.GetString(Constant.Editor.DATA_PATH_KEY);
 
 		if (editorMode && PlayerPrefs.HasKey(Constant.Editor.LATEST_LEVEL_KEY))
@@ -84,7 +86,6 @@ public class TableManager
 			var allFile = Directory.GetFiles(path, "*.json");
 
 			string[] files = allFile?.Where(path => !path.Contains("_Temp"))?.ToArray();
-			string[] temporaryFiles = allFile?.Where(path => path.Contains("_Temp"))?.ToArray();
             
 			if (files?.Length > 0)
 			{
@@ -108,6 +109,8 @@ public class TableManager
 					}
 				}
 
+                string[] temporaryFiles = allFile?.Where(path => path.Contains("_Temp"))?.ToArray();
+
 				if (temporaryFiles?.Count() > 0)
 				{
 					foreach (var file in temporaryFiles)
@@ -125,7 +128,7 @@ public class TableManager
 
 				await LevelDataTable.LoadAsync(datas.ToArray());
 
-				return true;
+                return true;
 			}
 		}
 

@@ -60,6 +60,8 @@ public partial class LevelEditor : MonoBehaviour
 
 	private void Awake()
 	{
+        GlobalDefine.SetEditorMode(Constant.Scene.EDITOR);
+
 		m_prevDim.gameObject.SetActive(true);
 		m_error.gameObject.SetActive(false);
 		m_loading.SetActive(false);

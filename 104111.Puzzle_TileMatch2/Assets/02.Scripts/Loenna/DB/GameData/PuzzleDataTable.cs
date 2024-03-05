@@ -23,7 +23,7 @@ public class PuzzleDataTable : Table<int, PuzzleData>
     
     public override async UniTask LoadAsync(string[] array, string index = "")
 	{
-		JsonImporter<PiecesData> jsonImporter = new JsonImporter<PiecesData>();
+        JsonImporter<PiecesData> jsonImporter = new JsonImporter<PiecesData>();
 		PiecesData[] datas = await jsonImporter.ImportAsync(array, index);
 
 		if (datas != null)
@@ -53,11 +53,6 @@ public class PuzzleDataTable : Table<int, PuzzleData>
                 m_collections[code].Add(data);
             }
 		}
-
-		//foreach (var data in m_rowDataDic.Values)
-		//{
-		//	UnityEngine.Debug.LogWarning(data);
-		//}
 	}
 
 	public List<PuzzleData> GetCollection(string countryCode)

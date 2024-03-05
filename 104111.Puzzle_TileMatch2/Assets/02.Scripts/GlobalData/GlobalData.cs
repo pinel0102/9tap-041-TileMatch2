@@ -26,7 +26,6 @@ public partial class GlobalData : SingletonMono<GlobalData>
     public SoundManager soundManager => Game.Inst?.Get<SoundManager>();
     public TableManager tableManager => Game.Inst?.Get<TableManager>();
     public HUD HUD => Game.Inst?.Get<HUD>();
-    public bool isLevelEditor => PlayerPrefs.GetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, Constant.Scene.CLIENT) == Constant.Scene.EDITOR;
     public bool isAutoPopupPending;
 
     [Header("★ [Live] Old Items")]

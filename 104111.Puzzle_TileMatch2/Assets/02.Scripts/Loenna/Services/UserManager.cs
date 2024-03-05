@@ -97,7 +97,7 @@ public class UserManager : IDisposable
         
         waitPanel?.SetActive(false);
 
-		return true;
+        return true;
 
 		void CreateDummy(int level)
 		{
@@ -240,12 +240,10 @@ public class UserManager : IDisposable
 
 	public void Save()
 	{
-		string mode = PlayerPrefs.GetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, Constant.Scene.CLIENT);
-
-		if (mode == Constant.Scene.EDITOR)
-		{
-			return;
-		}
+        if (GlobalDefine.IsLevelEditor())
+        {
+            return;
+        }
 
         string path = Constant.User.DATA_PATH;
 

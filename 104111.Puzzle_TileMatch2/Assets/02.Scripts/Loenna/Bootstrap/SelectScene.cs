@@ -32,15 +32,12 @@ public class SelectScene : CachedBehaviour
 		//	Debug.Log($"[{stringBuilder.ToString()}]");
 		//}
 
-		string editor = Constant.Scene.EDITOR;
-		string client = Constant.Scene.CLIENT;
-
 		m_moveEditorButton.OnSetup(
 			new UITextButtonParameter{
-				ButtonText = editor,
+				ButtonText = Constant.Scene.EDITOR,
 				OnClick = () => {
-					PlayerPrefs.SetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, editor);
-					LoadScene(editor);
+                    GlobalDefine.SetEditorMode(Constant.Scene.EDITOR);
+					LoadScene(Constant.Scene.EDITOR);
 				}
 			}
 		);
@@ -49,11 +46,11 @@ public class SelectScene : CachedBehaviour
 
 		m_moveClientButton.OnSetup(
 			new UITextButtonParameter{
-				ButtonText = $"{client}",
+				ButtonText = Constant.Scene.CLIENT,
 				Binder = temp,
 				OnClick = () => {
-					PlayerPrefs.SetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, client);
-					LoadScene(client);
+                    GlobalDefine.SetEditorMode(Constant.Scene.CLIENT);
+					LoadScene(Constant.Scene.CLIENT);
 				}
 			}
 		);

@@ -18,7 +18,7 @@ public class Game : MonoBehaviour
 	private void Awake()
 	{
         VersionManager.LogCurrentVersion();
-		Application.runInBackground = true;
+        Application.runInBackground = true;
 		
 		if (s_inst != null)
 		{
@@ -38,7 +38,7 @@ public class Game : MonoBehaviour
 
         GlobalSettings.InitFrameRate();
 
-        DOTween.SetTweensCapacity(500, 50);
+        DOTween.SetTweensCapacity(5000, 100);
         ActivityIndicatorManager.Initialize();
 		SpriteManager.Initialize();
 		TableManager tableManager = new TableManager();

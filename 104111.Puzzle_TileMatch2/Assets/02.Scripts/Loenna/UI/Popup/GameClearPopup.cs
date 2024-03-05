@@ -193,17 +193,15 @@ public class GameClearPopup : UIPopup
 
 		void OnExit()
 		{
-			string mode = PlayerPrefs.GetString(Constant.Editor.DEVELOP_MODE_SCENE_KEY, Constant.Scene.CLIENT);
-
-			if (mode == Constant.Scene.CLIENT)
-			{
+            if (GlobalDefine.IsLevelEditor())
+            {
+                LoadScene(Constant.Scene.EDITOR);
+            }
+            else
+            {
                 SDKManager.SendAnalytics_C_Scene_Clear(existNextLevel ? "Next" : "Close");
                 GlobalDefine.RequestAD_Interstitial(onADComplete:OnADComplete);
-			}
-			else
-			{
-				LoadScene(Constant.Scene.EDITOR);
-			}
+            }
 		}
 
         void OnADComplete()
