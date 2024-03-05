@@ -154,6 +154,9 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
 					//	m_presenter.OnPointToLayer(index);
 					//}
 				},
+                MenuBlockerContainerParameter = new MenuBlockerContainerParameter {
+                    //
+                },
 				GridOptionContainerParameter = new GridOptionContainerParameter {
 					Table = m_tableManager.CountryCodeDataTable,
 					OnChangedSnapping = snapping => {
@@ -212,23 +215,24 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
 							codeIndex = Mathf.Max(0, codeIndex);
 							var all_current = all.Boards[all.BoardIndex];
 							m_boardView.OnUpdateBoardView(all.BoardCount, all.BoardIndex);
-							m_boardView.OnUpdateLayerView(all.CurrentBoard);
+							m_boardView.OnUpdateLayerView(all.CurrentLayers);
 							m_menuView.UpdateLevelUI(all.LastLevel, all.CurrentLevel, codeIndex);
 							m_menuView.UpdateGrades((DifficultType)all_current.DifficultType, all.HardMode);
 							m_menuView.UpdateNumberOfTileTypesUI(all.BoardIndex, all.NumberOfTileTypesCurrent, all_current.MissionCount, all_current.GoldTileIcon);
-							m_menuView.UpdateLayerUI(all.CurrentBoard, m_presenter.InvisibleLayerIndexes);
-							m_menuView.UpdateLevelInfoUI(all.BoardCount, all.TileCountInBoard, all.TileCountAll, all.MissionCountInBoard, all.MissionCountInLevel);
+							m_menuView.UpdateLayerUI(all.CurrentLayers, m_presenter.InvisibleLayerIndexes);
+							m_menuView.UpdateLevelInfoUI(all.BoardCount, all.TileCountInBoard, all.TileCountAll, all.GoldTileCount);
 							break;
 						case CurrentState.BoardUpdated board: //맵
 							var current = board.Boards[board.BoardIndex];
 							m_boardView.OnUpdateBoardView(board.BoardCount, board.BoardIndex);
-							m_boardView.OnUpdateLayerView(board.CurrentBoard);
-							m_menuView.UpdateLayerUI(board.CurrentBoard, m_presenter.InvisibleLayerIndexes);
+							m_boardView.OnUpdateLayerView(board.CurrentLayers);
+							m_menuView.UpdateLayerUI(board.CurrentLayers, m_presenter.InvisibleLayerIndexes);
 							m_menuView.UpdateGrades((DifficultType)current.DifficultType, board.HardMode);
-							m_menuView.UpdateLevelInfoUI(board.BoardCount, board.TileCountInBoard, board.TileCountAll, board.MissionCountInBoard, board.MissionCountInLevel);
+							m_menuView.UpdateLevelInfoUI(board.BoardCount, board.TileCountInBoard, board.TileCountAll, board.GoldTileCount);
 							m_menuView.UpdateNumberOfTileTypesUI(board.BoardIndex, board.NumberOfTileTypesCurrent, current.MissionCount, current.GoldTileIcon);
 							break;
 						case CurrentState.NumberOfTileTypesUpdated numberOfTileTypes: // 타일 종류 개수
+                            m_menuView.UpdateLevelInfoUI(numberOfTileTypes.BoardCount, numberOfTileTypes.TileCountInBoard, numberOfTileTypes.TileCountAll, numberOfTileTypes.GoldTileCount);
 							m_menuView.UpdateNumberOfTileTypesUI(
 								numberOfTileTypes.BoardIndex, 
 								numberOfTileTypes.NumberOfTileTypesCurrent,
@@ -239,7 +243,7 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
 						case CurrentState.TileUpdated tile: //타일
 							m_boardView.OnUpdateLayerView(tile.Layers);
 							m_menuView.UpdateLayerUI(tile.Layers, m_presenter.InvisibleLayerIndexes);
-							m_menuView.UpdateLevelInfoUI(tile.Boards.Count, tile.TileCountInBoard, tile.TileCountAll, tile.MissionCountInBoard, tile.MissionCountInLevel);
+							m_menuView.UpdateLevelInfoUI(tile.Boards.Count, tile.TileCountInBoard, tile.TileCountAll, tile.GoldTileCount);
 							break;
 						case CurrentState.DifficultUpdated { Difficult: var difficult, HardMode: var mode}:
 							m_menuView.UpdateGrades(difficult, mode);

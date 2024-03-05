@@ -134,7 +134,13 @@ partial class LevelEditor
 					Boards: Boards,
 					HardMode: HardMode
 				),
-				UpdateType.NUMBER_OF_TILE_TYPES => new CurrentState.NumberOfTileTypesUpdated(Boards: Boards, BoardIndex: BoardIndex),
+				UpdateType.NUMBER_OF_TILE_TYPES => new CurrentState.NumberOfTileTypesUpdated(
+                    Boards: Boards, 
+                    BoardIndex: BoardIndex,
+                    BoardCount: BoardCount,
+                    TileCountInBoard: TileCountInBoard,
+					TileCountAll: TileCountAll
+                ),
 				UpdateType.TILE => new CurrentState.TileUpdated(
 					BoardIndex: BoardIndex,
 					TileCountInBoard: TileCountInBoard,
@@ -176,11 +182,12 @@ partial class LevelEditor
 			int TileCountAll,
 			IReadOnlyList<BoardInfo> Boards,
 			bool HardMode
-		) : NumberOfTileTypesUpdated(BoardIndex, Boards)
+		) : CurrentState
 		{
-			public IReadOnlyList<LayerInfo> CurrentBoard => Boards?.ElementAtOrDefault(BoardIndex)?.Layers ?? Array.Empty<LayerInfo>();
-			public int MissionCountInBoard => CurrentBoard.Sum(layer => layer.Tiles.Count(tile => tile.attachedMission));
-			public int MissionCountInLevel => Boards.Sum(board => board.Layers.Sum(layer => layer.Tiles.Count(tile => tile.attachedMission)));
+            public BoardInfo CurrentBoard = Boards?.ElementAtOrDefault(BoardIndex) ?? null;
+            public IReadOnlyList<LayerInfo> CurrentLayers => CurrentBoard?.Layers ?? Array.Empty<LayerInfo>();
+			public int GoldTileCount => CurrentBoard?.MissionCount ?? 0;
+            public int NumberOfTileTypesCurrent => CurrentBoard?.NumberOfTileTypes ?? 1;
 		}
 
 		public record TileUpdated(
@@ -203,9 +210,9 @@ partial class LevelEditor
 				return Array.Empty<TileInfo>();
 			}
 
-			public IReadOnlyList<LayerInfo> CurrentBoard => Boards?.ElementAtOrDefault(BoardIndex)?.Layers ?? Array.Empty<LayerInfo>();
-			public int MissionCountInBoard => CurrentBoard.Sum(layer => layer.Tiles.Count(tile => tile.attachedMission));
-			public int MissionCountInLevel => Boards.Sum(board => board.Layers.Sum(layer => layer.Tiles.Count(tile => tile.attachedMission)));
+            public BoardInfo CurrentBoard = Boards?.ElementAtOrDefault(BoardIndex) ?? null;
+			public IReadOnlyList<LayerInfo> CurrentLayers => CurrentBoard?.Layers ?? Array.Empty<LayerInfo>();
+			public int GoldTileCount => CurrentBoard?.MissionCount ?? 0;
 		}
 
 		public record DifficultUpdated(
@@ -213,9 +220,18 @@ partial class LevelEditor
 			bool HardMode
 		) : CurrentState;
 
-		public record NumberOfTileTypesUpdated(int BoardIndex, IReadOnlyList<BoardInfo> Boards): CurrentState
+		public record NumberOfTileTypesUpdated(
+            int BoardCount, 
+            int BoardIndex,
+            int TileCountInBoard,
+			int TileCountAll,
+            IReadOnlyList<BoardInfo> Boards
+        ): CurrentState
 		{
-			public int NumberOfTileTypesCurrent => Boards?.ElementAtOrDefault(BoardIndex)?.NumberOfTileTypes ?? 1;
+            public BoardInfo CurrentBoard = Boards?.ElementAtOrDefault(BoardIndex) ?? null;
+            public IReadOnlyList<LayerInfo> CurrentLayers => CurrentBoard?.Layers ?? Array.Empty<LayerInfo>();
+			public int GoldTileCount => CurrentBoard?.MissionCount ?? 0;
+            public int NumberOfTileTypesCurrent => CurrentBoard?.NumberOfTileTypes ?? 1;
 		}
 	}
 }

@@ -8,31 +8,25 @@ public class MenuViewParameter
 {
 	public SelectLevelContainerParameter SelectLevelContainerParameter;
 	public NumberOfTileTypesContainerParameter NumberOfContainerParameter;
+    public MenuBlockerContainerParameter MenuBlockerContainerParameter;
 	public GridOptionContainerParameter GridOptionContainerParameter;
 	public LayerContainerParameter LayerContainerParameter;
 }
 
 public class MenuView : MonoBehaviour
 {
-	[SerializeField]
-	private SelectLevelContainer m_levelContainer;
-
-	[SerializeField]
-	private NumberOfTileTypesContainer m_tileTypeContainer;
-
-	[SerializeField]
-	private GridOptionContainer m_gridOptionContainer;
-
-	[SerializeField]
-	private LayerContainer m_layerContainer;
-
-	[SerializeField]
-	private LevelInfoContainer m_levelInfoContainer;
+	[SerializeField]	private SelectLevelContainer m_levelContainer;
+	[SerializeField]	private NumberOfTileTypesContainer m_tileTypeContainer;
+    [SerializeField]	private MenuBlockerContainer m_menuBlockerContainer;
+	[SerializeField]	private GridOptionContainer m_gridOptionContainer;
+	[SerializeField]	private LayerContainer m_layerContainer;
+	[SerializeField]	private LevelInfoContainer m_levelInfoContainer;
 
 	public void OnSetup(MenuViewParameter parameter)
 	{
 		m_levelContainer.OnSetup(parameter.SelectLevelContainerParameter);
 		m_tileTypeContainer.OnSetup(parameter.NumberOfContainerParameter);
+        m_menuBlockerContainer.OnSetup(parameter.MenuBlockerContainerParameter);
 		m_gridOptionContainer.OnSetup(parameter.GridOptionContainerParameter);
 		m_layerContainer.OnSetup(parameter.LayerContainerParameter);
 	}
@@ -60,15 +54,33 @@ public class MenuView : MonoBehaviour
 		//m_tileTypeContainer.OnUpdateUI(layers.Select((_, index) => index).ToArray());
     }
 
-	public void UpdateLevelInfoUI(int boardCount, int tileCountInBoard, int allTileCount, int missionCountInBoard, int missionCountInLevel)
+	public void UpdateLevelInfoUI(int boardCount, int tilesInBoard, int tilesInLevel, int goldTilesInLevel)
 	{
-		m_levelInfoContainer.OnUpdateUI(
-            (LevelInfoContainer.TILE_COUNT_IN_BOARD, tileCountInBoard.ToString()), 
-			(LevelInfoContainer.TILE_COUNT_IN_LEVEL, allTileCount.ToString()),
-			(LevelInfoContainer.MISSION_COUNT_IN_BOARD, missionCountInBoard.ToString()),
-			(LevelInfoContainer.MISSION_COUNT_IN_LEVEL, missionCountInLevel.ToString()),
-            (LevelInfoContainer.BOARD_COUNT_IN_LEVEL, boardCount.ToString())
-		);
+        List<(string text, string value)> items = new List<(string text, string value)>();
+        items.Clear();
+        items.Add((LevelInfoContainer.TILE_COUNT_IN_LEVEL, tilesInLevel.ToString()));
+        
+        if (boardCount > 1)
+        {
+            items.Add((LevelInfoContainer.TILE_COUNT_IN_BOARD, tilesInBoard.ToString()));
+            items.Add((LevelInfoContainer.BOARD_COUNT_IN_LEVEL, boardCount.ToString()));
+        }
+        
+        /*if (blockerCount > 1)
+        {
+            for(int i=0; i < blockerList.Count; i++)
+            {
+                if (blockerList[i] > 0)
+                    items.Append((LevelInfoContainer.BLOCKER_COUNT_FORMAT, blockerList[i].ToString()));
+            }
+        }*/
+
+        if (goldTilesInLevel > 0)
+        {
+            items.Add((LevelInfoContainer.GOLDTILE_COUNT_IN_LEVEL, goldTilesInLevel.ToString()));
+        }
+
+		m_levelInfoContainer.OnUpdateUI(items);
 	}
 
 	public void OnVisibleLayerOption(bool brushMode)

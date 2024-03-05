@@ -26,38 +26,17 @@ public class NumberOfTileTypesContainerParameter
 
 public class NumberOfTileTypesContainer : MonoBehaviour
 {
-	[SerializeField]
-	private TMP_Text m_titleText;
-
-	[SerializeField]
-	private Button m_subtractButton;
-
-	[SerializeField]
-	private TMP_InputField m_inputField;
-
-	[SerializeField]
-	private Button m_addButton;
-
-	[SerializeField]
-	private ToggleGroup m_toggleGroup;
-
-	//[SerializeField]
-	//private LevelEditorToggleButton m_brushToggleButton;
-
-	//[SerializeField]
-	//private LevelEditorToggleButton m_stampToggleButton;
-
-	[SerializeField]
-	private Button m_subtractButton_2;
-
-	[SerializeField]
-	private TMP_InputField m_inputField_2;
-
-	[SerializeField]
-	private Button m_addButton_2;
-
-	[SerializeField]
-	private TMP_Dropdown m_tileIconDropdown;
+	[SerializeField]	private TMP_Text m_titleText;
+	[SerializeField]	private Button m_subtractButton;
+	[SerializeField]	private TMP_InputField m_inputField;
+	[SerializeField]	private Button m_addButton;
+	[SerializeField]	private ToggleGroup m_toggleGroup;
+	//[SerializeField]	private LevelEditorToggleButton m_brushToggleButton;
+	//[SerializeField]	private LevelEditorToggleButton m_stampToggleButton;
+	[SerializeField]	private Button m_subtractButton_2;
+	[SerializeField]	private TMP_InputField m_inputField_2;
+	[SerializeField]	private Button m_addButton_2;
+	[SerializeField]	private TMP_Dropdown m_tileIconDropdown;
 
 	public void OnSetup(NumberOfTileTypesContainerParameter parameter)
 	{
@@ -96,7 +75,7 @@ public class NumberOfTileTypesContainer : MonoBehaviour
 				.ToArray();
 
 		options.AddRange(icons);
-		options.Insert(0, new OptionData("Nothing"));
+		options.Insert(0, new OptionData("None"));
 		
 		m_tileIconDropdown.AddOptions(options);
 		SetMissionTileIcon(0);

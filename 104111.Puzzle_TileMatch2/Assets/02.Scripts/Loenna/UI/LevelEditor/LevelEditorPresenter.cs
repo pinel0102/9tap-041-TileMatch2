@@ -695,13 +695,13 @@ public class LevelEditorPresenter : IDisposable
 			return;
 		}
 
-		if (m_dataManager.CurrentLevelData is var data and not null)
+        if (m_dataManager.CurrentLevelData is var data and not null)
 		{
-			var result = m_dataManager.UpdateMissionTileCount(State.BoardIndex, value);
+            var result = m_dataManager.UpdateMissionTileCount(State.BoardIndex, value);
 
 			if (result.HasValue)
 			{
-				m_internalState.Update(info => 
+                m_internalState.Update(info => 
 					info with { 
 						UpdateType = UpdateType.BOARD,
 						Boards = State.Boards.Select(
