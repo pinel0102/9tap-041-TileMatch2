@@ -489,8 +489,8 @@ public partial class GameManager : IDisposable
 								tile.Guid,
 								icon,
 								tile.Position * Constant.Game.RESIZE_TILE_RATIOS,
-                                Mathf.Max(0, tile.Blocker),
-                                Mathf.Max(1, tile.TileCount),
+                                tile.Blocker,
+                                tile.AddCount,
 								mission,
 								overlaps
 							);
