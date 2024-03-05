@@ -28,7 +28,7 @@ partial class LevelEditor
 							layer => {
 								return new LayerInfo(
 									Color: ColorTableUtility.GetColor(colorIndex++),
-									layer?.Tiles.Select(tile => new TileInfo(tile.Guid, tile.Position, size, tile.IncludeMission))
+									layer?.Tiles.Select(tile => new TileInfo(tile.Guid, tile.Position, size, tile.IncludeMission, tile.Blocker))
 								);
 							}
 						).ToArray()
@@ -38,6 +38,33 @@ partial class LevelEditor
 		}
 
 		public int TileCountAll => Layers.Sum(layer => layer.TileCount);
+
+        public Dictionary<BlockerType, int> GetBlockerDic()
+        {
+            Dictionary<BlockerType, int> dic = new Dictionary<BlockerType, int>();
+            var includeList = Layers.Select(layer => layer.Tiles.Where(tile => IsIncludeBlockerCount(tile.blockerType)).ToList()).ToList();
+            
+            includeList.ForEach(tileInfoList => 
+                tileInfoList.ForEach(
+                    tileInfo => {
+                        if(!dic.ContainsKey(tileInfo.blockerType))
+                            dic.Add(tileInfo.blockerType, 0);
+                        dic[tileInfo.blockerType] += 1;
+                    }
+                )
+            );
+
+            return dic;
+        }
+
+        private bool IsIncludeBlockerCount(BlockerType blockerType)
+        {
+            return blockerType switch {
+                BlockerType.None => false,
+                BlockerType.Glue_Right => false,
+                _ => true
+            };
+        }
 	}
 
 	public record LayerInfo(Color Color, IReadOnlyList<TileInfo> Tiles)
@@ -51,7 +78,7 @@ partial class LevelEditor
 		public int TileCount => Tiles.Count();
 	}
 	
-	public record TileInfo(Guid Guid, Vector2 Position, float Size, bool attachedMission);
+	public record TileInfo(Guid Guid, Vector2 Position, float Size, bool attachedMission, BlockerType blockerType);
 
 	public enum UpdateType
 	{
@@ -160,7 +187,19 @@ partial class LevelEditor
 	{
 		public record NotUpdated : CurrentState;
 
-		public record AllUpdated(
+        public record DifficultUpdated(
+			DifficultType Difficult,
+			bool HardMode
+		) : CurrentState;
+
+        public record BlockerUpdated(
+            Dictionary<BlockerType, int> BlockerDic
+        ): CurrentState
+		{
+            //
+		}
+
+        public record AllUpdated(
 			int CurrentLevel,
 			int LastLevel,
 			int BoardIndex,
@@ -170,10 +209,7 @@ partial class LevelEditor
 			IReadOnlyList<BoardInfo> Boards,
 			bool HardMode,
 			string CountryCode
-		): BoardUpdated(BoardCount, BoardIndex, TileCountInBoard, TileCountAll, Boards, HardMode)
-		{
-			
-		}
+		): BoardUpdated(BoardCount, BoardIndex, TileCountInBoard, TileCountAll, Boards, HardMode);
 
 		public record BoardUpdated(
 			int BoardCount,
@@ -182,13 +218,7 @@ partial class LevelEditor
 			int TileCountAll,
 			IReadOnlyList<BoardInfo> Boards,
 			bool HardMode
-		) : CurrentState
-		{
-            public BoardInfo CurrentBoard = Boards?.ElementAtOrDefault(BoardIndex) ?? null;
-            public IReadOnlyList<LayerInfo> CurrentLayers => CurrentBoard?.Layers ?? Array.Empty<LayerInfo>();
-			public int GoldTileCount => CurrentBoard?.MissionCount ?? 0;
-            public int NumberOfTileTypesCurrent => CurrentBoard?.NumberOfTileTypes ?? 1;
-		}
+		) : BoardState(Boards, BoardIndex);
 
 		public record TileUpdated(
 			int BoardIndex,
@@ -196,7 +226,7 @@ partial class LevelEditor
 			int TileCountAll,
 			IReadOnlyList<BoardInfo> Boards,
 			IReadOnlyList<LayerInfo> Layers
-		) : CurrentState
+		) : BoardState(Boards, BoardIndex)
 		{
 			public IReadOnlyList<Color> CurrentColors => Layers?.Select(layer => layer.Color)?.ToArray() ?? Array.Empty<Color>();
 
@@ -209,16 +239,7 @@ partial class LevelEditor
 
 				return Array.Empty<TileInfo>();
 			}
-
-            public BoardInfo CurrentBoard = Boards?.ElementAtOrDefault(BoardIndex) ?? null;
-			public IReadOnlyList<LayerInfo> CurrentLayers => CurrentBoard?.Layers ?? Array.Empty<LayerInfo>();
-			public int GoldTileCount => CurrentBoard?.MissionCount ?? 0;
 		}
-
-		public record DifficultUpdated(
-			DifficultType Difficult,
-			bool HardMode
-		) : CurrentState;
 
 		public record NumberOfTileTypesUpdated(
             int BoardCount, 
@@ -226,12 +247,18 @@ partial class LevelEditor
             int TileCountInBoard,
 			int TileCountAll,
             IReadOnlyList<BoardInfo> Boards
-        ): CurrentState
-		{
+        ): BoardState(Boards, BoardIndex);
+
+        public record BoardState(
+            IReadOnlyList<BoardInfo> Boards, 
+            int BoardIndex
+        ) : CurrentState
+        {
             public BoardInfo CurrentBoard = Boards?.ElementAtOrDefault(BoardIndex) ?? null;
             public IReadOnlyList<LayerInfo> CurrentLayers => CurrentBoard?.Layers ?? Array.Empty<LayerInfo>();
-			public int GoldTileCount => CurrentBoard?.MissionCount ?? 0;
+            public int GoldTileCount => CurrentBoard?.MissionCount ?? 0;
             public int NumberOfTileTypesCurrent => CurrentBoard?.NumberOfTileTypes ?? 1;
-		}
+            public Dictionary<BlockerType, int> BlockerDic => CurrentBoard?.GetBlockerDic() ?? new Dictionary<BlockerType, int>();
+        }
 	}
 }

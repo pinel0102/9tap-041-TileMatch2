@@ -17,13 +17,13 @@ public class LayerView : MonoBehaviour
 			return;
 		}
 
-		foreach (var (_, position, size, attachedMission) in layer.Tiles)
+		foreach (var (_, position, size, attachedMission, blockerType) in layer.Tiles)
 		{
-			Draw(tilePrefab, position, size, layer.Color, attachedMission);
+			Draw(tilePrefab, position, size, layer.Color, attachedMission, blockerType);
 		}
 	}
 
-	public void Draw(TileBrush tilePrefab, Vector2 position, float size, Color color, bool attachedMission)
+	public void Draw(TileBrush tilePrefab, Vector2 position, float size, Color color, bool attachedMission, BlockerType blockerType)
 	{
 		GameObject go = m_pools.Count > 0? m_pools.Dequeue() : Instantiate(tilePrefab.gameObject);
 		

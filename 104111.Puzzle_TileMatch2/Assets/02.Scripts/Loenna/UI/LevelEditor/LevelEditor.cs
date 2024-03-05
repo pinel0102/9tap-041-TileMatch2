@@ -220,7 +220,7 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
 							m_menuView.UpdateGrades((DifficultType)all_current.DifficultType, all.HardMode);
 							m_menuView.UpdateNumberOfTileTypesUI(all.BoardIndex, all.NumberOfTileTypesCurrent, all_current.MissionCount, all_current.GoldTileIcon);
 							m_menuView.UpdateLayerUI(all.CurrentLayers, m_presenter.InvisibleLayerIndexes);
-							m_menuView.UpdateLevelInfoUI(all.BoardCount, all.TileCountInBoard, all.TileCountAll, all.GoldTileCount);
+							m_menuView.UpdateLevelInfoUI(all.BoardCount, all.TileCountInBoard, all.TileCountAll, all.GoldTileCount, all.BlockerDic);
 							break;
 						case CurrentState.BoardUpdated board: //맵
 							var current = board.Boards[board.BoardIndex];
@@ -228,11 +228,11 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
 							m_boardView.OnUpdateLayerView(board.CurrentLayers);
 							m_menuView.UpdateLayerUI(board.CurrentLayers, m_presenter.InvisibleLayerIndexes);
 							m_menuView.UpdateGrades((DifficultType)current.DifficultType, board.HardMode);
-							m_menuView.UpdateLevelInfoUI(board.BoardCount, board.TileCountInBoard, board.TileCountAll, board.GoldTileCount);
+							m_menuView.UpdateLevelInfoUI(board.BoardCount, board.TileCountInBoard, board.TileCountAll, board.GoldTileCount, board.BlockerDic);
 							m_menuView.UpdateNumberOfTileTypesUI(board.BoardIndex, board.NumberOfTileTypesCurrent, current.MissionCount, current.GoldTileIcon);
 							break;
 						case CurrentState.NumberOfTileTypesUpdated numberOfTileTypes: // 타일 종류 개수
-                            m_menuView.UpdateLevelInfoUI(numberOfTileTypes.BoardCount, numberOfTileTypes.TileCountInBoard, numberOfTileTypes.TileCountAll, numberOfTileTypes.GoldTileCount);
+                            m_menuView.UpdateLevelInfoUI(numberOfTileTypes.BoardCount, numberOfTileTypes.TileCountInBoard, numberOfTileTypes.TileCountAll, numberOfTileTypes.GoldTileCount, numberOfTileTypes.BlockerDic);
 							m_menuView.UpdateNumberOfTileTypesUI(
 								numberOfTileTypes.BoardIndex, 
 								numberOfTileTypes.NumberOfTileTypesCurrent,
@@ -243,7 +243,7 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
 						case CurrentState.TileUpdated tile: //타일
 							m_boardView.OnUpdateLayerView(tile.Layers);
 							m_menuView.UpdateLayerUI(tile.Layers, m_presenter.InvisibleLayerIndexes);
-							m_menuView.UpdateLevelInfoUI(tile.Boards.Count, tile.TileCountInBoard, tile.TileCountAll, tile.GoldTileCount);
+							m_menuView.UpdateLevelInfoUI(tile.Boards.Count, tile.TileCountInBoard, tile.TileCountAll, tile.GoldTileCount, tile.BlockerDic);
 							break;
 						case CurrentState.DifficultUpdated { Difficult: var difficult, HardMode: var mode}:
 							m_menuView.UpdateGrades(difficult, mode);
