@@ -1,57 +1,34 @@
 using UnityEngine;
 using UnityEngine.UI;
-
 using System.Threading;
-
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
-
 using SimpleFileBrowser;
-
 using NineTap.Common;
 using System;
 using System.Collections;
+using TMPro;
 
-public partial class LevelEditor : MonoBehaviour
+public partial class LevelEditor : SingletonMono<LevelEditor>
 {
-	[SerializeField]
-	private GameObject m_loading;
-
-	[SerializeField]
-	private CanvasGroup m_prevDim;
-
-	[SerializeField]
-	private int m_cellSize = 80;
-
-	[SerializeField]
-	private int m_cellCount = 7;
-
-	[SerializeField]
-	private BoardView m_boardView;
-
-	[SerializeField]
-	private MenuView m_menuView;
-
-	[SerializeField]
-	private Text m_dimText;
-
-	[SerializeField]
-	private Text m_loadingText;
-
+	[SerializeField]	private GameObject m_loading;
+	[SerializeField]	private CanvasGroup m_prevDim;
+	[SerializeField]	private int m_cellSize = 80;
+	[SerializeField]	private int m_cellCount = 7;
+	[SerializeField]	private BoardView m_boardView;
+	[SerializeField]	private MenuView m_menuView;
+	[SerializeField]	private Text m_dimText;
+	[SerializeField]	private Text m_loadingText;
 	private LevelEditorPresenter m_presenter;
+	[SerializeField]	private Text m_error;
+	[SerializeField]	private LevelEditorButton m_revertButton;
+	[SerializeField]	private GameObject m_warning;
+    [SerializeField]	private Text m_LogMessage;
 
-	[SerializeField]
-	private Text m_error;
-	
-	[SerializeField]
-	private LevelEditorButton m_revertButton;
+    [SerializeField]	private TMP_Text m_dataPathText;
 
-	[SerializeField]
-	private GameObject m_warning;
-
-    [SerializeField]
-	private Text m_LogMessage;
     private Coroutine m_LogCoroutine;
+    private Coroutine m_DataPathCoroutine;
     private const float delayDelta = 0.1f;
     private WaitForSecondsRealtime wDelayDelta = new WaitForSecondsRealtime(delayDelta);
 	
@@ -68,6 +45,7 @@ public partial class LevelEditor : MonoBehaviour
 		m_prevDim.alpha = 1f;
 
         InitLog();
+        RefreshDataPathText();
 	}
 
 	private void OnDestroy()
@@ -104,6 +82,8 @@ public partial class LevelEditor : MonoBehaviour
 			onSuccess: async paths => {
 				string path = paths[0];
 				PlayerPrefs.SetString(Constant.Editor.DATA_PATH_KEY, path);
+                RefreshDataPathText();
+
 				await OnSetup(path);
 			},
 			() => Application.Quit(),
@@ -191,6 +171,8 @@ public partial class LevelEditor : MonoBehaviour
 
 								PlayerPrefs.SetString(Constant.Editor.DATA_PATH_KEY, path);
 								PlayerPrefs.SetInt(Constant.Editor.LATEST_LEVEL_KEY, 1);
+                                RefreshDataPathText();
+
 								await m_presenter.Initialize(path);
 							},
 							Stub.Nothing,
@@ -336,5 +318,31 @@ public partial class LevelEditor : MonoBehaviour
         }
 
         m_LogMessage.gameObject.SetActive(false);
+    }
+
+    public void RefreshDataPathText()
+    {
+        string path = PlayerPrefs.GetString(Constant.Editor.DATA_PATH_KEY);
+
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>DataPath : {0}</color>", path));
+
+        m_dataPathText.SetText(string.Format("DataPath : {0}", path));
+        m_dataPathText.gameObject.SetActive(true);
+
+        if (m_DataPathCoroutine != null)
+            StopCoroutine(m_DataPathCoroutine);
+
+        m_DataPathCoroutine = StartCoroutine(CO_DataPathWaitTime());
+    }
+
+    private IEnumerator CO_DataPathWaitTime(float logTime = 3f)
+    {
+        while (logTime > 0)
+        {
+            logTime -= delayDelta;
+            yield return wDelayDelta;
+        }
+
+        m_dataPathText.gameObject.SetActive(false);
     }
 }

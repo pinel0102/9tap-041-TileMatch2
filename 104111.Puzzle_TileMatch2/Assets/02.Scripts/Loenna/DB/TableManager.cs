@@ -77,14 +77,52 @@ public class TableManager
 	{
         Debug.Log(CodeManager.GetAsyncName());
 
-        string path = PlayerPrefs.GetString(Constant.Editor.DATA_PATH_KEY);
-
 		if (editorMode && PlayerPrefs.HasKey(Constant.Editor.LATEST_LEVEL_KEY))
 		{
-			int level = PlayerPrefs.GetInt(Constant.Editor.LATEST_LEVEL_KEY);
+            int level = PlayerPrefs.GetInt(Constant.Editor.LATEST_LEVEL_KEY);            
+            string path = PlayerPrefs.GetString(Constant.Editor.DATA_PATH_KEY);
 
-			var allFile = Directory.GetFiles(path, "*.json");
+            var origin = Path.Combine(path, $"LevelData_{level}.json");
 
+            if (File.Exists(origin))
+            {
+                Debug.Log(CodeManager.GetAsyncName() + string.Format("<color=yellow>Origin : {0}</color>", origin));
+
+                List<string> datas = new();
+
+                using (FileStream stream = new FileStream(origin, FileMode.Open, FileAccess.Read))
+                {
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        string data = await UniTask.Defer(() => reader.ReadToEndAsync().AsUniTask());
+
+                        datas.Add(data);
+                    }
+                }
+
+                var modified = Path.Combine(path, $"LevelData_{level}_Temp.json");
+
+                if (File.Exists(modified))
+                {
+                    Debug.Log(CodeManager.GetAsyncName() + string.Format("<color=yellow>Modified : {0}</color>", modified));
+
+                    using (FileStream stream = new FileStream(modified, FileMode.Open, FileAccess.Read))
+                    {
+                        using (StreamReader reader = new StreamReader(stream))
+                        {
+                            string data = await UniTask.Defer(() => reader.ReadToEndAsync().AsUniTask());
+
+                            datas.Add(data);
+                        }
+                    }
+                }
+
+                await LevelDataTable.LoadAsync(datas.ToArray());
+
+                return true;
+            }
+
+			/*var allFile = Directory.GetFiles(path, "*.json");
 			string[] files = allFile?.Where(path => !path.Contains("_Temp"))?.ToArray();
             
 			if (files?.Length > 0)
@@ -129,7 +167,7 @@ public class TableManager
 				await LevelDataTable.LoadAsync(datas.ToArray());
 
                 return true;
-			}
+			}*/
 		}
 
 		TextAsset[] levelDataAssets = Resources.LoadAll<TextAsset>("DB/LevelDatas");
