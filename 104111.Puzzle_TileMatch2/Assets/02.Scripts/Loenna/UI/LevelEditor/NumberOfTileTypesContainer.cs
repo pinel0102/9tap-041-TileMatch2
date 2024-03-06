@@ -117,7 +117,7 @@ public class NumberOfTileTypesContainer : MonoBehaviour
 
 	public void OnUpdateUI(int boardIndex, int number, int missionCount)
 	{
-		m_titleText.text = $"Tile types on board[{boardIndex}]:";
+        //m_titleText.text = $"Tile Types on Board[{boardIndex}]:";
 		m_inputField.SetTextWithoutNotify(number.ToString());
 		m_subtractButton.interactable = number > 1;
 
