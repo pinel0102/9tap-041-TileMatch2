@@ -21,7 +21,7 @@ public partial class LevelEditor
     /// <summary>
     /// 에디터에서 보드에 설치 또는 추가할 Blocker 개수.
     /// </summary>
-    public int blockerCount;
+    public int blockerCount = 1;
     /// <summary>
     /// 에디터에서 보드에 설치 또는 추가할 Blocker의 가변 ICD. (가변 ICD 사용 항목만 적용.)
     /// </summary>

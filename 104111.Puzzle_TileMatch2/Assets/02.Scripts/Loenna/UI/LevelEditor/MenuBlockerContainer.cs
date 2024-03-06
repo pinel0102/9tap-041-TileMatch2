@@ -8,6 +8,8 @@ using static TMPro.TMP_Dropdown;
 
 public class MenuBlockerContainerParameter
 {
+    public List<BlockerTypeEditor> BlockerList;
+
     // Blocker Count
 	public Action<int> OnTakeStep; 
 	public Action<int> OnNavigate;
@@ -106,7 +108,7 @@ public class MenuBlockerContainer : MonoBehaviour
     {
         List<OptionData> options = new();
 
-		var icons = LevelEditor.Instance.blockerList
+		var icons = parameter.BlockerList
 				.Select(item => new OptionData(item.ToString()))
 				.ToArray();
 

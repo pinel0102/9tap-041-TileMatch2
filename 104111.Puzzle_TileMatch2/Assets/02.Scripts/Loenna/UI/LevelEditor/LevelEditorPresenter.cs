@@ -17,7 +17,7 @@ using System.Text;
 public class LevelEditorPresenter : IDisposable
 {
 	private readonly LevelDataManager m_dataManager;
-	private readonly LevelEditor m_view;
+	private readonly LevelEditor m_levelEditor;
 	private readonly Bounds m_boardBounds;
 	private readonly IAsyncReactiveProperty<BrushInfo> m_brushInfo;
 	private readonly AsyncMessageBroker<BrushWidgetInfo> m_brushMessageBroker;
@@ -40,8 +40,8 @@ public class LevelEditorPresenter : IDisposable
 
 	public LevelEditorPresenter(LevelEditor view, float cellSize, float cellCount)
 	{
-		m_view = view;
-		m_dataManager = new LevelDataManager(m_view);
+		m_levelEditor = view;
+		m_dataManager = new LevelDataManager(m_levelEditor);
 		m_cancellationTokenSource = new();
 		m_boardBounds = new Bounds(Vector2.zero, Vector2.one * cellSize * cellCount);
 		m_brushInfo = new AsyncReactiveProperty<BrushInfo>(
@@ -55,7 +55,7 @@ public class LevelEditorPresenter : IDisposable
 		m_brushMessageBroker = new();
 		m_invisibleLayersBroker = new();
 
-		m_dataManager.Saved.WithoutCurrent().Subscribe((saved) => m_view.SetVisibleWarning(!saved));
+		m_dataManager.Saved.WithoutCurrent().Subscribe((saved) => m_levelEditor.SetVisibleWarning(!saved));
 
 		UpdateState = m_internalState
 			.Select(info => info.ToCurrentState())
@@ -132,7 +132,7 @@ public class LevelEditorPresenter : IDisposable
 	{
 		LevelData data = await m_dataManager.LoadConfig(path);
 		LoadLevelInternal(data);
-        m_view.SetLog(string.Format("Load Level {0}", data.Key));
+        m_levelEditor.SetLog(string.Format("Load Level {0}", data.Key));
 	}
 
     public async UniTask LoadLevel(int level, bool forceLoad = false, bool showLog = true)
@@ -141,14 +141,14 @@ public class LevelEditorPresenter : IDisposable
 		LoadLevelInternal(data);
         
         if (showLog)
-            m_view.SetLog(string.Format("Load Level {0}", data.Key));
+            m_levelEditor.SetLog(string.Format("Load Level {0}", data.Key));
 	}
 
 	public async UniTask LoadLevelByStep(int direction)
 	{
 		LevelData data = await m_dataManager.LoadLevelDataByStep(direction);
 		LoadLevelInternal(data);
-        m_view.SetLog(string.Format("Load Level {0}", data.Key));
+        m_levelEditor.SetLog(string.Format("Load Level {0}", data.Key));
 	}
 
 	private void LoadLevelInternal(LevelData levelData)
@@ -278,7 +278,7 @@ public class LevelEditorPresenter : IDisposable
                     sb.Append(outputLevels[i]);
                 }
                 
-                m_view.SetLog(string.Format("Seperate Board -> Level {0}", sb.ToString()));
+                m_levelEditor.SetLog(string.Format("Seperate Board -> Level {0}", sb.ToString()));
             }
         }
 	}
@@ -534,6 +534,8 @@ public class LevelEditorPresenter : IDisposable
     /// <param name="count"></param>
     public void AddBlocker(BlockerTypeEditor blockerType, int count)
     {
+        if(blockerType == BlockerTypeEditor.None) return;
+
         if (count <= 0)
 		{
 			m_internalState.Update(info => 
@@ -544,7 +546,7 @@ public class LevelEditorPresenter : IDisposable
 			return;
 		}
 
-        m_dataManager.AddBlocker(State.BoardIndex, blockerType, count, GlobalDefine.GetBlockerICD(blockerType, m_view.blockerVariableICD));
+        m_dataManager.AddBlocker(State.BoardIndex, blockerType, count, GlobalDefine.GetBlockerICD(blockerType, m_levelEditor.blockerVariableICD));
 
         m_internalState.Update(
 			state => state with {
@@ -559,6 +561,8 @@ public class LevelEditorPresenter : IDisposable
     /// <param name="blockerType"></param>
     public void ClearBlocker(BlockerTypeEditor blockerType)
     {
+        if(blockerType == BlockerTypeEditor.None) return;
+
         m_dataManager.ClearBlocker(State.BoardIndex, blockerType);
 
         m_internalState.Update(
@@ -575,6 +579,8 @@ public class LevelEditorPresenter : IDisposable
     /// <param name="count"></param>
     public void ApplyBlocker(BlockerTypeEditor blockerType, int count)
     {
+        if(blockerType == BlockerTypeEditor.None) return;
+
         Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} : {1}</color>", blockerType, count));
         
         ClearBlocker(blockerType);
@@ -588,8 +594,7 @@ public class LevelEditorPresenter : IDisposable
     {
         Debug.Log(CodeManager.GetMethodName());
 
-        LevelEditor.Instance.blockerList.Where(item => item != BlockerTypeEditor.None).ToList()
-        .ForEach(_blockerType => {
+        m_levelEditor.blockerList.ForEach(_blockerType => {
             ClearBlocker(_blockerType);
         });
     }
@@ -686,7 +691,7 @@ public class LevelEditorPresenter : IDisposable
 
 	public void PlayGame()
 	{
-		m_view.SetVisibleLoading(true);
+		m_levelEditor.SetVisibleLoading(true);
 		try
 		{
 			UniTask.Void(
@@ -697,13 +702,13 @@ public class LevelEditorPresenter : IDisposable
 					PlayerPrefs.SetInt(Constant.Editor.LATEST_LEVEL_KEY, level);
 					UnityEngine.SceneManagement.SceneManager.LoadScene("Game");
 
-					m_view.SetVisibleLoading(false);
+					m_levelEditor.SetVisibleLoading(false);
 				}, m_cancellationTokenSource.Token
 			);
 		}
 		catch
 		{
-			m_view.SetVisibleLoading(false);
+			m_levelEditor.SetVisibleLoading(false);
 		}
 	}
 

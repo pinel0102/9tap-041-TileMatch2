@@ -359,12 +359,11 @@ public class LevelDataManager : IDisposable
 		if (!m_currentData.Boards.HasIndex(boardIndex))
 			return;
 
-        Board board = m_currentData[boardIndex]!;
-        List<BlockerType> blockerTypeList = new List<BlockerType>();
-
-        if(GlobalDefine.TryParseBlockerType(blockerTypeEditor, out blockerTypeList))
+        if(GlobalDefine.TryParseBlockerType(blockerTypeEditor, out List<BlockerType> blockerTypeList))
         {
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} : {1} (ICD : {2})</color>", blockerTypeEditor, count, variableICD));
+
+            Board board = m_currentData[boardIndex]!;
 
             blockerTypeList.ForEach(blockerType => {
                 Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>blockerType : {0}</color>", blockerType));
@@ -402,12 +401,11 @@ public class LevelDataManager : IDisposable
 		if (!m_currentData.Boards.HasIndex(boardIndex))
 			return;
 
-        Board board = m_currentData[boardIndex]!;
-        List<BlockerType> blockerTypeList = new List<BlockerType>();
-
-        if(GlobalDefine.TryParseBlockerType(blockerTypeEditor, out blockerTypeList))
+        if(GlobalDefine.TryParseBlockerType(blockerTypeEditor, out List<BlockerType> blockerTypeList))
         {
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0}</color>", blockerTypeEditor));
+
+            Board board = m_currentData[boardIndex]!;
 
             blockerTypeList.ForEach(blockerType => {
                 Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>blockerType : {0}</color>", blockerType));
@@ -419,6 +417,8 @@ public class LevelDataManager : IDisposable
                     int removeCount = layer.Tiles.RemoveAll(tile => tile.Blocker.Equals(blockerType));
                     if (removeCount > 0)
                     {
+                        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Layer[{0}] : Removed {1}</color>", index, removeCount));
+
                         if (layer.Tiles.Count <= 0 && board.Layers.Count > 1)
                         {
                             board.Layers.RemoveAt(index);

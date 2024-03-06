@@ -156,6 +156,7 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
 					//}
 				},
                 MenuBlockerContainerParameter = new MenuBlockerContainerParameter {
+                    BlockerList = blockerList,
                     OnTakeStep = IncrementBlockerCount,
 					OnNavigate =  UpdateBlockerCount,
 					OnChangeBlocker = UpdateBlockerIndex,
