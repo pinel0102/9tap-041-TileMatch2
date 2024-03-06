@@ -31,7 +31,7 @@ public partial class LevelEditor
 
     public void UpdateBlockerICD(int count)
     {
-        blockerICD = count;
+        blockerICD = Mathf.Max(1, count);
         m_presenter.SetUpdateBlockerICD(blockerCount);
     }
 
@@ -48,7 +48,7 @@ public partial class LevelEditor
 	}
 
     /// <summary>
-    /// <para>ICD를 사용하는 Blocker : _blockerICD.</para>
+    /// <para>ICD를 사용하는 Blocker : _blockerICD (최소 1).</para>
     /// <para>ICD를 사용하지 않는 Blocker : 0.</para>
     /// </summary>
     /// <param name="_blockerType"></param>
@@ -57,7 +57,7 @@ public partial class LevelEditor
     public int GetBlockerICD(BlockerTypeEditor _blockerType, int _blockerICD)
     {
         if (HasBlockerICD(_blockerType))
-            return _blockerICD;
+            return Mathf.Max(1, _blockerICD);
         else 
             return 0;
     }
