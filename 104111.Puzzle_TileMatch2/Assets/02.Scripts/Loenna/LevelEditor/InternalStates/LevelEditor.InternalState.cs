@@ -178,7 +178,9 @@ partial class LevelEditor
 				),
 				UpdateType.DIFFICULT => new CurrentState.DifficultUpdated(Difficult: (DifficultType)Boards[BoardIndex].DifficultType, HardMode: HardMode ),
                 UpdateType.BLOCKER => new CurrentState.BlockerUpdated(
-                    BlockerDic: Boards[BoardIndex].GetBlockerDic()),
+                    CurrentBoard: Boards[BoardIndex],
+                    BlockerDic: Boards[BoardIndex].GetBlockerDic()
+                ),
 				_=> new CurrentState.NotUpdated()
 			};
 		}
@@ -194,6 +196,7 @@ partial class LevelEditor
 		) : CurrentState;
 
         public record BlockerUpdated(
+            BoardInfo CurrentBoard,
             Dictionary<BlockerType, int> BlockerDic
         ): CurrentState
 		{

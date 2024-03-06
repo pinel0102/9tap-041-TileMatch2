@@ -525,6 +525,77 @@ public class LevelEditorPresenter : IDisposable
         );
 	}
 
+#region Blocker Function
+
+    /// <summary>
+    /// [Board] Blocker 추가 설치.
+    /// </summary>
+    /// <param name="blockerType"></param>
+    /// <param name="count"></param>
+    public void AddBlocker(BlockerTypeEditor blockerType, int count)
+    {
+        if (count <= 0)
+		{
+			m_internalState.Update(info => 
+				info with { 
+					UpdateType = UpdateType.BOARD
+				}
+			);
+			return;
+		}
+
+        m_dataManager.AddBlocker(State.BoardIndex, blockerType, count, GlobalDefine.GetBlockerICD(blockerType, m_view.blockerVariableICD));
+
+        m_internalState.Update(
+			state => state with {
+				UpdateType = UpdateType.BLOCKER
+			}
+		);
+    }
+
+    /// <summary>
+    /// [Board] Blocker 삭제.
+    /// </summary>
+    /// <param name="blockerType"></param>
+    public void ClearBlocker(BlockerTypeEditor blockerType)
+    {
+        m_dataManager.ClearBlocker(State.BoardIndex, blockerType);
+
+        m_internalState.Update(
+			state => state with {
+				UpdateType = UpdateType.BLOCKER
+			}
+		);
+    }
+
+    /// <summary>
+    /// [Board] Blocker 삭제 후 새로 설치. (Override).
+    /// </summary>
+    /// <param name="blockerType"></param>
+    /// <param name="count"></param>
+    public void ApplyBlocker(BlockerTypeEditor blockerType, int count)
+    {
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} : {1}</color>", blockerType, count));
+        
+        ClearBlocker(blockerType);
+        AddBlocker(blockerType, count);
+    }
+
+    /// <summary>
+    /// [Board] 모든 Blocker 삭제.
+    /// </summary>
+    public void ClearAllBlocker()
+    {
+        Debug.Log(CodeManager.GetMethodName());
+
+        LevelEditor.Instance.blockerList.Where(item => item != BlockerTypeEditor.None).ToList()
+        .ForEach(_blockerType => {
+            ClearBlocker(_blockerType);
+        });
+    }
+
+#endregion Blocker Function
+
 	private void ResetPlacedTilesInLayer(int layerIndex)
 	{
 		(_, float size, _) = m_brushInfo.Value;

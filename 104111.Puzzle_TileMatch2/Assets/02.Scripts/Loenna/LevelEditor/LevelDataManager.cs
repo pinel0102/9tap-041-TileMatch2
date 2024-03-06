@@ -349,7 +349,142 @@ public class LevelDataManager : IDisposable
 
 		m_saved.Value = false;
 		return true;
+	}
+
+    public void AddBlocker(int boardIndex, BlockerTypeEditor blockerTypeEditor, int count, int variableICD)
+    {
+        if (m_currentData == null)
+			return;
 		
+		if (!m_currentData.Boards.HasIndex(boardIndex))
+			return;
+
+        Board board = m_currentData[boardIndex]!;
+        List<BlockerType> blockerTypeList = new List<BlockerType>();
+
+        if(GlobalDefine.TryParseBlockerType(blockerTypeEditor, out blockerTypeList))
+        {
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} : {1} (ICD : {2})</color>", blockerTypeEditor, count, variableICD));
+
+            blockerTypeList.ForEach(blockerType => {
+                Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>blockerType : {0}</color>", blockerType));
+
+                for (int index = board.Layers.Count - 1; index >= 0; index--)
+                {
+                    Layer layer = board.Layers[index];
+                    
+                    //[TODO]: Add Blocker
+                    
+                    /*int removeCount = layer.Tiles.RemoveAll(tile => tile.Blocker.Equals(blockerType));
+                    if (removeCount > 0)
+                    {
+                        if (layer.Tiles.Count <= 0 && board.Layers.Count > 1)
+                        {
+                            board.Layers.RemoveAt(index);
+                        }
+
+                        m_saved.Value = false;
+                    }*/
+                }
+            });
+        }
+        else
+        {
+            Debug.LogWarning(CodeManager.GetMethodName() + string.Format("<color=yellow>Parsing Error : {0}</color>", blockerTypeEditor));
+        }
+    }
+
+    public void ClearBlocker(int boardIndex, BlockerTypeEditor blockerTypeEditor)
+    {
+        if (m_currentData == null)
+			return;
+		
+		if (!m_currentData.Boards.HasIndex(boardIndex))
+			return;
+
+        Board board = m_currentData[boardIndex]!;
+        List<BlockerType> blockerTypeList = new List<BlockerType>();
+
+        if(GlobalDefine.TryParseBlockerType(blockerTypeEditor, out blockerTypeList))
+        {
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0}</color>", blockerTypeEditor));
+
+            blockerTypeList.ForEach(blockerType => {
+                Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>blockerType : {0}</color>", blockerType));
+
+                for (int index = board.Layers.Count - 1; index >= 0; index--)
+                {
+                    Layer layer = board.Layers[index];
+                    
+                    int removeCount = layer.Tiles.RemoveAll(tile => tile.Blocker.Equals(blockerType));
+                    if (removeCount > 0)
+                    {
+                        if (layer.Tiles.Count <= 0 && board.Layers.Count > 1)
+                        {
+                            board.Layers.RemoveAt(index);
+                        }
+
+                        m_saved.Value = false;
+                    }
+                }
+            });
+        }
+        else
+        {
+            Debug.LogWarning(CodeManager.GetMethodName() + string.Format("<color=yellow>Parsing Error : {0}</color>", blockerTypeEditor));
+        }
+    }
+
+    public bool TrySetBlockerTile(int boardIndex, int layerIndex, Guid guid, BlockerType blockerType, int variableICD)
+	{
+		if (m_currentData == null)
+		{
+			return false;
+		}
+
+		if (!m_currentData.Boards.HasIndex(boardIndex))
+		{
+			return false;
+		}
+
+		Board board = m_currentData[boardIndex]!;
+
+		if (!board?.Layers?.HasIndex(layerIndex) ?? true)
+		{
+			return false;
+		}
+
+		Layer layer = board!.Layers[layerIndex];
+
+		if (layer.Tiles == null)
+		{
+			return false;
+		}
+
+		if (layer.Tiles.FindIndex(tile => tile.Guid == guid) is int index and >= 0)
+		{
+			Tile data = layer.Tiles[index];
+            return TrySetBlockerTile(data, blockerType, variableICD);
+		}
+
+        return false;
+	}
+
+    public bool TrySetBlockerTile(Tile tile, BlockerType blockerType, int variableICD)
+	{
+		if (tile == null)
+		{
+			return false;
+		}
+
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[From][{0}] {1} (ICD : {2})</color>", tile.Guid, tile.Blocker, tile.BlockerICD));
+
+		tile = tile with { Blocker = blockerType, BlockerICD = GlobalDefine.GetBlockerICD(blockerType, variableICD) };
+            
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[==To][{0}] {1} (ICD : {2})</color>", tile.Guid, tile.Blocker, tile.BlockerICD));
+
+		m_saved.Value = false;
+		return true;
 	}
 
 	public bool TryAddTileData(DrawOrder drawOrder, int boardIndex, Bounds bounds, out int layerIndex)
@@ -441,7 +576,7 @@ public class LevelDataManager : IDisposable
 		}
 	}
 
-	public int? UpdateNumberOfTypes(int boardIndex, int number)
+    public int? UpdateNumberOfTypes(int boardIndex, int number)
 	{
 		if (m_currentData == null)
 		{

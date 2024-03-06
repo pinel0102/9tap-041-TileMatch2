@@ -160,7 +160,10 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
 					OnNavigate =  UpdateBlockerCount,
 					OnChangeBlocker = UpdateBlockerIndex,
                     OnTakeStepBlockerICD = IncrementBlockerICD,
-                    OnNavigateICD = UpdateBlockerICD
+                    OnNavigateICD = UpdateBlockerICD,
+                    OnAddBlocker = m_presenter.AddBlocker,
+                    OnApplyBlocker = m_presenter.ApplyBlocker,
+                    OnClearAllBlocker = m_presenter.ClearAllBlocker
                 },
 				GridOptionContainerParameter = new GridOptionContainerParameter {
 					Table = m_tableManager.CountryCodeDataTable,
@@ -226,7 +229,7 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
 							m_menuView.UpdateNumberOfTileTypesUI(all.BoardIndex, all.NumberOfTileTypesCurrent, all_current.MissionCount, all_current.GoldTileIcon);
 							m_menuView.UpdateLayerUI(all.CurrentLayers, m_presenter.InvisibleLayerIndexes);
 							m_menuView.UpdateLevelInfoUI(all.BoardCount, all.TileCountInBoard, all.TileCountAll, all.GoldTileCount, all.BlockerDic);
-                            m_menuView.UpdateBlockerUI(blockerType, blockerCount, blockerICD);
+                            m_menuView.UpdateBlockerUI(blockerType, blockerCount, blockerVariableICD);
 							break;
 						case CurrentState.BoardUpdated board: //맵
 							var current = board.Boards[board.BoardIndex];
@@ -255,7 +258,7 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
 							m_menuView.UpdateGrades(difficult, mode);
                             break;
                         case CurrentState.BlockerUpdated blocker:
-                            m_menuView.UpdateBlockerUI(blockerType, blockerCount, blockerICD);
+                            m_menuView.UpdateBlockerUI(blockerType, blockerCount, blockerVariableICD);
 							break;
 					}
 

@@ -8,13 +8,21 @@ using static TMPro.TMP_Dropdown;
 
 public class MenuBlockerContainerParameter
 {
+    // Blocker Count
 	public Action<int> OnTakeStep; 
 	public Action<int> OnNavigate;
+
+    // Blocker Change
     public Action<int> OnChangeBlocker;
 
     // Blocker ICD
     public Action<int> OnTakeStepBlockerICD;
     public Action<int> OnNavigateICD;
+
+    // Blocker Function
+    public Action<BlockerTypeEditor, int> OnAddBlocker;
+    public Action<BlockerTypeEditor, int> OnApplyBlocker;
+    public Action OnClearAllBlocker;
 }
 
 public class MenuBlockerContainer : MonoBehaviour
@@ -22,7 +30,7 @@ public class MenuBlockerContainer : MonoBehaviour
     [Header("★ [Live] Blocker")]
     [SerializeField]	private BlockerTypeEditor m_blockerType;
     [SerializeField]	private int m_blockerCount;
-    [SerializeField]	private int m_blockerICD;
+    [SerializeField]	private int m_blockerVariableICD;
 
     [Header("★ [Reference] Blocker")]
     [SerializeField]	private TMP_Dropdown m_dropdown;
@@ -46,6 +54,7 @@ public class MenuBlockerContainer : MonoBehaviour
     public void OnSetup(MenuBlockerContainerParameter parameter)
     {
         SetupDefaultButton(parameter);
+        SetupFunctionButton(parameter);
         SetupBlockerICD(parameter);
         SetupBlockerDropdown(parameter);
     }
@@ -64,9 +73,17 @@ public class MenuBlockerContainer : MonoBehaviour
 				);
 			}
 		);
-        m_buttonAdd.onClick.AddListener(() => AddBlocker(m_blockerType, m_blockerCount));
-        m_buttonApply.onClick.AddListener(() => ApplyBlocker(m_blockerType, m_blockerCount));
-        m_buttonClear.onClick.AddListener(() => ClearAllBlocker());
+    }
+
+    private void SetupFunctionButton(MenuBlockerContainerParameter parameter)
+    {
+        m_buttonAdd.onClick.AddListener(() => parameter?.OnAddBlocker?.Invoke(m_blockerType, m_blockerCount));
+        m_buttonApply.onClick.AddListener(() => parameter?.OnApplyBlocker?.Invoke(m_blockerType, m_blockerCount));
+        m_buttonClear.onClick.AddListener(() => parameter?.OnClearAllBlocker?.Invoke());
+
+        //m_buttonAdd.onClick.AddListener(() => AddBlocker(m_blockerType, m_blockerCount));
+        //m_buttonApply.onClick.AddListener(() => ApplyBlocker(m_blockerType, m_blockerCount));
+        //m_buttonClear.onClick.AddListener(() => ClearAllBlocker());
     }
 
     private void SetupBlockerICD(MenuBlockerContainerParameter parameter)
@@ -115,11 +132,11 @@ public class MenuBlockerContainer : MonoBehaviour
 
 #region OnUpdateUI
 
-    public void OnUpdateUI(BlockerTypeEditor blockerType, int blockerCount, int blockerICD)
+    public void OnUpdateUI(BlockerTypeEditor blockerType, int blockerCount, int blockerVariableICD)
 	{
         m_blockerType = blockerType;
         m_blockerCount = blockerCount;
-        m_blockerICD = blockerICD;
+        m_blockerVariableICD = blockerVariableICD;
 
 		m_CountText.SetTextWithoutNotify(blockerCount.ToString());
 		m_buttonCountMinus.interactable = blockerType != BlockerTypeEditor.None && blockerCount > 0;
@@ -129,48 +146,45 @@ public class MenuBlockerContainer : MonoBehaviour
         m_buttonAdd.interactable = blockerType != BlockerTypeEditor.None && blockerCount > 0;
         m_buttonApply.interactable = blockerType != BlockerTypeEditor.None;
 
-        bool hasICD = LevelEditor.Instance.HasBlockerICD(blockerType);
+        bool hasVariableICD = GlobalDefine.IsBlockerICD_Variable(blockerType);
 
-        m_ICDText.SetTextWithoutNotify(blockerICD.ToString());
-        m_buttonICDMinus.interactable = hasICD && blockerICD > 1;
-        m_buttonICDPlus.interactable = hasICD;
-        m_ICDText.interactable = hasICD;
-        m_ICDContainer.SetActive(hasICD);
+        m_ICDText.SetTextWithoutNotify(blockerVariableICD.ToString());
+        m_buttonICDMinus.interactable = hasVariableICD && blockerVariableICD > 1;
+        m_buttonICDPlus.interactable = hasVariableICD;
+        m_ICDText.interactable = hasVariableICD;
+        m_ICDContainer.SetActive(hasVariableICD);
 
         bool showLog = true;
 
         if (showLog)
         {
-            if (hasICD)
-                Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} : {1} ({2})</color>", m_blockerType, m_blockerCount, m_blockerICD));
-            else
-                Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} : {1}</color>", m_blockerType, m_blockerCount));
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} : {1} (ICD : {2})</color>", m_blockerType, m_blockerCount, GlobalDefine.GetBlockerICD(m_blockerType, m_blockerVariableICD)));
         }
 	}
 
 #endregion OnUpdateUI    
 
 
-#region Function
+/*#region Blocker Function
 
-    private void ApplyBlocker(BlockerTypeEditor blockerType, int count)
+    private void ApplyBlocker(BlockerTypeEditor _blockerType, int _count)
     {
-        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} : {1}</color>", blockerType, count));
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} : {1}</color>", _blockerType, _count));
         
-        ClearBlocker(blockerType);
-        AddBlocker(blockerType, count);
+        ClearBlocker(_blockerType);
+        AddBlocker(_blockerType, _count);
     }
 
-    private void ClearBlocker(BlockerTypeEditor blockerType)
+    private void ClearBlocker(BlockerTypeEditor _blockerType)
     {
-        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0}</color>", blockerType));
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0}</color>", _blockerType));
 
         //
     }
 
-    private void AddBlocker(BlockerTypeEditor blockerType, int count)
+    private void AddBlocker(BlockerTypeEditor _blockerType, int _count)
     {
-        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} : {1}</color>", blockerType, count));
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} : {1}</color>", _blockerType, _count));
 
         //
     }
@@ -180,10 +194,10 @@ public class MenuBlockerContainer : MonoBehaviour
         Debug.Log(CodeManager.GetMethodName());
 
         LevelEditor.Instance.blockerList.Where(item => item != BlockerTypeEditor.None).ToList()
-        .ForEach(blockerType => {
-            ClearBlocker(blockerType);
+        .ForEach(_blockerType => {
+            ClearBlocker(_blockerType);
         });
     }
 
-#endregion Function    
+#endregion Blocker Function*/
 }

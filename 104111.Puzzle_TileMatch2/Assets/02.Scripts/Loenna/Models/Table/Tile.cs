@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 /// <param name="Type">[No Use]</param>
 /// <param name="Position"></param>
 /// <param name="Blocker">Blocker 종류. (Default:0)</param>
-/// <param name="BlockerICD">Blocker 내부 카운트. (Default:0)</param>
+/// <param name="BlockerICD">Blocker 내부 카운트. (Default:0 / ICD 시용시 최소 1)</param>
 /// <param name="IncludeMission">[Deprecated] 골든 퍼즐 여부.</param>
 [Serializable]
 public record Tile(
