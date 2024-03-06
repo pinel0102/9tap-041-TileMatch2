@@ -12,8 +12,9 @@ public class MenuBlockerContainerParameter
 	public Action<int> OnNavigate;
     public Action<int> OnChangeBlocker;
 
-    // Suitcase AddCount
-    public Action<int> OnTakeStepAddCount;
+    // Blocker ICD
+    public Action<int> OnTakeStepBlockerICD;
+    public Action<int> OnNavigateICD;
 }
 
 public class MenuBlockerContainer : MonoBehaviour
@@ -21,19 +22,19 @@ public class MenuBlockerContainer : MonoBehaviour
     [Header("★ [Live] Blocker")]
     [SerializeField]	private BlockerTypeEditor m_blockerType;
     [SerializeField]	private int m_blockerCount;
-    [SerializeField]	private int m_addCount;
+    [SerializeField]	private int m_blockerICD;
 
     [Header("★ [Reference] Blocker")]
-    [SerializeField]	private TMP_Dropdown m_blockerDropdown;
-    [SerializeField]	private TMP_InputField m_blockerCountText;
-    [SerializeField]	private Button m_buttonMinus;
-	[SerializeField]	private Button m_buttonPlus;
+    [SerializeField]	private TMP_Dropdown m_dropdown;
+    [SerializeField]	private TMP_InputField m_CountText;
+    [SerializeField]	private Button m_buttonCountMinus;
+	[SerializeField]	private Button m_buttonCountPlus;
 
-    [Header("★ [Reference] AddCount")]
-    [SerializeField]	private GameObject m_addCountContainer;
-    [SerializeField]	private TMP_InputField m_addCountText;
-    [SerializeField]	private Button m_buttonAddCountMinus;
-	[SerializeField]	private Button m_buttonAddCountPlus;
+    [Header("★ [Reference] Blocker ICD")]
+    [SerializeField]	private GameObject m_ICDContainer;
+    [SerializeField]	private TMP_InputField m_ICDText;
+    [SerializeField]	private Button m_buttonICDMinus;
+	[SerializeField]	private Button m_buttonICDPlus;
     
     [Header("★ [Reference] Function Button")]
     [SerializeField]	private Button m_buttonAdd;
@@ -45,15 +46,15 @@ public class MenuBlockerContainer : MonoBehaviour
     public void OnSetup(MenuBlockerContainerParameter parameter)
     {
         SetupDefaultButton(parameter);
-        SetupSuitcaseAddCount(parameter);
+        SetupBlockerICD(parameter);
         SetupBlockerDropdown(parameter);
     }
 
     private void SetupDefaultButton(MenuBlockerContainerParameter parameter)
     {
-        m_buttonMinus.onClick.AddListener(() => parameter?.OnTakeStep?.Invoke(-1));
-		m_buttonPlus.onClick.AddListener(() => parameter?.OnTakeStep?.Invoke(1));
-        m_blockerCountText.onEndEdit.AddListener(
+        m_buttonCountMinus.onClick.AddListener(() => parameter?.OnTakeStep?.Invoke(-1));
+		m_buttonCountPlus.onClick.AddListener(() => parameter?.OnTakeStep?.Invoke(1));
+        m_CountText.onEndEdit.AddListener(
 			text => {
 				parameter?.OnNavigate?.Invoke(
                     int.TryParse(text, out int result) switch {
@@ -68,14 +69,13 @@ public class MenuBlockerContainer : MonoBehaviour
         m_buttonClear.onClick.AddListener(() => ClearAllBlocker());
     }
 
-    private void SetupSuitcaseAddCount(MenuBlockerContainerParameter parameter)
+    private void SetupBlockerICD(MenuBlockerContainerParameter parameter)
     {
-        m_addCountContainer.SetActive(LevelEditor.Instance.blockerList.Contains(BlockerTypeEditor.Suitcase));
-        m_buttonAddCountMinus.onClick.AddListener(() => parameter?.OnTakeStepAddCount?.Invoke(-1));
-		m_buttonAddCountPlus.onClick.AddListener(() => parameter?.OnTakeStepAddCount?.Invoke(1));
-        m_addCountText.onEndEdit.AddListener(
+        m_buttonICDMinus.onClick.AddListener(() => parameter?.OnTakeStepBlockerICD?.Invoke(-1));
+		m_buttonICDPlus.onClick.AddListener(() => parameter?.OnTakeStepBlockerICD?.Invoke(1));
+        m_ICDText.onEndEdit.AddListener(
 			text => {
-				parameter?.OnNavigate?.Invoke(
+				parameter?.OnNavigateICD?.Invoke(
                     int.TryParse(text, out int result) switch {
 						true => result,
 						_=> -1
@@ -95,8 +95,8 @@ public class MenuBlockerContainer : MonoBehaviour
 
 		options.AddRange(icons);
 		
-		m_blockerDropdown.AddOptions(options);
-		m_blockerDropdown.onValueChanged.AddListener(
+		m_dropdown.AddOptions(options);
+		m_dropdown.onValueChanged.AddListener(
 			index => {
 				parameter?.OnChangeBlocker?.Invoke(index);
 			}
@@ -104,12 +104,10 @@ public class MenuBlockerContainer : MonoBehaviour
 
         SetBlocker(0);
     }
-
     
-
     private void SetBlocker(int index)
 	{
-		m_blockerDropdown.SetValueWithoutNotify(index);
+		m_dropdown.SetValueWithoutNotify(index);
 	}
 
 #endregion Initialize    
@@ -117,32 +115,34 @@ public class MenuBlockerContainer : MonoBehaviour
 
 #region OnUpdateUI
 
-    public void OnUpdateUI(BlockerTypeEditor blockerType, int blockerCount, int addCount)
+    public void OnUpdateUI(BlockerTypeEditor blockerType, int blockerCount, int blockerICD)
 	{
         m_blockerType = blockerType;
         m_blockerCount = blockerCount;
-        m_addCount = addCount;
+        m_blockerICD = blockerICD;
 
-		m_blockerCountText.SetTextWithoutNotify(blockerCount.ToString());
-		m_buttonMinus.interactable = blockerType != BlockerTypeEditor.None && blockerCount > 1;
-        m_buttonPlus.interactable = blockerType != BlockerTypeEditor.None;
-        m_blockerCountText.interactable = blockerType != BlockerTypeEditor.None;
+		m_CountText.SetTextWithoutNotify(blockerCount.ToString());
+		m_buttonCountMinus.interactable = blockerType != BlockerTypeEditor.None && blockerCount > 0;
+        m_buttonCountPlus.interactable = blockerType != BlockerTypeEditor.None;
+        m_CountText.interactable = blockerType != BlockerTypeEditor.None;
 
         m_buttonAdd.interactable = blockerType != BlockerTypeEditor.None && blockerCount > 0;
         m_buttonApply.interactable = blockerType != BlockerTypeEditor.None;
 
-        m_addCountText.SetTextWithoutNotify(addCount.ToString());
-        m_buttonAddCountMinus.interactable = blockerType == BlockerTypeEditor.Suitcase && addCount > 1;
-        m_buttonAddCountPlus.interactable = blockerType == BlockerTypeEditor.Suitcase;
-        m_addCountText.interactable = blockerType == BlockerTypeEditor.Suitcase;
-        m_addCountContainer.SetActive(blockerType == BlockerTypeEditor.Suitcase);
+        bool hasICD = LevelEditor.Instance.BlockerHasICD(blockerType);
 
-        bool showLog = false;
+        m_ICDText.SetTextWithoutNotify(blockerICD.ToString());
+        m_buttonICDMinus.interactable = hasICD && blockerICD > 1;
+        m_buttonICDPlus.interactable = hasICD;
+        m_ICDText.interactable = hasICD;
+        m_ICDContainer.SetActive(hasICD);
+
+        bool showLog = true;
 
         if (showLog)
         {
-            if (blockerType == BlockerTypeEditor.Suitcase)
-                Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} : {1} ({2})</color>", m_blockerType, m_blockerCount, m_addCount));
+            if (hasICD)
+                Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} : {1} ({2})</color>", m_blockerType, m_blockerCount, m_blockerICD));
             else
                 Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} : {1}</color>", m_blockerType, m_blockerCount));
         }

@@ -86,8 +86,8 @@ public class TileItem : CachedBehaviour
 	}
 
     public string tileName;
-    public BlockerType blocker;
-    public int addCount;
+    public BlockerType blockerType;
+    public int blockerICD;
 
 	private TileDataTable m_tileDataTable;
 
@@ -316,8 +316,8 @@ public class TileItem : CachedBehaviour
 		m_icon.sprite = sprite;
 
         tileName = path.Replace("UI_Img_", string.Empty);
-        blocker = item.Blocker;
-        addCount = item.AddCount;
+        blockerType = item.Blocker;
+        blockerICD = item.BlockerICD;
 
         (m_tmpText.text, m_icon.enabled) = m_icon.sprite switch {
 			null => (tileName, false),

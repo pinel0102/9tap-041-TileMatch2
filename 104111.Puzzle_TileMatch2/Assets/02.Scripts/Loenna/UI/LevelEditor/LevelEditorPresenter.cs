@@ -506,6 +506,25 @@ public class LevelEditorPresenter : IDisposable
         );
 	}
 
+    public void SetUpdateBlockerICD(int count)
+	{
+		if (count < 0)
+		{
+			m_internalState.Update(info => 
+				info with { 
+					UpdateType = UpdateType.BOARD
+				}
+			);
+			return;
+		}
+
+        m_internalState.Update(info => 
+            info with { 
+                UpdateType = UpdateType.BLOCKER
+            } 
+        );
+	}
+
 	private void ResetPlacedTilesInLayer(int layerIndex)
 	{
 		(_, float size, _) = m_brushInfo.Value;

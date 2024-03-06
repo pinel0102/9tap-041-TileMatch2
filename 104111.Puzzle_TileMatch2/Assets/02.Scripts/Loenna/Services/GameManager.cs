@@ -490,7 +490,7 @@ public partial class GameManager : IDisposable
 								icon,
 								tile.Position * Constant.Game.RESIZE_TILE_RATIOS,
                                 tile.Blocker,
-                                tile.AddCount,
+                                tile.BlockerICD,
 								mission,
 								overlaps
 							);

@@ -15,12 +15,24 @@ public partial class LevelEditor
     [Header("★ [Live] Blocker")]
     public BlockerTypeEditor blockerType;
     public int blockerCount;
-    public int addCount;
+    public int blockerICD = 3;
 
     public void UpdateBlockerIndex(int index)
     {
         blockerType = blockerList[index];
         m_presenter.SetUpdateBlocker(blockerCount);
+    }
+
+    public void UpdateBlockerCount(int count)
+    {
+        blockerCount = count;
+        m_presenter.SetUpdateBlocker(blockerCount);
+    }
+
+    public void UpdateBlockerICD(int count)
+    {
+        blockerICD = count;
+        m_presenter.SetUpdateBlockerICD(blockerCount);
     }
 
     public void IncrementBlockerCount(int increment)
@@ -29,9 +41,20 @@ public partial class LevelEditor
         m_presenter.SetUpdateBlocker(blockerCount);
 	}
 
-    public void IncrementBlockerAddCount(int increment)
+    public void IncrementBlockerICD(int increment)
 	{
-        addCount = Mathf.Max(0, addCount + increment);
-        m_presenter.SetUpdateBlocker(blockerCount);
+        blockerICD = Mathf.Max(1, blockerICD + increment);
+        m_presenter.SetUpdateBlockerICD(blockerCount);
 	}
+
+    public bool BlockerHasICD(BlockerTypeEditor blocker)
+    {
+        switch(blocker)
+        {
+            case BlockerTypeEditor.Suitcase:
+                return true;
+            default:
+                return false;
+        }
+    }
 }
