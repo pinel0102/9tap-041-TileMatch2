@@ -48,6 +48,11 @@ public class MenuView : MonoBehaviour
 	   m_tileTypeContainer.SetMissionTileIcon(goldTileIcon);
 	}
 
+    public void UpdateBlockerUI(BlockerTypeEditor blockerType, int blockerCount)
+    {
+        m_menuBlockerContainer.OnUpdateUI(blockerType, blockerCount);
+    }
+
     public void UpdateLayerUI(IReadOnlyList<LayerInfo> layers, IReadOnlyList<int> invisibleList)
     {
 		m_layerContainer.OnUpdateUI(layers.Select(layer => layer.Color).ToArray(), invisibleList);

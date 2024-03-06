@@ -88,6 +88,7 @@ partial class LevelEditor
 		TILE, // 타일 변경
 		NUMBER_OF_TILE_TYPES, // 타일 종류 개수 변경
 		DIFFICULT, // 난이도 변경
+        BLOCKER,
 	}
 
 	/// <summary>
@@ -141,7 +142,7 @@ partial class LevelEditor
 
 		public CurrentState ToCurrentState()
 		{
-			return UpdateType switch {
+            return UpdateType switch {
 				UpdateType.ALL => new CurrentState.AllUpdated(
 					LastLevel: LastLevel,
 					CurrentLevel: CurrentLevel,
@@ -175,11 +176,11 @@ partial class LevelEditor
 					Boards: Boards,
 					Layers: Boards?.ElementAtOrDefault(BoardIndex)?.Layers ?? Array.Empty<LayerInfo>()
 				),
-				UpdateType.DIFFICULT => new CurrentState.DifficultUpdated( Difficult: (DifficultType)Boards[BoardIndex].DifficultType, HardMode: HardMode ),
+				UpdateType.DIFFICULT => new CurrentState.DifficultUpdated(Difficult: (DifficultType)Boards[BoardIndex].DifficultType, HardMode: HardMode ),
+                UpdateType.BLOCKER => new CurrentState.BlockerUpdated(
+                    BlockerDic: Boards[BoardIndex].GetBlockerDic()),
 				_=> new CurrentState.NotUpdated()
 			};
-
-			
 		}
 	}
 

@@ -11,6 +11,7 @@ using TMPro;
 
 public partial class LevelEditor : SingletonMono<LevelEditor>
 {
+    [Header("★ [Reference] Editor")]
 	[SerializeField]	private GameObject m_loading;
 	[SerializeField]	private CanvasGroup m_prevDim;
 	[SerializeField]	private int m_cellSize = 80;
@@ -155,7 +156,9 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
 					//}
 				},
                 MenuBlockerContainerParameter = new MenuBlockerContainerParameter {
-                    //
+                    OnTakeStep = IncrementBlockerCount,
+					OnNavigate = m_presenter.SetUpdateBlocker,
+					OnChangeBlocker = UpdateBlockerIndex
                 },
 				GridOptionContainerParameter = new GridOptionContainerParameter {
 					Table = m_tableManager.CountryCodeDataTable,
@@ -221,6 +224,7 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
 							m_menuView.UpdateNumberOfTileTypesUI(all.BoardIndex, all.NumberOfTileTypesCurrent, all_current.MissionCount, all_current.GoldTileIcon);
 							m_menuView.UpdateLayerUI(all.CurrentLayers, m_presenter.InvisibleLayerIndexes);
 							m_menuView.UpdateLevelInfoUI(all.BoardCount, all.TileCountInBoard, all.TileCountAll, all.GoldTileCount, all.BlockerDic);
+                            m_menuView.UpdateBlockerUI(blockerType, blockerCount);
 							break;
 						case CurrentState.BoardUpdated board: //맵
 							var current = board.Boards[board.BoardIndex];
@@ -247,6 +251,9 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
 							break;
 						case CurrentState.DifficultUpdated { Difficult: var difficult, HardMode: var mode}:
 							m_menuView.UpdateGrades(difficult, mode);
+                            break;
+                        case CurrentState.BlockerUpdated blocker:
+                            m_menuView.UpdateBlockerUI(blockerType, blockerCount);
 							break;
 					}
 

@@ -8546,9 +8546,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 771038992}
+  - component: {fileID: 771038995}
   - component: {fileID: 771038994}
   - component: {fileID: 771038993}
-  - component: {fileID: 771038995}
   m_Layer: 5
   m_Name: MenuView
   m_TagString: Untagged
@@ -12787,8 +12787,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1351299872}
-  - component: {fileID: 1351299875}
   - component: {fileID: 1351299873}
+  - component: {fileID: 1351299875}
   m_Layer: 5
   m_Name: View_Blocker
   m_TagString: Untagged
@@ -12828,8 +12828,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3c2ccb420003405a93efbf830f09a3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_blockerType: 0
+  m_blockerCount: 0
   m_blockerDropdown: {fileID: 1988907599}
-  m_blockerCount: {fileID: 850814927}
+  m_blockerCountText: {fileID: 850814927}
   m_buttonMinus: {fileID: 1793706640}
   m_buttonPlus: {fileID: 428784368}
   m_buttonApply: {fileID: 1070547585}
@@ -13716,6 +13718,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 274947bf5fa4f8f44adc0962e096bafa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blockerType: 0
+  blockerCount: 0
+  blockerList: 000000000100000003000000
   m_loading: {fileID: 59096809}
   m_prevDim: {fileID: 2023968117}
   m_cellSize: 160

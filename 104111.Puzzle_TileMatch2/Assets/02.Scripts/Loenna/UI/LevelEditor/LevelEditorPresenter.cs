@@ -443,7 +443,6 @@ public class LevelEditorPresenter : IDisposable
 			int numbers = data?[State.BoardIndex]?.NumberOfTileTypes ?? 0;
 			SetNumberOfTileTypes(Mathf.Max(0, numbers + increment));
 		}
-
 	}
 
 	public void SetNumberOfTileTypes(int value)
@@ -486,7 +485,25 @@ public class LevelEditorPresenter : IDisposable
 				);
 			}
 		}
+	}
 
+    public void SetUpdateBlocker(int count)
+	{
+		if (count < 0)
+		{
+			m_internalState.Update(info => 
+				info with { 
+					UpdateType = UpdateType.BOARD
+				}
+			);
+			return;
+		}
+
+        m_internalState.Update(info => 
+            info with { 
+                UpdateType = UpdateType.BLOCKER
+            } 
+        );
 	}
 
 	private void ResetPlacedTilesInLayer(int layerIndex)
