@@ -47,9 +47,24 @@ public partial class LevelEditor
         m_presenter.SetUpdateBlockerICD(blockerCount);
 	}
 
-    public bool BlockerHasICD(BlockerTypeEditor blocker)
+    /// <summary>
+    /// <para>ICD를 사용하는 Blocker : _blockerICD.</para>
+    /// <para>ICD를 사용하지 않는 Blocker : 0.</para>
+    /// </summary>
+    /// <param name="_blockerType"></param>
+    /// <param name="_blockerICD"></param>
+    /// <returns></returns>
+    public int GetBlockerICD(BlockerTypeEditor _blockerType, int _blockerICD)
     {
-        switch(blocker)
+        if (HasBlockerICD(_blockerType))
+            return _blockerICD;
+        else 
+            return 0;
+    }
+
+    public bool HasBlockerICD(BlockerTypeEditor _blockerType)
+    {
+        switch(_blockerType)
         {
             case BlockerTypeEditor.Suitcase:
                 return true;

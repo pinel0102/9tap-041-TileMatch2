@@ -129,7 +129,7 @@ public class MenuBlockerContainer : MonoBehaviour
         m_buttonAdd.interactable = blockerType != BlockerTypeEditor.None && blockerCount > 0;
         m_buttonApply.interactable = blockerType != BlockerTypeEditor.None;
 
-        bool hasICD = LevelEditor.Instance.BlockerHasICD(blockerType);
+        bool hasICD = LevelEditor.Instance.HasBlockerICD(blockerType);
 
         m_ICDText.SetTextWithoutNotify(blockerICD.ToString());
         m_buttonICDMinus.interactable = hasICD && blockerICD > 1;
