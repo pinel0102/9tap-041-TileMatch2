@@ -239,11 +239,13 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
 							m_menuView.UpdateLayerUI(board.CurrentLayers, m_presenter.InvisibleLayerIndexes);
 							m_menuView.UpdateGrades((DifficultType)current.DifficultType, board.HardMode);
 							m_menuView.UpdateLevelInfoUI(board.BoardCount, board.TileCountInBoard, board.TileCountAll, board.GoldTileCount, board.BlockerDic);
-							m_menuView.UpdateNumberOfTileTypesUI(board.BoardIndex, board.NumberOfTileTypesCurrent, current.MissionCount, current.GoldTileIcon);
+							m_menuView.UpdateBlockerUI(blockerType, blockerCount, blockerVariableICD);
+                            m_menuView.UpdateNumberOfTileTypesUI(board.BoardIndex, board.NumberOfTileTypesCurrent, current.MissionCount, current.GoldTileIcon);
 							break;
 						case CurrentState.NumberOfTileTypesUpdated numberOfTileTypes: // 타일 종류 개수
                             m_menuView.UpdateLevelInfoUI(numberOfTileTypes.BoardCount, numberOfTileTypes.TileCountInBoard, numberOfTileTypes.TileCountAll, numberOfTileTypes.GoldTileCount, numberOfTileTypes.BlockerDic);
-							m_menuView.UpdateNumberOfTileTypesUI(
+                            m_menuView.UpdateBlockerUI(blockerType, blockerCount, blockerVariableICD);
+                            m_menuView.UpdateNumberOfTileTypesUI(
 								numberOfTileTypes.BoardIndex, 
 								numberOfTileTypes.NumberOfTileTypesCurrent,
 								numberOfTileTypes.Boards[numberOfTileTypes.BoardIndex].MissionCount,
@@ -254,13 +256,11 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
 							m_boardView.OnUpdateLayerView(tile.Layers);
 							m_menuView.UpdateLayerUI(tile.Layers, m_presenter.InvisibleLayerIndexes);
 							m_menuView.UpdateLevelInfoUI(tile.Boards.Count, tile.TileCountInBoard, tile.TileCountAll, tile.GoldTileCount, tile.BlockerDic);
+                            m_menuView.UpdateBlockerUI(blockerType, blockerCount, blockerVariableICD);
 							break;
 						case CurrentState.DifficultUpdated { Difficult: var difficult, HardMode: var mode}:
 							m_menuView.UpdateGrades(difficult, mode);
                             break;
-                        case CurrentState.BlockerUpdated blocker:
-                            m_menuView.UpdateBlockerUI(blockerType, blockerCount, blockerVariableICD);
-							break;
 					}
 
 					m_prevDim.alpha = 0f;

@@ -487,40 +487,11 @@ public class LevelEditorPresenter : IDisposable
 		}
 	}
 
-    public void SetUpdateBlocker(int count)
+    public void SetUpdateBoard()
 	{
-		if (count < 0)
-		{
-			m_internalState.Update(info => 
-				info with { 
-					UpdateType = UpdateType.BOARD
-				}
-			);
-			return;
-		}
-
-        m_internalState.Update(info => 
+		m_internalState.Update(info => 
             info with { 
-                UpdateType = UpdateType.BLOCKER
-            } 
-        );
-	}
-
-    public void SetUpdateBlockerICD(int count)
-	{
-		if (count < 0)
-		{
-			m_internalState.Update(info => 
-				info with { 
-					UpdateType = UpdateType.BOARD
-				}
-			);
-			return;
-		}
-
-        m_internalState.Update(info => 
-            info with { 
-                UpdateType = UpdateType.BLOCKER
+                UpdateType = UpdateType.BOARD
             } 
         );
 	}
@@ -528,7 +499,7 @@ public class LevelEditorPresenter : IDisposable
 #region Blocker Function
 
     /// <summary>
-    /// [Board] Blocker 추가 설치.
+    /// [Board] Blocker 설치.
     /// </summary>
     /// <param name="blockerType"></param>
     /// <param name="count"></param>
@@ -546,26 +517,33 @@ public class LevelEditorPresenter : IDisposable
 			return;
 		}
 
-        int ICD = GlobalDefine.GetBlockerICD(blockerType, m_levelEditor.blockerVariableICD);
-        int successCount = 0;
+        int blockerICD = GlobalDefine.GetBlockerICD(blockerType, m_levelEditor.blockerVariableICD);
+        
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Start] {0} x {1} (ICD : {2})</color>", blockerType, count, blockerICD));
 
-        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Start] {0} x {2} (ICD : {3})</color>", blockerType, successCount, count, ICD));
-
-        for(int i=0; i < count; i++)
+        int successCount = m_dataManager.AddBlocker(State.BoardIndex, blockerType, count, blockerICD);
+        if (successCount > 0)
         {
-            if(m_dataManager.AddBlocker(State.BoardIndex, blockerType, ICD))
-            {
-                successCount++;
-            }
+            (_, float size, _) = m_brushInfo.Value;
+            var boardInfos = BoardInfo.Create(m_dataManager.CurrentLevelData, size);
 
-            m_internalState.Update(
-                state => state with {
-                    UpdateType = UpdateType.BLOCKER
-                }
+            m_internalState.Update(info => 
+                info with { 
+                    UpdateType = UpdateType.BOARD,
+                    Boards = boardInfos
+                } 
             );
         }
+        else
+        {
+            m_internalState.Update(info => 
+				info with { 
+					UpdateType = UpdateType.BOARD
+				}
+			);
+        }
 
-        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Finished] {0} x ({1}/{2}) (ICD : {3})</color>", blockerType, successCount, count, ICD));
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Finished] {0} x ({1}/{2}) (ICD : {3})</color>", blockerType, successCount, count, blockerICD));
     }
 
     /// <summary>
@@ -576,13 +554,27 @@ public class LevelEditorPresenter : IDisposable
     {
         if(blockerType == BlockerTypeEditor.None) return;
 
-        m_dataManager.ClearBlocker(State.BoardIndex, blockerType);
+        int removeCount = m_dataManager.ClearBlocker(State.BoardIndex, blockerType);
+        if (removeCount > 0)
+        {
+            (_, float size, _) = m_brushInfo.Value;
+            var boardInfos = BoardInfo.Create(m_dataManager.CurrentLevelData, size);
 
-        m_internalState.Update(
-			state => state with {
-				UpdateType = UpdateType.BLOCKER
-			}
-		);
+            m_internalState.Update(info => 
+                info with { 
+                    UpdateType = UpdateType.BOARD,
+                    Boards = boardInfos
+                } 
+            );
+        }
+        else
+        {
+            m_internalState.Update(info => 
+				info with { 
+					UpdateType = UpdateType.BOARD
+				}
+			);
+        }
     }
 
     /// <summary>

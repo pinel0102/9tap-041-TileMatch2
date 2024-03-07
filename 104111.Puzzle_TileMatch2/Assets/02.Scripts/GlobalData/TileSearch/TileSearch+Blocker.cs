@@ -5,6 +5,16 @@ using UnityEngine;
 
 public static partial class TileSearch
 {
+    public static Tile GetRandomTile(this List<Tile> tileList)
+    {
+        return tileList.OrderBy(g => System.Guid.NewGuid()).ToList()[0];
+    }
+
+    public static List<Tile> GetRandomTiles(this List<Tile> tileList, int count)
+    {
+        return tileList.OrderBy(g => System.Guid.NewGuid()).Take(count).ToList();
+    }
+
     public static List<Tile> GetBlockerEnableTiles(this Layer layer, BlockerType blockerType)
     {
         List<Tile> result = new List<Tile>();

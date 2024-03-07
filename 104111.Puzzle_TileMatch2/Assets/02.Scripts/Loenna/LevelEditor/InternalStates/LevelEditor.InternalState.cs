@@ -59,11 +59,13 @@ partial class LevelEditor
 
         private bool IsIncludeBlockerCount(BlockerType blockerType)
         {
-            return blockerType switch {
-                BlockerType.None => false,
-                BlockerType.Glue_Right => false,
-                _ => true
-            };
+            switch(blockerType)
+            {
+                case BlockerType.None:
+                    return false;
+                default:
+                    return true;
+            }
         }
 	}
 
@@ -88,7 +90,6 @@ partial class LevelEditor
 		TILE, // 타일 변경
 		NUMBER_OF_TILE_TYPES, // 타일 종류 개수 변경
 		DIFFICULT, // 난이도 변경
-        BLOCKER,
 	}
 
 	/// <summary>
@@ -177,11 +178,7 @@ partial class LevelEditor
 					Layers: Boards?.ElementAtOrDefault(BoardIndex)?.Layers ?? Array.Empty<LayerInfo>()
 				),
 				UpdateType.DIFFICULT => new CurrentState.DifficultUpdated(Difficult: (DifficultType)Boards[BoardIndex].DifficultType, HardMode: HardMode ),
-                UpdateType.BLOCKER => new CurrentState.BlockerUpdated(
-                    CurrentBoard: Boards[BoardIndex],
-                    BlockerDic: Boards[BoardIndex].GetBlockerDic()
-                ),
-				_=> new CurrentState.NotUpdated()
+                _=> new CurrentState.NotUpdated()
 			};
 		}
 	}
@@ -194,14 +191,6 @@ partial class LevelEditor
 			DifficultType Difficult,
 			bool HardMode
 		) : CurrentState;
-
-        public record BlockerUpdated(
-            BoardInfo CurrentBoard,
-            Dictionary<BlockerType, int> BlockerDic
-        ): CurrentState
-		{
-            //
-		}
 
         public record AllUpdated(
 			int CurrentLevel,

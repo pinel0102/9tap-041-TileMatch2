@@ -82,7 +82,7 @@ public class MenuView : MonoBehaviour
         foreach(var item in blockerDic)
         {
             if (item.Value > 0)
-                items.Append((string.Format(LevelInfoContainer.BLOCKER_COUNT_FORMAT, item.Key), item.Value.ToString()));
+                items.Add((string.Format(LevelInfoContainer.BLOCKER_COUNT_FORMAT, item.Key), item.Value.ToString()));
         }
 
         if (goldTilesInLevel > 0)

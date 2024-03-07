@@ -11,18 +11,18 @@ public static partial class TileSearch
 
     private static readonly List<Vector2> offset_Editor = new List<Vector2>()
     {
-        new Vector2(0, -TILE_HEIGHT_EDITOR), // Left
-        new Vector2(0, TILE_HEIGHT_EDITOR), // Right
-        new Vector2(TILE_WIDTH_EDITOR, 0), // Top
-        new Vector2(-TILE_WIDTH_EDITOR, 0) // Bottom
+        new Vector2(-TILE_WIDTH_EDITOR, 0), // Left
+        new Vector2(TILE_WIDTH_EDITOR, 0), // Right
+        new Vector2(0, TILE_HEIGHT_EDITOR), // Top
+        new Vector2(0, -TILE_HEIGHT_EDITOR), // Bottom
     };
 
     private static readonly List<Vector2> offset_Game = new List<Vector2>()
     {
-        new Vector2(0, -TILE_HEIGHT_GAME), // Left
-        new Vector2(0, TILE_HEIGHT_GAME), // Right
-        new Vector2(TILE_WIDTH_GAME, 0), // Top
-        new Vector2(-TILE_WIDTH_GAME, 0) // Bottom
+        new Vector2(-TILE_WIDTH_GAME, 0), // Left
+        new Vector2(TILE_WIDTH_GAME, 0), // Right
+        new Vector2(0, TILE_HEIGHT_GAME), // Top
+        new Vector2(0, -TILE_HEIGHT_GAME), // Bottom
     };
 
 #region Tile

@@ -32,31 +32,31 @@ public partial class LevelEditor
     private void UpdateBlockerIndex(int index)
     {
         blockerType = blockerList[index];
-        m_presenter.SetUpdateBlocker(blockerCount);
+        m_presenter.SetUpdateBoard();
     }
 
     private void UpdateBlockerCount(int count)
     {
         blockerCount = count;
-        m_presenter.SetUpdateBlocker(blockerCount);
+        m_presenter.SetUpdateBoard();
     }
 
     private void UpdateBlockerICD(int count)
     {
         blockerVariableICD = Mathf.Max(1, count);
-        m_presenter.SetUpdateBlockerICD(blockerCount);
+        m_presenter.SetUpdateBoard();
     }
 
     private void IncrementBlockerCount(int increment)
 	{
         blockerCount = Mathf.Max(0, blockerCount + increment);
-        m_presenter.SetUpdateBlocker(blockerCount);
+        m_presenter.SetUpdateBoard();
 	}
 
     private void IncrementBlockerICD(int increment)
 	{
         blockerVariableICD = Mathf.Max(1, blockerVariableICD + increment);
-        m_presenter.SetUpdateBlockerICD(blockerCount);
+        m_presenter.SetUpdateBoard();
 	}
 
 #endregion Presenter Function
