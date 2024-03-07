@@ -29,6 +29,28 @@ public partial class LevelEditor
 
     public static Dictionary<BlockerType, int> CurrentBlockerDic = new Dictionary<BlockerType, int>();
 
+    /// <summary>
+    /// 여러 개의 타일 개수를 가지는 Blocker의 추가 타일 개수를 카운팅.
+    /// </summary>
+    /// <param name="board"></param>
+    /// <returns></returns>
+    public int GetAdditionalTileCount(BoardInfo board)
+    {
+        int additionalCount = 0;
+
+        var layers = board.Layers.ToList();
+        layers.ForEach(layer => {
+            additionalCount += layer.Tiles
+                .Where(tile => tile.blockerType == BlockerType.Suitcase)
+                .Sum(tile => {  return tile.blockerICD - 1; });
+        });
+
+        if (additionalCount > 0)
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0}</color>", additionalCount));
+
+        return additionalCount;
+    }
+
 #region Presenter Function
 
     private void UpdateBlockerIndex(int index)

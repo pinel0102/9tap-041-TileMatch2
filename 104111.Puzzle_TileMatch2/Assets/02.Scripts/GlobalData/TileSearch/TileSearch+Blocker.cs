@@ -43,13 +43,6 @@ public static partial class TileSearch
         
         switch(blockerType)
         {
-            case BlockerType.Bush: // 상하좌우에 일반 타일이 2개 이상일 때 설치 가능.
-                int needCountBushTarget = 2;
-                var tileBushTargetList = tile.FindAroundTiles(layer);
-                if (tileBushTargetList.Count >= needCountBushTarget)
-                    return tileBushTargetList.Where(item => item.Blocker is BlockerType.None).Count() >= needCountBushTarget;
-                break;
-
             case BlockerType.Glue_Left: // 오른쪽 타일이 일반 타일일 때 설치 가능.
                 (bool existGlueLeftTarget, var tileGlueLeftTarget) = tile.FindRightTile(layer);
                 if (existGlueLeftTarget && tileGlueLeftTarget.Blocker is BlockerType.None)
@@ -62,9 +55,33 @@ public static partial class TileSearch
                     return true;
                 break;
 
+            case BlockerType.Bush: // 상하좌우에 일반 타일이 2개 이상일 때 설치 가능.
+                int needCountBushTarget = 2;
+                var tileBushTargetList = tile.FindAroundTiles(layer);
+                if (tileBushTargetList.Count >= needCountBushTarget)
+                    return tileBushTargetList.Where(item => item.Blocker is BlockerType.None or BlockerType.Jelly).Count() >= needCountBushTarget;
+                break;
+
+            case BlockerType.Suitcase: // 아래에 타일이 없을 때 설치 가능.
+                var (existSuitcaseBottom, _) = tile.FindBottomTile(layer);
+                if (!existSuitcaseBottom)
+                    return true;
+                break;
+
+            case BlockerType.Jelly: // 항상 설치 가능. (일반 타일과 동일 취급.)
+                return true;
+                
+            case BlockerType.Chain: // 좌우에 일반 타일이 2개일 때 설치 가능.
+                int needCountChainTarget = 2;
+                var tileChainTargetList = tile.FindLeftRightTiles(layer);
+                if (tileChainTargetList.Count >= needCountChainTarget)
+                    return tileChainTargetList.Where(item => item.Blocker is BlockerType.None or BlockerType.Jelly).Count() >= needCountChainTarget;
+                break;
+
             default:
                 break;
         }
+
         return false;
     }
 }

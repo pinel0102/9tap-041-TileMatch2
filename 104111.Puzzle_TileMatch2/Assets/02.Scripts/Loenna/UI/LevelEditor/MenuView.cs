@@ -67,7 +67,7 @@ public class MenuView : MonoBehaviour
     /// <param name="tilesInLevel"></param>
     /// <param name="goldTilesInLevel"></param>
     /// <param name="blockerDic">None / Glue_Right 제외한 Dictionary.</param>
-	public void UpdateLevelInfoUI(int boardCount, int tilesInBoard, int tilesInLevel, int goldTilesInLevel, Dictionary<BlockerType, int> blockerDic)
+	public void UpdateLevelInfoUI(int boardCount, int tilesInBoard, int tilesInLevel, int addTilesInBoard, int goldTilesInLevel, Dictionary<BlockerType, int> blockerDic)
 	{
         CurrentBlockerDic = blockerDic;
 
@@ -78,7 +78,14 @@ public class MenuView : MonoBehaviour
         if (boardCount > 1)
         {
             items.Add((LevelInfoContainer.TILE_COUNT_IN_BOARD, tilesInBoard.ToString()));
+            if (addTilesInBoard > 0)
+                items.Add((LevelInfoContainer.TILE_ADDITIONAL_COUNT_IN_BOARD, addTilesInBoard.ToString()));
             items.Add((LevelInfoContainer.BOARD_COUNT_IN_LEVEL, boardCount.ToString()));
+        }
+        else
+        {
+            if (addTilesInBoard > 0)
+                items.Add((LevelInfoContainer.TILE_ADDITIONAL_COUNT_IN_LEVEL, addTilesInBoard.ToString()));
         }
         
         foreach(var item in blockerDic)

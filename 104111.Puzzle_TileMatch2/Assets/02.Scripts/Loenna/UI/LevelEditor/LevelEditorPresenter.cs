@@ -82,7 +82,7 @@ public class LevelEditorPresenter : IDisposable
 			int requiredMultiples = m_dataManager.Config.RequiredMultiples;
 
 			m_savable.Value = state.Boards.All(
-				board => board.Layers.All(layer => layer.TileCount > 0) && board.TileCountAll % requiredMultiples == 0
+				board => board.Layers.All(layer => layer.TileCount > 0) && (board.TileCountAll + m_levelEditor.GetAdditionalTileCount(board)) % requiredMultiples == 0
 			);
 		}
 		#endregion

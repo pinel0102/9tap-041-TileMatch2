@@ -28,7 +28,7 @@ partial class LevelEditor
 							layer => {
 								return new LayerInfo(
 									Color: ColorTableUtility.GetColor(colorIndex++),
-									layer?.Tiles.Select(tile => new TileInfo(tile.Guid, tile.Position, size, tile.IncludeMission, tile.Blocker))
+									layer?.Tiles.Select(tile => new TileInfo(tile.Guid, tile.Position, size, tile.Blocker, tile.BlockerICD))
 								);
 							}
 						).ToArray()
@@ -80,7 +80,7 @@ partial class LevelEditor
 		public int TileCount => Tiles.Count();
 	}
 	
-	public record TileInfo(Guid Guid, Vector2 Position, float Size, bool attachedMission, BlockerType blockerType);
+	public record TileInfo(Guid Guid, Vector2 Position, float Size, BlockerType blockerType, int blockerICD);
 
 	public enum UpdateType
 	{

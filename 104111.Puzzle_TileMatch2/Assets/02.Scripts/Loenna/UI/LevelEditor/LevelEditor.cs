@@ -14,7 +14,7 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
     [Header("★ [Reference] Editor")]
 	[SerializeField]	private GameObject m_loading;
 	[SerializeField]	private CanvasGroup m_prevDim;
-	[SerializeField]	private int m_cellSize = 80;
+	[SerializeField]	private int m_cellSize = 160;
 	[SerializeField]	private int m_cellCount = 7;
 	[SerializeField]	private BoardView m_boardView;
 	[SerializeField]	private MenuView m_menuView;
@@ -229,7 +229,7 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
 							m_menuView.UpdateGrades((DifficultType)all_current.DifficultType, all.HardMode);
 							m_menuView.UpdateNumberOfTileTypesUI(all.BoardIndex, all.NumberOfTileTypesCurrent, all_current.MissionCount, all_current.GoldTileIcon);
 							m_menuView.UpdateLayerUI(all.CurrentLayers, m_presenter.InvisibleLayerIndexes);
-							m_menuView.UpdateLevelInfoUI(all.BoardCount, all.TileCountInBoard, all.TileCountAll, all.GoldTileCount, all.BlockerDic);
+							m_menuView.UpdateLevelInfoUI(all.BoardCount, all.TileCountInBoard, all.TileCountAll, GetAdditionalTileCount(all.CurrentBoard), all.GoldTileCount, all.BlockerDic);
                             m_menuView.UpdateBlockerUI(blockerType, blockerCount, blockerVariableICD);
 							break;
 						case CurrentState.BoardUpdated board: //맵
@@ -238,12 +238,12 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
 							m_boardView.OnUpdateLayerView(board.CurrentLayers);
 							m_menuView.UpdateLayerUI(board.CurrentLayers, m_presenter.InvisibleLayerIndexes);
 							m_menuView.UpdateGrades((DifficultType)current.DifficultType, board.HardMode);
-							m_menuView.UpdateLevelInfoUI(board.BoardCount, board.TileCountInBoard, board.TileCountAll, board.GoldTileCount, board.BlockerDic);
+							m_menuView.UpdateLevelInfoUI(board.BoardCount, board.TileCountInBoard, board.TileCountAll, GetAdditionalTileCount(board.CurrentBoard), board.GoldTileCount, board.BlockerDic);
 							m_menuView.UpdateBlockerUI(blockerType, blockerCount, blockerVariableICD);
                             m_menuView.UpdateNumberOfTileTypesUI(board.BoardIndex, board.NumberOfTileTypesCurrent, current.MissionCount, current.GoldTileIcon);
 							break;
 						case CurrentState.NumberOfTileTypesUpdated numberOfTileTypes: // 타일 종류 개수
-                            m_menuView.UpdateLevelInfoUI(numberOfTileTypes.BoardCount, numberOfTileTypes.TileCountInBoard, numberOfTileTypes.TileCountAll, numberOfTileTypes.GoldTileCount, numberOfTileTypes.BlockerDic);
+                            m_menuView.UpdateLevelInfoUI(numberOfTileTypes.BoardCount, numberOfTileTypes.TileCountInBoard, numberOfTileTypes.TileCountAll, GetAdditionalTileCount(numberOfTileTypes.CurrentBoard), numberOfTileTypes.GoldTileCount, numberOfTileTypes.BlockerDic);
                             m_menuView.UpdateBlockerUI(blockerType, blockerCount, blockerVariableICD);
                             m_menuView.UpdateNumberOfTileTypesUI(
 								numberOfTileTypes.BoardIndex, 
@@ -255,7 +255,7 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
 						case CurrentState.TileUpdated tile: //타일
 							m_boardView.OnUpdateLayerView(tile.Layers);
 							m_menuView.UpdateLayerUI(tile.Layers, m_presenter.InvisibleLayerIndexes);
-							m_menuView.UpdateLevelInfoUI(tile.Boards.Count, tile.TileCountInBoard, tile.TileCountAll, tile.GoldTileCount, tile.BlockerDic);
+							m_menuView.UpdateLevelInfoUI(tile.Boards.Count, tile.TileCountInBoard, tile.TileCountAll, GetAdditionalTileCount(tile.CurrentBoard), tile.GoldTileCount, tile.BlockerDic);
                             m_menuView.UpdateBlockerUI(blockerType, blockerCount, blockerVariableICD);
 							break;
 						case CurrentState.DifficultUpdated { Difficult: var difficult, HardMode: var mode}:

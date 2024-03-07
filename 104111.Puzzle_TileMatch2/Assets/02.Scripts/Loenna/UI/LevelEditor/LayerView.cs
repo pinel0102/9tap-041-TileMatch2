@@ -17,13 +17,13 @@ public class LayerView : MonoBehaviour
 			return;
 		}
 
-		foreach (var (_, position, size, attachedMission, blockerType) in layer.Tiles)
+		foreach (var (_, position, size, blockerType, blockerICD) in layer.Tiles)
 		{
-			Draw(tilePrefab, position, size, layer.Color, attachedMission, blockerType);
+			Draw(tilePrefab, position, size, layer.Color, blockerType, blockerICD);
 		}
 	}
 
-	public void Draw(TileBrush tilePrefab, Vector2 position, float size, Color color, bool attachedMission, BlockerType blockerType)
+	public void Draw(TileBrush tilePrefab, Vector2 position, float size, Color color, BlockerType blockerType, int blockerICD)
 	{
 		GameObject go = m_pools.Count > 0? m_pools.Dequeue() : Instantiate(tilePrefab.gameObject);
 		
@@ -41,7 +41,7 @@ public class LayerView : MonoBehaviour
 		outline.effectDistance = new Vector2(2f, -2f);
 		
 		TileBrush tile = go.GetComponent<TileBrush>();
-		tile.UpdateColor(color, attachedMission);
+		tile.UpdateColor(color, blockerType, blockerICD, GlobalDefine.IsBlockerICD_Variable(blockerType));
 
 		RectTransform rectTransform = go.transform as RectTransform;
 		rectTransform.localPosition = position;

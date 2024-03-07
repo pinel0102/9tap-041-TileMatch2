@@ -10,6 +10,8 @@ public class LevelInfoContainer : MonoBehaviour
     public static readonly string VERSION = "Version: {0}\n\n";
     public static readonly string TILE_COUNT_IN_LEVEL = "Level Tiles";
     public static readonly string TILE_COUNT_IN_BOARD = "Board Tiles";
+    public static readonly string TILE_ADDITIONAL_COUNT_IN_LEVEL = "Level Tiles+";
+    public static readonly string TILE_ADDITIONAL_COUNT_IN_BOARD = "Board Tiles+";
     public static readonly string BOARD_COUNT_IN_LEVEL = "Board Count";
 	public static readonly string BLOCKER_COUNT_FORMAT = "<color=yellow>{0}</color>";
     public static readonly string GOLDTILE_COUNT_IN_LEVEL = "<color=yellow>Gold Tiles</color>";
