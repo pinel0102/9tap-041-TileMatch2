@@ -546,13 +546,26 @@ public class LevelEditorPresenter : IDisposable
 			return;
 		}
 
-        m_dataManager.AddBlocker(State.BoardIndex, blockerType, count, GlobalDefine.GetBlockerICD(blockerType, m_levelEditor.blockerVariableICD));
+        int ICD = GlobalDefine.GetBlockerICD(blockerType, m_levelEditor.blockerVariableICD);
+        int successCount = 0;
 
-        m_internalState.Update(
-			state => state with {
-				UpdateType = UpdateType.BLOCKER
-			}
-		);
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Start] {0} x {2} (ICD : {3})</color>", blockerType, successCount, count, ICD));
+
+        for(int i=0; i < count; i++)
+        {
+            if(m_dataManager.AddBlocker(State.BoardIndex, blockerType, ICD))
+            {
+                successCount++;
+            }
+
+            m_internalState.Update(
+                state => state with {
+                    UpdateType = UpdateType.BLOCKER
+                }
+            );
+        }
+
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Finished] {0} x ({1}/{2}) (ICD : {3})</color>", blockerType, successCount, count, ICD));
     }
 
     /// <summary>

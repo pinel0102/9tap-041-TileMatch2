@@ -328,7 +328,7 @@ partial class PlayScene
 				break;
 		}
 
-        CheckAroundTiles();
+        CheckTriggerArea();
 
         void SetBackground(string path)
         {
@@ -338,7 +338,7 @@ partial class PlayScene
             backgroundImage.sprite = sprite;
         }
 
-        void CheckAroundTiles()
+        void CheckTriggerArea()
         {
             //Debug.Log(CodeManager.GetMethodName());
 

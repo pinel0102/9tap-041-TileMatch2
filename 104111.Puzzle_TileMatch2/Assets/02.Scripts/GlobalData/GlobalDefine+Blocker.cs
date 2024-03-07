@@ -26,6 +26,8 @@ public static partial class GlobalDefine
         [BlockerType.Chain] = BlockerTypeEditor.Chain,
     };
 
+#region Blocker ICD
+
     /// <summary>
     /// <para>가변 ICD를 사용하는 Blocker : _blockerICD (최소 1).</para>
     /// <para>가변 ICD를 사용하지 않는 Blocker : 고정값 (Default: 0).</para>
@@ -78,6 +80,9 @@ public static partial class GlobalDefine
                 return false;
         }
     }
+
+#endregion Blocker ICD
+
 
 #region Blocker Translate
 
