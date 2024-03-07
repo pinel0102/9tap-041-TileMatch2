@@ -27,6 +27,8 @@ public partial class LevelEditor
     /// </summary>
     public int blockerVariableICD = 3;
 
+    public static Dictionary<BlockerType, int> CurrentBlockerDic = new Dictionary<BlockerType, int>();
+
 #region Presenter Function
 
     private void UpdateBlockerIndex(int index)

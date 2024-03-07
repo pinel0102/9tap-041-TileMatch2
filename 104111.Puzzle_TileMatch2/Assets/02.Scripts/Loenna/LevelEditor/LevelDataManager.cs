@@ -361,7 +361,7 @@ public class LevelDataManager : IDisposable
 
         if(GlobalDefine.TryParseBlockerType(blockerTypeEditor, out List<BlockerType> blockerTypeList))
         {
-            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} x {1} (ICD : {2})</color>", blockerTypeEditor, count, blockerICD));
+            //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} x {1} (ICD : {2})</color>", blockerTypeEditor, count, blockerICD));
 
             GlobalDefine.InitRandomSeed();
 
@@ -373,7 +373,7 @@ public class LevelDataManager : IDisposable
                 for(int i=0; i < blockerTypeList.Count; i++)
                 {
                     BlockerType blockerType = blockerTypeList[i];
-                    Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>blockerType : {0}</color>", blockerType));
+                    //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>blockerType : {0}</color>", blockerType));
                     
                     List<Tile> targetList = new List<Tile>();
 
@@ -385,11 +385,11 @@ public class LevelDataManager : IDisposable
 
                     if (targetList.Count > 0)
                     {
-                        Debug.Log(CodeManager.GetMethodName() + string.Format("Enable Count : {0}", targetList.Count));
+                        //Debug.Log(CodeManager.GetMethodName() + string.Format("Enable Count : {0}", targetList.Count));
 
                         Tile target = targetList.GetRandomTile();
 
-                        Debug.Log(CodeManager.GetMethodName() + string.Format("[Target] {0} / {1} / {2} / {3}", target.Guid, target.Blocker, target.BlockerICD, target.Position));
+                        //Debug.Log(CodeManager.GetMethodName() + string.Format("[Target] {0} / {1} / {2} / {3}", target.Guid, target.Blocker, target.BlockerICD, target.Position));
 
                         for (int layerIndex = board.Layers.Count - 1; layerIndex >= 0; layerIndex--)
                         {
@@ -434,7 +434,7 @@ public class LevelDataManager : IDisposable
 
         if(GlobalDefine.TryParseBlockerType(blockerTypeEditor, out List<BlockerType> blockerTypeList))
         {
-            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0}</color>", blockerTypeEditor));
+            //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0}</color>", blockerTypeEditor));
 
             Board board = m_currentData[boardIndex]!;
             int removeCount = 0;
@@ -443,7 +443,7 @@ public class LevelDataManager : IDisposable
             {
                 BlockerType blockerType = blockerTypeList[i];
 
-                Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>blockerType : {0}</color>", blockerType));
+                //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>blockerType : {0}</color>", blockerType));
 
                 for (int index = board.Layers.Count - 1; index >= 0; index--)
                 {
@@ -455,7 +455,7 @@ public class LevelDataManager : IDisposable
                         {
                             Tile target = layer.Tiles[k];
 
-                            Debug.Log(CodeManager.GetMethodName() + string.Format("[Target] {0} / {1} / {2} / {3}", target.Guid, target.Blocker, target.BlockerICD, target.Position));
+                            //Debug.Log(CodeManager.GetMethodName() + string.Format("[Target] {0} / {1} / {2} / {3}", target.Guid, target.Blocker, target.BlockerICD, target.Position));
 
                             layer.Tiles[k] = target with { Blocker = BlockerType.None, BlockerICD = 0 };
                             

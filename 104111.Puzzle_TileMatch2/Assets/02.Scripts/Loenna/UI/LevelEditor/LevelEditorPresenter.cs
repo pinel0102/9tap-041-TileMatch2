@@ -519,11 +519,16 @@ public class LevelEditorPresenter : IDisposable
 
         int blockerICD = GlobalDefine.GetBlockerICD(blockerType, m_levelEditor.blockerVariableICD);
         
-        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Start] {0} x {1} (ICD : {2})</color>", blockerType, count, blockerICD));
+        //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Start] {0} x {1} (ICD : {2})</color>", blockerType, count, blockerICD));
 
         int successCount = m_dataManager.AddBlocker(State.BoardIndex, blockerType, count, blockerICD);
         if (successCount > 0)
         {
+            if (blockerType == BlockerTypeEditor.Glue)
+            {
+                successCount /= 2;
+            }
+
             (_, float size, _) = m_brushInfo.Value;
             var boardInfos = BoardInfo.Create(m_dataManager.CurrentLevelData, size);
 
@@ -533,6 +538,9 @@ public class LevelEditorPresenter : IDisposable
                     Boards = boardInfos
                 } 
             );
+            
+            if (GlobalDefine.TryParseBlockerType(blockerType, out var typeList))
+                m_levelEditor.SetLog(string.Format("<color=yellow>{0} : {1}</color>", blockerType, CurrentBlockerDic[typeList[0]]), showLog:false);
         }
         else
         {
@@ -602,6 +610,8 @@ public class LevelEditorPresenter : IDisposable
         m_levelEditor.blockerList.ForEach(_blockerType => {
             ClearBlocker(_blockerType);
         });
+
+        m_levelEditor.SetLog(string.Format("<color=yellow>Clear All Blockers</color>"), showLog:false);
     }
 
 #endregion Blocker Function

@@ -22,7 +22,7 @@ public class MenuView : MonoBehaviour
 	[SerializeField]	private LayerContainer m_layerContainer;
 	[SerializeField]	private LevelInfoContainer m_levelInfoContainer;
 
-	public void OnSetup(MenuViewParameter parameter)
+    public void OnSetup(MenuViewParameter parameter)
 	{
 		m_levelContainer.OnSetup(parameter.SelectLevelContainerParameter);
 		m_tileTypeContainer.OnSetup(parameter.NumberOfContainerParameter);
@@ -69,6 +69,8 @@ public class MenuView : MonoBehaviour
     /// <param name="blockerDic">None / Glue_Right 제외한 Dictionary.</param>
 	public void UpdateLevelInfoUI(int boardCount, int tilesInBoard, int tilesInLevel, int goldTilesInLevel, Dictionary<BlockerType, int> blockerDic)
 	{
+        CurrentBlockerDic = blockerDic;
+
         List<(string text, string value)> items = new List<(string text, string value)>();
         items.Clear();
         items.Add((LevelInfoContainer.TILE_COUNT_IN_LEVEL, tilesInLevel.ToString()));
