@@ -10,6 +10,7 @@ using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
 using DG.Tweening;
 using NineTap.Common;
+using TMPro;
 
 public class TileItemParameter
 {
@@ -86,8 +87,10 @@ public class TileItem : CachedBehaviour
 	}
 
     public string tileName;
+    public int tileIcon;
     public BlockerType blockerType;
     public int blockerICD;
+    public List<int> additionalIcon = new List<int>();
 
 	private TileDataTable m_tileDataTable;
 
@@ -103,6 +106,13 @@ public class TileItem : CachedBehaviour
 	[SerializeField]	private CanvasGroup m_dim;
     [SerializeField]	private Text m_tmpText; //이미지가 없을 경우 텍스트로
 	[SerializeField]	private GameObject m_disappearEffect;
+
+    [Header("★ [Reference] Blocker")]
+    [SerializeField]	private RectTransform m_blockerRect;
+    [SerializeField]	private Image m_blockerImage;
+    [SerializeField]	private Image m_blockerImageSub;
+    [SerializeField]	private TMP_Text m_blockerText;
+
 	private TileItemModel m_current;
 	public TileItemModel Current => m_current;
 
@@ -316,8 +326,13 @@ public class TileItem : CachedBehaviour
 		m_icon.sprite = sprite;
 
         tileName = path.Replace("UI_Img_", string.Empty);
-        blockerType = item.Blocker;
+        tileIcon = item.Icon;
+        
+        blockerType = item.BlockerType;
         blockerICD = item.BlockerICD;
+        additionalIcon = item.AdditionalIcon;
+        
+        RefreshBlockerState(blockerType, blockerICD);
 
         (m_tmpText.text, m_icon.enabled) = m_icon.sprite switch {
 			null => (tileName, false),
@@ -336,7 +351,47 @@ public class TileItem : CachedBehaviour
 		return currentType != item.Location;
 	}
 
-	public UniTask OnChangeLocation(LocationType location, Vector2? moveAt = null, float duration = Constant.Game.TWEENTIME_TILE_DEFAULT)
+    public void RefreshBlockerState(BlockerType type, int currentICD)
+    {
+        switch(type)
+        {
+            case BlockerType.Glue_Right:
+                SetBlockerObject(-Constant.Game.TILE_WIDTH_HALF_POSITION, GlobalDefine.GetBlockerSprite(type, currentICD));
+                break;
+            case BlockerType.Bush:
+                //SetBlockerSprite(Vector3.zero, GlobalDefine.GetBlockerSprite(type, currentICD));
+                // Test
+                SetBlockerObject(Vector3.zero, GlobalDefine.GetBlockerSprite(type, currentICD), text:currentICD.ToString(), activeText:true);
+                break;
+            case BlockerType.Suitcase:
+                SetBlockerObject(Vector3.zero, GlobalDefine.GetBlockerSprite(type, currentICD), GlobalDefine.GetBlockerSubSprite(type, currentICD), currentICD.ToString(), true, true, true);
+                break;
+            case BlockerType.Jelly:
+                SetBlockerObject(Vector3.zero, GlobalDefine.GetBlockerSprite(type, currentICD));
+                break;
+            case BlockerType.Chain:
+                SetBlockerObject(Vector3.zero, GlobalDefine.GetBlockerSprite(type, currentICD));
+                break;
+            case BlockerType.Glue_Left:
+            case BlockerType.None:
+            default:
+                SetBlockerObject(Vector3.zero, null, activeMain:false);
+                break;
+        }
+    }
+
+    private void SetBlockerObject(Vector3 rectPosition, Sprite mainSprite, Sprite subSprite = null, string text = null, bool activeMain = true, bool activeSub = false, bool activeText = false)
+    {
+        m_blockerRect.localPosition = rectPosition;
+        m_blockerImage.sprite = mainSprite;
+        m_blockerImageSub.sprite = subSprite;
+        m_blockerText.SetText(text);
+        m_blockerImage.gameObject.SetActive(activeMain);
+        m_blockerImageSub.gameObject.SetActive(activeSub);
+        m_blockerText.gameObject.SetActive(activeText);
+    }
+
+    public UniTask OnChangeLocation(LocationType location, Vector2? moveAt = null, float duration = Constant.Game.TWEENTIME_TILE_DEFAULT)
 	{
 		if (!moveAt.HasValue && Current == null)
 		{

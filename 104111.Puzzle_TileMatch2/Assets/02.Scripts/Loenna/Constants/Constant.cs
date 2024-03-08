@@ -64,6 +64,7 @@ public static class Constant
         public const float TWEENTIME_JIGSAW_MOVE = 0.5f;
         public const float EFFECTTIME_TILE_MATCH = 0.3f;
 
+        public static readonly Vector3 TILE_WIDTH_HALF_POSITION = new Vector3(TILE_WIDTH_HALF, 0, 0);
 		public static readonly Vector2 RESIZE_TILE_RATIOS = new Vector2(0.55f, 0.575f);
 
         public const float AROUND_TILE_OFFSET_LEFT = -15;

@@ -355,9 +355,14 @@ public partial class GameManager : IDisposable
                 }
             }
             #endregion Sweet Holic Tile
-            
-            int tileCount = board.Layers.Sum(Layer => Layer?.Tiles?.Count ?? 0);
-			int requiredTypeCount = tileCount / Constant.Game.REQUIRED_MATCH_COUNT;
+
+            // [Suitcase] Additional Count
+            int additionalCount = GlobalDefine.GetAdditionalTileCount(board.Layers);
+            int tileCount = board.Layers.Sum(Layer => Layer?.Tiles?.Count ?? 0) + additionalCount;
+
+            Debug.Log(CodeManager.GetMethodName() + string.Format("{0} + {1} = {2}", tileCount - additionalCount, additionalCount, tileCount));
+
+            int requiredTypeCount = tileCount / Constant.Game.REQUIRED_MATCH_COUNT;
 			int randomCount = Mathf.Clamp(board.NumberOfTileTypes - specialTileTypes, 1, requiredTypeCount);
 
 			var randomIcons = TileDataTable
@@ -443,7 +448,7 @@ public partial class GameManager : IDisposable
 			//Debug.Log(builder.ToString());
 
 			var queue = new Queue<int>(list);
-
+            Debug.Log(CodeManager.GetMethodName() + string.Format("Queue Count : {0}", queue.Count));
 		
 			for (int layerIndex = board.Layers.Count() - 1; layerIndex >= 0; layerIndex--)
 			{
@@ -483,14 +488,24 @@ public partial class GameManager : IDisposable
 							}
                             #endif
 
+                            List<int> additionalIcon = new List<int>();
+                            if (tile.BlockerType == BlockerType.Suitcase)
+                            {
+                                for(int i=0; i < Mathf.Max(0, tile.BlockerICD - 1); i++)
+                                {
+                                    additionalIcon.Add(queue.Dequeue());
+                                }
+                            }
+
 							return new TileItemModel(
 								layerIndex,
 								LocationType.BOARD,
 								tile.Guid,
 								icon,
 								tile.Position * Constant.Game.RESIZE_TILE_RATIOS,
-                                tile.Blocker,
+                                tile.BlockerType,
                                 tile.BlockerICD,
+                                additionalIcon,
 								mission,
 								overlaps
 							);

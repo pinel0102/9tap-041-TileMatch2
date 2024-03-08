@@ -28,7 +28,7 @@ partial class LevelEditor
 							layer => {
 								return new LayerInfo(
 									Color: ColorTableUtility.GetColor(colorIndex++),
-									layer?.Tiles.Select(tile => new TileInfo(tile.Guid, tile.Position, size, tile.Blocker, tile.BlockerICD))
+									layer?.Tiles.Select(tile => new TileInfo(tile.Guid, tile.Position, size, tile.BlockerType, tile.BlockerICD))
 								);
 							}
 						).ToArray()

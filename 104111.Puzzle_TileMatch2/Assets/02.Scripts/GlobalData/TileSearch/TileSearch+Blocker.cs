@@ -38,20 +38,20 @@ public static partial class TileSearch
     /// <returns></returns>
     private static bool CanSetupBlocker(this Tile tile, Layer layer, BlockerType blockerType)
     {
-        if (tile.Blocker != BlockerType.None)
+        if (tile.BlockerType != BlockerType.None)
             return false;
         
         switch(blockerType)
         {
             case BlockerType.Glue_Left: // 오른쪽 타일이 일반 타일일 때 설치 가능.
                 (bool existGlueLeftTarget, var tileGlueLeftTarget) = tile.FindRightTile(layer);
-                if (existGlueLeftTarget && tileGlueLeftTarget.Blocker is BlockerType.None)
+                if (existGlueLeftTarget && tileGlueLeftTarget.BlockerType is BlockerType.None)
                     return true;
                 break;
 
             case BlockerType.Glue_Right: // Glue_Left가 설치된 곳의 오른쪽에만 설치 가능.
                 (bool existGlueRightTarget, var tileGlueRightTarget) = tile.FindLeftTile(layer);
-                if (existGlueRightTarget && tileGlueRightTarget.Blocker is BlockerType.Glue_Left)
+                if (existGlueRightTarget && tileGlueRightTarget.BlockerType is BlockerType.Glue_Left)
                     return true;
                 break;
 
@@ -59,7 +59,7 @@ public static partial class TileSearch
                 int needCountBushTarget = 2;
                 var tileBushTargetList = tile.FindAroundTiles(layer);
                 if (tileBushTargetList.Count >= needCountBushTarget)
-                    return tileBushTargetList.Where(item => item.Blocker is BlockerType.None or BlockerType.Jelly).Count() >= needCountBushTarget;
+                    return tileBushTargetList.Where(item => item.BlockerType is BlockerType.None or BlockerType.Jelly).Count() >= needCountBushTarget;
                 break;
 
             case BlockerType.Suitcase: // 아래에 타일이 없을 때 설치 가능.
@@ -75,7 +75,7 @@ public static partial class TileSearch
                 int needCountChainTarget = 2;
                 var tileChainTargetList = tile.FindLeftRightTiles(layer);
                 if (tileChainTargetList.Count >= needCountChainTarget)
-                    return tileChainTargetList.Where(item => item.Blocker is BlockerType.None or BlockerType.Jelly).Count() >= needCountChainTarget;
+                    return tileChainTargetList.Where(item => item.BlockerType is BlockerType.None or BlockerType.Jelly).Count() >= needCountChainTarget;
                 break;
 
             default:

@@ -438,7 +438,7 @@ public class LevelDataManager : IDisposable
             if (layer.Tiles?.FindIndex(tile => tile.Guid == target.Guid) is int index and >= 0)
             {
                 Tile resultTile = layer.Tiles[index];
-                layer.Tiles[index] = resultTile with { Blocker = blockerType, BlockerICD = GlobalDefine.GetBlockerICD(blockerType, blockerICD) };
+                layer.Tiles[index] = resultTile with { BlockerType = blockerType, BlockerICD = GlobalDefine.GetBlockerICD(blockerType, blockerICD) };
 
                 //Debug.Log(CodeManager.GetMethodName() + string.Format("[Success] {0} / {1} / {2} / {3}", layer.Tiles[index].Guid, layer.Tiles[index].Blocker, layer.Tiles[index].BlockerICD, layer.Tiles[index].Position));
 
@@ -501,13 +501,13 @@ public class LevelDataManager : IDisposable
 
             for(int k=0; k < layer.Tiles.Count; k++)
             {
-                if (layer.Tiles[k].Blocker.Equals(blockerType))
+                if (layer.Tiles[k].BlockerType.Equals(blockerType))
                 {
                     Tile target = layer.Tiles[k];
 
                     //Debug.Log(CodeManager.GetMethodName() + string.Format("[Target] {0} / {1} / {2} / {3}", target.Guid, target.Blocker, target.BlockerICD, target.Position));
 
-                    layer.Tiles[k] = target with { Blocker = BlockerType.None, BlockerICD = 0 };
+                    layer.Tiles[k] = target with { BlockerType = BlockerType.None, BlockerICD = 0 };
                     
                     //Debug.Log(CodeManager.GetMethodName() + string.Format("[Success] {0} / {1} / {2} / {3}", layer.Tiles[k].Guid, layer.Tiles[k].Blocker, layer.Tiles[k].BlockerICD, layer.Tiles[k].Position));
 

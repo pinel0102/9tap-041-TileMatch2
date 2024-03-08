@@ -20,8 +20,8 @@ partial class GameManager
 	{
 		ConcurrentCommand concurrentCommand = new ConcurrentCommand(
 			tileItemModel.Location switch {
-				LocationType.STASH => new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_STASH_TO_BASKET, LocationType.BASKET)),
-				LocationType.BOARD => new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET)),
+				LocationType.STASH => new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_STASH_TO_BASKET, LocationType.BASKET, tileItemModel.BlockerType, tileItemModel.BlockerICD, tileItemModel.AdditionalIcon)),
+				LocationType.BOARD => new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET, tileItemModel.BlockerType, tileItemModel.BlockerICD, tileItemModel.AdditionalIcon)),
 				_ => DoNothing<Resource>.Command
 			}
 		);
@@ -30,7 +30,7 @@ partial class GameManager
 		m_commandInvoker.Execute();
 
 		#region Local Functions
-		Resource CreateResource(Type type, LocationType location) => Resource.CreateCommand(type, tileItemModel, location);
+		Resource CreateResource(Type type, LocationType location, BlockerType blockerType, int blockerICD, List<int> additionalIcon) => Resource.CreateCommand(type, tileItemModel, location, blockerType, blockerICD, additionalIcon);
 		#endregion
 	}
 
@@ -267,7 +267,12 @@ partial class GameManager
 
 	private void Shuffle()
 	{
-        IList<int> types = BoardInfo.CurrentBoard.Tiles.Where(tile => tile.Location is LocationType.BOARD).Select(tile => tile.Icon).ToList();
+        IList<int> types = BoardInfo.CurrentBoard.Tiles
+            .Where(tile => {
+                return (tile.Location is LocationType.BOARD) 
+                    && (tile.BlockerType is BlockerType.None);
+            })
+            .Select(tile => tile.Icon).ToList();
 		Queue<int> queue = new Queue<int>(types.Shuffle());
 
 		// 랜덤 타입 타일의 타입을 임의적으로 설정한다.
@@ -276,7 +281,8 @@ partial class GameManager
 			.Tiles
 			.Select(
 				tile => {
-					if (tile.Location is LocationType.BOARD)
+					if ((tile.Location is LocationType.BOARD) 
+                     && (tile.BlockerType is BlockerType.None))
 					{
 						return tile with { Icon = queue.Dequeue() };
 					}

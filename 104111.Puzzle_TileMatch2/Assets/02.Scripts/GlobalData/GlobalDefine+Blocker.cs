@@ -5,7 +5,7 @@ using System.Linq;
 
 public static partial class GlobalDefine
 {
-    public static readonly Dictionary<BlockerTypeEditor, int> BlockerICD_Editor = new Dictionary<BlockerTypeEditor, int>()
+    public static readonly Dictionary<BlockerTypeEditor, int> BlockerICD_Default = new Dictionary<BlockerTypeEditor, int>()
     {
         [BlockerTypeEditor.None] = 0,
         [BlockerTypeEditor.Glue] = 0,
@@ -25,6 +25,65 @@ public static partial class GlobalDefine
         [BlockerType.Jelly] = BlockerTypeEditor.Jelly,
         [BlockerType.Chain] = BlockerTypeEditor.Chain,
     };
+
+#region Blocker Sprite
+
+    public static Sprite GetBlockerSprite(BlockerType blockerType, int blockerICD)
+    {
+        string path = null;
+
+        switch(blockerType)
+        {
+            case BlockerType.Glue_Right:
+                path = "Blocker_Glue_01";
+                break;
+            case BlockerType.Bush:
+                if (blockerICD >= 2)
+                    path = "Blocker_Bush_01";
+                else if (blockerICD == 1)
+                    path = "Blocker_Bush_02";
+                break;
+            case BlockerType.Suitcase:
+                path = "Blocker_Suitcase_02";
+                break;
+            case BlockerType.Jelly:
+                if (blockerICD >= 3)
+                    path = "Blocker_Jelly_01";
+                else if (blockerICD == 2)
+                    path = "Blocker_Jelly_02";
+                else if (blockerICD == 1)
+                    path = "Blocker_Jelly_03";
+                break;
+            case BlockerType.Chain:
+                path = "Blocker_Chain_01";
+                break;
+            case BlockerType.Glue_Left:
+            case BlockerType.None:
+            default:
+                break;
+        }
+
+        return SpriteManager.GetSprite(path);
+    }
+
+    public static Sprite GetBlockerSubSprite(BlockerType blockerType, int blockerICD)
+    {
+        string path = null;
+
+        switch(blockerType)
+        {
+            case BlockerType.Suitcase:
+                path = "Blocker_Suitcase_01";
+                break;
+            default:
+                break;
+        }
+
+        return SpriteManager.GetSprite(path);
+    }
+
+#endregion Blocker Sprite
+
 
 #region Blocker ICD
 
@@ -57,7 +116,7 @@ public static partial class GlobalDefine
         if (IsBlockerICD_Variable(_blockerType))
             return Mathf.Max(1, _blockerICD);
         else 
-            return BlockerICD_Editor[_blockerType];
+            return BlockerICD_Default[_blockerType];
     }
 
     public static bool IsBlockerICD_Variable(BlockerType _blockerType)
@@ -79,6 +138,20 @@ public static partial class GlobalDefine
             default:
                 return false;
         }
+    }
+
+    /// <summary>
+    /// [Suitcase] 추가 타일 카운트.
+    /// </summary>
+    /// <param name="layers"></param>
+    /// <returns></returns>
+    public static int GetAdditionalTileCount(List<Layer> layers)
+    {
+        return layers.Sum(layer => {
+            return layer?.Tiles?
+                .Where(tile => tile.BlockerType == BlockerType.Suitcase)
+                .Sum(tile => { return Mathf.Max(0, tile.BlockerICD - 1); }) ?? 0;
+        });
     }
 
 #endregion Blocker ICD

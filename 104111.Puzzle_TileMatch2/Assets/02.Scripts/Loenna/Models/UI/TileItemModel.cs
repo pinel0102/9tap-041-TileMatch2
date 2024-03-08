@@ -12,8 +12,9 @@ using System.Linq;
 /// <param name="Guid"></param>
 /// <param name="Icon"></param>
 /// <param name="Position"></param>
-/// <param name="Blocker">Blocker 종류. (Default:0)</param>
+/// <param name="BlockerType">Blocker 종류. (Default:0)</param>
 /// <param name="BlockerICD">Blocker 내부 카운트. (Default:0 / ICD 시용시 최소 1)</param>
+/// <param name="AdditionalIcon">추가 Icon. (Default:null)</param>
 /// <param name="GoldPuzzleCount">[Deprecated] 골든 퍼즐 조각 개수. (Default:-1)</param>
 /// <param name="Overlaps"></param>
 public record TileItemModel(
@@ -22,8 +23,9 @@ public record TileItemModel(
 	Guid Guid,
 	int Icon,
 	Vector2 Position,
-    BlockerType Blocker,
+    BlockerType BlockerType,
     int BlockerICD,
+    List<int> AdditionalIcon,
 	int GoldPuzzleCount, //없으면 -1
 	List<(Guid guid, bool exist, float distance)> Overlaps
 )
@@ -37,8 +39,9 @@ public record TileItemModel(
 		Guid guid,
 		int icon,
 		Vector2 position,
-        BlockerType blocker,
+        BlockerType blockerType,
         int blockerICD,
+        List<int> additionalIcon,
 		int goldPuzzleCount
 	) : this(
 		layerIndex,
@@ -46,8 +49,9 @@ public record TileItemModel(
 		guid,
 		icon,
 		position,
-        blocker,
+        blockerType,
         blockerICD,
+        additionalIcon,
 		goldPuzzleCount,
 		new()
 	)
