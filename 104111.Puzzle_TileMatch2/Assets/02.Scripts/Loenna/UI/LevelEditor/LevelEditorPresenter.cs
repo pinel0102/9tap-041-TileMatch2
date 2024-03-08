@@ -503,7 +503,7 @@ public class LevelEditorPresenter : IDisposable
     /// </summary>
     /// <param name="blockerType"></param>
     /// <param name="count"></param>
-    public void AddBlocker(BlockerTypeEditor blockerType, int count)
+    public void AddBlocker(int layerIndex, BlockerTypeEditor blockerType, int count)
     {
         if(blockerType == BlockerTypeEditor.None) return;
 
@@ -521,7 +521,7 @@ public class LevelEditorPresenter : IDisposable
         
         //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Start] {0} x {1} (ICD : {2})</color>", blockerType, count, blockerICD));
 
-        int successCount = m_dataManager.AddBlocker(State.BoardIndex, blockerType, count, blockerICD);
+        int successCount = m_dataManager.AddBlocker(State.BoardIndex, layerIndex, blockerType, count, blockerICD);
         if (successCount > 0)
         {
             if (blockerType == BlockerTypeEditor.Glue)
@@ -538,9 +538,13 @@ public class LevelEditorPresenter : IDisposable
                     Boards = boardInfos
                 } 
             );
-            
-            if (GlobalDefine.TryParseBlockerType(blockerType, out var typeList))
-                m_levelEditor.SetLog(string.Format("<color=yellow>{0} : {1}</color>", blockerType, CurrentBlockerDic[typeList[0]]), showLog:false);
+
+            if (layerIndex > -1)
+                m_levelEditor.SetLog(string.Format("<color=yellow>Layer [{2}] {0} + {1}</color>", blockerType, successCount, layerIndex), showLog:false);
+            else
+                m_levelEditor.SetLog(string.Format("<color=yellow>Layer [All] {0} + {1}</color>", blockerType, successCount), showLog:false);
+
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Success] {0} x ({1}/{2}) (ICD : {3})</color>", blockerType, successCount, count, blockerICD));
         }
         else
         {
@@ -549,22 +553,28 @@ public class LevelEditorPresenter : IDisposable
 					UpdateType = UpdateType.BOARD
 				}
 			);
-        }
 
-        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Finished] {0} x ({1}/{2}) (ICD : {3})</color>", blockerType, successCount, count, blockerICD));
+            if (layerIndex > -1)
+                m_levelEditor.SetLog(string.Format("<color=yellow>Layer [{1}] {0} : No Available Tile</color>", blockerType, layerIndex), showLog:false);
+            else
+                m_levelEditor.SetLog(string.Format("<color=yellow>Layer [All] {0} : No Available Tile</color>", blockerType), showLog:false);
+        }
     }
 
     /// <summary>
     /// [Board] Blocker 삭제.
     /// </summary>
     /// <param name="blockerType"></param>
-    public void ClearBlocker(BlockerTypeEditor blockerType)
+    public int ClearBlocker(int layerIndex, BlockerTypeEditor blockerType)
     {
-        if(blockerType == BlockerTypeEditor.None) return;
+        if(blockerType == BlockerTypeEditor.None)
+            return 0;
 
-        int removeCount = m_dataManager.ClearBlocker(State.BoardIndex, blockerType);
+        int removeCount = m_dataManager.ClearBlocker(State.BoardIndex, layerIndex, blockerType);
         if (removeCount > 0)
         {
+            Debug.Log(CodeManager.GetMethodName() + string.Format("layer[{0}] {1}", layerIndex, blockerType));
+
             (_, float size, _) = m_brushInfo.Value;
             var boardInfos = BoardInfo.Create(m_dataManager.CurrentLevelData, size);
 
@@ -583,6 +593,8 @@ public class LevelEditorPresenter : IDisposable
 				}
 			);
         }
+
+        return removeCount;
     }
 
     /// <summary>
@@ -590,28 +602,36 @@ public class LevelEditorPresenter : IDisposable
     /// </summary>
     /// <param name="blockerType"></param>
     /// <param name="count"></param>
-    public void ApplyBlocker(BlockerTypeEditor blockerType, int count)
+    public void ApplyBlocker(int layerIndex, BlockerTypeEditor blockerType, int count)
     {
         if(blockerType == BlockerTypeEditor.None) return;
 
-        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} : {1}</color>", blockerType, count));
+        //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} : {1}</color>", blockerType, count));
         
-        ClearBlocker(blockerType);
-        AddBlocker(blockerType, count);
+        ClearBlocker(layerIndex, blockerType);
+        AddBlocker(layerIndex, blockerType, count);
     }
 
     /// <summary>
     /// [Board] 모든 Blocker 삭제.
     /// </summary>
-    public void ClearAllBlocker()
+    public void ClearAllBlocker(int layerIndex)
     {
         Debug.Log(CodeManager.GetMethodName());
 
-        m_levelEditor.blockerList.ForEach(_blockerType => {
-            ClearBlocker(_blockerType);
+        int removeCount = 0;
+
+        m_levelEditor.blockerList.ForEach(blockerType => {
+            removeCount += ClearBlocker(layerIndex, blockerType);
         });
 
-        m_levelEditor.SetLog(string.Format("<color=yellow>Clear All Blockers</color>"), showLog:false);
+        if (removeCount > 0)
+        {
+            if (layerIndex > -1)
+                m_levelEditor.SetLog(string.Format("<color=yellow>Layer [{1}] Clear Blockers ({0})</color>", removeCount, layerIndex), showLog:false);
+            else
+                m_levelEditor.SetLog(string.Format("<color=yellow>Layer [All] Clear Blockers ({0})</color>", removeCount), showLog:false);
+        }
     }
 
 #endregion Blocker Function

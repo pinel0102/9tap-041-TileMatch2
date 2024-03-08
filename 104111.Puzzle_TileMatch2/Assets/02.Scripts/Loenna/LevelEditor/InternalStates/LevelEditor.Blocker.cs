@@ -26,6 +26,10 @@ public partial class LevelEditor
     /// 에디터에서 보드에 설치 또는 추가할 Blocker의 가변 ICD. (가변 ICD 사용 항목만 적용.)
     /// </summary>
     public int blockerVariableICD = 3;
+    /// <summary>
+    /// 에디터에서 Blocker를 수정할 레이어 인덱스. (-1 : All)
+    /// </summary>
+    public int blockerTargetLayer = -1;
 
     public static Dictionary<BlockerType, int> CurrentBlockerDic = new Dictionary<BlockerType, int>();
 
@@ -52,6 +56,12 @@ public partial class LevelEditor
     }
 
 #region Presenter Function
+
+    private void UpdateBlockerLayer(int index)
+    {
+        blockerTargetLayer = Mathf.Max(-1, index - 1);
+        m_presenter.SetUpdateBoard();
+    }
 
     private void UpdateBlockerIndex(int index)
     {

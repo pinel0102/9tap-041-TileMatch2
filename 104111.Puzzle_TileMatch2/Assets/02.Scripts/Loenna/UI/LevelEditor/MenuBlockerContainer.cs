@@ -10,32 +10,40 @@ public class MenuBlockerContainerParameter
 {
     public List<BlockerTypeEditor> BlockerList;
 
-    // Blocker Count
+    // Change Blocker Count
 	public Action<int> OnTakeStep; 
 	public Action<int> OnNavigate;
 
-    // Blocker Change
-    public Action<int> OnChangeBlocker;
-
-    // Blocker ICD
+    // Change Blocker Index
+    public Action<int> OnChangeBlockerIndex;
+    // Change Blocker Target Layer
+    public Action<int> OnChangeBlockerLayer;
+    
+    // Change Blocker ICD
     public Action<int> OnTakeStepBlockerICD;
     public Action<int> OnNavigateICD;
 
     // Blocker Function
-    public Action<BlockerTypeEditor, int> OnAddBlocker;
-    public Action<BlockerTypeEditor, int> OnApplyBlocker;
-    public Action OnClearAllBlocker;
+    public Action<int, BlockerTypeEditor, int> OnAddBlocker;
+    public Action<int, BlockerTypeEditor, int> OnApplyBlocker;
+    public Action<int> OnClearAllBlocker;
 }
 
 public class MenuBlockerContainer : MonoBehaviour
 {
+    [Header("★ [Settings] Blocker")]
+    [SerializeField]	private bool m_showLog;
+
     [Header("★ [Live] Blocker")]
     [SerializeField]	private BlockerTypeEditor m_blockerType;
     [SerializeField]	private int m_blockerCount;
     [SerializeField]	private int m_blockerVariableICD;
+    [SerializeField]	private int m_blockerTargetLayer;
+    [SerializeField]	private int m_layerCount;
 
     [Header("★ [Reference] Blocker")]
-    [SerializeField]	private TMP_Dropdown m_dropdown;
+    [SerializeField]	private TMP_Dropdown m_dropdownBlocker;
+    [SerializeField]	private TMP_Dropdown m_dropdownLayer;
     [SerializeField]	private TMP_InputField m_CountText;
     [SerializeField]	private Button m_buttonCountMinus;
 	[SerializeField]	private Button m_buttonCountPlus;
@@ -59,6 +67,7 @@ public class MenuBlockerContainer : MonoBehaviour
         SetupFunctionButton(parameter);
         SetupBlockerICD(parameter);
         SetupBlockerDropdown(parameter);
+        SetupBlockerLayerDropdown(parameter);
     }
 
     private void SetupDefaultButton(MenuBlockerContainerParameter parameter)
@@ -79,13 +88,9 @@ public class MenuBlockerContainer : MonoBehaviour
 
     private void SetupFunctionButton(MenuBlockerContainerParameter parameter)
     {
-        m_buttonAdd.onClick.AddListener(() => parameter?.OnAddBlocker?.Invoke(m_blockerType, m_blockerCount));
-        m_buttonApply.onClick.AddListener(() => parameter?.OnApplyBlocker?.Invoke(m_blockerType, m_blockerCount));
-        m_buttonClear.onClick.AddListener(() => parameter?.OnClearAllBlocker?.Invoke());
-
-        //m_buttonAdd.onClick.AddListener(() => AddBlocker(m_blockerType, m_blockerCount));
-        //m_buttonApply.onClick.AddListener(() => ApplyBlocker(m_blockerType, m_blockerCount));
-        //m_buttonClear.onClick.AddListener(() => ClearAllBlocker());
+        m_buttonAdd.onClick.AddListener(() => parameter?.OnAddBlocker?.Invoke(m_blockerTargetLayer, m_blockerType, m_blockerCount));
+        m_buttonApply.onClick.AddListener(() => parameter?.OnApplyBlocker?.Invoke(m_blockerTargetLayer, m_blockerType, m_blockerCount));
+        m_buttonClear.onClick.AddListener(() => parameter?.OnClearAllBlocker?.Invoke(m_blockerTargetLayer));
     }
 
     private void SetupBlockerICD(MenuBlockerContainerParameter parameter)
@@ -108,37 +113,62 @@ public class MenuBlockerContainer : MonoBehaviour
     {
         List<OptionData> options = new();
 
-		var icons = parameter.BlockerList
-				.Select(item => new OptionData(item.ToString()))
-				.ToArray();
+        for(int i=0; i < parameter.BlockerList.Count; i++)
+        {
+            options.Add(new OptionData(parameter.BlockerList[i].ToString()));
+        }
 
-		options.AddRange(icons);
-		
-		m_dropdown.AddOptions(options);
-		m_dropdown.onValueChanged.AddListener(
+		m_dropdownBlocker.AddOptions(options);        
+		m_dropdownBlocker.onValueChanged.AddListener(
 			index => {
-				parameter?.OnChangeBlocker?.Invoke(index);
+				parameter?.OnChangeBlockerIndex?.Invoke(index);
 			}
 		);
 
-        SetBlocker(0);
+        SetDropdownBlocker(0);
     }
-    
-    private void SetBlocker(int index)
+
+    private void SetupBlockerLayerDropdown(MenuBlockerContainerParameter parameter)
+    {
+        m_dropdownLayer.onValueChanged.AddListener(
+			index => {
+				parameter?.OnChangeBlockerLayer?.Invoke(index);
+			}
+		);
+
+        RefreshBlockerLayerDropdown(0, 0, true);
+    }
+
+    private void SetDropdownBlocker(int index)
 	{
-		m_dropdown.SetValueWithoutNotify(index);
+        m_dropdownBlocker.SetValueWithoutNotify(index);
 	}
 
-#endregion Initialize    
+    private void SetDropdownLayer(int index)
+	{
+        m_dropdownLayer.SetValueWithoutNotify(index);
+	}
+
+#endregion Initialize
 
 
 #region OnUpdateUI
 
-    public void OnUpdateUI(BlockerTypeEditor blockerType, int blockerCount, int blockerVariableICD)
+    public void OnUpdateUI(BlockerTypeEditor blockerType, int blockerCount, int blockerVariableICD, int blockerTargetLayer, int layerCount)
 	{
+        int layerDropdownOldIndex = blockerTargetLayer + 1;
+        int layerDropdownNewIndex = layerDropdownOldIndex;
+        bool layerDropdownReset = m_layerCount > layerCount && layerDropdownOldIndex > layerCount;
+        bool layerCountChanged =  m_layerCount != layerCount;
+
+        if (layerDropdownReset)
+            layerDropdownNewIndex = 0;
+        
         m_blockerType = blockerType;
         m_blockerCount = blockerCount;
         m_blockerVariableICD = blockerVariableICD;
+        m_blockerTargetLayer = blockerTargetLayer;
+        m_layerCount = layerCount;
 
 		m_CountText.SetTextWithoutNotify(blockerCount.ToString());
 		m_buttonCountMinus.interactable = blockerType != BlockerTypeEditor.None && blockerCount > 0;
@@ -156,50 +186,37 @@ public class MenuBlockerContainer : MonoBehaviour
         m_ICDText.interactable = hasVariableICD;
         m_ICDContainer.SetActive(hasVariableICD);
 
-        bool showLog = true;
+        RefreshBlockerLayerDropdown(layerCount, layerDropdownNewIndex, layerCountChanged);
 
-        if (showLog)
-        {
-            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} : {1} (ICD : {2})</color>", m_blockerType, m_blockerCount, GlobalDefine.GetBlockerICD(m_blockerType, m_blockerVariableICD)));
-        }
+        if (layerDropdownReset)
+            m_dropdownLayer.onValueChanged.Invoke(layerDropdownNewIndex);
+        
+        if (m_showLog)
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Layer[{0}] {1} : {2} (ICD : {3})</color>", m_blockerTargetLayer, m_blockerType, m_blockerCount, GlobalDefine.GetBlockerICD(m_blockerType, m_blockerVariableICD)));
 	}
+
+    private void RefreshBlockerLayerDropdown(int layerCount, int setIndex, bool countChanged)
+    {
+        if (countChanged)
+        {
+            if (m_showLog)
+                Debug.Log(CodeManager.GetMethodName() + string.Format("layerCount : {0}", layerCount));
+
+            List<OptionData> options = new()
+            { new OptionData("All") };
+
+            for(int i=0; i < layerCount; i++)
+            {
+                options.Add(new OptionData($"Layer {i}"));
+            }
+
+            m_dropdownLayer.ClearOptions();		
+            m_dropdownLayer.AddOptions(options);
+
+            SetDropdownLayer(setIndex);
+        }
+    }
 
 #endregion OnUpdateUI    
 
-
-/*#region Blocker Function
-
-    private void ApplyBlocker(BlockerTypeEditor _blockerType, int _count)
-    {
-        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} : {1}</color>", _blockerType, _count));
-        
-        ClearBlocker(_blockerType);
-        AddBlocker(_blockerType, _count);
-    }
-
-    private void ClearBlocker(BlockerTypeEditor _blockerType)
-    {
-        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0}</color>", _blockerType));
-
-        //
-    }
-
-    private void AddBlocker(BlockerTypeEditor _blockerType, int _count)
-    {
-        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0} : {1}</color>", _blockerType, _count));
-
-        //
-    }
-
-    private void ClearAllBlocker()
-    {
-        Debug.Log(CodeManager.GetMethodName());
-
-        LevelEditor.Instance.blockerList.Where(item => item != BlockerTypeEditor.None).ToList()
-        .ForEach(_blockerType => {
-            ClearBlocker(_blockerType);
-        });
-    }
-
-#endregion Blocker Function*/
 }

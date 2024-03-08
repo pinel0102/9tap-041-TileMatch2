@@ -15,7 +15,7 @@ public static partial class TileSearch
         return tileList.OrderBy(g => System.Guid.NewGuid()).Take(count).ToList();
     }
 
-    public static List<Tile> GetBlockerEnableTiles(this Layer layer, BlockerType blockerType)
+    public static List<Tile> GetBlockerAvailableTiles(this Layer layer, BlockerType blockerType)
     {
         List<Tile> result = new List<Tile>();
 

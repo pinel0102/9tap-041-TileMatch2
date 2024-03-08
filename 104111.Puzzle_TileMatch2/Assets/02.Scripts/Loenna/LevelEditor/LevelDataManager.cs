@@ -351,7 +351,7 @@ public class LevelDataManager : IDisposable
 		return true;
 	}
 
-    public int AddBlocker(int boardIndex, BlockerTypeEditor blockerTypeEditor, int count, int blockerICD)
+    public int AddBlocker(int boardIndex, int layerIndex, BlockerTypeEditor blockerTypeEditor, int count, int blockerICD)
     {
         if (m_currentData == null)
 			return 0;
@@ -367,7 +367,7 @@ public class LevelDataManager : IDisposable
 
             Board board = m_currentData[boardIndex]!;
             int successCount = 0;
-
+            
             for(int k=0; k < count; k++)
             {
                 for(int i=0; i < blockerTypeList.Count; i++)
@@ -377,39 +377,49 @@ public class LevelDataManager : IDisposable
                     
                     List<Tile> targetList = new List<Tile>();
 
-                    for (int index = board.Layers.Count - 1; index >= 0; index--)
+                    if (layerIndex > -1)
                     {
-                        Layer layer = board.Layers[index];
-                        targetList.AddRange(layer.GetBlockerEnableTiles(blockerType));
+                        Layer layer = board.Layers[layerIndex];
+                        targetList.AddRange(layer.GetBlockerAvailableTiles(blockerType));
+                    }
+                    else
+                    {
+                        for (int index = board.Layers.Count - 1; index >= 0; index--)
+                        {
+                            Layer layer = board.Layers[index];
+                            targetList.AddRange(layer.GetBlockerAvailableTiles(blockerType));
+                        }
                     }
 
                     if (targetList.Count > 0)
                     {
-                        //Debug.Log(CodeManager.GetMethodName() + string.Format("Enable Count : {0}", targetList.Count));
-
                         Tile target = targetList.GetRandomTile();
 
+                        //Debug.Log(CodeManager.GetMethodName() + string.Format("Available Count : {0}", targetList.Count));
                         //Debug.Log(CodeManager.GetMethodName() + string.Format("[Target] {0} / {1} / {2} / {3}", target.Guid, target.Blocker, target.BlockerICD, target.Position));
 
-                        for (int layerIndex = board.Layers.Count - 1; layerIndex >= 0; layerIndex--)
+                        if (layerIndex > -1)
                         {
                             Layer layer = board.Layers[layerIndex];
-                            if (layer.Tiles?.FindIndex(tile => tile.Guid == target.Guid) is int index and >= 0)
-                            {
-                                Tile resultTile = layer.Tiles[index];
-                                layer.Tiles[index] = resultTile with { Blocker = blockerType, BlockerICD = GlobalDefine.GetBlockerICD(blockerType, blockerICD) };
-
-                                Debug.Log(CodeManager.GetMethodName() + string.Format("[Success] {0} / {1} / {2} / {3}", layer.Tiles[index].Guid, layer.Tiles[index].Blocker, layer.Tiles[index].BlockerICD, layer.Tiles[index].Position));
-
-                                m_saved.Value = false;
+                            if (TryAddBlocker(layer, blockerType, target))
                                 successCount++;
-                                break;
+                        }
+                        else
+                        {
+                            for (int index = board.Layers.Count - 1; index >= 0; index--)
+                            {
+                                Layer layer = board.Layers[index];
+                                if (TryAddBlocker(layer, blockerType, target))
+                                {
+                                    successCount++;
+                                    break;
+                                }
                             }
                         }
                     }
                     else
                     {
-                        Debug.LogWarning(CodeManager.GetMethodName() + string.Format("No Enable Target : {0}", blockerType));                        
+                        //Debug.LogWarning(CodeManager.GetMethodName() + string.Format("No Available Target : {0}", blockerType));                        
                         return successCount;
                     }
                 }
@@ -422,9 +432,26 @@ public class LevelDataManager : IDisposable
             Debug.LogWarning(CodeManager.GetMethodName() + string.Format("<color=yellow>Parsing Error : {0}</color>", blockerTypeEditor));            
             return 0;
         }
+
+        bool TryAddBlocker(Layer layer, BlockerType blockerType, Tile target)
+        {
+            if (layer.Tiles?.FindIndex(tile => tile.Guid == target.Guid) is int index and >= 0)
+            {
+                Tile resultTile = layer.Tiles[index];
+                layer.Tiles[index] = resultTile with { Blocker = blockerType, BlockerICD = GlobalDefine.GetBlockerICD(blockerType, blockerICD) };
+
+                //Debug.Log(CodeManager.GetMethodName() + string.Format("[Success] {0} / {1} / {2} / {3}", layer.Tiles[index].Guid, layer.Tiles[index].Blocker, layer.Tiles[index].BlockerICD, layer.Tiles[index].Position));
+
+                m_saved.Value = false;
+                
+                return true;
+            }
+
+            return false;
+        }
     }
 
-    public int ClearBlocker(int boardIndex, BlockerTypeEditor blockerTypeEditor)
+    public int ClearBlocker(int boardIndex, int layerIndex, BlockerTypeEditor blockerTypeEditor)
     {
         if (m_currentData == null)
 			return 0;
@@ -445,25 +472,17 @@ public class LevelDataManager : IDisposable
 
                 //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>blockerType : {0}</color>", blockerType));
 
-                for (int index = board.Layers.Count - 1; index >= 0; index--)
+                if (layerIndex > -1)
                 {
-                    Layer layer = board.Layers[index];
-
-                    for(int k=0; k < layer.Tiles.Count; k++)
+                    Layer layer = board.Layers[layerIndex];
+                    removeCount += TryClearBlocker(layer, blockerType);
+                }
+                else
+                {
+                    for (int index = board.Layers.Count - 1; index >= 0; index--)
                     {
-                        if (layer.Tiles[k].Blocker.Equals(blockerType))
-                        {
-                            Tile target = layer.Tiles[k];
-
-                            //Debug.Log(CodeManager.GetMethodName() + string.Format("[Target] {0} / {1} / {2} / {3}", target.Guid, target.Blocker, target.BlockerICD, target.Position));
-
-                            layer.Tiles[k] = target with { Blocker = BlockerType.None, BlockerICD = 0 };
-                            
-                            Debug.Log(CodeManager.GetMethodName() + string.Format("[Success] {0} / {1} / {2} / {3}", layer.Tiles[k].Guid, layer.Tiles[k].Blocker, layer.Tiles[k].BlockerICD, layer.Tiles[k].Position));
-
-                            m_saved.Value = false;
-                            removeCount++;
-                        }
+                        Layer layer = board.Layers[index];
+                        removeCount += TryClearBlocker(layer, blockerType);
                     }
                 }
             }
@@ -474,6 +493,30 @@ public class LevelDataManager : IDisposable
         {
             Debug.LogWarning(CodeManager.GetMethodName() + string.Format("<color=yellow>Parsing Error : {0}</color>", blockerTypeEditor));
             return 0;
+        }
+
+        int TryClearBlocker(Layer layer, BlockerType blockerType)
+        {
+            int removeCount = 0;
+
+            for(int k=0; k < layer.Tiles.Count; k++)
+            {
+                if (layer.Tiles[k].Blocker.Equals(blockerType))
+                {
+                    Tile target = layer.Tiles[k];
+
+                    //Debug.Log(CodeManager.GetMethodName() + string.Format("[Target] {0} / {1} / {2} / {3}", target.Guid, target.Blocker, target.BlockerICD, target.Position));
+
+                    layer.Tiles[k] = target with { Blocker = BlockerType.None, BlockerICD = 0 };
+                    
+                    //Debug.Log(CodeManager.GetMethodName() + string.Format("[Success] {0} / {1} / {2} / {3}", layer.Tiles[k].Guid, layer.Tiles[k].Blocker, layer.Tiles[k].BlockerICD, layer.Tiles[k].Position));
+
+                    m_saved.Value = false;
+                    removeCount++;
+                }
+            }
+
+            return removeCount;
         }
     }
 
