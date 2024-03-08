@@ -649,7 +649,7 @@ public class LevelDataManager : IDisposable
 
 		bool AddTileInLayer(Vector2 position, out int layerIndex, int index, Layer layer)
 		{
-            Debug.Log(CodeManager.GetMethodName() + string.Format("[Layer {0}] {1}", index, position));
+            Debug.Log(CodeManager.GetMethodName(index:1) + string.Format("[Layer {0}] {1}", index, position));
 
             layer.Tiles.Add(new Tile(position));
 			layerIndex = index;
