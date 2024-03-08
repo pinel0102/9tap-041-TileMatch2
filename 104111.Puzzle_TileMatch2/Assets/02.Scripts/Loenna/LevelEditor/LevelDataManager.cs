@@ -302,16 +302,16 @@ public class LevelDataManager : IDisposable
 		if (last > 0)
 		{
 			board.Layers.RemoveAt(last);
+            m_saved.Value = false;
 			return true;
 		}
-		else
-		if (last == 0)
+		else if (last == 0)
 		{
 			board.Layers[0].Tiles.Clear();
+            m_saved.Value = false;
 			return true;
 		}
 
-		m_saved.Value = false;
 		return false;
 	}
 
@@ -574,7 +574,7 @@ public class LevelDataManager : IDisposable
 
 	public bool TryAddTileData(DrawOrder drawOrder, int boardIndex, Bounds bounds, out int layerIndex)
 	{
-		layerIndex = -1;
+        layerIndex = -1;
 
 		if (m_currentData == null)
 		{
@@ -644,14 +644,17 @@ public class LevelDataManager : IDisposable
 				}
 				return AddTileInLayer(bounds.center, out layerIndex, 0, board.Layers[0]);
 		}
-		return true;
+        
+        return false;
 
 		bool AddTileInLayer(Vector2 position, out int layerIndex, int index, Layer layer)
 		{
-            Debug.Log(position);
-			layer.Tiles.Add(new Tile(position));
+            Debug.Log(CodeManager.GetMethodName() + string.Format("[Layer {0}] {1}", index, position));
+
+            layer.Tiles.Add(new Tile(position));
 			layerIndex = index;
 			m_saved.Value = false;
+            
 			return true;
 		}
 
@@ -684,7 +687,7 @@ public class LevelDataManager : IDisposable
 
 	public bool TryRemoveTileData(int boardIndex, Bounds bounds)
 	{
-		if (m_currentData == null)
+        if (m_currentData == null)
 		{
 			return false;
 		}
@@ -714,6 +717,9 @@ public class LevelDataManager : IDisposable
 				}
 
 				m_saved.Value = false;
+
+                Debug.Log(CodeManager.GetMethodName() + string.Format("removeCount : {0}", removeCount));
+
 				return true;
 			}
 		}

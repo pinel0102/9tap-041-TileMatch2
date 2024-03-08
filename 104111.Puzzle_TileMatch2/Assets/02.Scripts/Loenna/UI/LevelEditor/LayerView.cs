@@ -6,12 +6,16 @@ using static LevelEditor;
 
 public class LayerView : MonoBehaviour
 {
+    [SerializeField]
+	private int m_layerIndex;
 	[SerializeField]
 	private CanvasGroup m_canvasGroup;
 	private Queue<GameObject> m_pools = new();
 
-	public void Draw(TileBrush tilePrefab, LayerInfo layer)
+	public void Draw(TileBrush tilePrefab, LayerInfo layer, int layerIndex)
 	{
+        m_layerIndex = layerIndex;
+
 		if (layer?.Tiles == null)
 		{
 			return;
@@ -25,14 +29,13 @@ public class LayerView : MonoBehaviour
 
 	public void Draw(TileBrush tilePrefab, Vector2 position, float size, Color color, BlockerType blockerType, int blockerICD)
 	{
-		GameObject go = m_pools.Count > 0? m_pools.Dequeue() : Instantiate(tilePrefab.gameObject);
-		
-		go.SetActive(true);
-		go.transform.SetParent(transform);
+        GameObject go = m_pools.Count > 0 ? m_pools.Dequeue() : Instantiate(tilePrefab.gameObject, transform);
+        
 		go.transform.localRotation = Quaternion.identity;
 		go.transform.localScale = Vector3.one;
+        go.SetActive(true);
 
-		if (!go.TryGetComponent<Outline>(out Outline outline))
+		if (!go.TryGetComponent(out Outline outline))
 		{
 			outline = go.AddComponent<Outline>();
 		}
@@ -50,6 +53,8 @@ public class LayerView : MonoBehaviour
 
 	public void Clear()
 	{
+        m_pools.Clear();
+
 		for (int index = 0, count = transform.childCount; index < count; index++)
 		{
 			var child = transform.GetChild(index);

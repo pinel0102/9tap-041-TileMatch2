@@ -116,7 +116,7 @@ public class BoardView : MonoBehaviour
 			};
 
 			layerView.gameObject.SetActive(true);
-			layerView.Draw(m_brush, layer);
+			layerView.Draw(m_brush, layer, index);
 		}
 
 		LayerView CreateView(int index)

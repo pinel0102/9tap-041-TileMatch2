@@ -2699,9 +2699,9 @@ RectTransform:
   m_Father: {fileID: 1883957936}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: -10}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &202574952
 MonoBehaviour:
@@ -5565,6 +5565,10 @@ PrefabInstance:
     - target: {fileID: 3446179235810109694, guid: 9cc3d0a04798e5240b4f7c793cf5b5a2, type: 3}
       propertyPath: m_Name
       value: LevelEditor_ToggleButton_Top
+      objectReference: {fileID: 0}
+    - target: {fileID: 4948468207107785740, guid: 9cc3d0a04798e5240b4f7c793cf5b5a2, type: 3}
+      propertyPath: m_IsOn
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4948468207107785740, guid: 9cc3d0a04798e5240b4f7c793cf5b5a2, type: 3}
       propertyPath: m_Group
@@ -10593,11 +10597,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8694432999389056395, guid: 397520beb1e8e21458d14a0a3c929873, type: 3}
       propertyPath: m_MinWidth
-      value: 300
+      value: 320
       objectReference: {fileID: 0}
     - target: {fileID: 8694432999389056395, guid: 397520beb1e8e21458d14a0a3c929873, type: 3}
       propertyPath: m_PreferredWidth
-      value: 300
+      value: 320
       objectReference: {fileID: 0}
     - target: {fileID: 8726402658194813563, guid: 397520beb1e8e21458d14a0a3c929873, type: 3}
       propertyPath: m_Pivot.x
@@ -20736,10 +20740,6 @@ PrefabInstance:
       value: LevelEditor_ToggleButton_Bottom
       objectReference: {fileID: 0}
     - target: {fileID: 4948468207107785740, guid: 9cc3d0a04798e5240b4f7c793cf5b5a2, type: 3}
-      propertyPath: m_IsOn
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4948468207107785740, guid: 9cc3d0a04798e5240b4f7c793cf5b5a2, type: 3}
       propertyPath: m_Group
       value: 
       objectReference: {fileID: 427089835}
@@ -20951,7 +20951,7 @@ MonoBehaviour:
   m_Viewport: {fileID: 202574951}
   m_HorizontalScrollbar: {fileID: 524240738}
   m_VerticalScrollbar: {fileID: 0}
-  m_HorizontalScrollbarVisibility: 2
+  m_HorizontalScrollbarVisibility: 0
   m_VerticalScrollbarVisibility: 2
   m_HorizontalScrollbarSpacing: -3
   m_VerticalScrollbarSpacing: -3
