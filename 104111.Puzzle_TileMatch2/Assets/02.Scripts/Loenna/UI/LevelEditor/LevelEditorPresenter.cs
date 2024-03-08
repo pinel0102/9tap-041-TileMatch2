@@ -540,9 +540,9 @@ public class LevelEditorPresenter : IDisposable
             );
 
             if (layerIndex > -1)
-                m_levelEditor.SetLog(string.Format("<color=yellow>Layer [{2}] {0} + {1}</color>", blockerType, successCount, layerIndex), showLog:false);
+                m_levelEditor.SetLog(string.Format("<color=yellow>[Layer {2}] {0} + {1}</color>", blockerType, successCount, layerIndex), showLog:false);
             else
-                m_levelEditor.SetLog(string.Format("<color=yellow>Layer [All] {0} + {1}</color>", blockerType, successCount), showLog:false);
+                m_levelEditor.SetLog(string.Format("<color=yellow>[Layer All] {0} + {1}</color>", blockerType, successCount), showLog:false);
 
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Success] {0} x ({1}/{2}) (ICD : {3})</color>", blockerType, successCount, count, blockerICD));
         }
@@ -555,9 +555,9 @@ public class LevelEditorPresenter : IDisposable
 			);
 
             if (layerIndex > -1)
-                m_levelEditor.SetLog(string.Format("<color=yellow>Layer [{1}] {0} : No Available Tile</color>", blockerType, layerIndex), showLog:false);
+                m_levelEditor.SetLog(string.Format("<color=yellow>[Layer {1}] {0} : No Available Tile</color>", blockerType, layerIndex), showLog:false);
             else
-                m_levelEditor.SetLog(string.Format("<color=yellow>Layer [All] {0} : No Available Tile</color>", blockerType), showLog:false);
+                m_levelEditor.SetLog(string.Format("<color=yellow>[Layer All] {0} : No Available Tile</color>", blockerType), showLog:false);
         }
     }
 
@@ -628,9 +628,16 @@ public class LevelEditorPresenter : IDisposable
         if (removeCount > 0)
         {
             if (layerIndex > -1)
-                m_levelEditor.SetLog(string.Format("<color=yellow>Layer [{1}] Clear Blockers ({0})</color>", removeCount, layerIndex), showLog:false);
+                m_levelEditor.SetLog(string.Format("<color=yellow>[Layer {1}] Clear Blockers ({0})</color>", removeCount, layerIndex), showLog:false);
             else
-                m_levelEditor.SetLog(string.Format("<color=yellow>Layer [All] Clear Blockers ({0})</color>", removeCount), showLog:false);
+                m_levelEditor.SetLog(string.Format("<color=yellow>[Layer All] Clear Blockers ({0})</color>", removeCount), showLog:false);
+        }
+        else
+        {
+            if (layerIndex > -1)
+                m_levelEditor.SetLog(string.Format("<color=yellow>[Layer {1}] No Blocker to Clear</color>", removeCount, layerIndex), showLog:false);
+            else
+                m_levelEditor.SetLog(string.Format("<color=yellow>[Layer All] No Blocker to Clear</color>", removeCount), showLog:false);
         }
     }
 
