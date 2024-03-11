@@ -18,20 +18,122 @@ partial class GameManager
 
 	public void OnProcess(TileItemModel tileItemModel)
 	{
-		ConcurrentCommand concurrentCommand = new ConcurrentCommand(
+        List<ICommand> commandParams = new List<ICommand>();
+
+        switch(tileItemModel.Location)
+        {
+            case LocationType.STASH:
+                commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_STASH_TO_BASKET, tileItemModel, LocationType.BASKET, tileItemModel.BlockerType, tileItemModel.BlockerICD)));
+                break;
+            case LocationType.BOARD:
+                tileItemModel.FindTilesToChangeICD().ForEach(tagetTileModel => {
+                    commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.CHANGE_BLOCKER_ICD, tagetTileModel, LocationType.BOARD, tagetTileModel.BlockerType, tagetTileModel.BlockerICD)));
+                });
+                commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_BOARD_TO_BASKET, tileItemModel, LocationType.BASKET, tileItemModel.BlockerType, tileItemModel.BlockerICD)));
+                break;
+            default:
+                commandParams.Add(DoNothing<Resource>.Command);
+                break;
+        }
+
+        ConcurrentCommand concurrentCommand = new ConcurrentCommand(commandParams.ToArray());
+
+		/*ConcurrentCommand concurrentCommand = new ConcurrentCommand(
 			tileItemModel.Location switch {
-				LocationType.STASH => new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_STASH_TO_BASKET, LocationType.BASKET, tileItemModel.BlockerType, tileItemModel.BlockerICD)),
-				LocationType.BOARD => new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET, tileItemModel.BlockerType, tileItemModel.BlockerICD)),
+				LocationType.STASH => 
+                    new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_STASH_TO_BASKET, LocationType.BASKET, tileItemModel.BlockerType, tileItemModel.BlockerICD)),
+				LocationType.BOARD => 
+                    new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET, tileItemModel.BlockerType, tileItemModel.BlockerICD)),
 				_ => DoNothing<Resource>.Command
 			}
-		);
-		
-		m_commandInvoker.SetCommand(concurrentCommand);
+		);*/
+
+        m_commandInvoker.SetCommand(concurrentCommand);
 		m_commandInvoker.Execute();
 
 		#region Local Functions
-		Resource CreateResource(Type type, LocationType location, BlockerType blockerType, int blockerICD) => Resource.CreateCommand(type, tileItemModel, location, blockerType, blockerICD);
+		Resource CreateResource(Type type, TileItemModel targetModel, LocationType location, BlockerType blockerType, int blockerICD)
+        {
+            //Debug.Log(CodeManager.GetMethodName() + string.Format("[{0}] {1} : {2}", type, blockerType, blockerICD));
+            return Resource.CreateCommand(type, targetModel, location, blockerType, blockerICD);
+        }
 		#endregion
+	}
+
+    public void ChangeICD(TileItemModel tileItemModel, List<TileItemModel> tiles, int changeCount = -1)
+	{
+		var modifiedTiles = tiles
+			.Select(
+				tile => {
+					var overlapped = tile.
+						Overlaps
+						.Select(
+							x => {
+								if (x.guid == tileItemModel.Guid)
+								{
+									return (x.guid, true, x.distance);
+								}
+								return x;
+							}
+						).ToList();
+
+                    int oldICD = tile.BlockerICD;
+                    int newICD = 0;
+                    if (tile.Guid == tileItemModel.Guid)
+                    {
+                        if (changeCount > 0)
+                        {
+                            switch(tile.BlockerType)
+                            {
+                                case BlockerType.Bush:
+                                case BlockerType.Chain:
+                                case BlockerType.Jelly:
+                                    newICD = Mathf.Min(GlobalDefine.GetBlockerICD(tile.BlockerType, oldICD), oldICD + changeCount);
+                                    break;
+                                case BlockerType.Suitcase:
+                                    newICD = Mathf.Min(tile.FindTileItem().iconList.Count, oldICD + changeCount);
+                                    break;
+                                default:
+                                    newICD = oldICD;
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            switch(tile.BlockerType)
+                            {
+                                case BlockerType.Bush:
+                                case BlockerType.Chain:
+                                case BlockerType.Jelly:
+                                case BlockerType.Suitcase:
+                                    newICD = Mathf.Max(0, oldICD + changeCount);
+                                    break;
+                                default:
+                                    newICD = oldICD;
+                                    break;
+                            }
+                        }
+                    }
+					
+					return tile with {
+						Overlaps = overlapped,
+                        BlockerICD = tile.Guid == tileItemModel.Guid ? newICD : oldICD
+					};
+				}
+			).ToList();
+		
+		BoardInfo.CurrentBoard.Tiles = modifiedTiles;
+
+		var currentBasket = BoardInfo.Basket;
+		currentBasket.RemoveAll(b => tiles.Any(tile => tile.Location is LocationType.BOARD && tile.Guid == b.Guid));
+
+		m_boardInfo.Update(
+			info => info with { 
+				StateType = InternalState.Type.CurrentUpdated,
+				Basket = currentBasket,
+				SelectedTiles = new TileItemModel[] { tileItemModel }
+			}
+		);
 	}
 
 	// 해당 타일 이동
@@ -127,7 +229,7 @@ partial class GameManager
 
 	public void AddToBasket(TileItemModel tileItemModel, List<TileItemModel> tiles)
 	{
-		var modifiedTiles = tiles
+        var modifiedTiles = tiles
 			.Select(
 				tile => {
 					var overlapped = tile.
@@ -217,6 +319,11 @@ partial class GameManager
 			return false;
 		}
 	}
+
+    public void ChangeBlockerICD(TileItemModel tileItemModel, List<TileItemModel> tiles)
+    {
+        //
+    }
 
     public bool IsBasketEnable()
     {

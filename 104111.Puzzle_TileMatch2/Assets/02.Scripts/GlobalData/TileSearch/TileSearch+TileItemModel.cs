@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -119,6 +120,33 @@ public static partial class TileSearch
     public static (bool, TileItemModel) FindBottomTile(this TileItemModel tile)
     {
         return tile.FindTile(tile.PositionBottom()).ListCheck();
+    }
+
+    /// <summary>
+    /// ICD를 변경시켜야 할 타일을 검색. (본인 제외)
+    /// </summary>
+    /// <param name="tile"></param>
+    /// <returns></returns>
+    public static List<TileItemModel> FindTilesToChangeICD(this TileItemModel tile)
+    {
+        List<TileItemModel> result = new List<TileItemModel>();
+        
+        result = GlobalData.Instance.playScene.TileItems
+            .FindAll(tileItem => tileItem.Current.Location == LocationType.BOARD && tileItem.Current != tile && tileItem.IsInteractable &&
+                tileItem.blockerType switch{
+                    BlockerType.Bush => tileItem.Current.FindAroundTiles().Contains(tile),
+                    BlockerType.Chain => tileItem.Current.FindLeftRightTiles().Contains(tile),
+                    BlockerType.Jelly => true,
+                    _ => false
+                })
+            .Select(tile => { return tile.Current; }).ToList();
+
+        return result;
+    }
+
+    public static TileItem FindTileItem(this TileItemModel tile)
+    {
+        return GlobalData.Instance.playScene.TileItems.Find(tileItem => tileItem.Current == tile);
     }
 
 #endregion [Game] TileItemModel

@@ -11,7 +11,7 @@ public class GameCommand<T> : ICommand
 
 	public void Execute()
 	{
-		m_receiver?.Execute(m_resource);
+        m_receiver?.Execute(m_resource);
 	}
 
 	public void UnExecute()

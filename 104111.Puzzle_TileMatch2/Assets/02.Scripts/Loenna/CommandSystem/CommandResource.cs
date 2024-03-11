@@ -17,7 +17,7 @@ public abstract record CommandResource
 			tileItemModel = TileItemModel;
 		}
 
-		public void Deconstruct(out CommandType.PlayScene type,out TileItemModel tileItemModel, out LocationType location, out BlockerType blockerType, out int blockerICD)
+		public void Deconstruct(out CommandType.PlayScene type, out TileItemModel tileItemModel, out LocationType location, out BlockerType blockerType, out int blockerICD)
 		{
 			type = CommandType;
 			tileItemModel = TileItemModel;

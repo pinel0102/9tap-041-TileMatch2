@@ -15,7 +15,7 @@ using System.Linq;
 
 public class TileItemParameter
 {
-	public Action<TileItem> OnClick;
+    public Action<TileItem> OnClick;
 }
 
 [ResourcePath("UI/Widgets/TileObject")]
@@ -87,14 +87,24 @@ public class TileItem : CachedBehaviour
 		}
 	}
 
+    [Header("★ [Live] Tile Info")]
     public string tileName;
     public int tileIcon;
     public List<int> iconList = new List<int>();
     public BlockerType blockerType;
     public int blockerICD;
 
-	private TileDataTable m_tileDataTable;
+    [Header("★ [Live] Status")]
+    [SerializeField]	private bool m_interactable = false;
+    [SerializeField]	private bool m_movable = true;
+    [SerializeField]	private bool isMoving;
+    [SerializeField]	private bool isScaling;
+    public LocationType currentLocation;
+    public bool IsInteractable => m_interactable;
+    public bool IsMovable => m_movable;
+    public bool IsMoving => isMoving;
 
+    [Header("★ [Reference] Tile")]
 	[SerializeField]	private RectTransform m_view;
 	[SerializeField]	private Image m_icon;
 	[SerializeField]	private EventTrigger m_trigger;
@@ -116,19 +126,12 @@ public class TileItem : CachedBehaviour
 
 	private TileItemModel m_current;
 	public TileItemModel Current => m_current;
-
-    public bool isInteractable => m_interactable;
-	private bool m_interactable = false;
-
+    private TileDataTable m_tileDataTable;
 	private TweenContext? m_positionTween;
 	private TweenContext? m_scaleTween;
 	private TweenContext? m_dimTween;
 	private TweenContext? m_iconAlphaTween;
-
 	private Vector3 m_originWorldPosition;
-    private bool isScaling;
-    public bool isMoving;
-    public bool IsMoving => isMoving;
 
     private bool ShuffleMove;
     private float _shuffleAngle;
@@ -191,6 +194,8 @@ public class TileItem : CachedBehaviour
 	{
         //Debug.Log(CodeManager.GetMethodName() + gameObject.name);
 
+        currentLocation = LocationType.POOL;
+        blockerICD = 0;
         isScaling = false;
         isMoving = false;
         m_disappearEffect.SetActive(false);
@@ -211,6 +216,7 @@ public class TileItem : CachedBehaviour
 
 	public void OnSetup(TileItemParameter parameter)
 	{
+        blockerICD = 0;
         isScaling = false;
         isMoving = false;
 		m_tileDataTable = Game.Inst.Get<TableManager>().TileDataTable;
@@ -265,7 +271,7 @@ public class TileItem : CachedBehaviour
 #endif
 
         _shuffleCenter = GlobalData.Instance.playScene.mainView.transform;
-
+        
         UniTask OnTriggerCallback(EventTriggerType type, BaseEventData eventData)
 		{
 			if (!m_interactable)
@@ -277,18 +283,32 @@ public class TileItem : CachedBehaviour
             if (type is EventTriggerType.PointerDown)
 			{
 				soundManager?.PlayFx(Constant.Sound.SFX_TILE_SELECT);
-                m_interactable = false;
-                isScaling = true;
-                isMoving = true;
-				
-                m_scaleTween?.OnChangeValue(Vector3.one * 1.3f, Constant.Game.TWEENTIME_TILE_SCALE, () => {
-                    if (isScaling)
-                        m_scaleTween?.OnChangeValue(Vector3.one, Constant.Game.TWEENTIME_TILE_SCALE, () => isScaling = false);
-                });
 
-                //Debug.Log(CodeManager.GetMethodName() + m_current.Location);
-                
-                parameter.OnClick?.Invoke(this);
+                bool isMovable = IsReallyMovable(m_movable);
+
+                if (isMovable)
+                {
+                    m_interactable = false;                    
+                    isMoving = true;
+
+                    isScaling = true;
+                    m_scaleTween?.OnChangeValue(Vector3.one * 1.3f, Constant.Game.TWEENTIME_TILE_SCALE, () => {
+                        if (isScaling)
+                            m_scaleTween?.OnChangeValue(Vector3.one, Constant.Game.TWEENTIME_TILE_SCALE, () => isScaling = false);
+                    });
+
+                    //Debug.Log(CodeManager.GetMethodName() + m_current.Location);
+                    
+                    parameter.OnClick?.Invoke(this);
+                }
+                else
+                {
+                    isScaling = true;
+                    m_scaleTween?.OnChangeValue(Vector3.one * 1.3f, Constant.Game.TWEENTIME_TILE_SCALE, () => {
+                        if (isScaling)
+                            m_scaleTween?.OnChangeValue(Vector3.one, Constant.Game.TWEENTIME_TILE_SCALE, () => isScaling = false);
+                    });
+                }
             }
 
             return UniTask.CompletedTask;
@@ -312,22 +332,24 @@ public class TileItem : CachedBehaviour
 		}
 
 		LocationType currentType = m_current?.Location ?? LocationType.POOL;
-
+        
 		if ((changeLocation, currentType) is (LocationType.BOARD, LocationType.BOARD))
 		{
 			m_originWorldPosition = CachedTransform.parent.TransformPoint(item.Position);
 			CachedRectTransform.SetLocalPosition(item.Position);
 		}
 
-		m_current = item;
-		SetInteractable(item.Location, item.Overlapped, item.InvisibleIcon, ignoreInvisible).Forget();
+        m_current = item;
 
+        currentLocation = changeLocation;
         blockerType = item.BlockerType;
-        blockerICD = item.BlockerICD;
+        blockerICD = item.BlockerICD;//blockerICD > 0 ? blockerICD : item.BlockerICD;
         iconList = item.IconList;
         
         RefreshIcon(blockerType, blockerICD);
         RefreshBlockerState(blockerType, blockerICD);
+
+        SetInteractable(item.Location, item.Overlapped, item.InvisibleIcon, ignoreInvisible).Forget();
 
         (m_tmpText.text, m_icon.enabled) = m_icon.sprite switch {
 			null => (tileName, false),
@@ -351,8 +373,7 @@ public class TileItem : CachedBehaviour
         int index;
         switch(type)
         {
-            case BlockerType.Bush:
-            case BlockerType.Jelly:
+            case BlockerType.Suitcase:
                 index = Mathf.Max(0, currentICD - 1);
                 break;
             
@@ -375,24 +396,30 @@ public class TileItem : CachedBehaviour
 
     public void RefreshBlockerState(BlockerType type, int currentICD)
     {
+        if (currentLocation != LocationType.BOARD)
+        {
+            SetBlockerObject(Vector3.zero, null, activeMain:false);
+            return;
+        }
+
         switch(type)
         {
             case BlockerType.Glue_Right:
                 SetBlockerObject(-Constant.Game.TILE_WIDTH_HALF_POSITION, GlobalDefine.GetBlockerSprite(type, currentICD));
                 break;
             case BlockerType.Bush:
-                //SetBlockerSprite(Vector3.zero, GlobalDefine.GetBlockerSprite(type, currentICD));
+                SetBlockerObject(Vector3.zero, GlobalDefine.GetBlockerSprite(type, currentICD), activeMain:currentICD > 0);
                 // Test
-                SetBlockerObject(Vector3.zero, GlobalDefine.GetBlockerSprite(type, currentICD), text:currentICD.ToString(), activeText:true);
+                //SetBlockerObject(Vector3.zero, GlobalDefine.GetBlockerSprite(type, currentICD), text:currentICD.ToString(), activeMain:currentICD > 0, activeText:true);
                 break;
             case BlockerType.Suitcase:
                 SetBlockerObject(Vector3.zero, GlobalDefine.GetBlockerSprite(type, currentICD), GlobalDefine.GetBlockerSubSprite(type, currentICD), currentICD.ToString(), true, true, true);
                 break;
             case BlockerType.Jelly:
-                SetBlockerObject(Vector3.zero, GlobalDefine.GetBlockerSprite(type, currentICD));
+                SetBlockerObject(Vector3.zero, GlobalDefine.GetBlockerSprite(type, currentICD), activeMain:currentICD > 0);
                 break;
             case BlockerType.Chain:
-                SetBlockerObject(Vector3.zero, GlobalDefine.GetBlockerSprite(type, currentICD));
+                SetBlockerObject(Vector3.zero, GlobalDefine.GetBlockerSprite(type, currentICD), activeMain:currentICD > 0);
                 break;
             case BlockerType.Glue_Left:
             case BlockerType.None:
@@ -420,7 +447,8 @@ public class TileItem : CachedBehaviour
 			return UniTask.CompletedTask;
 		}
 
-		Vector2 direction = moveAt ?? Current.Position;
+		currentLocation = location;
+        Vector2 direction = moveAt ?? Current.Position;
 
         if (location == LocationType.POOL)
         {
@@ -432,7 +460,7 @@ public class TileItem : CachedBehaviour
         return (location, Current != null) switch {
 			(LocationType.STASH or LocationType.BASKET, _) => 
                 //m_positionTween?.OnChangeValue(direction, duration) 
-                TileJump(location, direction, duration)
+                TileJump(location, direction, duration) 
                 ?? UniTask.CompletedTask,
 			(LocationType.BOARD, true) => 
                 m_positionTween?.OnChangeValue(m_originWorldPosition, duration) 
@@ -466,7 +494,9 @@ public class TileItem : CachedBehaviour
 
     private UniTask? TileJump(LocationType location, Vector3 value, float duration)
     {
+        //Debug.Log(CodeManager.GetMethodName() + string.Format("m_movable: {0}", m_movable));
         //Debug.Log(location);
+        
         return ObjectUtility.GetRawObject(CachedTransform)?
             .DOJump(value, 0.5f, 1, duration)
             .OnComplete(() => {
@@ -487,14 +517,16 @@ public class TileItem : CachedBehaviour
 				ObjectUtility.GetRawObject(m_missionTile)?.SetVisible(!invisibleIcon);
 #endif
 
-				if (overlapped)
+				if (overlapped || !m_movable)
 				{
-					Color color = Color.white.WithA(invisibleIcon && !ignoreInvisible? 0f : 1f);
+                    Color color = Color.white.WithA(invisibleIcon && !ignoreInvisible? 0f : 1f);
 					if (m_iconAlphaTween.HasValue)
 					{
 						await m_iconAlphaTween.Value.OnChangeValue(color, -1f);
 					}
-					await UniTask.Defer(() => m_dimTween?.OnChangeValue(1f, 0f) ?? UniTask.CompletedTask);
+
+                    //if (blockerType == BlockerType.None)
+					    await UniTask.Defer(() => m_dimTween?.OnChangeValue(1f, 0f) ?? UniTask.CompletedTask);
 				}
 				else
 				{
@@ -505,15 +537,166 @@ public class TileItem : CachedBehaviour
 
 					await UniTask.Defer(() => m_dimTween?.OnChangeValue(0f, Constant.Game.TWEENTIME_TILE_DEFAULT) ?? UniTask.CompletedTask);
 				}
+
+                MovableCheck();
+
 				break;
 			default:
 				m_interactable = location is LocationType.STASH;
+                m_movable = true;
 				if (m_iconAlphaTween.HasValue)
 				{
 					await m_iconAlphaTween.Value.OnChangeValue(Color.white, -1f);	
 				}
-				await UniTask.Defer(() => m_dimTween?.OnChangeValue(0f, 0f) ?? UniTask.CompletedTask);
+                await UniTask.Defer(() => m_dimTween?.OnChangeValue(0f, 0f) ?? UniTask.CompletedTask);
 				break;
 		}
 	}
+
+#region Blocker Check
+
+    /// <summary>
+    /// 자신의 이동 가능 여부를 체크.
+    /// </summary>
+    public void MovableCheck()
+    {
+        bool oldValue = m_movable;
+
+        if (m_interactable)
+        {
+            if (GetHiddenAroundBlockers().Count > 0)
+            {
+                m_movable = false;
+            }
+            else
+            {
+                m_movable = BlockerMoveCheck(blockerICD);
+            }
+        }
+        else
+        {
+            m_movable = false;
+        }
+
+        if (oldValue != m_movable)
+        {
+            //Debug.Log(CodeManager.GetMethodName() + string.Format("Movable Changed : {0} ({1})", m_movable, tileName));
+            //if (blockerType == BlockerType.None)
+                m_dimTween?.OnChangeValue(m_movable ? 0 : 1f, 0f);
+            
+            AroundMovableCheck();
+        }
+    }
+
+    /// <summary>
+    /// 자신이 Blocker인 경우 인접 타일의 이동 가능 여부를 체크.
+    /// </summary>
+    private void AroundMovableCheck()
+    {
+        switch(blockerType)
+        {
+            case BlockerType.Bush:
+                if(m_interactable)
+                {
+                    this.FindAroundTiles().ForEach(tile => {
+                        tile.MovableCheck();
+                    });
+                }
+                break;
+            case BlockerType.Chain:
+                if(m_interactable)
+                {
+                    this.FindLeftRightTiles().ForEach(tile => {
+                        tile.MovableCheck();
+                    });
+                }
+                break;
+        }
+    }
+
+    /// <summary>
+    /// 자신이 Blocker인 경우 본인의 이동 가능 여부를 체크.
+    /// </summary>
+    private bool BlockerMoveCheck(int currentICD)
+    {
+        switch(blockerType)
+        {
+            case BlockerType.Glue_Left:
+                var(existRight, rightTile) = this.FindRightTile();
+                return existRight && rightTile.IsInteractable;
+            case BlockerType.Glue_Right:
+                var(existLeft, leftTile) = this.FindLeftTile();
+                return existLeft && leftTile.IsInteractable;
+            case BlockerType.Bush:
+            case BlockerType.Chain:
+            case BlockerType.Jelly:
+            case BlockerType.Suitcase:
+                return currentICD == 0;
+        }
+        return true;
+    }
+
+    /// <summary>
+    /// 실제 이동 가능 여부를 체크.
+    /// </summary>
+    /// <param name="tileMoveable"></param>
+    /// <returns></returns>
+    private bool IsReallyMovable(bool tileMoveable)
+    {
+        switch(blockerType)
+        {
+            case BlockerType.Glue_Left:
+                var(existRight, rightTile) = this.FindRightTile();
+                return tileMoveable && existRight && rightTile.IsInteractable && rightTile.IsMovable;
+            case BlockerType.Glue_Right:
+                var(existLeft, leftTile) = this.FindLeftTile();
+                return tileMoveable && existLeft && leftTile.IsInteractable && leftTile.IsMovable;
+            default:
+                return tileMoveable;
+        }
+    }
+
+    /// <summary>
+    /// 인접 타일에 영향을 주는 숨겨진 Blocker 존재 여부.
+    /// </summary>
+    /// <returns>Bush / Chain</returns>
+    private List<TileItem> GetHiddenAroundBlockers()
+    {
+        List<TileItem> result = new List<TileItem>();
+
+        var topBottomTiles = this.FindTopBottomTiles();
+        for(int i=0; i < topBottomTiles.Count; i++)
+        {
+            var targetTile = topBottomTiles[i];
+            if (targetTile.blockerType is BlockerType.Bush)
+            {
+                if (!targetTile.IsInteractable)
+                {
+                    //Debug.Log(CodeManager.GetMethodName() + string.Format("{0} ({1} : {2})", targetTile.blockerType, targetTile.tileName, targetTile.Current.Position));
+                    result.Add(targetTile);
+                }
+            }
+        }
+
+        var leftRightTiles = this.FindLeftRightTiles();
+        for(int i=0; i < leftRightTiles.Count; i++)
+        {
+            var targetTile = leftRightTiles[i];
+            if (targetTile.blockerType is BlockerType.Bush or BlockerType.Chain)
+            {
+                if (!targetTile.IsInteractable)
+                {
+                    //Debug.Log(CodeManager.GetMethodName() + string.Format("{0} ({1} : {2})", targetTile.blockerType, targetTile.tileName, targetTile.Current.Position));
+                    result.Add(targetTile);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    
+
+#endregion Blocker Check
+
 }

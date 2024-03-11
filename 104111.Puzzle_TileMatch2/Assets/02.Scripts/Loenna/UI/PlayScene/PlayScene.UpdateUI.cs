@@ -51,7 +51,9 @@ partial class PlayScene
 				item.OnSetup(
 					new TileItemParameter
 					{
-						OnClick = item => m_gameManager.OnProcess(item?.Current)
+						OnClick = item => {
+                            m_gameManager.OnProcess(item?.Current);
+                        }
 					}
 				);
 				return item;
@@ -193,7 +195,7 @@ partial class PlayScene
 					.Select(
 						tile => {
 							TileItem tileItem = m_tileItemPool.Get();
-							tileItem.OnUpdateUI(tile, true, out _);
+                            tileItem.OnUpdateUI(tile, true, out _);
 							return tileItem;
 						}
 					).ToList();
@@ -348,7 +350,7 @@ partial class PlayScene
             });
 
             var boardTiles = m_tileItems
-                .Where(tileItem => tileItem.isInteractable && tileItem.Current.Location is LocationType.BOARD).ToList();
+                .Where(tileItem => tileItem.IsInteractable && tileItem.Current.Location is LocationType.BOARD).ToList();
 
             for(int i=0; i < boardTiles.Count; i++)
             {

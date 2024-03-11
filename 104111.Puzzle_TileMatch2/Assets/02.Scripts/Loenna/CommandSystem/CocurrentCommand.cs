@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 public class ConcurrentCommand : ICommand
 {
@@ -35,7 +36,7 @@ public class ConcurrentCommand : ICommand
 	{
 		foreach (ICommand command in m_commands)
 		{
-			command.Execute();
+            command.Execute();
 		}
 	}
 

@@ -548,8 +548,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6654203123508277763}
   - component: {fileID: 1284225588596672268}
-  - component: {fileID: 6119512379275580263}
   - component: {fileID: 685019628930647627}
+  - component: {fileID: 6119512379275580263}
   - component: {fileID: 1779282321699598839}
   m_Layer: 5
   m_Name: TileObject
@@ -588,6 +588,39 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5516331242263734729}
   m_CullTransparentMesh: 1
+--- !u!114 &685019628930647627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5516331242263734729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7249a57f317b4604386eef01ff58694b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tileName: 
+  tileIcon: 0
+  iconList: 
+  blockerType: 0
+  blockerICD: 0
+  m_interactable: 0
+  m_movable: 1
+  isMoving: 0
+  isScaling: 0
+  currentLocation: 0
+  m_view: {fileID: 2028442048756215844}
+  m_icon: {fileID: 41686297475200788}
+  m_trigger: {fileID: 4971165853482574008}
+  m_triggerArea: {fileID: 4553884640220343564}
+  m_dim: {fileID: 2737600573391555333}
+  m_tmpText: {fileID: 8823091228739321712}
+  m_disappearEffect: {fileID: 8171768512441157996}
+  m_blockerRect: {fileID: 6877551379240770570}
+  m_blockerImage: {fileID: 1765129310861063386}
+  m_blockerImageSub: {fileID: 4103986099101961415}
+  m_blockerText: {fileID: 54893832121119038}
 --- !u!114 &6119512379275580263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -618,33 +651,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &685019628930647627
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5516331242263734729}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7249a57f317b4604386eef01ff58694b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tileName: 
-  blockerType: 0
-  blockerICD: 0
-  m_view: {fileID: 2028442048756215844}
-  m_icon: {fileID: 41686297475200788}
-  m_trigger: {fileID: 4971165853482574008}
-  m_triggerArea: {fileID: 4553884640220343564}
-  m_dim: {fileID: 2737600573391555333}
-  m_tmpText: {fileID: 8823091228739321712}
-  m_disappearEffect: {fileID: 8171768512441157996}
-  m_blockerRect: {fileID: 6877551379240770570}
-  m_blockerImage: {fileID: 1765129310861063386}
-  m_blockerImageSub: {fileID: 4103986099101961415}
-  m_blockerText: {fileID: 54893832121119038}
-  isMoving: 0
 --- !u!114 &1779282321699598839
 MonoBehaviour:
   m_ObjectHideFlags: 0

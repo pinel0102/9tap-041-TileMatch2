@@ -121,6 +121,23 @@ public static partial class TileSearch
         return tile.FindTile(tile.PositionBottom()).ListCheck();
     }
 
+    /// <summary>
+    /// ICD를 변경시켜야 할 타일을 검색. (본인 제외)
+    /// </summary>
+    /// <param name="tile"></param>
+    /// <returns></returns>
+    public static List<TileItem> FindTilesToChangeICD(this TileItem tile)
+    {
+        return GlobalData.Instance.playScene.TileItems
+            .FindAll(tileItem => tileItem.Current.Location == LocationType.BOARD && tileItem != tile && tileItem.IsInteractable &&
+                tileItem.blockerType switch{
+                    BlockerType.Bush => tileItem.FindAroundTiles().Contains(tile),
+                    BlockerType.Chain => tileItem.FindLeftRightTiles().Contains(tile),
+                    BlockerType.Jelly => true,
+                    _ => false
+                });
+    }
+
 #endregion [Game] TileItem
 
 
