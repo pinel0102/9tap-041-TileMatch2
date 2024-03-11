@@ -59,10 +59,18 @@ public static partial class TileSearch
                     return true;
                 break;
 
-            case BlockerType.Bush: // 상하좌우에 일반 타일이 2개 이상일 때 설치 가능.
+            case BlockerType.Bush: // 상하좌우에 타일이 2개 이상일 때 설치 가능.
                 var tileBushTargetList = tile.FindAroundTiles(layer);
                 if (tileBushTargetList.Count >= needTargetCount_Bush)
-                    return tileBushTargetList.Where(item => item.BlockerType is BlockerType.None or BlockerType.Jelly).Count() >= needTargetCount_Bush;
+                    return true;
+                    //return tileBushTargetList.Where(item => item.BlockerType is BlockerType.None or BlockerType.Jelly).Count() >= needTargetCount_Bush;
+                break;
+
+            case BlockerType.Chain: // 좌우에 타일이 2개일 때 설치 가능.
+                var tileChainTargetList = tile.FindLeftRightTiles(layer);
+                if (tileChainTargetList.Count >= needTargetCount_Chain)
+                    return true;
+                    //return tileChainTargetList.Where(item => item.BlockerType is BlockerType.None or BlockerType.Jelly).Count() >= needTargetCount_Chain;
                 break;
 
             case BlockerType.Suitcase: // 아래에 타일이 없을 때 설치 가능.
@@ -73,12 +81,6 @@ public static partial class TileSearch
 
             case BlockerType.Jelly: // 항상 설치 가능. (일반 타일과 동일 취급.)
                 return true;
-                
-            case BlockerType.Chain: // 좌우에 일반 타일이 2개일 때 설치 가능.
-                var tileChainTargetList = tile.FindLeftRightTiles(layer);
-                if (tileChainTargetList.Count >= needTargetCount_Chain)
-                    return tileChainTargetList.Where(item => item.BlockerType is BlockerType.None or BlockerType.Jelly).Count() >= needTargetCount_Chain;
-                break;
 
             default:
                 break;
@@ -115,10 +117,18 @@ public static partial class TileSearch
                     isValid = true;
                 break;
 
-            case BlockerType.Bush: // 상하좌우에 일반 타일이 2개 이상일 때 클리어 가능.
+            case BlockerType.Bush: // 상하좌우에 타일이 2개 이상일 때 클리어 가능.
                 var tileBushTargetList = tile.FindAroundTiles(layer);
                 if (tileBushTargetList.Count >= needTargetCount_Bush)
-                    isValid = tileBushTargetList.Where(item => item.BlockerType is BlockerType.None or BlockerType.Jelly).Count() >= needTargetCount_Bush;
+                    isValid = true;
+                    //isValid = tileBushTargetList.Where(item => item.BlockerType is BlockerType.None or BlockerType.Jelly).Count() >= needTargetCount_Bush;
+                break;
+
+            case BlockerType.Chain: // 좌우에 타일이 2개일 때 클리어 가능.
+                var tileChainTargetList = tile.FindLeftRightTiles(layer);
+                if (tileChainTargetList.Count >= needTargetCount_Chain)
+                    isValid = true;
+                    //isValid = tileChainTargetList.Where(item => item.BlockerType is BlockerType.None or BlockerType.Jelly).Count() >= needTargetCount_Chain;
                 break;
 
             case BlockerType.Suitcase: // 아래에 타일이 없을 때 클리어 가능.
@@ -129,12 +139,6 @@ public static partial class TileSearch
 
             case BlockerType.Jelly: // 항상 클리어 가능. (일반 타일과 동일 취급.)
                 isValid = true;
-                break;
-                
-            case BlockerType.Chain: // 좌우에 일반 타일이 2개일 때 클리어 가능.
-                var tileChainTargetList = tile.FindLeftRightTiles(layer);
-                if (tileChainTargetList.Count >= needTargetCount_Chain)
-                    isValid = tileChainTargetList.Where(item => item.BlockerType is BlockerType.None or BlockerType.Jelly).Count() >= needTargetCount_Chain;
                 break;
 
             default:
