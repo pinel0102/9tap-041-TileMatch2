@@ -652,7 +652,7 @@ public class TileItem : CachedBehaviour
             case BlockerType.Chain:
             case BlockerType.Jelly:
             case BlockerType.Suitcase:
-                return currentICD == 0;
+                return currentICD <= 0;
         }
         return true;
     }
@@ -664,17 +664,17 @@ public class TileItem : CachedBehaviour
     /// <returns></returns>
     private bool IsReallyMovable(bool tileMoveable)
     {
-        switch(blockerType)
+        switch(currentLocation, blockerType)
         {
-            case BlockerType.Glue_Left:
+            case (LocationType.BOARD, BlockerType.Glue_Left):
                 var(existRight, rightTile) = this.FindRightTile();
                 return tileMoveable && existRight && rightTile.IsInteractable && rightTile.IsMovable;
-            case BlockerType.Glue_Right:
+            case (LocationType.BOARD, BlockerType.Glue_Right):
                 var(existLeft, leftTile) = this.FindLeftTile();
                 return tileMoveable && existLeft && leftTile.IsInteractable && leftTile.IsMovable;
-            default:
-                return tileMoveable;
         }
+
+        return tileMoveable;
     }
 
     /// <summary>

@@ -13,20 +13,24 @@ partial class GameManager
 {
    	private readonly Command.Invoker m_commandInvoker;
 	private readonly Command.Receiver<Resource> m_receiver;
+    private List<ICommand> commandParams = new List<ICommand>();
 
 	public Command.Invoker Invoker => m_commandInvoker;
 
+
 	public void OnProcess(TileItemModel tileItemModel)
 	{
-        List<ICommand> commandParams = new List<ICommand>();
+        commandParams.Clear();
 
         switch(tileItemModel.Location)
         {
             case LocationType.STASH:
-                commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_STASH_TO_BASKET, tileItemModel, LocationType.BASKET, tileItemModel.BlockerType, tileItemModel.BlockerICD)));
+                var icdListStash = tileItemModel.FindTilesToChangeICD();
+                AddCommandTile(tileItemModel, Type.MOVE_TILE_IN_STASH_TO_BASKET, LocationType.BASKET);
+                AddCommandList(icdListStash, Type.CHANGE_BLOCKER_ICD, LocationType.BOARD);
                 break;
             case LocationType.BOARD:
-                var icdChangeList = tileItemModel.FindTilesToChangeICD();
+                var icdListBoard = tileItemModel.FindTilesToChangeICD();
                 
                 switch(tileItemModel.BlockerType)
                 {
@@ -34,53 +38,28 @@ partial class GameManager
                         var(existRight, rightTile) = tileItemModel.FindRightTile();
                         if (existRight)
                         {
-                            rightTile.FindTilesToChangeICD().ForEach(targetTileModel => {
-                                if(!icdChangeList.Contains(targetTileModel))
-                                    icdChangeList.Add(targetTileModel);
-                            });
+                            icdListBoard.AddRange(rightTile.FindTilesToChangeICD().Where(targetTileModel => {
+                                return !icdListBoard.Contains(targetTileModel);
+                            }));
 
-                            icdChangeList.ForEach(targetTileModel => {
-                                commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.CHANGE_BLOCKER_ICD, targetTileModel, LocationType.BOARD, targetTileModel.BlockerType, targetTileModel.BlockerICD)));
-                            });
-
-                            commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_BOARD_TO_BASKET, rightTile, LocationType.BASKET, rightTile.BlockerType, rightTile.BlockerICD)));
-                        }
-                        else
-                        {
-                            icdChangeList.ForEach(targetTileModel => {
-                                commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.CHANGE_BLOCKER_ICD, targetTileModel, LocationType.BOARD, targetTileModel.BlockerType, targetTileModel.BlockerICD)));
-                            });
+                            AddCommandTile(rightTile, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
                         }
                         break;
                     case BlockerType.Glue_Right:
                         var(existLeft, leftTile) = tileItemModel.FindLeftTile();
                         if (existLeft)
                         {
-                            leftTile.FindTilesToChangeICD().ForEach(targetTileModel => {
-                                if(!icdChangeList.Contains(targetTileModel))
-                                    icdChangeList.Add(targetTileModel);
-                            });
+                            icdListBoard.AddRange(leftTile.FindTilesToChangeICD().Where(targetTileModel => {
+                                return !icdListBoard.Contains(targetTileModel);
+                            }));
 
-                            icdChangeList.ForEach(targetTileModel => {
-                                commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.CHANGE_BLOCKER_ICD, targetTileModel, LocationType.BOARD, targetTileModel.BlockerType, targetTileModel.BlockerICD)));
-                            });
-
-                            commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_BOARD_TO_BASKET, leftTile, LocationType.BASKET, leftTile.BlockerType, leftTile.BlockerICD)));
+                            AddCommandTile(leftTile, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
                         }
-                        else
-                        {
-                            icdChangeList.ForEach(targetTileModel => {
-                                commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.CHANGE_BLOCKER_ICD, targetTileModel, LocationType.BOARD, targetTileModel.BlockerType, targetTileModel.BlockerICD)));
-                            });
-                        }
-                        break;
-                    default:
-                        icdChangeList.ForEach(targetTileModel => {
-                            commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.CHANGE_BLOCKER_ICD, targetTileModel, LocationType.BOARD, targetTileModel.BlockerType, targetTileModel.BlockerICD)));
-                        });
                         break;
                 }
-                commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_BOARD_TO_BASKET, tileItemModel, LocationType.BASKET, tileItemModel.BlockerType, tileItemModel.BlockerICD)));
+                
+                AddCommandTile(tileItemModel, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
+                AddCommandList(icdListBoard, Type.CHANGE_BLOCKER_ICD, LocationType.BOARD);
                 break;
             default:
                 commandParams.Add(DoNothing<Resource>.Command);
@@ -89,23 +68,24 @@ partial class GameManager
 
         ConcurrentCommand concurrentCommand = new ConcurrentCommand(commandParams.ToArray());
 
-		/*ConcurrentCommand concurrentCommand = new ConcurrentCommand(
-			tileItemModel.Location switch {
-				LocationType.STASH => 
-                    new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_STASH_TO_BASKET, LocationType.BASKET, tileItemModel.BlockerType, tileItemModel.BlockerICD)),
-				LocationType.BOARD => 
-                    new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET, tileItemModel.BlockerType, tileItemModel.BlockerICD)),
-				_ => DoNothing<Resource>.Command
-			}
-		);*/
-
-        m_commandInvoker.SetCommand(concurrentCommand);
+		m_commandInvoker.SetCommand(concurrentCommand);
 		m_commandInvoker.Execute();
 
 		#region Local Functions
+        void AddCommandList(List<TileItemModel> list, Type type, LocationType location)
+        {
+            list.ForEach(tile => {
+                AddCommandTile(tile, type, location);
+            });
+        }
+
+        void AddCommandTile(TileItemModel tile, Type type, LocationType location)
+        {
+            commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(type, tile, location, tile.BlockerType, tile.BlockerICD)));
+        }
+
 		Resource CreateResource(Type type, TileItemModel targetModel, LocationType location, BlockerType blockerType, int blockerICD)
         {
-            //Debug.Log(CodeManager.GetMethodName() + string.Format("[{0}] {1} : {2}", type, blockerType, blockerICD));
             return Resource.CreateCommand(type, targetModel, location, blockerType, blockerICD);
         }
 		#endregion
@@ -132,30 +112,32 @@ partial class GameManager
                     int newICD = 0;
                     if (tile.Guid == tileItemModel.Guid)
                     {
-                        if (changeCount > 0)
+                        if (changeCount > 0) // [Undo] ICD 증가.
                         {
                             switch(tile.BlockerType)
                             {
+                                case BlockerType.Jelly:
                                 case BlockerType.Bush:
                                 case BlockerType.Chain:
-                                case BlockerType.Jelly:
                                     newICD = Mathf.Min(GlobalDefine.GetBlockerICD(tile.BlockerType, oldICD), oldICD + changeCount);
                                     break;
                                 case BlockerType.Suitcase:
-                                    newICD = Mathf.Min(tile.FindTileItem().iconList.Count, oldICD + changeCount);
+                                    newICD = Mathf.Min(tile.IconList.Count, oldICD + changeCount);
                                     break;
                                 default:
                                     newICD = oldICD;
                                     break;
                             }
                         }
-                        else
+                        else // [Basket] ICD 감소.
                         {
                             switch(tile.BlockerType)
                             {
+                                case BlockerType.Jelly: // Jelly는 ICD 음수 가능.
+                                    newICD = oldICD + changeCount;
+                                    break;
                                 case BlockerType.Bush:
                                 case BlockerType.Chain:
-                                case BlockerType.Jelly:
                                 case BlockerType.Suitcase:
                                     newICD = Mathf.Max(0, oldICD + changeCount);
                                     break;

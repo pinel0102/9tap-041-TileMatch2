@@ -14,7 +14,7 @@ using System.Linq;
 /// <param name="Position"></param>
 /// <param name="BlockerType">Blocker 종류. (Default:0)</param>
 /// <param name="BlockerICD">Blocker 내부 카운트. (Default:0 / ICD 시용시 최소 1)</param>
-/// <param name="IconList">Icon List. (DefaultIcon:IconList[Last]</param>
+/// <param name="IconList">타일에 적용되는 Icon List (Suitcase : Max ICD) (Default:1개.)</param>
 /// <param name="GoldPuzzleCount">[Deprecated] 골든 퍼즐 조각 개수. (Default:-1)</param>
 /// <param name="Overlaps"></param>
 public record TileItemModel(

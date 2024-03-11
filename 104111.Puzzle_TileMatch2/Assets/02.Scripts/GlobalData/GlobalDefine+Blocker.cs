@@ -89,7 +89,7 @@ public static partial class GlobalDefine
 
     /// <summary>
     /// <para>가변 ICD를 사용하는 Blocker : _blockerICD (최소 1).</para>
-    /// <para>가변 ICD를 사용하지 않는 Blocker : 고정값 (Default: 0).</para>
+    /// <para>가변 ICD를 사용하지 않는 Blocker : 고정값 (Max ICD).</para>
     /// </summary>
     /// <param name="_blockerType"></param>
     /// <param name="_blockerICD"></param>
@@ -106,7 +106,7 @@ public static partial class GlobalDefine
 
     /// <summary>
     /// <para>가변 ICD를 사용하는 Blocker : _blockerICD (최소 1).</para>
-    /// <para>가변 ICD를 사용하지 않는 Blocker : 고정값 (Default: 0).</para>
+    /// <para>가변 ICD를 사용하지 않는 Blocker : 고정값 (Max ICD).</para>
     /// </summary>
     /// <param name="_blockerType"></param>
     /// <param name="_blockerICD"></param>
