@@ -20,8 +20,8 @@ partial class GameManager
 	{
 		ConcurrentCommand concurrentCommand = new ConcurrentCommand(
 			tileItemModel.Location switch {
-				LocationType.STASH => new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_STASH_TO_BASKET, LocationType.BASKET, tileItemModel.BlockerType, tileItemModel.BlockerICD, tileItemModel.AdditionalIcon)),
-				LocationType.BOARD => new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET, tileItemModel.BlockerType, tileItemModel.BlockerICD, tileItemModel.AdditionalIcon)),
+				LocationType.STASH => new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_STASH_TO_BASKET, LocationType.BASKET, tileItemModel.BlockerType, tileItemModel.BlockerICD)),
+				LocationType.BOARD => new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET, tileItemModel.BlockerType, tileItemModel.BlockerICD)),
 				_ => DoNothing<Resource>.Command
 			}
 		);
@@ -30,7 +30,7 @@ partial class GameManager
 		m_commandInvoker.Execute();
 
 		#region Local Functions
-		Resource CreateResource(Type type, LocationType location, BlockerType blockerType, int blockerICD, List<int> additionalIcon) => Resource.CreateCommand(type, tileItemModel, location, blockerType, blockerICD, additionalIcon);
+		Resource CreateResource(Type type, LocationType location, BlockerType blockerType, int blockerICD) => Resource.CreateCommand(type, tileItemModel, location, blockerType, blockerICD);
 		#endregion
 	}
 

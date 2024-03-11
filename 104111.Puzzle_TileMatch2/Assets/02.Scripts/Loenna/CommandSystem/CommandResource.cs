@@ -8,8 +8,7 @@ public abstract record CommandResource
 		TileItemModel TileItemModel,
 		LocationType Location,
         BlockerType BlockerType,
-        int BlockerICD,
-        List<int> AdditionalIcon
+        int BlockerICD
 	) : CommandResource
 	{
 		public void Deconstruct(out CommandType.PlayScene type, out TileItemModel tileItemModel)
@@ -18,21 +17,20 @@ public abstract record CommandResource
 			tileItemModel = TileItemModel;
 		}
 
-		public void Deconstruct(out CommandType.PlayScene type,out TileItemModel tileItemModel, out LocationType location, out BlockerType blockerType, out int blockerICD, out List<int> additionalIcon)
+		public void Deconstruct(out CommandType.PlayScene type,out TileItemModel tileItemModel, out LocationType location, out BlockerType blockerType, out int blockerICD)
 		{
 			type = CommandType;
 			tileItemModel = TileItemModel;
 			location = Location;
             blockerType = BlockerType;
             blockerICD = BlockerICD;
-            additionalIcon = AdditionalIcon;
 		}
 
-		public static PlayScene CreateCommand(CommandType.PlayScene type, TileItemModel tileItemModel, LocationType location, BlockerType blockerType, int blockerICD, List<int> additionalIcon)
+		public static PlayScene CreateCommand(CommandType.PlayScene type, TileItemModel tileItemModel, LocationType location, BlockerType blockerType, int blockerICD)
 		{
-			return new PlayScene(type, tileItemModel, location, blockerType, blockerICD, additionalIcon);
+			return new PlayScene(type, tileItemModel, location, blockerType, blockerICD);
 		}
 
-		public PlayScene Undo => new PlayScene(CommandType.GetUndoType(), TileItemModel, Location, BlockerType, BlockerICD, AdditionalIcon);
+		public PlayScene Undo => new PlayScene(CommandType.GetUndoType(), TileItemModel, Location, BlockerType, BlockerICD);
 	}
 }

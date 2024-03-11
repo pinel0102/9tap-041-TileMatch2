@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-
+using static LevelEditor;
 
 public static partial class TileSearch
 {
-#region [Editor] Tile (160x160)
+#region [Editor] TileInfo (160x160)
 
     /// <summary>
     /// Left / Right / Top / Bottom
@@ -13,9 +14,9 @@ public static partial class TileSearch
     /// <param name="tiles"></param>
     /// <param name="layer"></param>
     /// <returns>(Tiles List?) List</returns>
-    public static List<List<Tile>> FindAroundTiles(this List<Tile> tiles, Layer layer)
+    public static List<List<TileInfo>> FindAroundTiles(this List<TileInfo> tiles, LayerInfo layer)
     {
-        List<List<Tile>> result = new List<List<Tile>>();
+        List<List<TileInfo>> result = new List<List<TileInfo>>();
 
         tiles.ForEach(tile => {
             result.Add(tile.FindAroundTiles(layer));
@@ -30,14 +31,14 @@ public static partial class TileSearch
     /// <param name="tile"></param>
     /// <param name="layer"></param>
     /// <returns>Existng Tiles List</returns>
-    public static List<Tile> FindAroundTiles(this Tile tile, Layer layer)
+    public static List<TileInfo> FindAroundTiles(this TileInfo tile, LayerInfo layer)
     {
-        List<Tile> result = new List<Tile>();
+        List<TileInfo> result = new List<TileInfo>();
 
-        (bool existLeft,    Tile leftTile)      = tile.FindLeftTile(layer);
-        (bool existRight,   Tile rightTile)     = tile.FindRightTile(layer);
-        (bool existTop,     Tile topTile)       = tile.FindTopTile(layer);
-        (bool existBottom,  Tile bottomTile)    = tile.FindBottomTile(layer);
+        (bool existLeft,    TileInfo leftTile)      = tile.FindLeftTile(layer);
+        (bool existRight,   TileInfo rightTile)     = tile.FindRightTile(layer);
+        (bool existTop,     TileInfo topTile)       = tile.FindTopTile(layer);
+        (bool existBottom,  TileInfo bottomTile)    = tile.FindBottomTile(layer);
 
         if (existLeft) result.Add(leftTile);
         if (existRight) result.Add(rightTile);
@@ -53,12 +54,12 @@ public static partial class TileSearch
     /// <param name="tile"></param>
     /// <param name="layer"></param>
     /// <returns>Existng Tiles List</returns>
-    public static List<Tile> FindLeftRightTiles(this Tile tile, Layer layer)
+    public static List<TileInfo> FindLeftRightTiles(this TileInfo tile, LayerInfo layer)
     {
-        List<Tile> result = new List<Tile>();
+        List<TileInfo> result = new List<TileInfo>();
 
-        (bool existLeft,    Tile leftTile)      = tile.FindLeftTile(layer);
-        (bool existRight,   Tile rightTile)     = tile.FindRightTile(layer);
+        (bool existLeft,    TileInfo leftTile)      = tile.FindLeftTile(layer);
+        (bool existRight,   TileInfo rightTile)     = tile.FindRightTile(layer);
 
         if (existLeft) result.Add(leftTile);
         if (existRight) result.Add(rightTile);
@@ -72,12 +73,12 @@ public static partial class TileSearch
     /// <param name="tile"></param>
     /// <param name="layer"></param>
     /// <returns>Existng Tiles List</returns>
-    public static List<Tile> FindTopBottomTiles(this Tile tile, Layer layer)
+    public static List<TileInfo> FindTopBottomTiles(this TileInfo tile, LayerInfo layer)
     {
-        List<Tile> result = new List<Tile>();
+        List<TileInfo> result = new List<TileInfo>();
 
-        (bool existTop,     Tile topTile)       = tile.FindTopTile(layer);
-        (bool existBottom,  Tile bottomTile)    = tile.FindBottomTile(layer);
+        (bool existTop,     TileInfo topTile)       = tile.FindTopTile(layer);
+        (bool existBottom,  TileInfo bottomTile)    = tile.FindBottomTile(layer);
 
         if (existTop) result.Add(topTile);
         if (existBottom) result.Add(bottomTile);
@@ -91,7 +92,7 @@ public static partial class TileSearch
     /// <param name="tile"></param>
     /// <param name="layer"></param>
     /// <returns>(Exist ? Tile : null)</returns>
-    public static (bool, Tile) FindLeftTile(this Tile tile, Layer layer)
+    public static (bool, TileInfo) FindLeftTile(this TileInfo tile, LayerInfo layer)
     {
         return tile.FindTile(layer, tile.PositionLeft()).ListCheck();
     }
@@ -102,7 +103,7 @@ public static partial class TileSearch
     /// <param name="tile"></param>
     /// <param name="layer"></param>
     /// <returns>(Exist ? Tile : null)</returns>
-    public static (bool, Tile) FindRightTile(this Tile tile, Layer layer)
+    public static (bool, TileInfo) FindRightTile(this TileInfo tile, LayerInfo layer)
     {
         return tile.FindTile(layer, tile.PositionRight()).ListCheck();
     }
@@ -113,7 +114,7 @@ public static partial class TileSearch
     /// <param name="tile"></param>
     /// <param name="layer"></param>
     /// <returns>(Exist ? Tile : null)</returns>
-    public static (bool, Tile) FindTopTile(this Tile tile, Layer layer)
+    public static (bool, TileInfo) FindTopTile(this TileInfo tile, LayerInfo layer)
     {
         return tile.FindTile(layer, tile.PositionTop()).ListCheck();
     }
@@ -124,7 +125,7 @@ public static partial class TileSearch
     /// <param name="tile"></param>
     /// <param name="layer"></param>
     /// <returns>(Exist ? Tile : null)</returns>
-    public static (bool, Tile) FindBottomTile(this Tile tile, Layer layer)
+    public static (bool, TileInfo) FindBottomTile(this TileInfo tile, LayerInfo layer)
     {
         return tile.FindTile(layer, tile.PositionBottom()).ListCheck();
     }
@@ -134,17 +135,17 @@ public static partial class TileSearch
 
 #region Internal Find
 
-    private static List<Tile> FindTile(this Tile tile, Layer layer, Vector2 checkPosition)
+    private static List<TileInfo> FindTile(this TileInfo tile, LayerInfo layer, Vector2 checkPosition)
     {
-        return tile.FindTile(layer.Tiles, checkPosition);
+        return tile.FindTile(layer.Tiles.ToList(), checkPosition);
     }
 
-    private static List<Tile> FindTile(this Tile tile, List<Tile> layerTiles, Vector2 checkPosition)
+    private static List<TileInfo> FindTile(this TileInfo tile, List<TileInfo> layerTiles, Vector2 checkPosition)
     {
         return layerTiles.FindAll(target => target != tile && target.Position.Equals(checkPosition));
     }
     
-    private static (bool, Tile) ListCheck(this List<Tile> list)
+    private static (bool, TileInfo) ListCheck(this List<TileInfo> list)
     {
         if (list.Count > 1)
         {

@@ -42,7 +42,7 @@ public partial class LevelEditor
     {
         int additionalCount = board.Layers.Sum(layer => {
             return layer.Tiles
-                .Where(tile => tile.blockerType == BlockerType.Suitcase)
+                .Where(tile => tile.BlockerType == BlockerType.Suitcase)
                 .Sum(tile => {  return Mathf.Max(0, tile.blockerICD - 1); });
         });
 

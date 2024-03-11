@@ -25,6 +25,7 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
 	[SerializeField]	private LevelEditorButton m_revertButton;
 	[SerializeField]	private GameObject m_warning;
     [SerializeField]	private Text m_LogMessage;
+    [SerializeField]	private Text m_WarningMessage;
 
     [SerializeField]	private TMP_Text m_dataPathText;
 
@@ -306,6 +307,8 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
             StopCoroutine(m_LogCoroutine);
 
         m_LogMessage.gameObject.SetActive(false);
+
+        HideBlockerWarning();
     }
 
     public void SetLog(string message, bool isWarning = false, bool showLog = true)
@@ -324,10 +327,10 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
         if (m_LogCoroutine != null)
             StopCoroutine(m_LogCoroutine);
 
-        m_LogCoroutine = StartCoroutine(CO_WaitTime());
+        m_LogCoroutine = StartCoroutine(CO_WaitTimeLog());
     }
 
-    private IEnumerator CO_WaitTime(float logTime = 3f)
+    private IEnumerator CO_WaitTimeLog(float logTime = 3f)
     {
         while (logTime > 0)
         {
@@ -336,6 +339,23 @@ public partial class LevelEditor : SingletonMono<LevelEditor>
         }
 
         m_LogMessage.gameObject.SetActive(false);
+    }
+
+    public void SetBlockerWarning(string message, bool showLog = true)
+    {
+        if (showLog)
+        {
+            Debug.LogWarning(CodeManager.GetAsyncName(index:1) + string.Format("<color=yellow>{0}</color>", message));
+        }
+
+        m_WarningMessage.text = message;
+        m_WarningMessage.gameObject.SetActive(true);
+    }
+
+    public void HideBlockerWarning()
+    {
+        m_WarningMessage.text = string.Empty;
+        m_WarningMessage.gameObject.SetActive(false);
     }
 
     public void RefreshDataPathText()

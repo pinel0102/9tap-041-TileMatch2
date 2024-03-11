@@ -11,6 +11,7 @@ using Cysharp.Threading.Tasks.Linq;
 using DG.Tweening;
 using NineTap.Common;
 using TMPro;
+using System.Linq;
 
 public class TileItemParameter
 {
@@ -88,9 +89,9 @@ public class TileItem : CachedBehaviour
 
     public string tileName;
     public int tileIcon;
+    public List<int> iconList = new List<int>();
     public BlockerType blockerType;
     public int blockerICD;
-    public List<int> additionalIcon = new List<int>();
 
 	private TileDataTable m_tileDataTable;
 
@@ -318,20 +319,14 @@ public class TileItem : CachedBehaviour
 			CachedRectTransform.SetLocalPosition(item.Position);
 		}
 
-		m_current = item;        
+		m_current = item;
 		SetInteractable(item.Location, item.Overlapped, item.InvisibleIcon, ignoreInvisible).Forget();
 
-		string path = m_tileDataTable.TryGetValue(item.Icon, out var rowData)? rowData.Path : string.Empty;
-		Sprite sprite = SpriteManager.GetSprite(path);
-		m_icon.sprite = sprite;
-
-        tileName = path.Replace("UI_Img_", string.Empty);
-        tileIcon = item.Icon;
-        
         blockerType = item.BlockerType;
         blockerICD = item.BlockerICD;
-        additionalIcon = item.AdditionalIcon;
+        iconList = item.IconList;
         
+        RefreshIcon(blockerType, blockerICD);
         RefreshBlockerState(blockerType, blockerICD);
 
         (m_tmpText.text, m_icon.enabled) = m_icon.sprite switch {
@@ -350,6 +345,33 @@ public class TileItem : CachedBehaviour
 
 		return currentType != item.Location;
 	}
+
+    public void RefreshIcon(BlockerType type, int currentICD)
+    {
+        int index;
+        switch(type)
+        {
+            case BlockerType.Bush:
+            case BlockerType.Jelly:
+                index = Mathf.Max(0, currentICD - 1);
+                break;
+            
+            default:
+                index = Mathf.Max(0, iconList.Count - 1);
+                break;
+        }
+
+        if(iconList.Count > index)
+        {
+            tileIcon = iconList[index];
+
+            string path = m_tileDataTable.TryGetValue(tileIcon, out var rowData)? rowData.Path : string.Empty;
+            Sprite sprite = SpriteManager.GetSprite(path);
+            m_icon.sprite = sprite;
+
+            tileName = path.Replace("UI_Img_", string.Empty);
+        }
+    }
 
     public void RefreshBlockerState(BlockerType type, int currentICD)
     {

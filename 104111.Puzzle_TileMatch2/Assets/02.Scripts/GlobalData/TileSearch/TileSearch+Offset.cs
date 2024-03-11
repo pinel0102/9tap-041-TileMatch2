@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static LevelEditor;
 
 public static partial class TileSearch
 {
@@ -25,7 +26,7 @@ public static partial class TileSearch
         new Vector2(0, -TILE_HEIGHT_GAME), // Bottom
     };
 
-#region Tile
+#region [Editor] Tile
 
     private static List<Vector2> Offset(this Tile tile)
     {
@@ -72,10 +73,60 @@ public static partial class TileSearch
         return tile.Position + tile.OffsetBottom();
     }
 
-#endregion Tile
+#endregion [Editor] Tile
 
 
-#region TileItemModel
+#region [Editor] TileInfo
+
+    private static List<Vector2> Offset(this TileInfo tile)
+    {
+        return offset_Editor;
+    }
+
+    private static Vector2 OffsetLeft(this TileInfo tile)
+    {
+        return tile.Offset()[0];
+    }
+
+    private static Vector2 OffsetRight(this TileInfo tile)
+    {
+        return tile.Offset()[1];
+    }
+
+    private static Vector2 OffsetTop(this TileInfo tile)
+    {
+        return tile.Offset()[2];
+    }
+
+    private static Vector2 OffsetBottom(this TileInfo tile)
+    {
+        return tile.Offset()[3];
+    }
+
+    private static Vector2 PositionLeft(this TileInfo tile)
+    {
+        return tile.Position + tile.OffsetLeft();
+    }
+
+    private static Vector2 PositionRight(this TileInfo tile)
+    {
+        return tile.Position + tile.OffsetRight();
+    }
+
+    private static Vector2 PositionTop(this TileInfo tile)
+    {
+        return tile.Position + tile.OffsetTop();
+    }
+
+    private static Vector2 PositionBottom(this TileInfo tile)
+    {
+        return tile.Position + tile.OffsetBottom();
+    }
+
+#endregion [Editor] TileInfo
+
+
+#region [Game] TileItemModel
 
     private static List<Vector2> Offset(this TileItemModel tile)
     {
@@ -122,10 +173,10 @@ public static partial class TileSearch
         return tile.Position + tile.OffsetBottom();
     }
 
-#endregion TileItemModel
+#endregion [Game] TileItemModel
 
 
-#region TileItem
+#region [Game] TileItem
 
     private static List<Vector2> Offset(this TileItem tile)
     {
@@ -172,6 +223,6 @@ public static partial class TileSearch
         return tile.Current.PositionBottom();
     }
 
-#endregion TileItem
+#endregion [Game] TileItem
 
 }

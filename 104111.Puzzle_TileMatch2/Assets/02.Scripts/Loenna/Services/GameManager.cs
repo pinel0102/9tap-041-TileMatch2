@@ -488,14 +488,15 @@ public partial class GameManager : IDisposable
 							}
                             #endif
 
-                            List<int> additionalIcon = new List<int>();
+                            List<int> iconList = new List<int>();
                             if (tile.BlockerType == BlockerType.Suitcase)
                             {
                                 for(int i=0; i < Mathf.Max(0, tile.BlockerICD - 1); i++)
                                 {
-                                    additionalIcon.Add(queue.Dequeue());
+                                    iconList.Add(queue.Dequeue());
                                 }
                             }
+                            iconList.Add(icon);
 
 							return new TileItemModel(
 								layerIndex,
@@ -505,7 +506,7 @@ public partial class GameManager : IDisposable
 								tile.Position * Constant.Game.RESIZE_TILE_RATIOS,
                                 tile.BlockerType,
                                 tile.BlockerICD,
-                                additionalIcon,
+                                iconList,
 								mission,
 								overlaps
 							);

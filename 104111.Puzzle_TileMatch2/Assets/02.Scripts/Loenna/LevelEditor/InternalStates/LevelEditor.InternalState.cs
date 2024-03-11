@@ -27,6 +27,7 @@ partial class LevelEditor
 						Layers: board.Layers.Select(
 							layer => {
 								return new LayerInfo(
+                                    LayerIndex: colorIndex,
 									Color: ColorTableUtility.GetColor(colorIndex++),
 									layer?.Tiles.Select(tile => new TileInfo(tile.Guid, tile.Position, size, tile.BlockerType, tile.BlockerICD))
 								);
@@ -42,14 +43,14 @@ partial class LevelEditor
         public Dictionary<BlockerType, int> GetBlockerDic()
         {
             Dictionary<BlockerType, int> dic = new Dictionary<BlockerType, int>();
-            var includeList = Layers.Select(layer => layer.Tiles.Where(tile => IsIncludeBlockerCount(tile.blockerType)).ToList()).ToList();
+            var includeList = Layers.Select(layer => layer.Tiles.Where(tile => IsIncludeBlockerCount(tile.BlockerType)).ToList()).ToList();
             
             includeList.ForEach(tileInfoList => 
                 tileInfoList.ForEach(
                     tileInfo => {
-                        if(!dic.ContainsKey(tileInfo.blockerType))
-                            dic.Add(tileInfo.blockerType, 0);
-                        dic[tileInfo.blockerType] += 1;
+                        if(!dic.ContainsKey(tileInfo.BlockerType))
+                            dic.Add(tileInfo.BlockerType, 0);
+                        dic[tileInfo.BlockerType] += 1;
                     }
                 )
             );
@@ -69,20 +70,20 @@ partial class LevelEditor
         }
 	}
 
-	public record LayerInfo(Color Color, IReadOnlyList<TileInfo> Tiles)
+	public record LayerInfo(int LayerIndex, Color Color, IReadOnlyList<TileInfo> Tiles)
 	{
-		public LayerInfo(Color Color, IEnumerable<TileInfo> tiles) 
-		: this(Color, Tiles: tiles?.ToArray() ?? Array.Empty<TileInfo>())
+		public LayerInfo(int LayerIndex, Color Color, IEnumerable<TileInfo> tiles) 
+		: this(LayerIndex, Color, Tiles: tiles?.ToArray() ?? Array.Empty<TileInfo>())
 		{
 
 		}
 
-		public int TileCount => Tiles.Count();
+        public int TileCount => Tiles.Count();
 	}
 	
-	public record TileInfo(Guid Guid, Vector2 Position, float Size, BlockerType blockerType, int blockerICD);
+	public record TileInfo(Guid Guid, Vector2 Position, float Size, BlockerType BlockerType, int blockerICD);
 
-	public enum UpdateType
+    public enum UpdateType
 	{
 		NONE,
 		ALL, // 편집할 레벨 변경 시 모든 데이터를 바꾼다.

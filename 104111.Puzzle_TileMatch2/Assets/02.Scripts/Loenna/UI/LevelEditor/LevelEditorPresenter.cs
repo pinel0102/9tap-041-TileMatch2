@@ -37,10 +37,12 @@ public class LevelEditorPresenter : IDisposable
 	public IUniTaskAsyncEnumerable<IReadOnlyList<int>> InvisibleLayersBroker => m_invisibleLayersBroker.Subscribe();
 
 	private (float snapping, DrawOrder order) m_cachedTileBrushOptions;
+    private float m_cellSize;
 
 	public LevelEditorPresenter(LevelEditor view, float cellSize, float cellCount)
 	{
 		m_levelEditor = view;
+        m_cellSize = cellSize;
 		m_dataManager = new LevelDataManager(m_levelEditor);
 		m_cancellationTokenSource = new();
 		m_boardBounds = new Bounds(Vector2.zero, Vector2.one * cellSize * cellCount);
@@ -80,10 +82,19 @@ public class LevelEditorPresenter : IDisposable
 		void UpdateSavable(InternalState state)
 		{
 			int requiredMultiples = m_dataManager.Config.RequiredMultiples;
+            bool existNonValidBlocker = false;
 
 			m_savable.Value = state.Boards.All(
-				board => board.Layers.All(layer => layer.TileCount > 0) && (board.TileCountAll + m_levelEditor.GetAdditionalTileCount(board)) % requiredMultiples == 0
+				board => 
+                    board.Layers.All(layer => layer.TileCount > 0 && layer.Tiles.All(tile => tile.IsValidBlocker(layer, tile.BlockerType, () => {
+                        m_levelEditor.SetBlockerWarning(string.Format("NonValid : {0}\nLayer [{1}] {2}", tile.BlockerType, layer.LayerIndex, tile.Position), showLog:false);
+                        existNonValidBlocker = true;
+                    }))) && 
+                    (board.TileCountAll + m_levelEditor.GetAdditionalTileCount(board)) % requiredMultiples == 0
 			);
+
+            if (!existNonValidBlocker)
+                m_levelEditor.HideBlockerWarning();
 		}
 		#endregion
 
