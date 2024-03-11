@@ -284,9 +284,7 @@ public class TileItem : CachedBehaviour
 			{
 				soundManager?.PlayFx(Constant.Sound.SFX_TILE_SELECT);
 
-                bool isMovable = IsReallyMovable(m_movable);
-
-                if (isMovable)
+                if (IsReallyMovable(m_movable))
                 {
                     m_interactable = false;                    
                     isMoving = true;
@@ -526,7 +524,7 @@ public class TileItem : CachedBehaviour
 					}
 
                     //if (blockerType == BlockerType.None)
-					    await UniTask.Defer(() => m_dimTween?.OnChangeValue(1f, 0f) ?? UniTask.CompletedTask);
+					    await UniTask.Defer(() => m_dimTween?.OnChangeValue(IsReallyMovable(m_movable) ? 0 : 1f, 0f) ?? UniTask.CompletedTask);
 				}
 				else
 				{
@@ -535,7 +533,7 @@ public class TileItem : CachedBehaviour
 						await m_iconAlphaTween.Value.OnChangeValue(Color.white, -1f);	
 					}
 
-					await UniTask.Defer(() => m_dimTween?.OnChangeValue(0f, Constant.Game.TWEENTIME_TILE_DEFAULT) ?? UniTask.CompletedTask);
+					await UniTask.Defer(() => m_dimTween?.OnChangeValue(IsReallyMovable(m_movable) ? 0 : 1f, Constant.Game.TWEENTIME_TILE_DEFAULT) ?? UniTask.CompletedTask);
 				}
 
                 MovableCheck();
@@ -581,11 +579,20 @@ public class TileItem : CachedBehaviour
         if (oldValue != m_movable)
         {
             //Debug.Log(CodeManager.GetMethodName() + string.Format("Movable Changed : {0} ({1})", m_movable, tileName));
-            //if (blockerType == BlockerType.None)
-                m_dimTween?.OnChangeValue(m_movable ? 0 : 1f, 0f);
+            
+            if (currentLocation == LocationType.BOARD)
+            {
+                //if (blockerType == BlockerType.None)
+                m_dimTween?.OnChangeValue(IsReallyMovable(m_movable) ? 0 : 1f, 0f);
+            }
             
             AroundMovableCheck();
         }
+    }
+
+    public void SetDim(float value)
+    {
+        m_dimTween?.OnChangeValue(value, 0f);
     }
 
     /// <summary>
@@ -609,6 +616,20 @@ public class TileItem : CachedBehaviour
                     this.FindLeftRightTiles().ForEach(tile => {
                         tile.MovableCheck();
                     });
+                }
+                break;
+            case BlockerType.Glue_Left:
+                var (existRight, rightTile) = this.FindRightTile();
+                if (existRight)
+                {
+                    rightTile.SetDim(IsReallyMovable(m_movable) ? 0 : 1f);
+                }
+                break;
+            case BlockerType.Glue_Right:
+                var (existLeft, leftTile) = this.FindLeftTile();
+                if (existLeft)
+                {
+                    leftTile.SetDim(IsReallyMovable(m_movable) ? 0 : 1f);
                 }
                 break;
         }

@@ -26,9 +26,60 @@ partial class GameManager
                 commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_STASH_TO_BASKET, tileItemModel, LocationType.BASKET, tileItemModel.BlockerType, tileItemModel.BlockerICD)));
                 break;
             case LocationType.BOARD:
-                tileItemModel.FindTilesToChangeICD().ForEach(tagetTileModel => {
-                    commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.CHANGE_BLOCKER_ICD, tagetTileModel, LocationType.BOARD, tagetTileModel.BlockerType, tagetTileModel.BlockerICD)));
-                });
+                var icdChangeList = tileItemModel.FindTilesToChangeICD();
+                
+                switch(tileItemModel.BlockerType)
+                {
+                    case BlockerType.Glue_Left:
+                        var(existRight, rightTile) = tileItemModel.FindRightTile();
+                        if (existRight)
+                        {
+                            rightTile.FindTilesToChangeICD().ForEach(targetTileModel => {
+                                if(!icdChangeList.Contains(targetTileModel))
+                                    icdChangeList.Add(targetTileModel);
+                            });
+
+                            icdChangeList.ForEach(targetTileModel => {
+                                commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.CHANGE_BLOCKER_ICD, targetTileModel, LocationType.BOARD, targetTileModel.BlockerType, targetTileModel.BlockerICD)));
+                            });
+
+                            commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_BOARD_TO_BASKET, rightTile, LocationType.BASKET, rightTile.BlockerType, rightTile.BlockerICD)));
+                        }
+                        else
+                        {
+                            icdChangeList.ForEach(targetTileModel => {
+                                commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.CHANGE_BLOCKER_ICD, targetTileModel, LocationType.BOARD, targetTileModel.BlockerType, targetTileModel.BlockerICD)));
+                            });
+                        }
+                        break;
+                    case BlockerType.Glue_Right:
+                        var(existLeft, leftTile) = tileItemModel.FindLeftTile();
+                        if (existLeft)
+                        {
+                            leftTile.FindTilesToChangeICD().ForEach(targetTileModel => {
+                                if(!icdChangeList.Contains(targetTileModel))
+                                    icdChangeList.Add(targetTileModel);
+                            });
+
+                            icdChangeList.ForEach(targetTileModel => {
+                                commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.CHANGE_BLOCKER_ICD, targetTileModel, LocationType.BOARD, targetTileModel.BlockerType, targetTileModel.BlockerICD)));
+                            });
+
+                            commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_BOARD_TO_BASKET, leftTile, LocationType.BASKET, leftTile.BlockerType, leftTile.BlockerICD)));
+                        }
+                        else
+                        {
+                            icdChangeList.ForEach(targetTileModel => {
+                                commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.CHANGE_BLOCKER_ICD, targetTileModel, LocationType.BOARD, targetTileModel.BlockerType, targetTileModel.BlockerICD)));
+                            });
+                        }
+                        break;
+                    default:
+                        icdChangeList.ForEach(targetTileModel => {
+                            commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.CHANGE_BLOCKER_ICD, targetTileModel, LocationType.BOARD, targetTileModel.BlockerType, targetTileModel.BlockerICD)));
+                        });
+                        break;
+                }
                 commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(Type.MOVE_TILE_IN_BOARD_TO_BASKET, tileItemModel, LocationType.BASKET, tileItemModel.BlockerType, tileItemModel.BlockerICD)));
                 break;
             default:
