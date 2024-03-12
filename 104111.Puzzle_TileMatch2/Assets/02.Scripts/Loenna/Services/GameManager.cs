@@ -57,6 +57,8 @@ public partial class GameManager : IDisposable
 
 	private readonly AsyncReactiveProperty<bool> m_basketNotEmpty;
 	public IReadOnlyAsyncReactiveProperty<bool> BasketNotEmpty => m_basketNotEmpty;
+    private readonly AsyncReactiveProperty<int> m_basketRemainCount;
+	public IReadOnlyAsyncReactiveProperty<int> BasketRemainCount => m_basketRemainCount;
 
 	public int CurrentLevel => BoardInfo.Level;
 	#endregion
@@ -73,6 +75,7 @@ public partial class GameManager : IDisposable
         m_sweetHolicCollectedFx = new AsyncReactiveProperty<Transform>(null).WithDispatcher();
         
 		m_basketNotEmpty = new(false);
+        m_basketRemainCount = new(Constant.Game.MAX_BASKET_AMOUNT);
 
 		m_boardInfo = new AsyncReactiveProperty<InternalState>(InternalState.Empty)
 			.WithBeforeSetValue(
@@ -91,6 +94,7 @@ public partial class GameManager : IDisposable
 			.WithAfterSetValue(
 				value => {
 					m_basketNotEmpty.Value = value.Basket.Count > 0;
+                    m_basketRemainCount.Value = Constant.Game.MAX_BASKET_AMOUNT - value.Basket.Count;
 
 					if (
 						value.StateType is InternalState.Type.Initialized or 

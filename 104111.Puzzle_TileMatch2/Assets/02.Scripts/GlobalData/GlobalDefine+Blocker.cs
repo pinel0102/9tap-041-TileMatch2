@@ -26,6 +26,15 @@ public static partial class GlobalDefine
         [BlockerType.Chain] = BlockerTypeEditor.Chain,
     };
 
+    public static int RequiredBasketSpace(BlockerType blockerType)
+    {
+        return blockerType switch 
+        {
+            BlockerType.Glue_Left or BlockerType.Glue_Right => 2,
+            _ => 1
+        };
+    }
+
 #region Blocker Sprite
 
     public static Sprite GetBlockerSprite(BlockerType blockerType, int blockerICD)

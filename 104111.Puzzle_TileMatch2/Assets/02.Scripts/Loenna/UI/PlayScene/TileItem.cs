@@ -304,35 +304,46 @@ public class TileItem : CachedBehaviour
             if (type is EventTriggerType.PointerDown)
 			{
 				soundManager?.PlayFx(Constant.Sound.SFX_TILE_SELECT);
+                SetScaleTween();
 
                 if (IsReallyMovable(m_movable))
                 {
-                    m_interactable = false;                    
+                    m_interactable = false;
                     isMoving = true;
-
-                    isScaling = true;
-                    m_scaleTween?.OnChangeValue(Vector3.one * 1.3f, Constant.Game.TWEENTIME_TILE_SCALE, () => {
-                        if (isScaling)
-                            m_scaleTween?.OnChangeValue(Vector3.one, Constant.Game.TWEENTIME_TILE_SCALE, () => isScaling = false);
-                    });
 
                     //Debug.Log(CodeManager.GetMethodName() + m_current.Location);
                     
                     parameter.OnClick?.Invoke(this);
-                }
-                else
-                {
-                    isScaling = true;
-                    m_scaleTween?.OnChangeValue(Vector3.one * 1.3f, Constant.Game.TWEENTIME_TILE_SCALE, () => {
-                        if (isScaling)
-                            m_scaleTween?.OnChangeValue(Vector3.one, Constant.Game.TWEENTIME_TILE_SCALE, () => isScaling = false);
-                    });
                 }
             }
 
             return UniTask.CompletedTask;
 		}
 	}
+
+    public void SetScaleTween(bool fromTrigger = true)
+    {
+        isScaling = true;
+        m_scaleTween?.OnChangeValue(Vector3.one * 1.3f, Constant.Game.TWEENTIME_TILE_SCALE, () => {
+            if (isScaling)
+                m_scaleTween?.OnChangeValue(Vector3.one, Constant.Game.TWEENTIME_TILE_SCALE, () => isScaling = false);
+        });
+
+        if(fromTrigger)
+        {
+            switch (blockerType)
+            {
+                case BlockerType.Glue_Left:
+                    var (_, rightTile) = this.FindRightTile();
+                    rightTile?.SetScaleTween(false);
+                    break;
+                case BlockerType.Glue_Right:
+                    var (_, leftTile) = this.FindLeftTile();
+                    leftTile?.SetScaleTween(false);
+                    break;
+            }
+        }
+    }
 
 	public bool OnUpdateUI(TileItemModel item, bool ignoreInvisible, out LocationType changeLocation)
 	{
@@ -691,18 +702,12 @@ public class TileItem : CachedBehaviour
                 }
                 break;
             case BlockerType.Glue_Left:
-                var (existRight, rightTile) = this.FindRightTile();
-                if (existRight)
-                {
-                    rightTile.SetDim(IsReallyMovable(m_movable) ? 0 : 1f);
-                }
+                var (_, rightTile) = this.FindRightTile();
+                rightTile?.SetDim(IsReallyMovable(m_movable) ? 0 : 1f);
                 break;
             case BlockerType.Glue_Right:
-                var (existLeft, leftTile) = this.FindLeftTile();
-                if (existLeft)
-                {
-                    leftTile.SetDim(IsReallyMovable(m_movable) ? 0 : 1f);
-                }
+                var (_, leftTile) = this.FindLeftTile();
+                leftTile?.SetDim(IsReallyMovable(m_movable) ? 0 : 1f);
                 break;
         }
     }
@@ -740,13 +745,18 @@ public class TileItem : CachedBehaviour
         {
             case (LocationType.BOARD, BlockerType.Glue_Left):
                 var(existRight, rightTile) = this.FindRightTile();
-                return tileMoveable && existRight && rightTile.IsInteractable && rightTile.IsMovable;
+                return BasketHasSpace(GlobalDefine.RequiredBasketSpace(blockerType)) && tileMoveable && existRight && rightTile.IsInteractable && rightTile.IsMovable;
             case (LocationType.BOARD, BlockerType.Glue_Right):
                 var(existLeft, leftTile) = this.FindLeftTile();
-                return tileMoveable && existLeft && leftTile.IsInteractable && leftTile.IsMovable;
+                return BasketHasSpace(GlobalDefine.RequiredBasketSpace(blockerType)) && tileMoveable && existLeft && leftTile.IsInteractable && leftTile.IsMovable;
         }
 
         return tileMoveable;
+    }
+
+    private bool BasketHasSpace(int count)
+    {
+        return GlobalData.Instance.playScene.gameManager.BasketRemainCount.Value >= count;
     }
 
     /// <summary>
