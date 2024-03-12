@@ -20,7 +20,7 @@ public static class LevelEditorPrefs
 
 #endregion Parameters
 
-    private static bool showLog = true;
+    private static bool showLog = false;
     private const string EDITORPREF_FORMAT = "TileMatch2_Editor/{0}";
 
     public static void LoadEditorData()

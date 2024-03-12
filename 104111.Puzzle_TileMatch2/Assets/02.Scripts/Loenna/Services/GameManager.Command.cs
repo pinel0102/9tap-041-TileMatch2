@@ -409,8 +409,7 @@ partial class GameManager
 	{
         IList<int> types = BoardInfo.CurrentBoard.Tiles
             .Where(tile => {
-                return (tile.Location is LocationType.BOARD) 
-                    && (tile.BlockerType is BlockerType.None);
+                return (tile.Location is LocationType.BOARD) && (tile.BlockerType is BlockerType.None);
             })
             .Select(tile => tile.Icon).ToList();
 		Queue<int> queue = new Queue<int>(types.Shuffle());
@@ -421,10 +420,14 @@ partial class GameManager
 			.Tiles
 			.Select(
 				tile => {
-					if ((tile.Location is LocationType.BOARD) 
-                     && (tile.BlockerType is BlockerType.None))
+					if ((tile.Location is LocationType.BOARD) && (tile.BlockerType is BlockerType.None))
 					{
-						return tile with { Icon = queue.Dequeue() };
+                        List<int> iconList = new List<int>
+                        {
+                            queue.Dequeue()
+                        };
+                        
+                        return tile with { Icon = iconList.Last(), IconList = iconList };
 					}
 					return tile;
 				}

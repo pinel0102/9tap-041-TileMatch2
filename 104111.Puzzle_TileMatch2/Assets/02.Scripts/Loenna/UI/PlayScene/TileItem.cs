@@ -88,6 +88,9 @@ public class TileItem : CachedBehaviour
 	}
 
     [Header("★ [Live] Tile Info")]
+    public int layerIndex;
+    public int siblingIndex;
+    public int basketIndex;
     public string tileName;
     public int tileIcon;
     public List<int> iconList = new List<int>();
@@ -339,6 +342,8 @@ public class TileItem : CachedBehaviour
 
         m_current = item;
 
+        layerIndex = item.LayerIndex;
+        siblingIndex = item.SiblingIndex;
         currentLocation = changeLocation;
         blockerType = item.BlockerType;
         blockerICD = item.BlockerICD;//blockerICD > 0 ? blockerICD : item.BlockerICD;
@@ -358,7 +363,7 @@ public class TileItem : CachedBehaviour
 		m_missionTile.OnUpdateUI(sprite, item.Location is LocationType.BOARD? item.GoldPuzzleCount : -1);
 #endif
 
-        gameObject.name = tileName;
+        gameObject.name = string.Format("[{0}][{1}]{2}", layerIndex, siblingIndex, tileName);
         
         ShuffleMove = false;
         //Debug.Log(CodeManager.GetMethodName() + gameObject.name);
@@ -458,10 +463,15 @@ public class TileItem : CachedBehaviour
         return (location, Current != null) switch {
 			(LocationType.STASH or LocationType.BASKET, _) => 
                 //m_positionTween?.OnChangeValue(direction, duration) 
-                TileJump(location, direction, duration) 
+                TileJump(location, direction, duration, () => {
+                    if (location == LocationType.BASKET)
+                        GlobalData.Instance.playScene?.mainView?.CurrentBoard?.SortLayerTiles();
+                })
                 ?? UniTask.CompletedTask,
 			(LocationType.BOARD, true) => 
-                m_positionTween?.OnChangeValue(m_originWorldPosition, duration) 
+                m_positionTween?.OnChangeValue(m_originWorldPosition, duration, () => {
+                    GlobalData.Instance.playScene?.mainView?.CurrentBoard?.SortLayerTiles();
+                }) 
                 ?? UniTask.CompletedTask,
 			(LocationType.POOL, _) => m_scaleTween?.OnChangeValue(Vector3.zero, 0.15f, () => {
                     
@@ -490,7 +500,7 @@ public class TileItem : CachedBehaviour
 		};
 	}
 
-    private UniTask? TileJump(LocationType location, Vector3 value, float duration)
+    private UniTask? TileJump(LocationType location, Vector3 value, float duration, Action onComplete = null)
     {
         //Debug.Log(CodeManager.GetMethodName() + string.Format("m_movable: {0}", m_movable));
         //Debug.Log(location);
@@ -499,6 +509,7 @@ public class TileItem : CachedBehaviour
             .DOJump(value, 0.5f, 1, duration)
             .OnComplete(() => {
                 isMoving = false;
+                onComplete?.Invoke();
             })
             .AsyncWaitForCompletion()
             .AsUniTask();

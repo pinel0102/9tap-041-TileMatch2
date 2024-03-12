@@ -244,6 +244,7 @@ partial class PlayScene
 					
 						var stashItems = m_tileItems
 							.Where(tileItem => tileItem.Current.Location is LocationType.STASH)
+                            .OrderBy(tileItem => tileItem.basketIndex)
 							.ToArray();
 						
 						await m_bottomView.StashView.OnUpdateUI(stashItems);

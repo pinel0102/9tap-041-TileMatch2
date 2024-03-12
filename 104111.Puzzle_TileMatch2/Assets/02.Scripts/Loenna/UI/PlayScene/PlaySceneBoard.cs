@@ -57,6 +57,8 @@ public class PlaySceneBoard : CachedBehaviour
 
 		if (init)
 		{
+            SortLayerTiles();
+
 			var tweens = m_cachedLayers.Select(
 				async (layer, index) =>
 				{
@@ -94,7 +96,18 @@ public class PlaySceneBoard : CachedBehaviour
 		}
 	
 		eachLayer.name = $"Layer_{layerIndex}";
+        eachLayer.layerIndex = layerIndex;
+
 		//eachLayer.CachedGameObject.SetActive(true);
 		tileItem.CachedTransform.SetParent(eachLayer.CachedTransform);
 	}
+
+    public void SortLayerTiles()
+    {
+        //Debug.Log(CodeManager.GetMethodName());
+
+        m_cachedLayers.ForEach(layer => {
+            layer.SortChild();
+        });
+    }
 }

@@ -458,6 +458,8 @@ public partial class GameManager : IDisposable
 					continue;
 				}
 
+                int siblingIndex = 0;
+                
 				var tileItemModels = layer.Tiles
 					.OrderBy(tile => tile.Position, new TilePositionComparer())
 					.Select(
@@ -500,13 +502,14 @@ public partial class GameManager : IDisposable
 
 							return new TileItemModel(
 								layerIndex,
+                                siblingIndex++,
 								LocationType.BOARD,
 								tile.Guid,
-								icon,
+                                iconList.Last(),
+								iconList,
 								tile.Position * Constant.Game.RESIZE_TILE_RATIOS,
                                 tile.BlockerType,
                                 tile.BlockerICD,
-                                iconList,
 								mission,
 								overlaps
 							);

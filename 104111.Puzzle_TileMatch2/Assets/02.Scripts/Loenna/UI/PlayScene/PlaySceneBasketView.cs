@@ -12,9 +12,8 @@ using NineTap.Common;
 
 public class PlaySceneBasketView : CachedBehaviour
 {
-	[SerializeField]
-	private LayoutGroup m_parent;
-	private List<TileItem> m_tileItems = new();
+	[SerializeField] private LayoutGroup m_parent;
+	[SerializeField] private List<TileItem> m_tileItems = new();
     
     public int level;
     public bool isTutorialLevel;
@@ -39,6 +38,8 @@ public class PlaySceneBasketView : CachedBehaviour
 
 		var insertIndex = index < 0? m_tileItems.Count : index + 1;
 		m_tileItems.Insert(insertIndex, tileItem);
+
+        SortBasket();
 
         //Debug.Log(CodeManager.GetMethodName() + string.Format("m_tileItems.Count : {0}", m_tileItems.Count));
 
@@ -80,6 +81,8 @@ public class PlaySceneBasketView : CachedBehaviour
         soundManager?.PlayFx(Constant.Sound.SFX_TILE_MATCH);
 
 		m_tileItems.RemoveAll(item => basket.All(b => b.Guid != item.Current.Guid));
+
+        SortBasket();
 		
 		var tasks = removedTiles.Select(
 			tile => {
@@ -150,5 +153,14 @@ public class PlaySceneBasketView : CachedBehaviour
         //Debug.Log(CodeManager.GetMethodName() + result);
 
         return result;
+    }
+
+    private void SortBasket()
+    {
+        for(int i=0; i < m_tileItems.Count; i++)
+        {
+            m_tileItems[i].basketIndex = i;
+            m_tileItems[i].transform.SetAsLastSibling();
+        }
     }
 }
