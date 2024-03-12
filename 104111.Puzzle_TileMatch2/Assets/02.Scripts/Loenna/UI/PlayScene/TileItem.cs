@@ -11,6 +11,7 @@ using Cysharp.Threading.Tasks.Linq;
 using DG.Tweening;
 using NineTap.Common;
 using TMPro;
+using Coffee.UIExtensions;
 
 public class TileItemParameter
 {
@@ -108,6 +109,7 @@ public class TileItem : CachedBehaviour
     public List<int> iconList = new List<int>();
     public BlockerType blockerType;
     public int blockerICD;
+    public int oldICD;
 
     [Header("★ [Live] Status")]
     [SerializeField]	private bool m_interactable = false;
@@ -138,6 +140,8 @@ public class TileItem : CachedBehaviour
     [SerializeField]	private Image m_blockerImage;
     [SerializeField]	private Image m_blockerImageSub;
     [SerializeField]	private TMP_Text m_blockerText;
+    [SerializeField]	private RectTransform m_blockerEffectParent;
+    [SerializeField]	private UIParticleWidget m_blockerEffect;
 
 	private TileItemModel m_current;
 	public TileItemModel Current => m_current;
@@ -231,6 +235,8 @@ public class TileItem : CachedBehaviour
 
 	public void OnSetup(TileItemParameter parameter)
 	{
+        ReleaseEffect();
+
         blockerICD = 0;
         isScaling = false;
         isMoving = false;
@@ -354,6 +360,8 @@ public class TileItem : CachedBehaviour
 
         m_current = item;
 
+        oldICD = blockerICD;
+
         layerIndex = item.LayerIndex;
         siblingIndex = item.SiblingIndex;
         currentLocation = changeLocation;
@@ -442,6 +450,37 @@ public class TileItem : CachedBehaviour
                 SetBlockerObject(Vector3.zero, null, activeMain:false);
                 break;
         }
+
+        CheckBlockerEffect(type, currentICD);
+    }
+
+    private void CheckBlockerEffect(BlockerType type, int newICD)
+    {
+        bool isDecreased = newICD < oldICD;
+        if(!isDecreased)
+            return;
+        
+        switch(type)
+        {
+            case BlockerType.Glue_Right:
+                PlayBlockerEffect(type, newICD);
+                break;
+            case BlockerType.Bush:
+                PlayBlockerEffect(type, newICD);
+                break;
+            case BlockerType.Suitcase:
+                break;
+            case BlockerType.Jelly:
+                PlayBlockerEffect(type, newICD);
+                break;
+            case BlockerType.Chain:
+                PlayBlockerEffect(type, newICD);
+                break;
+            case BlockerType.Glue_Left:
+            case BlockerType.None:
+            default:
+                break;
+        }
     }
 
     private void SetBlockerObject(Vector3 rectPosition, Sprite mainSprite, Sprite subSprite = null, string text = null, bool activeMain = true, bool activeSub = false, bool activeText = false)
@@ -453,6 +492,16 @@ public class TileItem : CachedBehaviour
         m_blockerImage.gameObject.SetActive(activeMain);
         m_blockerImageSub.gameObject.SetActive(activeSub);
         m_blockerText.gameObject.SetActive(activeText);
+    }
+
+    private void ReleaseEffect()
+    {
+        m_blockerEffect.Initialize();
+    }
+
+    private void PlayBlockerEffect(BlockerType type, int newICD)
+    {
+        m_blockerEffect.PlayEffect(type, newICD);
     }
 
     public UniTask OnChangeLocation(LocationType location, Vector2? moveAt = null, float duration = Constant.Game.TWEENTIME_TILE_DEFAULT)
