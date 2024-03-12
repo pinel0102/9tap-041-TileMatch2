@@ -105,6 +105,6 @@ public class GridOptionContainer : MonoBehaviour
 
 	public void SetCountryCode(int index)
 	{
-		m_codeDropdown.SetValueWithoutNotify(index);
+        m_codeDropdown.SetValueWithoutNotify(Mathf.Clamp(index, 0, m_codeDropdown.options.Count - 1));
 	}
 }

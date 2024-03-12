@@ -16,20 +16,20 @@ public partial class LevelEditor
     /// <summary>
     /// 에디터에서 보드에 설치 또는 추가할 Blocker 타입.
     /// </summary>
-    [Header("★ [Live] Blocker")]
-    public BlockerTypeEditor blockerType;
+    //[Header("★ [Live] Blocker")]
+    //public BlockerTypeEditor blockerType;
     /// <summary>
     /// 에디터에서 보드에 설치 또는 추가할 Blocker 개수.
     /// </summary>
-    public int blockerCount = 1;
+    //public int blockerCount = 1;
     /// <summary>
     /// 에디터에서 보드에 설치 또는 추가할 Blocker의 가변 ICD. (가변 ICD 사용 항목만 적용.)
     /// </summary>
-    public int blockerVariableICD = 3;
+    //public int blockerVariableICD = 3;
     /// <summary>
     /// 에디터에서 Blocker를 수정할 레이어 인덱스. (-1 : All)
     /// </summary>
-    public int blockerTargetLayer = -1;
+    //public int blockerTargetLayer = -1;
 
     public static Dictionary<BlockerType, int> CurrentBlockerDic = new Dictionary<BlockerType, int>();
 
@@ -46,8 +46,8 @@ public partial class LevelEditor
                 .Sum(tile => {  return Mathf.Max(0, tile.blockerICD - 1); });
         });
 
-        if (additionalCount > 0)
-            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0}</color>", additionalCount));
+        //if (additionalCount > 0)
+        //    Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0}</color>", additionalCount));
 
         return additionalCount;
     }
@@ -56,37 +56,38 @@ public partial class LevelEditor
 
     private void UpdateBlockerLayer(int index)
     {
-        blockerTargetLayer = Mathf.Max(-1, index - 1);
+        LevelEditorPrefs.UI_BlockerLayerIndex = Mathf.Max(-1, index - 1);
         m_presenter.SetUpdateBoard();
     }
 
     private void UpdateBlockerIndex(int index)
     {
-        blockerType = blockerList[index];
+        LevelEditorPrefs.UI_BlockerType = blockerList[index];
+        LevelEditorPrefs.UI_BlockerTypeIndex = index;
         m_presenter.SetUpdateBoard();
     }
 
     private void UpdateBlockerCount(int count)
     {
-        blockerCount = count;
+        LevelEditorPrefs.UI_BlockerCount = count;
         m_presenter.SetUpdateBoard();
     }
 
     private void UpdateBlockerICD(int count)
     {
-        blockerVariableICD = Mathf.Max(1, count);
+        LevelEditorPrefs.UI_BlockerVariableICD = Mathf.Max(1, count);
         m_presenter.SetUpdateBoard();
     }
 
     private void IncrementBlockerCount(int increment)
 	{
-        blockerCount = Mathf.Max(0, blockerCount + increment);
+        LevelEditorPrefs.UI_BlockerCount = Mathf.Max(0, LevelEditorPrefs.UI_BlockerCount + increment);
         m_presenter.SetUpdateBoard();
 	}
 
     private void IncrementBlockerICD(int increment)
 	{
-        blockerVariableICD = Mathf.Max(1, blockerVariableICD + increment);
+        LevelEditorPrefs.UI_BlockerVariableICD = Mathf.Max(1, LevelEditorPrefs.UI_BlockerVariableICD + increment);
         m_presenter.SetUpdateBoard();
 	}
 

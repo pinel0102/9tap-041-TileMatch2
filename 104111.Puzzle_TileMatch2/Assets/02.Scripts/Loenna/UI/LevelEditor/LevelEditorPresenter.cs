@@ -528,7 +528,7 @@ public class LevelEditorPresenter : IDisposable
 			return;
 		}
 
-        int blockerICD = GlobalDefine.GetBlockerICD(blockerType, m_levelEditor.blockerVariableICD);
+        int blockerICD = GlobalDefine.GetBlockerICD(blockerType, LevelEditorPrefs.UI_BlockerVariableICD);
         
         //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Start] {0} x {1} (ICD : {2})</color>", blockerType, count, blockerICD));
 
@@ -829,7 +829,7 @@ public class LevelEditorPresenter : IDisposable
 
 	public void UpdateCountryCode(string code)
 	{
-		m_dataManager.UpdateCountryCode(code);
+        m_dataManager.UpdateCountryCode(code);
 	}
 
 	public UniTask RemoveTemporaryLevel()

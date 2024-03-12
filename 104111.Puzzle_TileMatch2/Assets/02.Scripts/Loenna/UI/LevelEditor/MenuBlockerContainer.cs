@@ -125,28 +125,28 @@ public class MenuBlockerContainer : MonoBehaviour
 			}
 		);
 
-        SetDropdownBlocker(0);
+        SetDropdownBlocker(LevelEditorPrefs.UI_BlockerTypeIndex);
     }
 
     private void SetupBlockerLayerDropdown(MenuBlockerContainerParameter parameter)
     {
         m_dropdownLayer.onValueChanged.AddListener(
 			index => {
-				parameter?.OnChangeBlockerLayer?.Invoke(index);
+                parameter?.OnChangeBlockerLayer?.Invoke(index);
 			}
 		);
 
-        RefreshBlockerLayerDropdown(0, 0, true);
+        RefreshBlockerLayerDropdown(0, LevelEditorPrefs.UI_BlockerLayerIndex + 1, true);
     }
 
     private void SetDropdownBlocker(int index)
 	{
-        m_dropdownBlocker.SetValueWithoutNotify(index);
+        m_dropdownBlocker.SetValueWithoutNotify(Mathf.Clamp(index, 0, m_dropdownBlocker.options.Count > 0 ? m_dropdownBlocker.options.Count - 1 : 0));
 	}
 
     private void SetDropdownLayer(int index)
-	{
-        m_dropdownLayer.SetValueWithoutNotify(index);
+	{   
+        m_dropdownLayer.SetValueWithoutNotify(Mathf.Clamp(index, 0, m_dropdownLayer.options.Count > 0 ? m_dropdownLayer.options.Count - 1 : 0));
 	}
 
 #endregion Initialize
