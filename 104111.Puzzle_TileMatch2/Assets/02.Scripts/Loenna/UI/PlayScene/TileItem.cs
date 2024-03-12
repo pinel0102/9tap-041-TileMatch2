@@ -11,7 +11,6 @@ using Cysharp.Threading.Tasks.Linq;
 using DG.Tweening;
 using NineTap.Common;
 using TMPro;
-using System.Linq;
 
 public class TileItemParameter
 {
@@ -71,8 +70,21 @@ public class TileItem : CachedBehaviour
 		public UniTask OnChangeValue(Vector3 value, float duration, TweenCallback onComplete)
 		{
 			m_tweener
-				.ChangeEndValue(value, duration, true)
+                .ChangeEndValue(value, duration, true)
 				.Restart();
+
+			return m_tweener
+			.AsyncWaitForCompletion()
+			.AsUniTask()
+			.ContinueWith(() => onComplete?.Invoke())
+			.AttachExternalCancellation(m_tokenSource.Token);
+		}
+
+        public UniTask OnChangeValue(Vector3 value, float delay, float duration, TweenCallback onComplete)
+		{
+			m_tweener
+                .ChangeEndValue(value, duration, true)
+                .Restart(true, delay);
 
 			return m_tweener
 			.AsyncWaitForCompletion()
@@ -450,7 +462,7 @@ public class TileItem : CachedBehaviour
 			return UniTask.CompletedTask;
 		}
 
-		currentLocation = location;
+        currentLocation = location;
         Vector2 direction = moveAt ?? Current.Position;
 
         if (location == LocationType.POOL)
@@ -473,7 +485,7 @@ public class TileItem : CachedBehaviour
                     GlobalData.Instance.playScene?.mainView?.CurrentBoard?.SortLayerTiles();
                 }) 
                 ?? UniTask.CompletedTask,
-			(LocationType.POOL, _) => m_scaleTween?.OnChangeValue(Vector3.zero, 0.15f, () => {
+			(LocationType.POOL, _) => m_scaleTween?.OnChangeValue(Vector3.zero, duration, duration, () => {
                     
                     // [Event] Sweet Holic
                     if (GlobalDefine.IsOpen_Event_SweetHolic())

@@ -42,6 +42,7 @@ partial class GameManager
                                 return !icdListBoard.Contains(targetTileModel);
                             }));
 
+                            AddCommandTile(tileItemModel, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
                             AddCommandTile(rightTile, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
                         }
                         break;
@@ -54,11 +55,15 @@ partial class GameManager
                             }));
 
                             AddCommandTile(leftTile, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
+                            AddCommandTile(tileItemModel, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
                         }
+                        break;
+
+                    default:
+                        AddCommandTile(tileItemModel, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
                         break;
                 }
                 
-                AddCommandTile(tileItemModel, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
                 AddCommandList(icdListBoard, Type.CHANGE_BLOCKER_ICD, LocationType.BOARD);
                 break;
             default:
