@@ -26,8 +26,8 @@ partial class GameManager
         {
             case LocationType.STASH:
                 var icdListStash = tileItemModel.FindTilesToChangeICD();
-                AddCommandTile(tileItemModel, Type.MOVE_TILE_IN_STASH_TO_BASKET, LocationType.BASKET);
                 AddCommandList(icdListStash, Type.CHANGE_BLOCKER_ICD, LocationType.BOARD);
+                AddCommandTile(tileItemModel, Type.MOVE_TILE_IN_STASH_TO_BASKET, LocationType.BASKET);
                 break;
             case LocationType.BOARD:
                 var icdListBoard = tileItemModel.FindTilesToChangeICD();
@@ -42,6 +42,7 @@ partial class GameManager
                                 return !icdListBoard.Contains(targetTileModel);
                             }));
 
+                            AddCommandList(icdListBoard, Type.CHANGE_BLOCKER_ICD, LocationType.BOARD);
                             AddCommandTile(tileItemModel, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
                             AddCommandTile(rightTile, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
                         }
@@ -54,17 +55,17 @@ partial class GameManager
                                 return !icdListBoard.Contains(targetTileModel);
                             }));
 
+                            AddCommandList(icdListBoard, Type.CHANGE_BLOCKER_ICD, LocationType.BOARD);
                             AddCommandTile(leftTile, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
                             AddCommandTile(tileItemModel, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
                         }
                         break;
 
                     default:
+                        AddCommandList(icdListBoard, Type.CHANGE_BLOCKER_ICD, LocationType.BOARD);
                         AddCommandTile(tileItemModel, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
                         break;
                 }
-                
-                AddCommandList(icdListBoard, Type.CHANGE_BLOCKER_ICD, LocationType.BOARD);
                 break;
             default:
                 commandParams.Add(DoNothing<Resource>.Command);
