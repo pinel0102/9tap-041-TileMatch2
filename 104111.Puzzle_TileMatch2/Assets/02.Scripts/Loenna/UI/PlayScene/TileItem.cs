@@ -156,6 +156,8 @@ public class TileItem : CachedBehaviour
     private Transform _shuffleCenter;
     private Vector3 _myPosition;
 
+    private float jumpDelay;
+
     private GlobalData globalData { get { return GlobalData.Instance; } }
 
     private void Update()
@@ -304,13 +306,35 @@ public class TileItem : CachedBehaviour
                 SetScaleTween();
 
                 if (IsReallyMovable(m_movable))
-                {
+                {   
                     m_interactable = false;
                     isMoving = true;
+                    jumpDelay = 0;
 
-                    //Debug.Log(CodeManager.GetMethodName() + m_current.Location);
-                    
-                    parameter.OnClick?.Invoke(this);
+                    if (IsNeedEffectBeforeMove(blockerType))
+                    {
+                        PlayBlockerEffect(blockerType, blockerICD, m_blockerRect.position);
+                        
+                        /*switch(blockerType)
+                        {
+                            case BlockerType.Glue_Left:
+                                var(existRight, rightTile) = this.FindRightTile();
+                                rightTile.jumpDelay = 1f;
+                                jumpDelay = 1f;
+                                break;
+                            case BlockerType.Glue_Right:
+                                var(existLeft, leftTile) = this.FindLeftTile();
+                                leftTile.jumpDelay = 1f;
+                                jumpDelay = 1f;
+                                break;
+                        }*/
+
+                        parameter.OnClick?.Invoke(this);
+                    }
+                    else
+                    {   
+                        parameter.OnClick?.Invoke(this);
+                    }
                 }
             }
 
@@ -436,30 +460,41 @@ public class TileItem : CachedBehaviour
         switch(type)
         {
             case BlockerType.Glue_Right:
-                SetBlockerObject(-Constant.Game.TILE_WIDTH_HALF_POSITION, GlobalDefine.GetBlockerSprite(type, currentICD));
+                SetBlockerObject(GetBlockerRectPosition(type), GlobalDefine.GetBlockerSprite(type, currentICD));
                 break;
             case BlockerType.Bush:
-                SetBlockerObject(Vector3.zero, GlobalDefine.GetBlockerSprite(type, currentICD), activeMain:currentICD > 0);
+                SetBlockerObject(GetBlockerRectPosition(type), GlobalDefine.GetBlockerSprite(type, currentICD), activeMain:currentICD > 0);
                 // Test
-                //SetBlockerObject(Vector3.zero, GlobalDefine.GetBlockerSprite(type, currentICD), text:currentICD.ToString(), activeMain:currentICD > 0, activeText:true);
+                //SetBlockerObject(GetBlockerRectPosition(type), GlobalDefine.GetBlockerSprite(type, currentICD), text:currentICD.ToString(), activeMain:currentICD > 0, activeText:true);
                 break;
             case BlockerType.Suitcase:
-                SetBlockerObject(Vector3.zero, GlobalDefine.GetBlockerSprite(type, currentICD), GlobalDefine.GetBlockerSubSprite(type, currentICD), currentICD.ToString(), true, true, true);
+                SetBlockerObject(GetBlockerRectPosition(type), GlobalDefine.GetBlockerSprite(type, currentICD), GlobalDefine.GetBlockerSubSprite(type, currentICD), currentICD.ToString(), true, true, true);
                 break;
             case BlockerType.Jelly:
-                SetBlockerObject(Vector3.zero, GlobalDefine.GetBlockerSprite(type, currentICD), activeMain:currentICD > 0);
+                SetBlockerObject(GetBlockerRectPosition(type), GlobalDefine.GetBlockerSprite(type, currentICD), activeMain:currentICD > 0);
                 break;
             case BlockerType.Chain:
-                SetBlockerObject(Vector3.zero, GlobalDefine.GetBlockerSprite(type, currentICD), activeMain:currentICD > 0);
+                SetBlockerObject(GetBlockerRectPosition(type), GlobalDefine.GetBlockerSprite(type, currentICD), activeMain:currentICD > 0);
                 break;
             case BlockerType.Glue_Left:
             case BlockerType.None:
             default:
-                SetBlockerObject(Vector3.zero, null, activeMain:false);
+                SetBlockerObject(GetBlockerRectPosition(type), null, activeMain:false);
                 break;
         }
 
         CheckBlockerEffect(type, currentICD);
+    }
+
+    private Vector3 GetBlockerRectPosition(BlockerType type)
+    {
+        switch(type)
+        {
+            case BlockerType.Glue_Right:
+                return -Constant.Game.TILE_WIDTH_HALF_POSITION;
+        }
+
+        return Vector3.zero;
     }
 
     private void CheckBlockerEffect(BlockerType type, int newICD)
@@ -470,25 +505,34 @@ public class TileItem : CachedBehaviour
         
         switch(type)
         {
-            case BlockerType.Glue_Right:
-                PlayBlockerEffect(type, newICD);
-                break;
             case BlockerType.Bush:
-                PlayBlockerEffect(type, newICD);
-                break;
-            case BlockerType.Suitcase:
+                PlayBlockerEffect(type, newICD, m_blockerRect.position);
                 break;
             case BlockerType.Jelly:
-                PlayBlockerEffect(type, newICD);
+                PlayBlockerEffect(type, newICD, m_blockerRect.position);
                 break;
             case BlockerType.Chain:
-                PlayBlockerEffect(type, newICD);
+                PlayBlockerEffect(type, newICD, m_blockerRect.position);
                 break;
             case BlockerType.Glue_Left:
+            case BlockerType.Glue_Right:
+            case BlockerType.Suitcase:
             case BlockerType.None:
             default:
                 break;
         }
+    }
+
+    private bool IsNeedEffectBeforeMove(BlockerType type)
+    {
+        switch(type)
+        {
+            case BlockerType.Glue_Left:
+            case BlockerType.Glue_Right:
+                return true;
+        }
+
+        return false;
     }
 
     private void SetBlockerObject(Vector3 rectPosition, Sprite mainSprite, Sprite subSprite = null, string text = null, bool activeMain = true, bool activeSub = false, bool activeText = false)
@@ -502,9 +546,9 @@ public class TileItem : CachedBehaviour
         m_blockerText.gameObject.SetActive(activeText);
     }
 
-    private void PlayBlockerEffect(BlockerType type, int newICD)
+    private void PlayBlockerEffect(BlockerType type, int newICD, Vector3 worldPosition)
     {
-        globalData.playScene.LoadFX(type, newICD, m_blockerRect.position);
+        globalData.playScene.LoadFX(type, newICD, worldPosition);
     }
 
     public UniTask OnChangeLocation(LocationType location, Vector2? moveAt = null, float duration = Constant.Game.TWEENTIME_TILE_DEFAULT)
@@ -514,6 +558,11 @@ public class TileItem : CachedBehaviour
 			return UniTask.CompletedTask;
 		}
 
+        //duration = 1f; // Test
+        
+        //float currentDelay = jumpDelay;
+        //jumpDelay = 0;
+
         currentLocation = location;
         Vector2 direction = moveAt ?? Current.Position;
 
@@ -522,16 +571,15 @@ public class TileItem : CachedBehaviour
             //Debug.Log(CodeManager.GetMethodName() + string.Format("[m_disappearEffect] {0}", CachedGameObject.name));
             isScaling = false;
             isMoving = false;
+            jumpDelay = 0;
         }
 
         return (location, Current != null) switch {
 			(LocationType.STASH or LocationType.BASKET, _) => 
-                //m_positionTween?.OnChangeValue(direction, duration) 
-                TileJump(location, direction, duration, () => {
+                TileJump(location, direction, duration, jumpDelay, () => {
                     if (location == LocationType.BASKET)
                         globalData.playScene?.mainView?.CurrentBoard?.SortLayerTiles();
-                })
-                ?? UniTask.CompletedTask,
+                }) ?? UniTask.CompletedTask,
 			(LocationType.BOARD, true) => 
                 m_positionTween?.OnChangeValue(m_originWorldPosition, duration, () => {
                     globalData.playScene?.mainView?.CurrentBoard?.SortLayerTiles();
@@ -564,13 +612,16 @@ public class TileItem : CachedBehaviour
 		};
 	}
 
-    private UniTask? TileJump(LocationType location, Vector3 value, float duration, Action onComplete = null)
+    private UniTask? TileJump(LocationType location, Vector3 value, float duration, float delay, Action onComplete = null)
     {
         //Debug.Log(CodeManager.GetMethodName() + string.Format("m_movable: {0}", m_movable));
         //Debug.Log(location);
-        
+
+        jumpDelay = 0;
+
         return ObjectUtility.GetRawObject(CachedTransform)?
             .DOJump(value, 0.5f, 1, duration)
+            .SetDelay(jumpDelay)
             .OnComplete(() => {
                 isMoving = false;
                 onComplete?.Invoke();

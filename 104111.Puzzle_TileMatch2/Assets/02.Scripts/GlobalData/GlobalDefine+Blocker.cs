@@ -103,7 +103,7 @@ public static partial class GlobalDefine
     {
         string prefabName = blockerType switch
         {
-            BlockerType.Glue_Left or BlockerType.Glue_Right => "FX_Glue",
+            BlockerType.Glue_Right => "FX_Glue",
             BlockerType.Chain => "FX_Chain",
             BlockerType.Bush => "FX_Bush",
             BlockerType.Jelly => blockerICD switch
