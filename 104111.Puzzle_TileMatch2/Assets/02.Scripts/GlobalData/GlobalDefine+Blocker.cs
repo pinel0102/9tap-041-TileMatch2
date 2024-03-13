@@ -35,7 +35,7 @@ public static partial class GlobalDefine
         };
     }
 
-#region Blocker Sprite
+#region Blocker Resource
 
     public static Sprite GetBlockerSprite(BlockerType blockerType, int blockerICD)
     {
@@ -91,7 +91,63 @@ public static partial class GlobalDefine
         return SpriteManager.GetSprite(path);
     }
 
-#endregion Blocker Sprite
+    private const string Format_Blocker_FX_Prefab = "UI/FX/FX_Blocker/{0}";
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="blockerType"></param>
+    /// <param name="blockerICD"></param>
+    /// <returns>Exist, if Exist => Path</returns>
+    public static (bool, string) GetBlockerFXPrefabPath(BlockerType blockerType, int blockerICD)
+    {
+        string prefabName = blockerType switch
+        {
+            BlockerType.Glue_Left or BlockerType.Glue_Right => "FX_Glue",
+            BlockerType.Chain => "FX_Chain",
+            BlockerType.Bush => "FX_Bush",
+            BlockerType.Jelly => blockerICD switch
+            {
+                >= 3 => "FX_Jelly_01",
+                2 => "FX_Jelly_02",
+                1 => "FX_Jelly_03",
+                _ => string.Empty
+            },
+            BlockerType.Suitcase => string.Empty,
+            _ => string.Empty
+        };
+
+        bool exist = !string.IsNullOrEmpty(prefabName);
+        string resultPath = exist ? string.Format(Format_Blocker_FX_Prefab, prefabName) : null;
+
+        return (exist, resultPath);
+    }
+
+    public static string GetBlockerFXSoundPath(BlockerType blockerType, int blockerICD)
+    {
+        return blockerType switch
+        {
+            BlockerType.Glue_Left or BlockerType.Glue_Right => string.Empty,
+            BlockerType.Chain => string.Empty,
+            BlockerType.Bush => blockerICD switch
+            {
+                >= 2 => string.Empty,
+                1 => string.Empty,
+                _ => string.Empty
+            },
+            BlockerType.Jelly => blockerICD switch
+            {
+                >= 3 => string.Empty,
+                2 => string.Empty,
+                1 => string.Empty,
+                _ => string.Empty
+            },
+            BlockerType.Suitcase => string.Empty,
+            _ => string.Empty
+        };
+    }
+
+#endregion Blocker Resource
 
 
 #region Blocker ICD

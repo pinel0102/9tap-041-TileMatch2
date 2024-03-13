@@ -8,6 +8,7 @@ using Cysharp.Threading.Tasks;
 using NineTap.Payment;
 using NineTap.Common;
 using Text = NineTap.Constant.Text;
+using Coffee.UIExtensions;
 
 using static UnityEngine.SceneManagement.SceneManager;
 
@@ -31,8 +32,11 @@ public partial class PlayScene : UIScene
     [SerializeField]	private GameObject bg_puzzle;
     [SerializeField]    private Image backgroundImage;
 
+    public UIParticle FXLayer;
+
 	private GameManager m_gameManager;
 	private UserManager m_userManager;
+    private SoundManager m_soundManager;
 	private PaymentService m_paymentService;
 	private ItemDataTable m_itemDataTable;
 	private ProductDataTable m_productDataTable;
@@ -61,10 +65,13 @@ public partial class PlayScene : UIScene
 
         GlobalData.Instance.playScene = this;
 
-		TableManager tableManager = Game.Inst.Get<TableManager>();
+        ClearFXLayer();
+
+        TableManager tableManager = Game.Inst.Get<TableManager>();
 		m_userManager = Game.Inst.Get<UserManager>();
 		m_gameManager = new GameManager(m_userManager, tableManager);
-		m_paymentService = Game.Inst.Get<PaymentService>();
+		m_soundManager = Game.Inst.Get<SoundManager>();
+        m_paymentService = Game.Inst.Get<PaymentService>();
 		m_itemDataTable = tableManager.ItemDataTable;
 		m_productDataTable = tableManager.ProductDataTable;
         m_puzzleDataTable = tableManager.PuzzleDataTable;

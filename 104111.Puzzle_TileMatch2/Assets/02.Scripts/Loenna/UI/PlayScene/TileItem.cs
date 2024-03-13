@@ -11,7 +11,6 @@ using Cysharp.Threading.Tasks.Linq;
 using DG.Tweening;
 using NineTap.Common;
 using TMPro;
-using Coffee.UIExtensions;
 
 public class TileItemParameter
 {
@@ -140,8 +139,6 @@ public class TileItem : CachedBehaviour
     [SerializeField]	private Image m_blockerImage;
     [SerializeField]	private Image m_blockerImageSub;
     [SerializeField]	private TMP_Text m_blockerText;
-    [SerializeField]	private RectTransform m_blockerEffectParent;
-    [SerializeField]	private UIParticleWidget m_blockerEffect;
 
 	private TileItemModel m_current;
 	public TileItemModel Current => m_current;
@@ -158,6 +155,8 @@ public class TileItem : CachedBehaviour
     private float _shuffleSpeed;
     private Transform _shuffleCenter;
     private Vector3 _myPosition;
+
+    private GlobalData globalData { get { return GlobalData.Instance; } }
 
     private void Update()
     {
@@ -235,8 +234,6 @@ public class TileItem : CachedBehaviour
 
 	public void OnSetup(TileItemParameter parameter)
 	{
-        ReleaseEffect();
-
         blockerICD = 0;
         isScaling = false;
         isMoving = false;
@@ -291,7 +288,7 @@ public class TileItem : CachedBehaviour
 		ObjectUtility.GetRawObject(m_missionTile)?.SetVisible(false);
 #endif
 
-        _shuffleCenter = GlobalData.Instance.playScene.mainView.transform;
+        _shuffleCenter = globalData.playScene.mainView.transform;
         
         UniTask OnTriggerCallback(EventTriggerType type, BaseEventData eventData)
 		{
@@ -505,14 +502,9 @@ public class TileItem : CachedBehaviour
         m_blockerText.gameObject.SetActive(activeText);
     }
 
-    private void ReleaseEffect()
-    {
-        m_blockerEffect.Initialize();
-    }
-
     private void PlayBlockerEffect(BlockerType type, int newICD)
     {
-        m_blockerEffect.PlayEffect(type, newICD);
+        globalData.playScene.LoadFX(type, newICD, m_blockerRect.position);
     }
 
     public UniTask OnChangeLocation(LocationType location, Vector2? moveAt = null, float duration = Constant.Game.TWEENTIME_TILE_DEFAULT)
@@ -537,12 +529,12 @@ public class TileItem : CachedBehaviour
                 //m_positionTween?.OnChangeValue(direction, duration) 
                 TileJump(location, direction, duration, () => {
                     if (location == LocationType.BASKET)
-                        GlobalData.Instance.playScene?.mainView?.CurrentBoard?.SortLayerTiles();
+                        globalData.playScene?.mainView?.CurrentBoard?.SortLayerTiles();
                 })
                 ?? UniTask.CompletedTask,
 			(LocationType.BOARD, true) => 
                 m_positionTween?.OnChangeValue(m_originWorldPosition, duration, () => {
-                    GlobalData.Instance.playScene?.mainView?.CurrentBoard?.SortLayerTiles();
+                    globalData.playScene?.mainView?.CurrentBoard?.SortLayerTiles();
                 }) 
                 ?? UniTask.CompletedTask,
 			(LocationType.POOL, _) => m_scaleTween?.OnChangeValue(Vector3.zero, duration, duration, () => {
@@ -551,10 +543,10 @@ public class TileItem : CachedBehaviour
                     if (GlobalDefine.IsOpen_Event_SweetHolic())
                     {
                         // 매칭된 타일이 수집 이벤트 대상이면.
-                        if(Current.Icon.Equals(GlobalData.Instance.eventSweetHolic_TargetIndex))
+                        if(Current.Icon.Equals(globalData.eventSweetHolic_TargetIndex))
                         {
                             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Matching [{0}] {1}</color>", Current.Icon, tileName));
-                            GlobalData.Instance.playScene.gameManager.EventCollect_SweetHolic(transform);
+                            globalData.playScene.gameManager.EventCollect_SweetHolic(transform);
                         }
                     }
 
@@ -756,7 +748,7 @@ public class TileItem : CachedBehaviour
 
     private bool BasketHasSpace(int count)
     {
-        return GlobalData.Instance.playScene.gameManager.BasketRemainCount.Value >= count;
+        return globalData.playScene.gameManager.BasketRemainCount.Value >= count;
     }
 
     /// <summary>
