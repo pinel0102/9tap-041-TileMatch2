@@ -18,12 +18,14 @@ partial class GameManager
 	public Command.Invoker Invoker => m_commandInvoker;
 
     private int basketAddCount = 0;
+    private bool blockerFailed = false;
 
 
 	public void OnProcess(TileItemModel tileItemModel)
 	{
         commandParams.Clear();
         basketAddCount = 0;
+        blockerFailed = false;
 
         switch(tileItemModel.Location)
         {
@@ -82,7 +84,7 @@ partial class GameManager
 		m_commandInvoker.SetCommand(concurrentCommand);
 		m_commandInvoker.Execute();
 
-		#region Local Functions
+        #region Local Functions
         void AddCommandList(List<TileItemModel> list, Type type, LocationType location)
         {
             list.ForEach(tile => {
@@ -308,7 +310,10 @@ partial class GameManager
         if (forceMove)
             basketAddCount = Mathf.Max(0, basketAddCount - 1);
 
-        if (CheckTilesInBasket(out int startAt)) // Match Success
+        if(!blockerFailed)
+            blockerFailed = NotValidBlockerAfterMove(tileItemModel);
+
+        if (!blockerFailed && CheckTilesInBasket(out int startAt)) // Match Success
 		{
             var removed = currentBasket.GetRange(startAt, Constant.Game.REQUIRED_MATCH_COUNT);
 
@@ -349,7 +354,7 @@ partial class GameManager
             );
         }
 
-        Debug.Log(CodeManager.GetMethodName() + string.Format("[BasketCount] {0} / {1}", GetBasketCount(), GetBasketMaxCount()));
+        //Debug.Log(CodeManager.GetMethodName() + string.Format("[BasketCount] {0} / {1}", GetBasketCount(), GetBasketMaxCount()));
 
         bool CheckTilesInBasket(out int removeStartAt)
 		{
@@ -370,9 +375,65 @@ partial class GameManager
 		}
 	}
 
-    public void ChangeBlockerICD(TileItemModel tileItemModel, List<TileItemModel> tiles)
+    private bool NotValidBlockerAfterMove(TileItemModel tileItemModel)
     {
-        //
+        var checkTiles = tileItemModel.FindAroundTiles();
+
+        switch(tileItemModel.BlockerType)
+        {
+            case BlockerType.Glue_Left:
+                var(existRight, rightTile) = tileItemModel.FindRightTile();
+                if (existRight)
+                {
+                    checkTiles.AddRange(rightTile.FindAroundTiles());
+                }
+                break;
+            case BlockerType.Glue_Right:
+                var(existLeft, leftTile) = tileItemModel.FindLeftTile();
+                if (existLeft)
+                {
+                    checkTiles.AddRange(leftTile.FindAroundTiles());
+                }
+                break;
+        }
+        
+        for(int i=0; i < checkTiles.Count; i++)
+        {
+            var tile = checkTiles[i];
+            switch(tile.BlockerType)
+            {
+                case BlockerType.Bush:
+                    if (tile.FindAroundTiles().Count - 1 < tile.BlockerICD)
+                    {
+                        Debug.Log(CodeManager.GetMethodName() + string.Format("Not Valid : {0}", tile.BlockerType));
+                        return true;
+                    }
+                    break;
+                case BlockerType.Chain:
+                    if (tile.FindLeftRightTiles().Count - 1 < tile.BlockerICD)
+                    {
+                        Debug.Log(CodeManager.GetMethodName() + string.Format("Not Valid : {0}", tile.BlockerType));
+                        return true;
+                    }
+                    break;
+            }
+        }
+
+        return false;
+    }
+
+    public List<TileItemModel> NotValidBlockerList()
+    {
+        return BoardInfo.CurrentBoard.Tiles.FindAll(tileItem => tileItem.Location == LocationType.BOARD &&
+            tileItem.BlockerType switch{
+                BlockerType.Bush => tileItem.FindAroundTiles().Count < tileItem.BlockerICD,
+                BlockerType.Chain => tileItem.FindLeftRightTiles().Count < tileItem.BlockerICD,
+                _ => false
+            })
+        .Select(tile => {
+            Debug.Log(CodeManager.GetMethodName() + string.Format("Not Valid : {0}", tile.BlockerType));
+            return tile;
+        }).ToList();
     }
 
     public bool IsBasketEnable()

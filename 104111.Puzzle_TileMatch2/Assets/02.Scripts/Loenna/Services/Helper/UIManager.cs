@@ -58,6 +58,11 @@ public static partial class UIManager
 		return s_implementation?.AttachHUD(uiParameter.VisibleHUD)?.PopupManager?.ShowPopup<T>(uiParameter);
 	}
 
+    public static PopupManager? GetPopupManager()
+    {
+        return s_implementation?.PopupManager;
+    }
+
     public static Action? backKeyCallback;
 
 	public static void ReturnBackUI(Action? onComplete = null)

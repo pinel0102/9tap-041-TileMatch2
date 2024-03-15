@@ -21,6 +21,8 @@ partial class PlayScene
     public List<TileItem> TileItems => m_tileItems;
     private PuzzleData m_puzzleData;
 
+    [SerializeField] private bool blockerFailed;
+    public bool BlockerFailed => blockerFailed;
 	private int m_progressId = 0;
 	private Queue<UniTask> m_queue;
 
@@ -52,7 +54,11 @@ partial class PlayScene
 					new TileItemParameter
 					{
 						OnClick = item => {
-                            m_gameManager.OnProcess(item?.Current);
+                            if (!blockerFailed)
+                            {
+                                m_block.SetActive(true);
+                                m_gameManager.OnProcess(item?.Current);
+                            }
                         }
 					}
 				);
@@ -229,52 +235,66 @@ partial class PlayScene
 			case CurrentPlayState.CurrentUpdated { SelectedTiles: var selectedTiles, CurrentBoard: var board, Basket: var basket, Stash: var stashes }:
 				UniTask.Void(
 					async token => {
-						bool start = m_queue.Count <= 0;
-						m_tileItems.ForEach(
-							item => {
-								TileItemModel model = board.Tiles.FirstOrDefault(tile => item.Current?.Guid == tile.Guid);
-								if (model == null)
-								{
-									return;
-								}
+                        m_block.SetActive(true);
 
-								item.OnUpdateUI(model, false, out var current);
-							}
-						);
-					
-						var stashItems = m_tileItems
-							.Where(tileItem => tileItem.Current.Location is LocationType.STASH)
+                        bool start = m_queue.Count <= 0;
+                        m_tileItems.ForEach(
+                            item => {
+                                TileItemModel model = board.Tiles.FirstOrDefault(tile => item.Current?.Guid == tile.Guid);
+                                if (model == null)
+                                {
+                                    return;
+                                }
+
+                                item.OnUpdateUI(model, false, out var current);
+                            }
+                        );
+                
+                        var stashItems = m_tileItems
+                            .Where(tileItem => tileItem.Current.Location is LocationType.STASH)
                             .OrderBy(tileItem => tileItem.basketIndex)
-							.ToArray();
-						
-						await m_bottomView.StashView.OnUpdateUI(stashItems);
+                            .ToArray();
+                        
+                        await m_bottomView.StashView.OnUpdateUI(stashItems);
 
-						if (selectedTiles?.Count() > 0)
-						{
-							var enumerable = selectedTiles.ToUniTaskAsyncEnumerable();
-							await UniTask.Defer(
-								() => enumerable.ForEachAwaitAsync(
-									async itemModel => {
-										var selectedItem = m_tileItems.FirstOrDefault(item => item.Current?.Guid == itemModel.Guid);
-										switch (selectedItem.Current?.Location)
-										{
-											case LocationType.BOARD:
-												m_mainView.CurrentBoard.UpdateLayer(itemModel.LayerIndex, selectedItem);
-												break;
-											case LocationType.POOL or LocationType.BASKET:
-												await m_bottomView.BasketView.OnAddItemUI(selectedItem);
-												break;
-										}
-									}
-								)
-							);
-						}
+                        if (selectedTiles?.Count() > 0)
+                        {
+                            var enumerable = selectedTiles.ToUniTaskAsyncEnumerable();
+                            await UniTask.Defer(
+                                () => enumerable.ForEachAwaitAsync(
+                                    async itemModel => {
+                                        var selectedItem = m_tileItems.FirstOrDefault(item => item.Current?.Guid == itemModel.Guid);
+                                        switch (selectedItem.Current?.Location)
+                                        {
+                                            case LocationType.BOARD:
+                                                m_mainView.CurrentBoard.UpdateLayer(itemModel.LayerIndex, selectedItem);
+                                                break;
+                                            case LocationType.POOL or LocationType.BASKET:
+                                                await m_bottomView.BasketView.OnAddItemUI(selectedItem);
+                                                break;
+                                        }
+                                    }
+                                )
+                            );
+                        }
 
-						await UniTask.Defer(() => m_bottomView.BasketView.OnRemoveItemUI(board.Tiles, basket));
+                        await UniTask.Defer(() => m_bottomView.BasketView.OnRemoveItemUI(board.Tiles, basket));
                         
                         m_bottomView.BasketView.CheckTutorialBasket();
 
-						--m_progressId;
+                        if(!blockerFailed)
+                        {
+                            var notValidBlocker = gameManager.NotValidBlockerList();
+                            if(notValidBlocker.Count > 0)
+                            {
+                                SetBlockerFailed(true);
+                                ShowBlockerFailPopup(notValidBlocker[0].BlockerType);
+                            }
+                        }
+
+                        m_block.SetActive(false);
+
+                        --m_progressId;
 					},
 					this.GetCancellationTokenOnDestroy()
 				);
@@ -308,22 +328,23 @@ partial class PlayScene
 				break;
 			case CurrentPlayState.Finished { Result: var result }:
                 m_block.SetActive(true);
-				await UniTask.WaitUntil(() => m_progressId <= 1);
-				await UniTask.Defer(() => UniTask.Delay(TimeSpan.FromSeconds(0.25f)));
+                await UniTask.WaitUntil(() => m_progressId <= 1);
+                await UniTask.Defer(() => UniTask.Delay(TimeSpan.FromSeconds(0.25f)));
 
                 if (result is CurrentPlayState.Finished.State.CLEAR)
-				{
-					await UniTask.Defer(() => m_canvasGroup.DOFade(0f, 0.5f).ToUniTask());
-				}
+                {
+                    await UniTask.Defer(() => m_canvasGroup.DOFade(0f, 0.5f).ToUniTask());
+                }
 
-				if (result is CurrentPlayState.Finished.State.OVER)
-				{
+                if (result is CurrentPlayState.Finished.State.OVER)
+                {
                     LevelFail();
-				}
-				else
-				{
+                }
+                else
+                {
                     LevelClear();
-				}
+                }
+
 				--m_progressId;
 				break;
 			default:
@@ -376,6 +397,8 @@ partial class PlayScene
         }
 	}
 
+#region LevelClear Popup
+
     public void LevelClear()
     {
         Debug.Log(CodeManager.GetMethodName() + m_gameManager.CurrentLevel);
@@ -395,6 +418,11 @@ partial class PlayScene
             )
         );
     }
+
+#endregion LevelClear Popup
+
+
+#region LevelFail Popup
 
     public void LevelFail(bool isStartPopup = true)
     {
@@ -479,4 +507,115 @@ partial class PlayScene
             )
         );
     }
+
+#endregion LevelFail Popup
+
+
+#region BlockerFailPopup
+
+    public void ShowBlockerFailPopup(BlockerType blockerType)
+    {
+        Debug.Log(CodeManager.GetMethodName() + blockerType);
+
+        CurrentPlayState.Finished.State result = CurrentPlayState.Finished.State.OVER;
+
+        UIManager.ShowPopupUI<BlockerFailPopup>(
+            new BlockerFailPopupParameter(
+                State: result,
+                ContinueButtonParameter: new UITextButtonParameter {
+                    OnClick = () => {
+                        Continue(SkillItemType.Undo, () => {
+                            ShowBlockerFailPopup(blockerType);
+                        });
+                    },
+                    ButtonText = Text.Button.UNDO,
+                    SubWidgetBuilder = () => {
+                        var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
+                        widget.OnSetup("UI_Shop_Icon_Undo", 60);
+                        return widget.CachedGameObject;
+                    }
+                },
+                OnQuit: () => {
+                    ShowAreYouSure_Blocker();
+                },
+                BlockerType: blockerType
+            )
+        );
+
+        void ShowAreYouSure_Blocker()
+        {
+            ShowGiveUpPopup(
+                new UITextButtonParameter {
+                    ButtonText = Text.Button.PLAY_ON,
+                    OnClick = () => {
+                        Continue(SkillItemType.Undo, () => {
+                            ShowAreYouSure_Blocker();
+                        });
+                    },
+                    SubWidgetBuilder = () => {
+                        var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
+                        widget.OnSetup("UI_Shop_Icon_Undo", 60);
+                        return widget.CachedGameObject;
+                    }
+                },
+                new ExitBaseParameter (
+                    includeBackground: false,
+                    onExit: () => {
+                        m_userManager.TryUpdate(requireLife: true);
+                        OnExit(false);
+                    }
+                )
+            );
+        }
+
+        void Continue(SkillItemType skillItemType, Action onBuyPopupClosed)
+        {
+            gameManager.UseSkillItem(skillItemType, true, 
+                onShowBuyPopup:(index) => {
+                    RequestOpenBuyItemPopup(index);
+                }, 
+                onSuccess:() => {
+                    SetBlockerFailed(false);
+                });
+
+            void RequestOpenBuyItemPopup(int index)
+            {
+                OpenBuyItemPopup(index,
+                    onClosed:(storeOpen) => {
+                        BuyPopupClosed(storeOpen);
+                    },
+                    onStoreClosed:() => {
+                        BuyPopupClosed(false);
+                    },
+                    onPurchased:() => {
+                        SetBlockerFailed(false);
+                    },
+                    ignoreBackKey:true
+                );
+            }
+
+            void BuyPopupClosed(bool openStorePopup)
+            {
+                if(!openStorePopup)
+                {
+                    //Debug.Log(CodeManager.GetMethodName() + string.Format("CurrentPopupStage : {0}", UIManager.GetPopupManager().CurrentPopupStage));
+
+                    UniTask.Void(async () => {
+                        await UniTask.WaitUntil(() => UIManager.GetPopupManager().CurrentPopupStage == PopupManager.PopupStage.None);
+                        
+                        onBuyPopupClosed?.Invoke();
+                    });
+                }
+            }
+        }
+    }
+
+    public void SetBlockerFailed(bool value)
+    {
+        //Debug.Log(CodeManager.GetMethodName() + value);
+        blockerFailed = value;
+    }
+
+#endregion BlockerFailPopup
+
 }

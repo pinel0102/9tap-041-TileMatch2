@@ -13,7 +13,7 @@ using NineTap.Common;
 public class PopupManager
 {
 	#region Enums
-	private enum PopupStage
+	public enum PopupStage
 	{
 		None,
 		Open,
@@ -28,6 +28,7 @@ public class PopupManager
 	private bool m_isClosePopupRequested;
 	public GameObject? Root => m_root;
 	public UIPopup? Last => m_popups.LastOrDefault();
+    public PopupStage CurrentPopupStage => m_popupStage;
 	#endregion
 
 	#region Constructor

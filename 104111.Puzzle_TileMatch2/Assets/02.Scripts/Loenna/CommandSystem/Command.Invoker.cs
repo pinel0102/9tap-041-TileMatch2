@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-
 using Cysharp.Threading.Tasks;
 
 public abstract partial class Command
@@ -12,7 +11,7 @@ public abstract partial class Command
 
 		public Invoker()
 		{
-			m_commandHistories = new();
+            m_commandHistories = new();
 			m_notEmpty = new AsyncReactiveProperty<bool>(false).WithDispatcher();
 		}
 
@@ -32,16 +31,16 @@ public abstract partial class Command
 
 		public void UnExecute()
 		{
-			if (m_commandHistories.TryPop(out ICommand command))
+            if (m_commandHistories.TryPop(out ICommand command))
 			{
-				command.UnExecute();
+                command.UnExecute();
 				m_notEmpty.Update(flag => m_commandHistories.Count > 0);
 			}
 		}
 
 		public void ClearHistories()
 		{
-			m_commandHistories.Clear();
+            m_commandHistories.Clear();
 			m_notEmpty.Update(flag => flag = false);
 		}
 	}

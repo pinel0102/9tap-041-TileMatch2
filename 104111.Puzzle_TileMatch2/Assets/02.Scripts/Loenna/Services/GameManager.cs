@@ -106,7 +106,7 @@ public partial class GameManager : IDisposable
 					}
 
 					(int remainTileCount, bool next, int countInBasket) tuple = (value.RemainedTileCount, value.HasNext, value.Basket.Count);
-
+                    
                     switch (tuple)
 					{
 						case (<= 0, true, _):
@@ -121,7 +121,6 @@ public partial class GameManager : IDisposable
 							);
 							break;
 						case (<= 0, false, _): // Game Clear
-                        //case (_, _, >= Constant.Game.MAX_BASKET_AMOUNT): // Game Fail
                             var state = m_boardInfo.Update(
                                     info => value with {
                                         StateType = InternalState.Type.Finished
@@ -141,23 +140,19 @@ public partial class GameManager : IDisposable
                         default:
                             if (tuple.countInBasket >= GetBasketMaxCount()) // Game Fail
                             {
-                                var fstate = m_boardInfo.Update(
-                                    info => value with {
-                                        StateType = InternalState.Type.Finished
-                                    }
-                                );
-
-                                // 보상 팝업 뜨기 전에 앱이 종료되면 보상을 받을 수 없게 되므로 여기서 보상까지 다 받는다.
-                                if(fstate.StateType is InternalState.Type.Finished)
+                                if(!GlobalData.Instance.playScene.BlockerFailed)
                                 {
-                                    CurrentPlayState.Finished finished = fstate.ToCurrentState() as CurrentPlayState.Finished;
-                                    if (finished.Result is CurrentPlayState.Finished.State.CLEAR)
+                                    var notValidBlocker = NotValidBlockerList();
+                                    if(notValidBlocker.Count == 0)
                                     {
-                                        CheckClearRewards();
+                                        var fstate = m_boardInfo.Update(
+                                            info => value with {
+                                                StateType = InternalState.Type.Finished
+                                            }
+                                        );
                                     }
                                 }
                             }
-							
 							break;
 					}
 				}
@@ -261,6 +256,7 @@ public partial class GameManager : IDisposable
         GlobalDefine.InitRandomSeed();
 
         GlobalData.Instance.playScene.ResetParticlePool();
+        GlobalData.Instance.playScene.SetBlockerFailed(false);
         GlobalData.Instance.playScene.bottomView.RefreshSkillLocked(level);
         GlobalData.Instance.CURRENT_SCENE = GlobalDefine.SCENE_PLAY;
         GlobalData.Instance.CURRENT_LEVEL = level;
@@ -551,7 +547,7 @@ public partial class GameManager : IDisposable
 	#endregion
 
 	// 게임 스킬 아이템 사용
-	public void UseSkillItem(SkillItemType skillItemType, bool checkOwned, Action<int> onShowBuyPopup = null)
+	public void UseSkillItem(SkillItemType skillItemType, bool checkOwned, Action<int> onShowBuyPopup = null, Action onSuccess = null)
 	{
 		if (checkOwned)
 		{
@@ -571,7 +567,7 @@ public partial class GameManager : IDisposable
 
 			if (!available)
 			{
-				onShowBuyPopup?.Invoke((int)skillItemType);
+                onShowBuyPopup?.Invoke((int)skillItemType);
 				return;
 			}
 		}
@@ -602,6 +598,8 @@ public partial class GameManager : IDisposable
                     ShuffleEffect();
 					break;
 			}
+
+            onSuccess?.Invoke();
 		}
 
         void ShuffleEffect()

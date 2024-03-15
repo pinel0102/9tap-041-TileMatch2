@@ -98,6 +98,7 @@ public class PlayEndPopup : UIPopup
             }
         );
 
+        // [Give Up]
 		m_quitButton.OnSetup(
 			new UITextButtonParameter {
 				OnClick = () => {
@@ -114,18 +115,13 @@ public class PlayEndPopup : UIPopup
 			}
 		);
 
+        // [x] == [Give Up]
         m_exitButton.OnSetup(
 			new UITextButtonParameter {
 				OnClick = () => {
                     SDKManager.SendAnalytics_C_Scene_Fail("Close");
 					OnClickClose();
                     parameter.OnQuit?.Invoke();
-				},
-				ButtonText = Text.Button.GIVE_UP,
-				SubWidgetBuilder = () => {
-					var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
-					widget.OnSetup("UI_Icon_Heart_Broken");
-					return widget.CachedGameObject;
 				}
 			}
 		);

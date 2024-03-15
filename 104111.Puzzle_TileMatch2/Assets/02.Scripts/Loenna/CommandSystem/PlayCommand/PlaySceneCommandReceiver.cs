@@ -13,9 +13,14 @@ public class PlaySceneCommandReceiver : Command.Receiver<CommandResource.PlaySce
 
 	public override UniTask Execute(CommandResource.PlayScene resource)
 	{
-        if (m_gameManager.IsBasketEnable())
+        var (type, tileItem, forceMove) = resource;
+
+        if (m_gameManager.IsBasketEnable() || type is 
+            CommandType.PlayScene.ROLLBACK_TILE_TO_BOARD or 
+            CommandType.PlayScene.ROLLBACK_TILE_TO_STASH or 
+            CommandType.PlayScene.ROLLBACK_CHANGE_BLOCKER_ICD)
         {
-            var (type, tileItem, forceMove) = resource;
+            //var (type, tileItem, forceMove) = resource;
 
             //UnityEngine.Debug.Log(CodeManager.GetMethodName() + string.Format("[{0}] {1} : {2} / forceMove : {3}", type, tileItem.BlockerType, tileItem.BlockerICD, forceMove));
 

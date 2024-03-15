@@ -578,7 +578,9 @@ public class TileItem : CachedBehaviour
 			(LocationType.STASH or LocationType.BASKET, _) => 
                 TileJump(location, direction, duration, jumpDelay, () => {
                     if (location == LocationType.BASKET)
+                    {
                         globalData.playScene?.mainView?.CurrentBoard?.SortLayerTiles();
+                    }
                 }) ?? UniTask.CompletedTask,
 			(LocationType.BOARD, true) => 
                 m_positionTween?.OnChangeValue(m_originWorldPosition, duration, () => {
@@ -688,14 +690,17 @@ public class TileItem : CachedBehaviour
 
         if (m_interactable)
         {
-            if (GetHiddenAroundBlockers().Count > 0)
+            m_movable = BlockerMoveCheck(blockerICD);
+
+            // 가려진 Blocker에 상관 없이 인접 타일 이동 가능하게 변경.
+            /*if (GetHiddenAroundBlockers().Count > 0)
             {
                 m_movable = false;
             }
             else
             {
                 m_movable = BlockerMoveCheck(blockerICD);
-            }
+            }*/
         }
         else
         {
@@ -728,7 +733,8 @@ public class TileItem : CachedBehaviour
     {
         switch(blockerType)
         {
-            case BlockerType.Bush:
+            // 가려진 Blocker에 상관 없이 인접 타일 이동 가능하게 변경.
+            /*case BlockerType.Bush:
                 if(m_interactable)
                 {
                     this.FindAroundTiles().ForEach(tile => {
@@ -743,7 +749,7 @@ public class TileItem : CachedBehaviour
                         tile.MovableCheck();
                     });
                 }
-                break;
+                break;*/
             case BlockerType.Glue_Left:
                 var (_, rightTile) = this.FindRightTile();
                 rightTile?.SetDim(IsReallyMovable(m_movable) ? 0 : 1f);

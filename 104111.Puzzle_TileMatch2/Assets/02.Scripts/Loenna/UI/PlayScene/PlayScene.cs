@@ -99,18 +99,24 @@ public partial class PlayScene : UIScene
                 Stash = new UIImageButtonParameter
 				{
 					Binder = m_gameManager.BasketNotEmpty,
-					OnClick = () => m_gameManager.UseSkillItem(SkillItemType.Stash, true, OpenBuyItemPopup),
+					OnClick = () => m_gameManager.UseSkillItem(SkillItemType.Stash, true, (itemIndex) => {
+                        OpenBuyItemPopup(itemIndex);
+                    }),
 					SubWidgetBuilder = () => CreateButtonSubWidget(SkillItemType.Stash)
 				},
 				Undo = new UIImageButtonParameter
 				{
 					Binder = m_gameManager.Invoker.NotEmpty,
-					OnClick = () => m_gameManager.UseSkillItem(SkillItemType.Undo, true, OpenBuyItemPopup),
+					OnClick = () => m_gameManager.UseSkillItem(SkillItemType.Undo, true, (itemIndex) => {
+                        OpenBuyItemPopup(itemIndex);
+                    }),
 					SubWidgetBuilder = () => CreateButtonSubWidget(SkillItemType.Undo)
 				},
 				Shuffle = new UIImageButtonParameter
 				{
-					OnClick = () => m_gameManager.UseSkillItem(SkillItemType.Shuffle, true, OpenBuyItemPopup),
+					OnClick = () => m_gameManager.UseSkillItem(SkillItemType.Shuffle, true, (itemIndex) => {
+                        OpenBuyItemPopup(itemIndex);
+                    }),
 					SubWidgetBuilder = () => CreateButtonSubWidget(SkillItemType.Shuffle)
 				},
 				Pause = new UIImageButtonParameter { OnClick = OnPause }
@@ -139,73 +145,79 @@ public partial class PlayScene : UIScene
 			return widget.gameObject;
 		}
 
-		void OpenBuyItemPopup(int itemIndex)
-		{
-            if (!m_itemDataTable.TryGetValue(itemIndex, out var itemData))
-			{
-				return;
-			}
-
-			if (!m_productDataTable.TryGetValue(itemData.ProductIndex, out var product))
-			{
-				return;
-			}
-
-            GlobalData.Instance.SetTouchLock_PlayScene(true);
-
-			var (valid, _, _) = m_userManager.Current.Valid(requireCoin: (long)product.Price);
-			
-			UIManager.ShowPopupUI<BuyItemPopup>(
-				new BuyItemPopupParameter(
-					Title: $"{itemData.Name}",
-					Message: $"{itemData.Description}",
-					ExitParameter: ExitBaseParameter.CancelParam,
-					BaseButtonParameter: new UITextButtonParameter {
-						OnClick = () => {
-                            if (valid)
-                            {
-                                m_paymentService.Request(
-                                    product.Index, 
-                                    onSuccess: (_, result) => {
-                                        
-                                        Dictionary<SkillItemType, int> addSkillItems = new()
-                                        {
-                                            { (SkillItemType)itemIndex, 3}
-                                        };
-
-                                        GlobalDefine.GetItems(addSkillItems: addSkillItems);
-
-                                        m_gameManager.UseSkillItem((SkillItemType)itemIndex, true);
-                                    },
-                                    onError: (_, error) => { }
-                                );
-                            }
-                            else
-                            {
-                                GlobalDefine.RequestAD_HideBanner();
-                                
-                                GlobalData.Instance.ShowStorePopup(() => {
-                                    GlobalDefine.RequestAD_ShowBanner();
-                                    GlobalData.Instance.HUD_Hide();
-                                });
-                            }
-						},
-						ButtonText = "Buy",
-						SubWidgetBuilder = () => {
-							var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
-							widget.OnSetup("UI_Icon_Coin", $"{Mathf.FloorToInt(product.Price)}");
-							return widget.CachedGameObject;
-						}
-					},
-					Product: product
-				)
-			);
-		}
-
         m_gameManager.LoadLevel(Level, m_mainView.CachedRectTransform);
 	}
 
-	public void OnPause()
+    private void OpenBuyItemPopup(int itemIndex, Action onOpened = null, Action<bool> onClosed = null, Action onStoreClosed = null, Action onPurchased = null, bool ignoreBackKey = false)
+    {
+        if (!m_itemDataTable.TryGetValue(itemIndex, out var itemData))
+        {
+            return;
+        }
+
+        if (!m_productDataTable.TryGetValue(itemData.ProductIndex, out var product))
+        {
+            return;
+        }
+
+        GlobalData.Instance.SetTouchLock_PlayScene(true);
+
+        var (valid, _, _) = m_userManager.Current.Valid(requireCoin: (long)product.Price);
+
+        UIManager.ShowPopupUI<BuyItemPopup>(
+            new BuyItemPopupParameter(
+                Title: $"{itemData.Name}",
+                Message: $"{itemData.Description}",
+                ExitParameter: new ExitBaseParameter(
+                    onExit: null,
+                    includeBackground: !ignoreBackKey
+                ),
+                BaseButtonParameter: new UITextButtonParameter {
+                    OnClick = () => {
+                        if (valid)
+                        {
+                            m_paymentService.Request(
+                                product.Index, 
+                                onSuccess: (_, result) => {
+                                    
+                                    Dictionary<SkillItemType, int> addSkillItems = new()
+                                    {
+                                        { (SkillItemType)itemIndex, 3}
+                                    };
+
+                                    GlobalDefine.GetItems(addSkillItems: addSkillItems);
+
+                                    m_gameManager.UseSkillItem((SkillItemType)itemIndex, true, onSuccess:onPurchased);
+                                },
+                                onError: (_, error) => { }
+                            );
+                        }
+                        else
+                        {
+                            GlobalDefine.RequestAD_HideBanner();
+                            GlobalData.Instance.ShowStorePopup(() => {
+                                GlobalDefine.RequestAD_ShowBanner();
+                                GlobalData.Instance.HUD_Hide();
+                                onStoreClosed?.Invoke();
+                            });
+                        }
+                    },
+                    ButtonText = "Buy",
+                    SubWidgetBuilder = () => {
+                        var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
+                        widget.OnSetup("UI_Icon_Coin", $"{Mathf.FloorToInt(product.Price)}");
+                        return widget.CachedGameObject;
+                    }
+                },
+                Product: product,
+                OnOpened: onOpened,
+                OnClosed: onClosed,
+                IgnoreBackKey: ignoreBackKey
+            )
+        );
+    }
+
+    public void OnPause()
 	{
         SDKManager.SendAnalytics_C_Scene(Text.PAUSE);
         GlobalData.Instance.SetTouchLock_PlayScene(true);
@@ -321,6 +333,7 @@ public partial class PlayScene : UIScene
         //[PlayScene:Pause] PausePopup > Replay : 하트 소모 알림. (x 누를시 Replay & 광고)
         //[PlayScene:Pause] PausePopup > Home : 하트 소모 알림. (x 누를시 Home & 광고)
         //[PlayScene:Fail] PlayEndPopup -> GiveUp/Home : 하트 소모 알림. (x 누를시 Home & 광고)
+        //[PlayScene:Fail] BlockerFailedPopup -> GiveUp : 하트 소모 알림. (x 누를시 Home & 광고)
 		UIManager.ShowPopupUI<GiveupPopup>(
 			new GiveupPopupParameter(
 				Title: Text.Popup.Title.GIVE_UP,

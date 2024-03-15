@@ -76,6 +76,9 @@ public static partial class GlobalDefine
 
         StartActivityIndicator();
 
+#if UNITY_STANDALONE
+        ShowIAPResult_Success(productData, null, new IPaymentResult.Success(0), onSuccess);
+#else
         paymentService?.Request(
             productData.Index, 
             onSuccess: (product, result) => {
@@ -85,14 +88,17 @@ public static partial class GlobalDefine
                 ShowIAPResult_Fail(productData, product, result, onFailed);
             }
         );
+#endif
     }
 
     public static void ShowIAPResult_Success(ProductData productData, UnityEngine.Purchasing.Product product, IPaymentResult.Success result, Action onComplete = null)
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("{0} : SUCCESS : {1}", productData.ProductId, result.ToString()));
 
+#if !UNITY_STANDALONE
         globalData.userManager.UpdateLog(totalPayment: globalData.userManager.Current.TotalPayment + Convert.ToSingle(product.metadata.localizedPrice));
         SDKManager.SendAnalytics_IAP_Purchase(product);
+#endif
 
         StopActivityIndicator();
 

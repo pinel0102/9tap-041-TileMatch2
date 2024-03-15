@@ -19,6 +19,7 @@ namespace NineTap.Constant
             public const string STORE = "Store";
             public const string CLOSE = "Close";
             public const string REFILL = "Refill";
+            public const string UNDO = "Undo";
 		}
 
 		public static class Popup
