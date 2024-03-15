@@ -94,7 +94,7 @@ public partial class GameManager : IDisposable
 			.WithAfterSetValue(
 				value => {
 					m_basketNotEmpty.Value = value.Basket.Count > 0;
-                    m_basketRemainCount.Value = Constant.Game.MAX_BASKET_AMOUNT - value.Basket.Count;
+                    m_basketRemainCount.Value = GetBasketMaxCount() - value.Basket.Count;
 
 					if (
 						value.StateType is InternalState.Type.Initialized or 
@@ -107,7 +107,7 @@ public partial class GameManager : IDisposable
 
 					(int remainTileCount, bool next, int countInBasket) tuple = (value.RemainedTileCount, value.HasNext, value.Basket.Count);
 
-					switch (tuple)
+                    switch (tuple)
 					{
 						case (<= 0, true, _):
 							BoardItemModel next = BoardInfo.StandByBoards.Dequeue();
@@ -120,23 +120,44 @@ public partial class GameManager : IDisposable
 								}
 							);
 							break;
-						case (<= 0, false, _):
-						case (_, _, >= Constant.Game.MAX_BASKET_AMOUNT):
-							var state = m_boardInfo.Update(
-								info => value with {
-									StateType = InternalState.Type.Finished
-								}
-							);
+						case (<= 0, false, _): // Game Clear
+                        //case (_, _, >= Constant.Game.MAX_BASKET_AMOUNT): // Game Fail
+                            var state = m_boardInfo.Update(
+                                    info => value with {
+                                        StateType = InternalState.Type.Finished
+                                    }
+                                );
 
-							// 보상 팝업 뜨기 전에 앱이 종료되면 보상을 받을 수 없게 되므로 여기서 보상까지 다 받는다.
-							if(state.StateType is InternalState.Type.Finished)
-							{
-								CurrentPlayState.Finished finished = state.ToCurrentState() as CurrentPlayState.Finished;
-								if (finished.Result is CurrentPlayState.Finished.State.CLEAR)
-								{
-                                    CheckClearRewards();
-								}
-							}
+                                // 보상 팝업 뜨기 전에 앱이 종료되면 보상을 받을 수 없게 되므로 여기서 보상까지 다 받는다.
+                                if(state.StateType is InternalState.Type.Finished)
+                                {
+                                    CurrentPlayState.Finished finished = state.ToCurrentState() as CurrentPlayState.Finished;
+                                    if (finished.Result is CurrentPlayState.Finished.State.CLEAR)
+                                    {
+                                        CheckClearRewards();
+                                    }
+                                }
+                            break;
+                        default:
+                            if (tuple.countInBasket >= GetBasketMaxCount()) // Game Fail
+                            {
+                                var fstate = m_boardInfo.Update(
+                                    info => value with {
+                                        StateType = InternalState.Type.Finished
+                                    }
+                                );
+
+                                // 보상 팝업 뜨기 전에 앱이 종료되면 보상을 받을 수 없게 되므로 여기서 보상까지 다 받는다.
+                                if(fstate.StateType is InternalState.Type.Finished)
+                                {
+                                    CurrentPlayState.Finished finished = fstate.ToCurrentState() as CurrentPlayState.Finished;
+                                    if (finished.Result is CurrentPlayState.Finished.State.CLEAR)
+                                    {
+                                        CheckClearRewards();
+                                    }
+                                }
+                            }
+							
 							break;
 					}
 				}

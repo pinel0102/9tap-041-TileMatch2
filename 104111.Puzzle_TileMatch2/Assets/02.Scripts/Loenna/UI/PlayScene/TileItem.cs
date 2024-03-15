@@ -788,19 +788,19 @@ public class TileItem : CachedBehaviour
         {
             case (LocationType.BOARD, BlockerType.Glue_Left):
                 var(existRight, rightTile) = this.FindRightTile();
-                return BasketHasSpace(GlobalDefine.RequiredBasketSpace(blockerType)) && tileMoveable && existRight && rightTile.IsInteractable && rightTile.IsMovable;
+                return tileMoveable && existRight && rightTile.IsInteractable && rightTile.IsMovable;
             case (LocationType.BOARD, BlockerType.Glue_Right):
                 var(existLeft, leftTile) = this.FindLeftTile();
-                return BasketHasSpace(GlobalDefine.RequiredBasketSpace(blockerType)) && tileMoveable && existLeft && leftTile.IsInteractable && leftTile.IsMovable;
+                return tileMoveable && existLeft && leftTile.IsInteractable && leftTile.IsMovable;
         }
 
         return tileMoveable;
     }
 
-    private bool BasketHasSpace(int count)
+    /*private bool BasketHasSpace(int count)
     {
         return globalData.playScene.gameManager.BasketRemainCount.Value >= count;
-    }
+    }*/
 
     /// <summary>
     /// 인접 타일에 영향을 주는 숨겨진 Blocker 존재 여부.

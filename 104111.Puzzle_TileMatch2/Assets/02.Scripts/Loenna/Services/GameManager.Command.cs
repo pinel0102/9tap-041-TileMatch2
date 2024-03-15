@@ -17,10 +17,13 @@ partial class GameManager
 
 	public Command.Invoker Invoker => m_commandInvoker;
 
+    private int basketAddCount = 0;
+
 
 	public void OnProcess(TileItemModel tileItemModel)
 	{
         commandParams.Clear();
+        basketAddCount = 0;
 
         switch(tileItemModel.Location)
         {
@@ -44,7 +47,8 @@ partial class GameManager
 
                             AddCommandList(icdListBoard, Type.CHANGE_BLOCKER_ICD, LocationType.BOARD);
                             AddCommandTile(tileItemModel, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
-                            AddCommandTile(rightTile, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
+                            AddCommandTile(rightTile, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET, true);
+                            basketAddCount = 1;
                         }
                         break;
                     case BlockerType.Glue_Right:
@@ -57,7 +61,8 @@ partial class GameManager
 
                             AddCommandList(icdListBoard, Type.CHANGE_BLOCKER_ICD, LocationType.BOARD);
                             AddCommandTile(leftTile, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
-                            AddCommandTile(tileItemModel, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
+                            AddCommandTile(tileItemModel, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET, true);
+                            basketAddCount = 1;
                         }
                         break;
 
@@ -85,14 +90,14 @@ partial class GameManager
             });
         }
 
-        void AddCommandTile(TileItemModel tile, Type type, LocationType location)
+        void AddCommandTile(TileItemModel tile, Type type, LocationType location, bool forceMove = false)
         {
-            commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(type, tile, location, tile.BlockerType, tile.BlockerICD)));
+            commandParams.Add(new GameCommand<Resource>(m_receiver, CreateResource(type, tile, location, tile.BlockerType, tile.BlockerICD, forceMove)));
         }
 
-		Resource CreateResource(Type type, TileItemModel targetModel, LocationType location, BlockerType blockerType, int blockerICD)
+		Resource CreateResource(Type type, TileItemModel targetModel, LocationType location, BlockerType blockerType, int blockerICD, bool forceMove)
         {
-            return Resource.CreateCommand(type, targetModel, location, blockerType, blockerICD);
+            return Resource.CreateCommand(type, targetModel, location, blockerType, blockerICD, forceMove);
         }
 		#endregion
 	}
@@ -266,7 +271,7 @@ partial class GameManager
 		);
 	}
 
-	public void AddToBasket(TileItemModel tileItemModel, List<TileItemModel> tiles)
+	public void AddToBasket(TileItemModel tileItemModel, List<TileItemModel> tiles, bool forceMove)
 	{
         var modifiedTiles = tiles
 			.Select(
@@ -300,7 +305,10 @@ partial class GameManager
 		var currentStash = BoardInfo.Stash;
 		currentStash.RemoveAll(guid => guid == tileItemModel.Guid);
 
-		if (CheckTilesInBasket(out int startAt))
+        if (forceMove)
+            basketAddCount = Mathf.Max(0, basketAddCount - 1);
+
+        if (CheckTilesInBasket(out int startAt)) // Match Success
 		{
             var removed = currentBasket.GetRange(startAt, Constant.Game.REQUIRED_MATCH_COUNT);
 
@@ -317,7 +325,7 @@ partial class GameManager
 			BoardInfo.CurrentBoard.Tiles = tileItems.ToList();
 
 			currentBasket.RemoveRange(startAt, 3);
-
+            
             m_boardInfo.Update(info =>
 				info with {
 					StateType = InternalState.Type.CurrentUpdated,
@@ -328,19 +336,22 @@ partial class GameManager
 			);
 
 			m_commandInvoker.ClearHistories();
-			return;
 		}
+        else // Match Failed
+        {
+            m_boardInfo.Update(info =>
+                info with { 
+                    StateType = InternalState.Type.CurrentUpdated,
+                    Basket = currentBasket,
+                    Stash = currentStash,
+                    SelectedTiles = new TileItemModel[] { tileItemModel }
+                }
+            );
+        }
 
-		m_boardInfo.Update(info =>
-			info with { 
-				StateType = InternalState.Type.CurrentUpdated,
-				Basket = currentBasket,
-				Stash = currentStash,
-				SelectedTiles = new TileItemModel[] { tileItemModel }
-			}
-		);
+        Debug.Log(CodeManager.GetMethodName() + string.Format("[BasketCount] {0} / {1}", GetBasketCount(), GetBasketMaxCount()));
 
-		bool CheckTilesInBasket(out int removeStartAt)
+        bool CheckTilesInBasket(out int removeStartAt)
 		{
 			var removeIndexes = currentBasket.Where(item => item.Icon == tileItemModel.Icon).Select((_, index) => index);
 
@@ -366,12 +377,17 @@ partial class GameManager
 
     public bool IsBasketEnable()
     {
-        return GetBasketCount() < Constant.Game.MAX_BASKET_AMOUNT;
+        return GetBasketCount() < GetBasketMaxCount();
     }
 
     public int GetBasketCount()
     {
         return BoardInfo.Basket.Count;
+    }
+
+    public int GetBasketMaxCount()
+    {
+        return Constant.Game.MAX_BASKET_AMOUNT + basketAddCount;
     }
 
 	#region Private Methods

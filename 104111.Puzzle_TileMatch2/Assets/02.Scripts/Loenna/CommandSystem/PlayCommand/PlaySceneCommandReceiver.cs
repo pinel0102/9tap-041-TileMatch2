@@ -15,9 +15,9 @@ public class PlaySceneCommandReceiver : Command.Receiver<CommandResource.PlaySce
 	{
         if (m_gameManager.IsBasketEnable())
         {
-            var (type, tileItem) = resource;
+            var (type, tileItem, forceMove) = resource;
 
-            //UnityEngine.Debug.Log(CodeManager.GetMethodName() + string.Format("[{0}] {1} : {2}", type, tileItem.BlockerType, tileItem.BlockerICD));
+            //UnityEngine.Debug.Log(CodeManager.GetMethodName() + string.Format("[{0}] {1} : {2} / forceMove : {3}", type, tileItem.BlockerType, tileItem.BlockerICD, forceMove));
 
             var list = m_gameManager.MoveTo(tileItem, type.GetLocationType());
             var result = tileItem with { Location = type.GetLocationType()};
@@ -29,7 +29,7 @@ public class PlaySceneCommandReceiver : Command.Receiver<CommandResource.PlaySce
                     break;
                 case CommandType.PlayScene.MOVE_TILE_IN_BOARD_TO_BASKET:
                 case CommandType.PlayScene.MOVE_TILE_IN_STASH_TO_BASKET:
-                    m_gameManager.AddToBasket(result, list);
+                    m_gameManager.AddToBasket(result, list, forceMove);
                     break;
                 case CommandType.PlayScene.ROLLBACK_TILE_TO_STASH:
                     m_gameManager.AddToStash(result, list);
