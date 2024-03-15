@@ -396,38 +396,10 @@ partial class PlayScene
         );
     }
 
-    public async void LevelFail(bool isStartPopup = true)
+    public void LevelFail(bool isStartPopup = true)
     {
         if (isStartPopup)
         {
-            bool cheerupSkip = false;
-
-            if (GlobalDefine.IsEnable_CheerUp())
-            {
-                List<SkillItemType> item = new()
-                {
-                    SkillItemType.Stash
-                };
-
-                if (GlobalData.Instance.userManager.Current.PurchasedCheerup1)
-                {
-                    await GlobalData.Instance.ShowPopup_Cheerup2(() => {
-                        cheerupSkip = true;
-                        Continue(0, item);
-                    });
-                }
-                else
-                {
-                    await GlobalData.Instance.ShowPopup_Cheerup1(() => {
-                        cheerupSkip = true;
-                        Continue(0, item);
-                    });
-                }
-            }
-            
-            if (cheerupSkip)
-                return;
-
             Debug.Log(CodeManager.GetMethodName() + string.Format("Level {0}", m_gameManager.CurrentLevel));
             SDKManager.SendAnalytics_I_Scene_Fail();
         }
@@ -449,7 +421,28 @@ partial class PlayScene
                         return widget.CachedGameObject;
                     }
                 },
-                OnQuit: () => ShowAreYouSure(coinAmount, itemTypes)
+                OnQuit: () => ShowAreYouSure(coinAmount, itemTypes),
+                OnOpened: async () => {
+                    if (isStartPopup && GlobalDefine.IsEnable_CheerUp())
+                    {
+                        m_block.SetActive(true);
+
+                        await UniTask.WaitForSeconds(0.2f);
+
+                        if (GlobalData.Instance.userManager.Current.PurchasedCheerup1)
+                        {
+                            await GlobalData.Instance.ShowPopup_Cheerup2(onClosed: () => {
+                                m_block.SetActive(false);
+                            });
+                        }
+                        else
+                        {
+                            await GlobalData.Instance.ShowPopup_Cheerup1(onClosed: () => {
+                                m_block.SetActive(false);
+                            });
+                        }
+                    }
+                }
             )
         );
 

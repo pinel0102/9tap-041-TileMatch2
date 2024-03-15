@@ -19,7 +19,8 @@ public record PlayEndPopupParameter
 (
 	CurrentPlayState.Finished.State State,
 	UITextButtonParameter ContinueButtonParameter,
-	Action OnQuit
+	Action OnQuit,
+    Action OnOpened
 ) : DefaultParameterWithoutHUD();
 
 [ResourcePath("UI/Popup/PlayEndPopup")]
@@ -58,7 +59,7 @@ public class PlayEndPopup : UIPopup
 	[SerializeField]
 	private UIParticleSystem m_confettiEffect;
 
-	public override void OnSetup(UIParameter uiParameter)
+    public override void OnSetup(UIParameter uiParameter)
 	{
 		base.OnSetup(uiParameter);
 
@@ -161,6 +162,8 @@ public class PlayEndPopup : UIPopup
 					}
 
 					m_eventTrigger.triggers.AddRange(entries);
+
+                    parameter.OnOpened?.Invoke();
 				}
 			},
 			this.GetCancellationTokenOnDestroy()

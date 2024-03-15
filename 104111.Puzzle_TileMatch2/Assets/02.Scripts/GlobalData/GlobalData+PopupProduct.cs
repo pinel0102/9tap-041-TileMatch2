@@ -7,7 +7,7 @@ using Cysharp.Threading.Tasks;
 
 public partial class GlobalData
 {
-    private async UniTask ShowProductPopup(ProductData productData, string backgroundImage, string ribbonImage, string coinImage, Action onPurchased = null)
+    private async UniTask ShowProductPopup(ProductData productData, string backgroundImage, string ribbonImage, string coinImage, Action onPurchased = null, Action onClosed = null)
     {
         bool popupClosed = false;
 
@@ -30,6 +30,7 @@ public partial class GlobalData
         void CloseCallback()
         {
             popupClosed = true;
+            onClosed?.Invoke();
         }
     }
 
@@ -157,7 +158,7 @@ public partial class GlobalData
     /// 첫 등장 : 레벨 실패시 (게임 / 자동)
     /// 조건 만족시 자동 등장 반복.
     /// </summary>
-    public async UniTask ShowPopup_Cheerup1(Action onPurchased = null)
+    public async UniTask ShowPopup_Cheerup1(Action onPurchased = null, Action onClosed = null)
     {
         Debug.Log(CodeManager.GetMethodName());
 
@@ -170,7 +171,7 @@ public partial class GlobalData
                 NextPopupDateCheerup: DateTime.Now.Add(GlobalDefine.bundleDelay_Cheerup_Default).ToString(GlobalDefine.dateFormat_HHmmss)
             );
 
-            await ShowProductPopup(productData, "Cheerup_01", string.Empty, "02", OnPurchased);
+            await ShowProductPopup(productData, "Cheerup_01", string.Empty, "02", OnPurchased, OnClosed);
 
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] Next Popup : {1}</color>", userManager.Current.PurchasedCheerup1, userManager.Current.NextPopupDateCheerup));
         }
@@ -186,13 +187,18 @@ public partial class GlobalData
 
             onPurchased?.Invoke();
         }
+
+        void OnClosed()
+        {
+            onClosed?.Invoke();
+        }
     }
 
     /// <summary>
     /// 첫 등장 : 레벨 실패시 (게임 / 자동)
     /// 조건 만족시 자동 등장 반복.
     /// </summary>
-    public async UniTask ShowPopup_Cheerup2(Action onPurchased = null)
+    public async UniTask ShowPopup_Cheerup2(Action onPurchased = null, Action onClosed = null)
     {
         Debug.Log(CodeManager.GetMethodName());
 
@@ -205,7 +211,7 @@ public partial class GlobalData
                 NextPopupDateCheerup: DateTime.Now.Add(GlobalDefine.bundleDelay_Cheerup_Default).ToString(GlobalDefine.dateFormat_HHmmss)
             );
 
-            await ShowProductPopup(productData, "Cheerup_02", string.Empty, "03", OnPurchased);
+            await ShowProductPopup(productData, "Cheerup_02", string.Empty, "03", OnPurchased, OnClosed);
 
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] Next Popup : {1}</color>", userManager.Current.PurchasedCheerup2, userManager.Current.NextPopupDateCheerup));
         }
@@ -220,6 +226,11 @@ public partial class GlobalData
             );
 
             onPurchased?.Invoke();
+        }
+
+        void OnClosed()
+        {
+            onClosed?.Invoke();
         }
     }
 }
