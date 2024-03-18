@@ -31,6 +31,13 @@ public partial class GlobalData
         ShowTutorialPlayPopup(level);
     }
 
+    public void ShowTutorial_Blocker(BlockerType blockerType, TileItem tileItem)
+    {
+        Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Show Tutorial : {0} ({1})</color>", blockerType, tileItem.tileName));
+
+        ShowTutorialBlockerPopup(blockerType, tileItem);
+    }
+
     public async UniTask ShowTutorial_Puzzle()
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Show Tutorial : Puzzle</color>"));
@@ -45,6 +52,40 @@ public partial class GlobalData
             Level: level,
             GlobalDefine.GetTutorialIndex(level),
             GlobalDefine.GetTutorialItemIndex(level)
+        ));
+    }
+
+    public void ShowTutorialBlockerPopup(BlockerType blockerType, TileItem tileItem, Action onComplete = null)
+    {
+        if(!GlobalDefine.isBlockerTutorialTest)
+        {
+            switch(blockerType)
+            {
+                case BlockerType.Glue_Left:
+                case BlockerType.Glue_Right:
+                    userManager.UpdateBlocker_Tutorial(Showed_BlockerTutorial_Glue:true);
+                    break;
+                case BlockerType.Bush:
+                    userManager.UpdateBlocker_Tutorial(Showed_BlockerTutorial_Bush:true);
+                    break;
+                case BlockerType.Suitcase:
+                    userManager.UpdateBlocker_Tutorial(Showed_BlockerTutorial_Suitcase:true);
+                    break;
+                case BlockerType.Jelly:
+                    userManager.UpdateBlocker_Tutorial(Showed_BlockerTutorial_Jelly:true);
+                    break;
+                case BlockerType.Chain:
+                    userManager.UpdateBlocker_Tutorial(Showed_BlockerTutorial_Chain:true);
+                    break;
+                default:
+                    return;
+            }
+        }
+
+        UIManager.ShowPopupUI<TutorialBlockerPopup>(
+        new TutorialBlockerPopupParameter(
+            BlockerType: blockerType,
+            TileItem: tileItem
         ));
     }
 

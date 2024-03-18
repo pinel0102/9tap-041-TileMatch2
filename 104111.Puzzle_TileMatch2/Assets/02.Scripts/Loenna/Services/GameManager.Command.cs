@@ -436,6 +436,23 @@ partial class GameManager
         }).ToList();
     }
 
+    public List<TileItem> CurrentBlockerList()
+    {
+        return BoardInfo.CurrentBoard.Tiles.FindAll(tileItem => tileItem.Location == LocationType.BOARD && 
+            tileItem.BlockerType != BlockerType.None && 
+            tileItem.BlockerType switch {
+                BlockerType.Glue_Left => tileItem.FindTileItem().IsInteractable && tileItem.FindRightTile().Item1 && tileItem.FindRightTile().Item2.FindTileItem().IsInteractable,
+                BlockerType.Glue_Right => tileItem.FindTileItem().IsInteractable && tileItem.FindLeftTile().Item1 && tileItem.FindLeftTile().Item2.FindTileItem().IsInteractable,
+                BlockerType.Bush => tileItem.FindTileItem().IsInteractable && tileItem.FindAroundTiles().Where(tile => tile.FindTileItem().IsInteractable).Count() > 0,
+                BlockerType.Chain => tileItem.FindTileItem().IsInteractable && tileItem.FindLeftRightTiles().Where(tile => tile.FindTileItem().IsInteractable).Count() > 0,
+                _ => tileItem.FindTileItem().IsInteractable
+            })
+        .Select(tile => {
+            return tile.FindTileItem();
+        })
+        .ToList();
+    }
+
     public bool IsBasketEnable()
     {
         return GetBasketCount() < GetBasketMaxCount();

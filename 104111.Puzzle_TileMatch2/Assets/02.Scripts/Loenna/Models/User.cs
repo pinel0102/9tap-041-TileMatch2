@@ -95,6 +95,12 @@ public record User
     string Event_SweetHolic_EndDate,
     long ExpiredSweetHolicBoosterTime,
 
+    bool Showed_BlockerTutorial_Glue,
+    bool Showed_BlockerTutorial_Bush,
+    bool Showed_BlockerTutorial_Suitcase,
+    bool Showed_BlockerTutorial_Jelly,
+    bool Showed_BlockerTutorial_Chain,
+
     // 게임 현황
 	int Level, // 플레이할 레벨
 	int CurrentPlayingPuzzleIndex, // 플레이 중인 퍼즐
@@ -185,7 +191,12 @@ public record User
         Event_SweetHolic_ShowedPopup: false,
         Event_SweetHolic_StartDate: GlobalDefine.dateDefault_HHmmss,
         Event_SweetHolic_EndDate: GlobalDefine.dateDefault_HHmmss,
-        ExpiredSweetHolicBoosterTime: 0L
+        ExpiredSweetHolicBoosterTime: 0L,
+        Showed_BlockerTutorial_Glue: false,
+        Showed_BlockerTutorial_Bush: false,
+        Showed_BlockerTutorial_Suitcase: false,
+        Showed_BlockerTutorial_Jelly: false,
+        Showed_BlockerTutorial_Chain: false
 	);
 
 	[JsonIgnore]
@@ -266,7 +277,12 @@ public record User
         in Optional<bool> event_SweetHolic_ShowedPopup = default,
         in Optional<string> event_SweetHolic_StartDate = default,
         in Optional<string> event_SweetHolic_EndDate = default,
-        in Optional<DateTimeOffset> expiredSweetHolicBoosterAt = default
+        in Optional<DateTimeOffset> expiredSweetHolicBoosterAt = default,
+        in Optional<bool> showed_BlockerTutorial_Glue = default,
+        in Optional<bool> showed_BlockerTutorial_Bush = default,
+        in Optional<bool> showed_BlockerTutorial_Suitcase = default,
+        in Optional<bool> showed_BlockerTutorial_Jelly = default,
+        in Optional<bool> showed_BlockerTutorial_Chain = default
 	)
 	{
         DateTimeOffset now = DateTimeOffset.Now;
@@ -373,7 +389,12 @@ public record User
             Event_SweetHolic_ShowedPopup: event_SweetHolic_ShowedPopup.GetValueOrDefault(Event_SweetHolic_ShowedPopup),
             Event_SweetHolic_StartDate: event_SweetHolic_StartDate.GetValueOrDefault(Event_SweetHolic_StartDate),
             Event_SweetHolic_EndDate: event_SweetHolic_EndDate.GetValueOrDefault(Event_SweetHolic_EndDate),
-            ExpiredSweetHolicBoosterTime: expiredSweetHolicBoosterAt.GetValueOrDefault(ExpiredSweetHolicBoosterAt).ToUnixTimeMilliseconds()
+            ExpiredSweetHolicBoosterTime: expiredSweetHolicBoosterAt.GetValueOrDefault(ExpiredSweetHolicBoosterAt).ToUnixTimeMilliseconds(),
+            Showed_BlockerTutorial_Glue: showed_BlockerTutorial_Glue.GetValueOrDefault(Showed_BlockerTutorial_Glue),
+            Showed_BlockerTutorial_Bush: showed_BlockerTutorial_Bush.GetValueOrDefault(Showed_BlockerTutorial_Bush),
+            Showed_BlockerTutorial_Suitcase: showed_BlockerTutorial_Suitcase.GetValueOrDefault(Showed_BlockerTutorial_Suitcase),
+            Showed_BlockerTutorial_Jelly: showed_BlockerTutorial_Jelly.GetValueOrDefault(Showed_BlockerTutorial_Jelly),
+            Showed_BlockerTutorial_Chain: showed_BlockerTutorial_Chain.GetValueOrDefault(Showed_BlockerTutorial_Chain)
 		);
 
         //Debug.Log(CodeManager.GetMethodName() + string.Format("Life : {0} / EndChargeLifeAt : {1}", user.Life, user.EndChargeLifeAt.LocalDateTime));

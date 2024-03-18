@@ -181,7 +181,12 @@ public class UserManager : IDisposable
                 Event_SweetHolic_ShowedPopup: false,
                 Event_SweetHolic_StartDate: GlobalDefine.dateDefault_HHmmss,
                 Event_SweetHolic_EndDate: GlobalDefine.dateDefault_HHmmss,
-                ExpiredSweetHolicBoosterTime: 0L
+                ExpiredSweetHolicBoosterTime: 0L,
+                Showed_BlockerTutorial_Glue: false,
+                Showed_BlockerTutorial_Bush: false,
+                Showed_BlockerTutorial_Suitcase: false,
+                Showed_BlockerTutorial_Jelly: false,
+                Showed_BlockerTutorial_Chain: false
 			);
 		}
 	}
@@ -600,6 +605,30 @@ public class UserManager : IDisposable
                 weekendEndDate: WeekendEndDate,
                 nextPopupDateHard: NextPopupDateHard,
                 nextPopupDateCheerup: NextPopupDateCheerup
+			)
+		);
+    }
+
+    public void UpdateBlocker_Tutorial(
+        Optional<bool> Showed_BlockerTutorial_Glue = default,
+        Optional<bool> Showed_BlockerTutorial_Bush = default,
+        Optional<bool> Showed_BlockerTutorial_Suitcase = default,
+        Optional<bool> Showed_BlockerTutorial_Jelly = default,
+        Optional<bool> Showed_BlockerTutorial_Chain = default
+    )
+    {
+        if (m_user?.Value == null)
+		{
+			return;
+		}
+
+		m_user.Update(
+			user => user.Update(
+				showed_BlockerTutorial_Glue: Showed_BlockerTutorial_Glue,
+                showed_BlockerTutorial_Bush: Showed_BlockerTutorial_Bush,
+                showed_BlockerTutorial_Suitcase: Showed_BlockerTutorial_Suitcase,
+                showed_BlockerTutorial_Jelly: Showed_BlockerTutorial_Jelly,
+                showed_BlockerTutorial_Chain: Showed_BlockerTutorial_Chain
 			)
 		);
     }

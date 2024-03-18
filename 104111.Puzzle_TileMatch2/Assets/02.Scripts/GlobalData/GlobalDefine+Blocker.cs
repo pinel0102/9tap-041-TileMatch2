@@ -5,6 +5,8 @@ using System.Linq;
 
 public static partial class GlobalDefine
 {
+    public static bool isBlockerTutorialTest = false;
+
     public static readonly Dictionary<BlockerTypeEditor, int> BlockerICD_Default = new Dictionary<BlockerTypeEditor, int>()
     {
         [BlockerTypeEditor.None] = 0,
@@ -25,6 +27,18 @@ public static partial class GlobalDefine
         [BlockerType.Jelly] = BlockerTypeEditor.Jelly,
         [BlockerType.Chain] = BlockerTypeEditor.Chain,
     };
+
+    public static string GetBlockerName(BlockerType blockerType)
+    {
+        return blockerType switch{
+            BlockerType.Glue_Left or BlockerType.Glue_Right => "Glue",
+            BlockerType.Bush => "Bush",
+            BlockerType.Suitcase => "Suitcase",
+            BlockerType.Jelly => "Jelly",
+            BlockerType.Chain => "Chain",
+            _ => ""
+        };
+    }
 
     public static int RequiredBasketSpace(BlockerType blockerType)
     {

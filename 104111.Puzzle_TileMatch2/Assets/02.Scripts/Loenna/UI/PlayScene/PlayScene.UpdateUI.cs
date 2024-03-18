@@ -21,6 +21,8 @@ partial class PlayScene
     public List<TileItem> TileItems => m_tileItems;
     private PuzzleData m_puzzleData;
 
+    [SerializeField] private List<TileItem> m_blockerList = new List<TileItem>();
+    [SerializeField] private List<BlockerType> m_blockerShownList = new List<BlockerType>();
     [SerializeField] private bool blockerFailed;
     public bool BlockerFailed => blockerFailed;
 	private int m_progressId = 0;
@@ -177,6 +179,8 @@ partial class PlayScene
 				CurrentBoardIndex: var index,
 				CurrentBoard: var current
 			}:
+                Debug.Log(CodeManager.GetMethodName() + "Initialized");
+
                 if (level < Constant.Game.LEVEL_PUZZLE_START)
                 {
                     bg_default.SetActive(true);
@@ -219,6 +223,11 @@ partial class PlayScene
                 m_bottomView.BasketView.isTutorialShowed = false;
                 m_bottomView.BasketView.tutorialCheckCount = 0;
 
+                m_blockerList.Clear();
+                m_blockerList = gameManager.CurrentBlockerList();
+
+                m_blockerShownList.Clear();
+
                 if (GlobalDefine.IsEnablePuzzleOpenPopup())
                 {
                     GlobalData.Instance.ShowPuzzleOpenPopup();
@@ -228,6 +237,10 @@ partial class PlayScene
                     m_bottomView.BasketView.tutorialCheckCount = GlobalDefine.GetTutorialCheckCount(level);
                     m_bottomView.BasketView.CheckTutorialBasket();
                 }
+                else if (m_blockerList.Count > 0)
+                {
+                    CheckTutorialBlocker(m_blockerList);
+                }
 
                 m_block.SetActive(false);
 
@@ -235,6 +248,8 @@ partial class PlayScene
 			case CurrentPlayState.CurrentUpdated { SelectedTiles: var selectedTiles, CurrentBoard: var board, Basket: var basket, Stash: var stashes }:
 				UniTask.Void(
 					async token => {
+                        //Debug.Log(CodeManager.GetMethodName() + "CurrentUpdated");
+
                         m_block.SetActive(true);
 
                         bool start = m_queue.Count <= 0;
@@ -281,6 +296,12 @@ partial class PlayScene
                         await UniTask.Defer(() => m_bottomView.BasketView.OnRemoveItemUI(board.Tiles, basket));
                         
                         m_bottomView.BasketView.CheckTutorialBasket();
+
+                        m_blockerList = gameManager.CurrentBlockerList();
+                        if (m_blockerList.Count > 0)
+                        {
+                            CheckTutorialBlocker(m_blockerList);
+                        }
 
                         if(!blockerFailed)
                         {
@@ -396,6 +417,52 @@ partial class PlayScene
             }
         }
 	}
+
+    public void CheckTutorialBlocker(List<TileItem> blockerList)
+    {
+        for(int i=0; i < blockerList.Count; i++)
+        {
+            TileItem tileItem = blockerList[i];
+            BlockerType blockerType = blockerList[i].blockerType;
+
+            if((GlobalDefine.isBlockerTutorialTest || !IsShowed_BlockerTutorial(blockerType)) && !m_blockerShownList.Contains(blockerType))
+            {
+                m_blockerShownList.Add(blockerType);
+                switch(blockerType)
+                {
+                    case BlockerType.Glue_Left:
+                        m_blockerShownList.Add(BlockerType.Glue_Right);
+                        break;
+                    case BlockerType.Glue_Right:
+                        m_blockerShownList.Add(BlockerType.Glue_Left);
+                        break;
+                }
+
+                GlobalData.Instance.ShowTutorial_Blocker(blockerType, tileItem);
+                break;
+            }
+        }
+
+        bool IsShowed_BlockerTutorial(BlockerType blocker)
+        {
+            switch(blocker)
+            {
+                case BlockerType.Glue_Left:
+                case BlockerType.Glue_Right:
+                    return m_userManager.Current.Showed_BlockerTutorial_Glue;
+                case BlockerType.Bush:
+                    return m_userManager.Current.Showed_BlockerTutorial_Bush;
+                case BlockerType.Suitcase:
+                    return m_userManager.Current.Showed_BlockerTutorial_Suitcase;
+                case BlockerType.Jelly:
+                    return m_userManager.Current.Showed_BlockerTutorial_Jelly;
+                case BlockerType.Chain:
+                    return m_userManager.Current.Showed_BlockerTutorial_Chain;
+                default:
+                    return true;
+            }
+        }
+    }
 
 #region LevelClear Popup
 
