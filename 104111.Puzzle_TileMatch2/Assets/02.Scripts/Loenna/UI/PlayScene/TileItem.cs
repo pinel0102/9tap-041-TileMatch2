@@ -313,23 +313,24 @@ public class TileItem : CachedBehaviour
 
                     if (IsNeedEffectBeforeMove(blockerType))
                     {
-                        PlayBlockerEffect(blockerType, blockerICD, m_blockerRect.position);
-                        
-                        /*switch(blockerType)
+                        globalData.SetTouchLock_PlayScene(true);
+
+                        switch(blockerType)
                         {
                             case BlockerType.Glue_Left:
                                 var(existRight, rightTile) = this.FindRightTile();
-                                rightTile.jumpDelay = 1f;
-                                jumpDelay = 1f;
-                                break;
+                                return WaitGlueAnimation(existRight, rightTile, () => {
+                                    parameter.OnClick?.Invoke(this);
+                                });
                             case BlockerType.Glue_Right:
                                 var(existLeft, leftTile) = this.FindLeftTile();
-                                leftTile.jumpDelay = 1f;
-                                jumpDelay = 1f;
+                                return WaitGlueAnimation(existLeft, leftTile, () => {
+                                    parameter.OnClick?.Invoke(this);
+                                });
+                            default:
+                                parameter.OnClick?.Invoke(this);
                                 break;
-                        }*/
-
-                        parameter.OnClick?.Invoke(this);
+                        }
                     }
                     else
                     {   
@@ -341,6 +342,140 @@ public class TileItem : CachedBehaviour
             return UniTask.CompletedTask;
 		}
 	}
+
+#region Glue FX
+
+    public async UniTask WaitGlueAnimation(bool existPair, TileItem pairTile, Action onFinished)
+    {
+        bool aniFinished = false;
+
+        if (existPair)
+        {
+            float duration = 1f;
+
+            RefreshBlockerState(blockerType, blockerICD);
+            pairTile.RefreshBlockerState(pairTile.blockerType, pairTile.blockerICD);
+
+            switch(blockerType)
+            {
+                case BlockerType.Glue_Left:
+                    pairTile.m_blockerImage.gameObject.SetActive(false);
+                    pairTile.PlayBlockerEffect(pairTile.blockerType, pairTile.blockerICD, pairTile.m_blockerRect.position);
+                    DoGlueMove(transform, pairTile.transform, duration);
+                    break;
+                case BlockerType.Glue_Right:
+                    m_blockerImage.gameObject.SetActive(false);
+                    PlayBlockerEffect(blockerType, blockerICD, m_blockerRect.position);
+                    DoGlueMove(pairTile.transform, transform, duration);
+                    break;
+            }
+
+            await UniTask.WaitForSeconds(duration);
+        }
+
+        aniFinished = true;
+        
+        await UniTask.WaitUntil(() => aniFinished);
+
+        //transform.localRotation = Quaternion.identity;
+        //pairTile.transform.localRotation = Quaternion.identity;
+
+        onFinished?.Invoke();
+    }
+
+    private void DoGlueMove(Transform left, Transform right, float duration)
+    {
+        var (leftPath, rightPath) = CreateGluePath(left.transform.localPosition, right.transform.localPosition);
+        var (leftRotation, rightRotation) = CreateGlueRotation();
+
+        left.DOLocalPath(leftPath, duration, PathType.Linear);
+        right.DOLocalPath(rightPath, duration, PathType.Linear);
+
+        float delay = duration / 8;
+        
+        Sequence seq1 = DOTween.Sequence();
+        foreach(var rotation in leftRotation)
+        {
+            seq1.Append(left.DOLocalRotate(rotation, delay));
+        }
+        
+        Sequence seq2 = DOTween.Sequence();
+        foreach(var rotation in rightRotation)
+        {
+            seq2.Append(right.DOLocalRotate(rotation, delay));
+        }
+
+        seq1
+        .AppendInterval(delay)
+        .OnComplete(() => left.transform.localRotation = Quaternion.identity)
+        .Play();
+        
+        seq2
+        .AppendInterval(delay)
+        .OnComplete(() => right.transform.localRotation = Quaternion.identity)
+        .Play();
+    }
+
+    // [TODO] PlayScene Fragment 작업중.
+    private (Vector3[], Vector3[]) CreateGluePath(Vector3 originLeft, Vector3 originRight)
+    {
+        Vector3[] glueLeftPath = new Vector3[8] 
+        {
+            originLeft + new Vector3(0, 0, 0),
+            originLeft + new Vector3(-3, 0, 0),
+            originLeft + new Vector3(-5, 0, 0),
+            originLeft + new Vector3(-5, 0, 0),
+            originLeft + new Vector3(-47, -24, 0),
+            originLeft + new Vector3(-49, -40, 0),
+            originLeft + new Vector3(-62, -70, 0),
+            originLeft + new Vector3(-62, -80, 0)
+        };
+
+        Vector3[] glueRightPath = new Vector3[8] 
+        {
+            originRight + new Vector3(0, 0, 0),
+            originRight + new Vector3(3, 0, 0),
+            originRight + new Vector3(5, 0, 0),
+            originRight + new Vector3(5, 0, 0),
+            originRight + new Vector3(42, -24, 0),
+            originRight + new Vector3(50, -40, 0),
+            originRight + new Vector3(50, -42, 0),
+            originRight + new Vector3(50, -52, 0)
+        };
+
+        return (glueLeftPath, glueRightPath);
+    }
+
+    private (Vector3[], Vector3[]) CreateGlueRotation()
+    {
+        Vector3[] glueLeftPath = new Vector3[8] 
+        {
+            new Vector3(0, 0, 0),
+            new Vector3(0, 0, 6),//
+            new Vector3(0, 0, 8),//
+            new Vector3(0, 0, 10),//
+            new Vector3(0, 0, 20),
+            new Vector3(0, 0, 20),
+            new Vector3(0, 0, 40),
+            new Vector3(0, 0, 40)//
+        };
+
+        Vector3[] glueRightPath = new Vector3[8] 
+        {
+            new Vector3(0, 0, 0),
+            new Vector3(0, 0, -6),//
+            new Vector3(0, 0, -8),//
+            new Vector3(0, 0, -10),//
+            new Vector3(0, 0, -20),
+            new Vector3(0, 0, -20),
+            new Vector3(0, 0, -30),
+            new Vector3(0, 0, -30)//
+        };
+
+        return (glueLeftPath, glueRightPath);
+    }
+
+#endregion Glue FX
 
     public void SetScaleTween(bool fromTrigger = true)
     {
@@ -464,8 +599,6 @@ public class TileItem : CachedBehaviour
                 break;
             case BlockerType.Bush:
                 SetBlockerObject(GetBlockerRectPosition(type), GlobalDefine.GetBlockerSprite(type, currentICD), activeMain:currentICD > 0);
-                // Test
-                //SetBlockerObject(GetBlockerRectPosition(type), GlobalDefine.GetBlockerSprite(type, currentICD), text:currentICD.ToString(), activeMain:currentICD > 0, activeText:true);
                 break;
             case BlockerType.Suitcase:
                 SetBlockerObject(GetBlockerRectPosition(type), GlobalDefine.GetBlockerSprite(type, currentICD), GlobalDefine.GetBlockerSubSprite(type, currentICD), currentICD.ToString(), true, true, true);

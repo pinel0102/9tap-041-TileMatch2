@@ -21,9 +21,9 @@ partial class PlayScene
     public List<TileItem> TileItems => m_tileItems;
     private PuzzleData m_puzzleData;
 
-    [SerializeField] private List<TileItem> m_blockerList = new List<TileItem>();
-    [SerializeField] private List<BlockerType> m_blockerShownList = new List<BlockerType>();
-    [SerializeField] private bool blockerFailed;
+    public List<TileItem> m_blockerList = new List<TileItem>();
+    public List<BlockerType> m_blockerShownList = new List<BlockerType>();
+    public bool blockerFailed;
     public bool BlockerFailed => blockerFailed;
 	private int m_progressId = 0;
 	private Queue<UniTask> m_queue;
