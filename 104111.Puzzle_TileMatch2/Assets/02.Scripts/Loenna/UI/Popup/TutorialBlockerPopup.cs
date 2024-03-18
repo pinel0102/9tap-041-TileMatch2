@@ -21,10 +21,10 @@ public record TutorialBlockerPopupParameter(
 [ResourcePath("UI/Popup/TutorialBlockerPopup")]
 public class TutorialBlockerPopup : UIPopup
 {
-    [Header("★ [Live] Tutorial Play")]
-    public BlockerType m_blockerType;
-    public TileItem m_tileItem = default!;
-    public int TutorialIndex;
+    [Header("★ [Live] Tutorial Blocker")]
+    [SerializeField]	private BlockerType m_blockerType;
+    [SerializeField]	private int m_popupIndex;
+    [SerializeField]	private TileItem m_tileItem = default!;
 
     [Header("★ [Reference] UI")]
     [SerializeField]	private CanvasGroup m_viewGroup = default!;
@@ -36,7 +36,6 @@ public class TutorialBlockerPopup : UIPopup
     [SerializeField]    private GameObject m_touchLock = default!;
 
     [Header("★ [Reference] Tutorial")]
-    [SerializeField]    private GameObject m_popupObject = default!;
     [SerializeField]    private GameObject m_unlockedObject = default!;
     [SerializeField]    private List<GameObject> m_iconObject = default!;
     [SerializeField]    private List<GameObject> m_tutorialObject = default!;
@@ -64,10 +63,10 @@ public class TutorialBlockerPopup : UIPopup
 			return;
 		}
 
-        m_blockerType = parameter.BlockerType;
         m_tileItem = parameter.TileItem;
-
-        TutorialIndex = GetTutorialIndex(m_blockerType);
+        m_blockerType = parameter.BlockerType;
+        m_popupIndex = GetPopupIndex(m_blockerType);
+        
         m_unlockedItemText.SetText(string.Format(FormatUnlockText, GlobalDefine.GetBlockerName(m_blockerType)));
         
         SetButtonInteractable(false);
@@ -78,7 +77,7 @@ public class TutorialBlockerPopup : UIPopup
 				OnClick = () => {
                     if (isButtonInteractable)
                     {
-					    OpenTutorial(TutorialIndex);
+					    OpenTutorial(m_popupIndex);
                     }
 				}
 			}
@@ -99,8 +98,8 @@ public class TutorialBlockerPopup : UIPopup
         m_unmaskChainLeftRightTiles.ForEach(unmask => unmask.SetActive(false));
         m_tutorialObject.ForEach(tutorial => tutorial.SetActive(false));
         m_iconObject.ForEach(icon => icon.SetActive(false));
-        m_iconObject[TutorialIndex].SetActive(true);
-        m_unmaskObject[TutorialIndex].SetActive(true);
+        m_iconObject[m_popupIndex].SetActive(true);
+        m_unmaskObject[m_popupIndex].SetActive(true);
 
         m_viewGroup.alpha = 1f;
     }
@@ -129,7 +128,7 @@ public class TutorialBlockerPopup : UIPopup
 
 #region Tutorial
 
-    private int GetTutorialIndex(BlockerType blockerType)
+    private int GetPopupIndex(BlockerType blockerType)
     {
         return blockerType switch{
             BlockerType.Glue_Left or BlockerType.Glue_Right => 0,

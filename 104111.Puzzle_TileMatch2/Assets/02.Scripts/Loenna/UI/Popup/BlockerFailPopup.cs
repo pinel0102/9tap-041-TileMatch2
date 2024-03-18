@@ -17,13 +17,23 @@ public record BlockerFailPopupParameter
     BlockerType BlockerType
 ) : DefaultParameterWithoutHUD();
 
+/// <summary>
+/// Bush / Chain
+/// </summary>
 [ResourcePath("UI/Popup/BlockerFailPopup")]
 public class BlockerFailPopup : UIPopup
 {
+    [Header("★ [Live] Blocker Fail")]
+    [SerializeField]	private BlockerType m_blockerType;
+    [SerializeField]	private int m_popupIndex;
+
+    [Header("★ [Reference] UI")]
     [SerializeField]	private UITextButton m_continueButton;
 	[SerializeField]	private UITextButton m_quitButton;
     [SerializeField]	private UIImageButton m_exitButton;
-	[SerializeField]	private BlockerType m_blockerType;
+
+    [Header("★ [Reference] Blocker")]
+    [SerializeField]    private List<GameObject> m_blockerObject;
 
 	public override void OnSetup(UIParameter uiParameter)
 	{
@@ -31,14 +41,19 @@ public class BlockerFailPopup : UIPopup
 
 		if (uiParameter is not BlockerFailPopupParameter parameter)
 		{
+            OnClickClose();
 			return;
 		}
 
-        CurrentPlayState.Finished.State state = parameter.State;
+        CurrentPlayState.Finished.State state = parameter.State;        
         m_blockerType = parameter.BlockerType;
+        m_popupIndex = GetPopupIndex(m_blockerType);
+
+        m_blockerObject.ForEach(ga => ga.SetActive(false));
+        SetBlockerPopup(m_popupIndex);
 		
-		//m_continueButton.OnSetup(parameter.ContinueButtonParameter);
-        m_continueButton.OnSetup(
+        // [Undo]
+		m_continueButton.OnSetup(
             new UITextButtonParameter {
                 OnClick = () => {
                     SDKManager.SendAnalytics_C_Scene_Fail("Retry");
@@ -78,4 +93,18 @@ public class BlockerFailPopup : UIPopup
 			}
 		);
 	}
+
+    private int GetPopupIndex(BlockerType blockerType)
+    {
+        return blockerType switch{
+            BlockerType.Bush => 0,
+            BlockerType.Chain => 1,
+            _ => 0
+        };
+    }
+
+    private void SetBlockerPopup(int index)
+    {
+        m_blockerObject[index].SetActive(true);
+    }
 }

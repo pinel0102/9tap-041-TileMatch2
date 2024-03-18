@@ -422,6 +422,10 @@ partial class GameManager
         return false;
     }
 
+    /// <summary>
+    /// Bush / Chain
+    /// </summary>
+    /// <returns></returns>
     public List<TileItemModel> NotValidBlockerList()
     {
         return BoardInfo.CurrentBoard.Tiles.FindAll(tileItem => tileItem.Location == LocationType.BOARD &&
