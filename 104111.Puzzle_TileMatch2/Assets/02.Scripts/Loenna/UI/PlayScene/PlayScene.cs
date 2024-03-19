@@ -8,7 +8,6 @@ using Cysharp.Threading.Tasks;
 using NineTap.Payment;
 using NineTap.Common;
 using Text = NineTap.Constant.Text;
-using Coffee.UIExtensions;
 
 using static UnityEngine.SceneManagement.SceneManager;
 
@@ -32,9 +31,7 @@ public partial class PlayScene : UIScene
     [SerializeField]	private GameObject bg_puzzle;
     [SerializeField]    private Image backgroundImage;
 
-    public UIParticle FXLayer;
-
-	private GameManager m_gameManager;
+    private GameManager m_gameManager;
 	private UserManager m_userManager;
     private SoundManager m_soundManager;
 	private PaymentService m_paymentService;

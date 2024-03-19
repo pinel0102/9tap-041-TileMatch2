@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Coffee.UIExtensions;
 
-public partial class PlayScene
+public partial class MainScene
 {
     public UIParticle FXLayer;
 
@@ -12,7 +12,7 @@ public partial class PlayScene
         GlobalDefine.ClearChild(FXLayer.transform);
         FXLayer.RefreshParticles();
     }
-    
+
 #region WorldPosition
 
     public void LoadFX(string prefabPath, Vector3 worldPosition, UIParticle parentLayer)

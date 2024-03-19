@@ -133,8 +133,7 @@ public class TileItem : CachedBehaviour
 
 	[SerializeField]	private CanvasGroup m_dim;
     [SerializeField]	private Text m_tmpText; //이미지가 없을 경우 텍스트로
-	[SerializeField]	private GameObject m_disappearEffect;
-
+	
     [Header("★ [Reference] Blocker")]
     [SerializeField]	private RectTransform m_blockerRect;
     [SerializeField]	private Image m_blockerImage;
@@ -219,8 +218,7 @@ public class TileItem : CachedBehaviour
         blockerICD = 0;
         isScaling = false;
         isMoving = false;
-        m_disappearEffect.SetActive(false);
-		m_scaleTween?.OnChangeValue(Vector3.one, 0f).Forget();
+        m_scaleTween?.OnChangeValue(Vector3.one, 0f).Forget();
 		m_iconAlphaTween?.OnChangeValue(Color.white, -1f).Forget();
 		CachedGameObject.SetActive(false);
 		m_interactable = false;
@@ -677,7 +675,6 @@ public class TileItem : CachedBehaviour
 
         if (location == LocationType.POOL)
         {
-            //Debug.Log(CodeManager.GetMethodName() + string.Format("[m_disappearEffect] {0}", CachedGameObject.name));
             isScaling = false;
             isMoving = false;
             jumpDelay = 0;
@@ -709,15 +706,10 @@ public class TileItem : CachedBehaviour
                         }
                     }
 
-                    m_disappearEffect.SetActive(true);
-                    m_view.SetLocalScale(0);
+                    globalData.playScene.LoadFX(GlobalDefine.FX_Prefab_Sparkle, CachedTransform.position);
 
-                    UniTask.Void(
-                        async () => {
-                            await UniTask.Delay(TimeSpan.FromSeconds(Constant.Game.EFFECTTIME_TILE_MATCH));
-                            m_disappearEffect.SetActive(false);
-                        }
-                    );
+                    m_view.SetLocalScale(0);
+                    
                 }) ?? UniTask.CompletedTask,
 			_ => UniTask.CompletedTask
 		};

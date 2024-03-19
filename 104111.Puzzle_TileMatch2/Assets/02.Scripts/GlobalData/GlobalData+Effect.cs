@@ -29,11 +29,14 @@ public partial class GlobalData
     /// <summary>MainScene Only</summary>
     public void CreateEffect(string spriteName, string soundClip, Transform from, Transform to, float duration = 1f, Action onComplete = null, float sizeFrom = 70f, float sizeTo = 82f)
     {
+        mainScene.LoadFX(GlobalDefine.FX_Prefab_Circle, from.position);
         CreateEffect(m_particlePool, fragmentHome.objectPool, spriteName, soundClip, from.position, to.position, duration, onComplete, sizeFrom, sizeTo);
     }
 
+    /// <summary>PlayScene Only</summary>
     public void CreateEffect(IObjectPool<MissionCollectedFx> particlePool, Transform parent, string spriteName, string soundClip, Transform from, Transform to, float duration = 1f, Action onComplete = null, float sizeFrom = 70f, float sizeTo = 82f)
     {
+        playScene.LoadFX(GlobalDefine.FX_Prefab_Circle, from.position);
         CreateEffect(particlePool, parent, spriteName, soundClip, from.position, to.position, duration, onComplete, sizeFrom, sizeTo);
     }
 

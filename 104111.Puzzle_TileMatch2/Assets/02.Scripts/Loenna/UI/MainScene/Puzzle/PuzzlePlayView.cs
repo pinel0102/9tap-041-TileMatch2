@@ -177,7 +177,7 @@ public class PuzzlePlayView : CachedBehaviour
             GlobalData.Instance.HUD.behaviour.Fields[0].AttractorTarget,
             piece.transform, 
             Constant.Game.TWEENTIME_JIGSAW_MOVE,
-            () => {
+            onComplete:() => {
                 GlobalData.Instance.fragmentCollection.RefreshPieceState(m_puzzleManager.CurrentPlayingPuzzle.CountryCode, m_puzzleManager.PuzzleIndex, piece.Index, true);
                 m_puzzleManager.AddPlacedList(piece.Index);
                 m_pieceSlotContainer.Check(piece.Index, piece, () => {

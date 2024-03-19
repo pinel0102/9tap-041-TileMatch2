@@ -6,9 +6,7 @@ using NineTap.Common;
 
 public class PuzzlePieceSlotContainer : CachedBehaviour
 {
-    [SerializeField]
-	private GameObject m_placeEffect;
-	private const float CHECK_OFFSET = 15f;
+    private const float CHECK_OFFSET = 15f;
 
 	private record Slot
 	(
@@ -117,7 +115,7 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
             piece.Attached();
             UpdateSlot(index, piece.CachedGameObject, true);
 
-            PlaceEffect(piece.transform.position);
+            GlobalData.Instance.mainScene.LoadFX(GlobalDefine.FX_Prefab_Circle, piece.transform.position, 2.5f);
 
             piece.PlaceEffect(() => {
                 piece.RefreshState();
@@ -127,13 +125,6 @@ public class PuzzlePieceSlotContainer : CachedBehaviour
             });
 		}
 	}
-
-    private void PlaceEffect(Vector3 position)
-    {
-        m_placeEffect.SetActive(false);
-        m_placeEffect.transform.position = position;
-        m_placeEffect.SetActive(true);
-    }
 
     private void CrossPieceEffect(List<Slot> crossSlots)
     {

@@ -2,8 +2,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using NineTap.Common;
 using Cysharp.Threading.Tasks;
-using System;
-using UnityEngine.Rendering;
 
 public record MainSceneParameter(
     MainMenuType ShowMenuType = MainMenuType.HOME, 
@@ -19,7 +17,7 @@ public record MainSceneRewardParameter(
     ) : MainSceneParameter();
 
 [ResourcePath("UI/Scene/MainScene")]
-public class MainScene : UIScene
+public partial class MainScene : UIScene
 {
     [SerializeField]
 	private MainSceneScrollView m_scrollView;
@@ -47,6 +45,8 @@ public class MainScene : UIScene
 		{
 			return;
 		}
+
+        ClearFXLayer();
 
         globalData.mainScene = this;
         globalData.fragmentHome = m_scrollView.Contents[(int)MainMenuType.HOME] as MainSceneFragmentContent_Home;
@@ -240,12 +240,13 @@ public class MainScene : UIScene
         base.Hide();
 
         globalData.ResetParticlePool();
+        ClearFXLayer();
     }
 
     public override void Show()
 	{
 		base.Show();
-
+        
         OnUpdateUI(m_userManager.Current);
 
         if (CachedParameter is not MainSceneParameter parameter)

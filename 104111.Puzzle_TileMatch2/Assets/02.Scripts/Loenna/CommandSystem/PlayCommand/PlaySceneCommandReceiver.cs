@@ -20,9 +20,7 @@ public class PlaySceneCommandReceiver : Command.Receiver<CommandResource.PlaySce
             CommandType.PlayScene.ROLLBACK_TILE_TO_STASH or 
             CommandType.PlayScene.ROLLBACK_CHANGE_BLOCKER_ICD)
         {
-            //var (type, tileItem, forceMove) = resource;
-
-            UnityEngine.Debug.Log(CodeManager.GetMethodName() + string.Format("[{0}] {1} / {2}", type, tileItem.BlockerType, tileItem.Position));
+            //UnityEngine.Debug.Log(CodeManager.GetMethodName() + string.Format("[{0}] {1} / {2}", type, tileItem.BlockerType, tileItem.Position));
 
             var list = m_gameManager.MoveTo(tileItem, type.GetLocationType());
             var result = tileItem with { Location = type.GetLocationType()};

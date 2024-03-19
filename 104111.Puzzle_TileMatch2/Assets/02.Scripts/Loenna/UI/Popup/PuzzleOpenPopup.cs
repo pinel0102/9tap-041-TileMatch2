@@ -22,8 +22,7 @@ public class PuzzleOpenPopup : UIPopup
     [SerializeField]	private CanvasGroup m_layoutPuzzle = default!;
     [SerializeField]    private TMP_Text m_openPuzzleText = default!;
     [SerializeField]	private GameObject m_openPuzzleContinue = default!;
-    [SerializeField]	private GameObject m_effect = default!;
-
+    
 	public bool isInteractable;
     public int openPuzzleIndex;
 
@@ -46,7 +45,6 @@ public class PuzzleOpenPopup : UIPopup
         m_openPuzzleContinue.SetActive(false);
 		m_openPuzzleObject.SetActive(false);
         m_BgEffect.SetLocalScale(0);
-        m_effect.SetActive(false);
     }
 
     public override void OnShow()
@@ -58,7 +56,6 @@ public class PuzzleOpenPopup : UIPopup
 		UniTask.Void(
 			async token => {
                 
-                m_effect.SetActive(true);                
                 await UniTask.Delay(TimeSpan.FromSeconds(0.25f));
                 
                 if (openPuzzleIndex > 0)

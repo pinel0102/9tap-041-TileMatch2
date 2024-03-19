@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using NineTap.Common;
 using TMPro;
+using Coffee.UIExtensions;
 
 public record PuzzleCompletePopupParameter(
     int Index, 
@@ -27,9 +28,6 @@ public class PuzzleCompletePopup : UIPopup
 	private Button m_backgroundButton = default!;
 
     [SerializeField]
-	private GameObject m_effect = default!;
-
-    [SerializeField]
 	private GameObject m_touchLock = default!;
 
     [SerializeField]
@@ -37,6 +35,9 @@ public class PuzzleCompletePopup : UIPopup
 
     [SerializeField]
     private RectTransform slotParent;
+
+    [SerializeField]
+    private UIParticle FXLayer;
 
     private List<Transform> m_slots = new();
     private JigsawPuzzlePiece m_piecePrefab;
@@ -67,12 +68,12 @@ public class PuzzleCompletePopup : UIPopup
         m_backgroundImage.texture = parameter.Background;
         m_puzzleNameText.SetText(PuzzleName);
         m_backgroundButton.onClick.AddListener(() => { OnClick_Close(parameter.OnContinue); });
-        m_effect.SetActive(false);
         m_touchLock.SetActive(true);
         m_closeText.SetActive(false);
 
         CreateSlot();
         CreatePuzzle();
+        ClearFXLayer();
     }
 
     public override void OnShow()
@@ -80,8 +81,8 @@ public class PuzzleCompletePopup : UIPopup
         base.OnShow();
 
         m_touchLock.SetActive(true);
-        m_effect.SetActive(true);
-
+        
+        GlobalData.Instance.mainScene.LoadFXLocal(GlobalDefine.FX_Prefab_Confetti, Vector3.zero, FXLayer);
         GlobalData.Instance.soundManager?.PlayFx(Constant.Sound.SFX_PUZZLE_COMPLETE);
 
         GetReward();
@@ -160,5 +161,11 @@ public class PuzzleCompletePopup : UIPopup
 			},
 			this.GetCancellationTokenOnDestroy()
 		);
+    }
+
+    private void ClearFXLayer()
+    {
+        GlobalDefine.ClearChild(FXLayer.transform);
+        FXLayer.RefreshParticles();
     }
 }

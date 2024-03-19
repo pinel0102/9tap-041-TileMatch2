@@ -1,17 +1,11 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI.Extensions.CasualGame;
-
 using System;
 using System.Collections.Generic;
-
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Linq;
-
 using TMPro;
-
 using DG.Tweening;
-
 using NineTap.Constant;
 using NineTap.Common;
 
@@ -56,10 +50,7 @@ public class PlayEndPopup : UIPopup
     [SerializeField]
 	private UIImageButton m_exitButton;
 
-	[SerializeField]
-	private UIParticleSystem m_confettiEffect;
-
-    public override void OnSetup(UIParameter uiParameter)
+	public override void OnSetup(UIParameter uiParameter)
 	{
 		base.OnSetup(uiParameter);
 
@@ -72,21 +63,17 @@ public class PlayEndPopup : UIPopup
 		
 		m_labelCanvasGroup.alpha = 0f;
 
-		(string label, string param) = state is CurrentPlayState.Finished.State.CLEAR? 
-			(Text.GameEndLabelText(true), string.Empty):
-			(Text.GameEndLabelText(false), "_Fail");
-
+		(string label, string param) = (Text.GameEndLabelText(false), "_Fail");
 
 		m_labelText.text = label;
 		m_label.ChangeSprite(param);
 		m_message.text = Text.PLAY_END_POPUP_MESSAGE;
 
 		m_canvasGroups.ForEach(
-			canvasGroup => canvasGroup.alpha = state is CurrentPlayState.Finished.State.CLEAR? 0f : 1f
+			canvasGroup => canvasGroup.alpha = 1f
 		);
 
-		//m_continueButton.OnSetup(parameter.ContinueButtonParameter);
-        m_continueButton.OnSetup(
+		m_continueButton.OnSetup(
             new UITextButtonParameter {
                 OnClick = () => {
                     SDKManager.SendAnalytics_C_Scene_Fail("Retry");
@@ -128,39 +115,23 @@ public class PlayEndPopup : UIPopup
 
 		UniTask.Void(
 			async token => {
-				if (state is CurrentPlayState.Finished.State.CLEAR)
-				{
-					await m_labelCanvasGroup.DOFade(1f, 0.25f).SetEase(Ease.OutQuad);
+                await m_labelCanvasGroup.DOFade(1f, 0.25f);
 
-					m_confettiEffect.gameObject.SetActive(true);
-					m_confettiEffect.StartParticleEmission();
+                List<EventTrigger.Entry> entries = new List<EventTrigger.Entry> {
+                    new EventTrigger.Entry { eventID = EventTriggerType.PointerDown },
+                    new EventTrigger.Entry { eventID = EventTriggerType.PointerUp }
+                };
 
-					await UniTask.Delay(TimeSpan.FromSeconds(2.5f));
-					if (!ObjectUtility.IsNullOrDestroyed(this))
-					{
-						parameter.OnQuit?.Invoke();
-					}
-				}
-				else
-				{
-					await m_labelCanvasGroup.DOFade(1f, 0.25f);
+                foreach (var entry in entries)
+                {
+                    entry.callback
+                    .OnInvokeAsAsyncEnumerable(this.GetCancellationTokenOnDestroy())
+                    .SubscribeAwait(_ => OnTriggerCallback(entry.eventID));
+                }
 
-					List<EventTrigger.Entry> entries = new List<EventTrigger.Entry> {
-						new EventTrigger.Entry { eventID = EventTriggerType.PointerDown },
-						new EventTrigger.Entry { eventID = EventTriggerType.PointerUp }
-					};
+                m_eventTrigger.triggers.AddRange(entries);
 
-					foreach (var entry in entries)
-					{
-						entry.callback
-						.OnInvokeAsAsyncEnumerable(this.GetCancellationTokenOnDestroy())
-						.SubscribeAwait(_ => OnTriggerCallback(entry.eventID));
-					}
-
-					m_eventTrigger.triggers.AddRange(entries);
-
-                    parameter.OnOpened?.Invoke();
-				}
+                parameter.OnOpened?.Invoke();
 			},
 			this.GetCancellationTokenOnDestroy()
 		);

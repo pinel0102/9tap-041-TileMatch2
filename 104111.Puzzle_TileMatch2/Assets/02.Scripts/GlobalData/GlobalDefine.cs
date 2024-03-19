@@ -16,6 +16,11 @@ public static partial class GlobalDefine
     public const string SCENE_SETTINGS = "Settings";
     public const string SCENE_PLAY = "Play";
 
+    public const string FX_Prefab_Circle = "UI/FX/Default/FX_CircleExplosion";
+    public const string FX_Prefab_Sparkle = "UI/FX/Default/FX_SparkleAreaWhite";
+    public const string FX_Prefab_Confetti = "UI/FX/Default/FX_ConfettiRainbow";
+    private const string Format_FX_Prefab_Blocker = "UI/FX/Blocker/{0}";
+
     private static GlobalData globalData { get { return GlobalData.Instance; } }
 
     public static void Initialize()

@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5553230791875850234}
-  - component: {fileID: 2358234178940131096}
   - component: {fileID: 5553230791875850233}
+  - component: {fileID: 3429255455468437067}
   - component: {fileID: 5553230791875850232}
   m_Layer: 0
   m_Name: FX_Jelly_01
@@ -34,18 +34,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2358234178940131096
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5553230791875850235}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8c577730c8674874a74229514e0f531, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!199 &5553230791875850233
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -120,6 +108,18 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &3429255455468437067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5553230791875850235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8c577730c8674874a74229514e0f531, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!198 &5553230791875850232
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -130,7 +130,7 @@ ParticleSystem:
   serializedVersion: 8
   lengthInSec: 1
   simulationSpeed: 2
-  stopAction: 2
+  stopAction: 1
   cullingMode: 3
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}

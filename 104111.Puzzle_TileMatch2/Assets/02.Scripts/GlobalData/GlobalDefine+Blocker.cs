@@ -105,8 +105,6 @@ public static partial class GlobalDefine
         return SpriteManager.GetSprite(path);
     }
 
-    private const string Format_Blocker_FX_Prefab = "UI/FX/FX_Blocker/{0}";
-
     /// <summary>
     /// 
     /// </summary>
@@ -132,7 +130,7 @@ public static partial class GlobalDefine
         };
 
         bool exist = !string.IsNullOrEmpty(prefabName);
-        string resultPath = exist ? string.Format(Format_Blocker_FX_Prefab, prefabName) : null;
+        string resultPath = exist ? string.Format(Format_FX_Prefab_Blocker, prefabName) : null;
 
         return (exist, resultPath);
     }

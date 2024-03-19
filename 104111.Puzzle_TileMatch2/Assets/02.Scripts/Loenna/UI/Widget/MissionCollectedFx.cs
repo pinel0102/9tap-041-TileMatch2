@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.UI.Extensions.CasualGame;
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -21,9 +20,6 @@ public class MissionCollectedFx : CachedBehaviour
 	private RectTransform m_rotateRectTransform;
 
 	[SerializeField]
-	private UIParticleSystem m_circleEffect;
-
-	[SerializeField]
 	private ParticleImage m_particleImage;
 
     [SerializeField]
@@ -36,7 +32,6 @@ public class MissionCollectedFx : CachedBehaviour
 		m_moveRectTransform.Reset();
 		m_rotateRectTransform.Reset();
 		m_canvasGroup.alpha = 0f;
-		m_circleEffect.gameObject.SetActive(true);
 		m_cancellationTokenSource = new();
 	}
 
@@ -61,9 +56,6 @@ public class MissionCollectedFx : CachedBehaviour
 		m_rotateRectTransform.SetRotation(Quaternion.identity);
 		
 		m_canvasGroup.alpha = 1f;
-
-		m_circleEffect.StopParticleEmission();
-		m_circleEffect.StartParticleEmission();
 
 		UniTask.Void(
 			async token => {

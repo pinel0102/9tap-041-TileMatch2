@@ -31,7 +31,6 @@ public class GameClearPopup : UIPopup
     [SerializeField]    private TMP_Text m_rewardRibbonText = default!;
     [SerializeField]	private GameObject m_rewardChest = default!;
     [SerializeField]	private GameObject m_rewardLandmark = default!;
-    [SerializeField]	private GameObject m_effect = default!;
 
 	private LevelData? m_levelData;	
 	private RewardData? m_nextChest;
@@ -116,7 +115,6 @@ public class GameClearPopup : UIPopup
         m_rewardChest.SetActive(clearedLevel >= Constant.Game.LEVEL_PUZZLE_START);
         m_rewardRibbonText.SetText(GetRibbonText());
         m_resultObject.SetActive(true);
-        m_effect.SetActive(false);
 
         int GetPrevChestLevel(int _clearedLevel)
         {
@@ -233,7 +231,7 @@ public class GameClearPopup : UIPopup
 			async token => {
                 
                 await m_headLineImage.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
-                m_effect.SetActive(true);
+                
                 await UniTask.Delay(TimeSpan.FromSeconds(0.25f));
 
                 await PlayHaloAsync(m_clearStarHalo, m_clearStarCanvasGroup, token);

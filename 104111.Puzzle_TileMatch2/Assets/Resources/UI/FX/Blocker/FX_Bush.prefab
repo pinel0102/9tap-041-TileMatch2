@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4792085181145802757}
-  - component: {fileID: 967437785839403038}
+  - component: {fileID: 1736414269965463697}
   m_Layer: 0
   m_Name: FX_Bush
   m_TagString: Untagged
@@ -37,7 +37,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 88, y: 92}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &967437785839403038
+--- !u!114 &1736414269965463697
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -49,8 +49,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f920f2f5cdf8f4f589e5684a6b508725, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  particleCallback:
-  - {fileID: 6049716366941433576}
+  m_particleCallback: {fileID: 6377340105333138050}
+  m_callbackType: 0
+  showLog: 0
 --- !u!1001 &874458600755145135
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -89,9 +90,9 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4344236976252084960, guid: 49b09d58edec04a8ea9d529d67ff5334, type: 3}
   m_PrefabInstance: {fileID: 874458600755145135}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &6049716366941433576 stripped
+--- !u!114 &6377340105333138050 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6905807741909108551, guid: 49b09d58edec04a8ea9d529d67ff5334, type: 3}
+  m_CorrespondingSourceObject: {fileID: 6098558338678672173, guid: 49b09d58edec04a8ea9d529d67ff5334, type: 3}
   m_PrefabInstance: {fileID: 874458600755145135}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}

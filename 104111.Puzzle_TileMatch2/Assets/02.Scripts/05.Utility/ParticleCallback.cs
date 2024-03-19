@@ -3,24 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+[RequireComponent(typeof(ParticleSystem))]
 public class ParticleCallback : MonoBehaviour
 {
-    private Action<GameObject> OnParticleFinished;
+    private Action OnParticleFinished;
 
-    private void Start()
-    {   
+    public void InitCallback(Action onParticleFinished)
+    {
+        OnParticleFinished = onParticleFinished;
+
         var main = GetComponent<ParticleSystem>().main;
         main.stopAction = ParticleSystemStopAction.Callback;
     }
 
-    public void InitCallback(Action<GameObject> onParticleFinished)
-    {
-        OnParticleFinished += onParticleFinished;
-    }
-
     private void OnParticleSystemStopped()
     {
-        //Debug.Log(CodeManager.GetMethodName() + string.Format("{0}", gameObject.name));
-        OnParticleFinished?.Invoke(gameObject);
+        OnParticleFinished?.Invoke();
     }
 }
