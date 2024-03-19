@@ -48,7 +48,7 @@ public class PlaySceneBoard : CachedBehaviour
 			Array.ForEach(
 				items, 
 				item => {
-					UpdateLayer(index, item);
+					UpdateLayer(index, item, init);
 					item.CachedRectTransform.Reset();
 					item.CachedRectTransform.SetLocalPosition(item.Current.Position);
 				}
@@ -76,7 +76,7 @@ public class PlaySceneBoard : CachedBehaviour
 		return UniTask.CompletedTask;
 	}
 
-	public void UpdateLayer(int layerIndex, TileItem tileItem)
+	public void UpdateLayer(int layerIndex, TileItem tileItem, bool init = false)
 	{
 		(var eachLayer, bool reusable) = m_cachedLayers.HasIndex(layerIndex)? 
 		(
@@ -100,6 +100,9 @@ public class PlaySceneBoard : CachedBehaviour
 
 		//eachLayer.CachedGameObject.SetActive(true);
 		tileItem.CachedTransform.SetParent(eachLayer.CachedTransform);
+
+        if (init)
+            tileItem.InitParentLayer();
 	}
 
     public void SortLayerTiles()

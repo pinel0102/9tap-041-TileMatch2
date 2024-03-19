@@ -13,7 +13,8 @@ using NineTap.Common;
 public class PlaySceneBasketView : CachedBehaviour
 {
 	[SerializeField] private LayoutGroup m_parent;
-	[SerializeField] private List<TileItem> m_tileItems = new();
+	public Transform BasketParent => m_parent.transform;
+    [SerializeField] private List<TileItem> m_tileItems = new List<TileItem>();
     
     public int level;
     public bool isTutorialLevel;
@@ -107,7 +108,7 @@ public class PlaySceneBasketView : CachedBehaviour
 
 				if (m_tileItems.Count > 0)
 				{
-					await UniTask.Defer(
+					var task2 = UniTask.Defer(
 						() => UniTask.WhenAll(
 							m_tileItems
 							.Select(
@@ -121,6 +122,8 @@ public class PlaySceneBasketView : CachedBehaviour
 							)
 						)
 					);
+
+                    await UniTask.Defer(() => UniTask.WhenAll(task2));
 				}
 			}
 		);

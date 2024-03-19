@@ -43,7 +43,7 @@ public partial class GlobalData : SingletonMono<GlobalData>
 
     [Header("★ [Settings] Glue")]
     public Ease glueEase = Ease.InOutExpo;
-    public bool glueArray;
+    public bool glueSimple;
     
     private WaitForSecondsRealtime wTimeDelay = new WaitForSecondsRealtime(1.0f);
 

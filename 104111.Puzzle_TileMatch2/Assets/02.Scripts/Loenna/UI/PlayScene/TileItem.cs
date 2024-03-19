@@ -111,6 +111,7 @@ public class TileItem : CachedBehaviour
     public int oldICD;
 
     [Header("★ [Live] Status")]
+    [SerializeField]    private Transform _parentLayer;
     [SerializeField]	private bool m_interactable = false;
     [SerializeField]	private bool m_movable = true;
     [SerializeField]	private bool isMoving;
@@ -344,42 +345,62 @@ public class TileItem : CachedBehaviour
 		}
 	}
 
+    public void InitParentLayer()
+    {
+        _parentLayer = CachedRectTransform.parent;
+    }
+
+    private void SetBasketParent()
+    {
+        CachedRectTransform.SetParent(globalData.playScene.bottomView.BasketView.BasketParent, true);
+    }
+
+    private void RollBackParent()
+    {
+        CachedRectTransform.SetParent(_parentLayer, true);
+    }
+
 #region Glue FX
 
     public async UniTask WaitGlueAnimation(bool existPair, TileItem pairTile, Action onFinished)
     {
-        bool aniFinished = false;
-
         if (existPair)
         {
-            float duration = 1f;
+            bool aniFinished = false;
 
             RefreshBlockerState(blockerType, blockerICD);
             pairTile.RefreshBlockerState(pairTile.blockerType, pairTile.blockerICD);
+
+            SetBasketParent();
+            pairTile.SetBasketParent();
 
             switch(blockerType)
             {
                 case BlockerType.Glue_Left:
                     pairTile.m_blockerImage.gameObject.SetActive(false);
                     pairTile.PlayBlockerEffect(pairTile.blockerType, pairTile.blockerICD, pairTile.m_blockerRect.position);
-                    await DoGlueMove(transform, pairTile.transform, duration, () => aniFinished = true);
+                    await DoGlueMove(transform, pairTile.transform, GlobalDefine.GlueFX_Duration, OnAniFinished);
                     break;
                 case BlockerType.Glue_Right:
                     m_blockerImage.gameObject.SetActive(false);
                     PlayBlockerEffect(blockerType, blockerICD, m_blockerRect.position);
-                    await DoGlueMove(pairTile.transform, transform, duration, () => aniFinished = true);
+                    await DoGlueMove(pairTile.transform, transform, GlobalDefine.GlueFX_Duration, OnAniFinished);
                     break;
                 default:
                     aniFinished = true;
                     break;
             }
-        }
-        else
-        {
-            aniFinished = true;
-        }
 
-        await UniTask.WaitUntil(() => aniFinished);
+            await UniTask.WaitUntil(() => aniFinished);
+
+            void OnAniFinished()
+            {
+                RollBackParent();
+                pairTile.RollBackParent();
+
+                aniFinished = true;
+            }
+        }
 
         onFinished?.Invoke();
     }
@@ -388,32 +409,32 @@ public class TileItem : CachedBehaviour
     {
         Sequence seqGlue = DOTween.Sequence();
 
-        if(globalData.glueArray)
+        if(globalData.glueSimple)
         {
-            var (leftPath, rightPath) = CreateGluePath(left.transform.localPosition, right.transform.localPosition);
-            var (leftRotation, rightRotation) = CreateGlueRotation();
-
-            float delay = duration / 8;
-
-            for(int i = 0; i < 8; i++)
-            {
-                seqGlue
-                    .Append(left.DOLocalMove(leftPath[i], delay))
-                    .Join(left.DOLocalRotate(leftRotation[i], delay))
-                    .Join(right.DOLocalMove(rightPath[i], delay))
-                    .Join(right.DOLocalRotate(rightRotation[i], delay));
-            }
-        }
-        else
-        {
-            var (leftPathLast, rightPathLast) = GluePathLast(left.transform.localPosition, right.transform.localPosition);
-            var (leftRotationLast, rightRotationLast) = GlueRotationLast();
+            var (leftPathLast, rightPathLast) = GlobalDefine.GluePathLast(left.transform.localPosition, right.transform.localPosition);
+            var (leftRotationLast, rightRotationLast) = GlobalDefine.GlueRotationLast();
 
             seqGlue
                 .Append(left.DOLocalMove(leftPathLast, duration))
                 .Join(left.DOLocalRotate(leftRotationLast, duration))
                 .Join(right.DOLocalMove(rightPathLast, duration))
                 .Join(right.DOLocalRotate(rightRotationLast, duration));
+        }
+        else
+        {
+            var (leftPath, rightPath) = GlobalDefine.GluePathArray(left.transform.localPosition, right.transform.localPosition);
+            var (leftRotation, rightRotation) = GlobalDefine.GlueRotationArray();
+
+            float eDuration = duration * GlobalDefine.GlueFX_Delay;
+
+            for(int i = 0; i < GlobalDefine.GlueFX_Count; i++)
+            {
+                seqGlue
+                    .Append(left.DOLocalMove(leftPath[i], eDuration))
+                    .Join(left.DOLocalRotate(leftRotation[i], eDuration))
+                    .Join(right.DOLocalMove(rightPath[i], eDuration))
+                    .Join(right.DOLocalRotate(rightRotation[i], eDuration));
+            }
         }
 
         return seqGlue
@@ -428,74 +449,6 @@ public class TileItem : CachedBehaviour
             })
             .Play()
             .ToUniTask();
-
-        (Vector3, Vector3) GluePathLast(Vector3 originLeft, Vector3 originRight)
-        {
-            return (originLeft + new Vector3(-50, -50, 0), originRight + new Vector3(50, -50, 0));
-        }
-
-        (Vector3, Vector3) GlueRotationLast()
-        {
-            return (new Vector3(0, 0, 30), new Vector3(0, 0, -30));
-        }
-
-        (Vector3[], Vector3[]) CreateGluePath(Vector3 originLeft, Vector3 originRight)
-        {
-            Vector3[] glueLeftPath = new Vector3[8] 
-            {
-                originLeft + new Vector3(0, 0, 0),      //0
-                originLeft + new Vector3(-2, 0, 0),     //1
-                originLeft + new Vector3(-4, 0, 0),     //2
-                originLeft + new Vector3(-6, 0, 0),     //3
-                originLeft + new Vector3(-20, -20, 0),  //4
-                originLeft + new Vector3(-30, -30, 0),  //5
-                originLeft + new Vector3(-40, -40, 0),  //6
-                originLeft + new Vector3(-50, -50, 0),  //7
-            };
-
-            Vector3[] glueRightPath = new Vector3[8] 
-            {
-                originRight + new Vector3(0, 0, 0),     //0
-                originRight + new Vector3(2, 0, 0),     //1
-                originRight + new Vector3(4, 0, 0),     //2
-                originRight + new Vector3(6, 0, 0),     //3
-                originRight + new Vector3(20, -20, 0),  //4
-                originRight + new Vector3(30, -30, 0),  //5
-                originRight + new Vector3(40, -40, 0),  //6
-                originRight + new Vector3(50, -50, 0),  //7
-            };
-
-            return (glueLeftPath, glueRightPath);
-        }
-
-        (Vector3[], Vector3[]) CreateGlueRotation()
-        {
-            Vector3[] glueLeftPath = new Vector3[8] 
-            {
-                new Vector3(0, 0, 0),   //0
-                new Vector3(0, 0, 2),   //1
-                new Vector3(0, 0, 4),   //2
-                new Vector3(0, 0, 6),   //3
-                new Vector3(0, 0, 16),  //4
-                new Vector3(0, 0, 16),  //5
-                new Vector3(0, 0, 30),  //6
-                new Vector3(0, 0, 30),  //7
-            };
-
-            Vector3[] glueRightPath = new Vector3[8] 
-            {
-                new Vector3(0, 0, 0),   //0
-                new Vector3(0, 0, -2),  //1
-                new Vector3(0, 0, -4),  //2
-                new Vector3(0, 0, -6),  //3
-                new Vector3(0, 0, -16), //4
-                new Vector3(0, 0, -16), //5
-                new Vector3(0, 0, -25), //6
-                new Vector3(0, 0, -30), //7
-            };
-
-            return (glueLeftPath, glueRightPath);
-        }
     }
 
 #endregion Glue FX

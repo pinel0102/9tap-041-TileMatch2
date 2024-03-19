@@ -22,7 +22,7 @@ public class PlaySceneCommandReceiver : Command.Receiver<CommandResource.PlaySce
         {
             //var (type, tileItem, forceMove) = resource;
 
-            //UnityEngine.Debug.Log(CodeManager.GetMethodName() + string.Format("[{0}] {1} : {2} / forceMove : {3}", type, tileItem.BlockerType, tileItem.BlockerICD, forceMove));
+            UnityEngine.Debug.Log(CodeManager.GetMethodName() + string.Format("[{0}] {1} / {2}", type, tileItem.BlockerType, tileItem.Position));
 
             var list = m_gameManager.MoveTo(tileItem, type.GetLocationType());
             var result = tileItem with { Location = type.GetLocationType()};

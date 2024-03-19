@@ -280,4 +280,105 @@ public static partial class GlobalDefine
     }
 
 #endregion Blocker Translate
+
+
+#region Blocker Glue FX
+
+    public const int GlueFX_Count = 8;
+    public const float GlueFX_Duration = 1.0f;
+    public const float GlueFX_Delay = 0.125f; // GlueFX_Duration/GlueFX_Count
+
+    public static (Vector3, Vector3) GluePathLast(Vector3 originLeft, Vector3 originRight)
+    {
+        return (originLeft + glueLeftPath.Last(), originRight + glueRightPath.Last());
+    }
+
+    public static (Vector3, Vector3) GlueRotationLast()
+    {
+        return (glueLeftRotation.Last(), glueRightRotation.Last());
+    }
+
+    public static (Vector3[], Vector3[]) GluePathArray(Vector3 originLeft, Vector3 originRight)
+    {
+        Vector3[] leftPath = new Vector3[GlueFX_Count] 
+        {
+            originLeft + glueLeftPath[0],
+            originLeft + glueLeftPath[1],
+            originLeft + glueLeftPath[2],
+            originLeft + glueLeftPath[3],
+            originLeft + glueLeftPath[4],
+            originLeft + glueLeftPath[5],
+            originLeft + glueLeftPath[6],
+            originLeft + glueLeftPath[7],
+        };
+
+        Vector3[] rightPath = new Vector3[GlueFX_Count] 
+        {
+            originRight + glueRightPath[0],
+            originRight + glueRightPath[1],
+            originRight + glueRightPath[2],
+            originRight + glueRightPath[3],
+            originRight + glueRightPath[4],
+            originRight + glueRightPath[5],
+            originRight + glueRightPath[6],
+            originRight + glueRightPath[7],
+        };
+
+        return (leftPath, rightPath);
+    }
+
+    public static (Vector3[], Vector3[]) GlueRotationArray()
+    {
+        return (glueLeftRotation, glueRightRotation);
+    }
+
+    private static readonly Vector3[] glueLeftPath = new Vector3[GlueFX_Count] 
+    {
+        new (0, 0, 0),      //0
+        new (-2, 0, 0),     //1
+        new (-4, 0, 0),     //2
+        new (-6, 0, 0),     //3
+        new (-20, -20, 0),  //4
+        new (-30, -30, 0),  //5
+        new (-40, -40, 0),  //6
+        new (-50, -50, 0),  //7
+    };
+
+    private static readonly Vector3[] glueRightPath = new Vector3[GlueFX_Count] 
+    {
+        new (0, 0, 0),     //0
+        new (2, 0, 0),     //1
+        new (4, 0, 0),     //2
+        new (6, 0, 0),     //3
+        new (20, -20, 0),  //4
+        new (30, -30, 0),  //5
+        new (40, -40, 0),  //6
+        new (50, -50, 0),  //7
+    };
+
+    private static readonly Vector3[] glueLeftRotation = new Vector3[GlueFX_Count] 
+    {
+        new (0, 0, 0),   //0
+        new (0, 0, 2),   //1
+        new (0, 0, 4),   //2
+        new (0, 0, 6),   //3
+        new (0, 0, 16),  //4
+        new (0, 0, 16),  //5
+        new (0, 0, 30),  //6
+        new (0, 0, 30),  //7
+    };
+
+    private static readonly Vector3[] glueRightRotation = new Vector3[GlueFX_Count] 
+    {
+        new (0, 0, 0),   //0
+        new (0, 0, -2),  //1
+        new (0, 0, -4),  //2
+        new (0, 0, -6),  //3
+        new (0, 0, -16), //4
+        new (0, 0, -16), //5
+        new (0, 0, -25), //6
+        new (0, 0, -30), //7
+    };
+
+#endregion Blocker Glue FX
 }
