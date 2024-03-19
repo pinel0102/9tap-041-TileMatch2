@@ -45,7 +45,7 @@ public class TileItem : CachedBehaviour
 
 		public UniTask OnChangeValue(float value, float duration)
 		{
-			m_tweener
+            m_tweener
 				.ChangeEndValue(value, duration, true)
 				.Restart();
 
@@ -156,8 +156,6 @@ public class TileItem : CachedBehaviour
     private Transform _shuffleCenter;
     private Vector3 _myPosition;
 
-    private float jumpDelay;
-
     private GlobalData globalData { get { return GlobalData.Instance; } }
 
     private void Update()
@@ -220,6 +218,7 @@ public class TileItem : CachedBehaviour
         isMoving = false;
         m_scaleTween?.OnChangeValue(Vector3.one, 0f).Forget();
 		m_iconAlphaTween?.OnChangeValue(Color.white, -1f).Forget();
+        m_dimTween?.OnChangeValue(0, 0f).Forget();
 		CachedGameObject.SetActive(false);
 		m_interactable = false;
 		m_icon.color = Color.white;
@@ -293,7 +292,7 @@ public class TileItem : CachedBehaviour
         
         UniTask OnTriggerCallback(EventTriggerType type, BaseEventData eventData)
 		{
-			if (!m_interactable)
+			if (!m_interactable || isMoving)
 			{
 				return UniTask.CompletedTask;
 			}
@@ -305,9 +304,9 @@ public class TileItem : CachedBehaviour
                 {   
                     soundManager?.PlayFx(Constant.Sound.SFX_TILE_SELECT);
 
-                    m_interactable = false;
+                    //m_interactable = false;
                     isMoving = true;
-                    jumpDelay = 0;
+                    SetDim(0);
 
                     if (IsNeedEffectBeforeMove(blockerType))
                     {
@@ -371,6 +370,9 @@ public class TileItem : CachedBehaviour
 
             SetBasketParent();
             pairTile.SetBasketParent();
+
+            SetDim(0);
+            pairTile?.SetDim(0);
 
             switch(blockerType)
             {
@@ -677,12 +679,11 @@ public class TileItem : CachedBehaviour
         {
             isScaling = false;
             isMoving = false;
-            jumpDelay = 0;
         }
 
         return (location, Current != null) switch {
 			(LocationType.STASH or LocationType.BASKET, _) => 
-                TileJump(location, direction, duration, jumpDelay, () => {
+                TileJump(location, direction, duration, () => {
                     if (location == LocationType.BASKET)
                     {
                         globalData.playScene?.mainView?.CurrentBoard?.SortLayerTiles();
@@ -715,16 +716,13 @@ public class TileItem : CachedBehaviour
 		};
 	}
 
-    private UniTask? TileJump(LocationType location, Vector3 value, float duration, float delay, Action onComplete = null)
+    private UniTask? TileJump(LocationType location, Vector3 value, float duration, Action onComplete = null)
     {
         //Debug.Log(CodeManager.GetMethodName() + string.Format("m_movable: {0}", m_movable));
         //Debug.Log(location);
 
-        jumpDelay = 0;
-
         return ObjectUtility.GetRawObject(CachedTransform)?
             .DOJump(value, 0.5f, 1, duration)
-            .SetDelay(jumpDelay)
             .OnComplete(() => {
                 isMoving = false;
                 onComplete?.Invoke();
@@ -753,7 +751,7 @@ public class TileItem : CachedBehaviour
 					}
 
                     //if (blockerType == BlockerType.None)
-					    await UniTask.Defer(() => m_dimTween?.OnChangeValue(IsReallyMovable(m_movable) ? 0 : 1f, 0f) ?? UniTask.CompletedTask);
+					await UniTask.Defer(() => m_dimTween?.OnChangeValue(IsReallyMovable(m_movable) ? 0 : 1f, 0f) ?? UniTask.CompletedTask);
 				}
 				else
 				{
@@ -810,7 +808,7 @@ public class TileItem : CachedBehaviour
 
         if (oldValue != m_movable)
         {
-            //Debug.Log(CodeManager.GetMethodName() + string.Format("Movable Changed : {0} ({1})", m_movable, tileName));
+            //Debug.Log(CodeManager.GetMethodName() + string.Format("Movable Changed : {0} ({1}) : {2}", name, currentLocation, m_movable));
             
             if (currentLocation == LocationType.BOARD)
             {
