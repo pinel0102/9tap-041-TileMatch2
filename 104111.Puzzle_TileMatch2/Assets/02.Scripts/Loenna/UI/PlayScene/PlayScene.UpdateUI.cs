@@ -25,7 +25,7 @@ partial class PlayScene
     public List<BlockerType> m_blockerShownList = new List<BlockerType>();
     public bool blockerFailed;
     public bool BlockerFailed => blockerFailed;
-    private bool m_isFirstFail;
+    [SerializeField] private bool m_isFirstFail;
 	private int m_progressId = 0;
 	private Queue<UniTask> m_queue;
 
