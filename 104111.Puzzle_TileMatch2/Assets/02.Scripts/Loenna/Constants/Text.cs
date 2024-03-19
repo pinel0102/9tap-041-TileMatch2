@@ -7,6 +7,7 @@ namespace NineTap.Constant
 			public const string PLAY = "Play";
 			public const string PLAY_ON = "Play On";
             public const string TRY_AGAIN = "Try Again";
+            public const string TRY_FREE = "Free";
 			public const string GIVE_UP = "Give Up";
 			public const string CONTINUE = "Continue";
 			public const string HOME = "Home";

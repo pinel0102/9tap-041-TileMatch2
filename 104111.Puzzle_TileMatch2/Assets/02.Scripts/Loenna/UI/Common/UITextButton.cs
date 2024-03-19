@@ -44,7 +44,7 @@ public class UITextButton : UIImageButton
 			if (parameter.SubWidgetBuilder != null)
 			{
 				GameObject go = parameter.SubWidgetBuilder.Invoke();
-				go.transform.SetParentReset(m_subWidgetParent);
+				go?.transform.SetParentReset(m_subWidgetParent);
 			}
 
 			return;

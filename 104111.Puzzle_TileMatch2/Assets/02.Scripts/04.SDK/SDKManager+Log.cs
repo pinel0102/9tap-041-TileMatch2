@@ -63,11 +63,14 @@ public partial class SDKManager
     }
 
     ///<Summary>게임 실패시 관련 정보를 보낸다.</Summary>
-    public static void SendAnalytics_I_Scene_Fail()
+    public static void SendAnalytics_I_Scene_Fail(bool addFailedCountTotal = true)
     {
         Debug.Log(string.Format(logFormat0, CodeManager.GetMethodName()));
 
-        userManager.UpdateLog(failedLevel: globalData.CURRENT_LEVEL, failedCount: userManager.Current.FailedCount + 1);
+        userManager.UpdateLog(
+            failedLevel: globalData.CURRENT_LEVEL, 
+            failedCount: userManager.Current.FailedCount + 1,
+            failedCountTotal: addFailedCountTotal ? userManager.Current.FailedCountTotal + 1 : userManager.Current.FailedCountTotal);
 
         string eventName = "i_scene_fail";
         var logParams = CreateParams(eventName);

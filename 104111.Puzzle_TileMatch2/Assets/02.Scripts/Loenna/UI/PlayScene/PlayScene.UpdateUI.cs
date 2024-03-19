@@ -25,6 +25,7 @@ partial class PlayScene
     public List<BlockerType> m_blockerShownList = new List<BlockerType>();
     public bool blockerFailed;
     public bool BlockerFailed => blockerFailed;
+    private bool m_isFirstFail;
 	private int m_progressId = 0;
 	private Queue<UniTask> m_queue;
 
@@ -195,6 +196,7 @@ partial class PlayScene
                     SetBackground(m_puzzleData.GetGameImagePath());
                 }
 
+                m_isFirstFail = false;
                 m_progressId = 0;
 				m_block.SetActive(true);
 				m_tileItems.ForEach(item => m_tileItemPool.Release(item));
@@ -496,21 +498,32 @@ partial class PlayScene
         if (isStartPopup)
         {
             Debug.Log(CodeManager.GetMethodName() + string.Format("Level {0}", m_gameManager.CurrentLevel));
+            
+            m_isFirstFail = m_userManager.Current.FailedCountTotal == 0;
+
             SDKManager.SendAnalytics_I_Scene_Fail();
         }
 
         CurrentPlayState.Finished.State result = CurrentPlayState.Finished.State.OVER;
         
-        int coinAmount = m_gameManager.GetSkillPackageCoin(isStartPopup, out var itemTypes);
+        int coinAmount = m_gameManager.GetSkillPackageCoin(isStartPopup && !m_isFirstFail, out var itemTypes);
         Debug.Log(CodeManager.GetMethodName() + string.Format("Required Coin : {0}", coinAmount));
 
         UIManager.ShowPopupUI<PlayEndPopup>(
             new PlayEndPopupParameter(
                 State: result,
                 ContinueButtonParameter: new UITextButtonParameter {
-                    OnClick = () => Continue(coinAmount, itemTypes),
-                    ButtonText = Text.Button.TRY_AGAIN,
+                    OnClick = () => {
+                        if (m_isFirstFail)
+                            Continue(0, itemTypes);
+                        else
+                            Continue(coinAmount, itemTypes);
+                    },
+                    ButtonText = m_isFirstFail ? Text.Button.TRY_FREE : Text.Button.TRY_AGAIN,
                     SubWidgetBuilder = () => {
+                        if (m_isFirstFail)
+                            return null;
+                        
                         var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
                         widget.OnSetup("UI_Icon_Coin", $"{coinAmount}");
                         return widget.CachedGameObject;
@@ -554,12 +567,27 @@ partial class PlayScene
     {
         ShowGiveUpPopup(
             new UITextButtonParameter {
-                ButtonText = Text.Button.TRY_AGAIN,
-                OnClick = () => OnContinue(coinAmount, itemTypes, () => { 
-                    GlobalDefine.RequestAD_ShowBanner();
-                    ShowAreYouSure(coinAmount, itemTypes); 
-                }),
+                ButtonText = m_isFirstFail ? Text.Button.TRY_FREE : Text.Button.TRY_AGAIN,
+                OnClick = () => {
+                    if (m_isFirstFail)
+                    {
+                        OnContinue(0, itemTypes, () => { 
+                            GlobalDefine.RequestAD_ShowBanner();
+                            ShowAreYouSure(coinAmount, itemTypes); 
+                        });
+                    }
+                    else
+                    {
+                        OnContinue(coinAmount, itemTypes, () => { 
+                            GlobalDefine.RequestAD_ShowBanner();
+                            ShowAreYouSure(coinAmount, itemTypes); 
+                        });
+                    }
+                },
                 SubWidgetBuilder = () => {
+                    if (m_isFirstFail)
+                        return null;
+
                     var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
                     widget.OnSetup("UI_Icon_Coin", $"{coinAmount}");
                     return widget.CachedGameObject;
@@ -580,9 +608,14 @@ partial class PlayScene
 
 #region BlockerFailPopup
 
-    public void ShowBlockerFailPopup(BlockerType blockerType)
+    public void ShowBlockerFailPopup(BlockerType blockerType, bool isStartPopup = true)
     {
-        Debug.Log(CodeManager.GetMethodName() + blockerType);
+        if (isStartPopup)
+        {
+            Debug.Log(CodeManager.GetMethodName() + string.Format("Level {0} : {1}", m_gameManager.CurrentLevel, blockerType));
+            
+            SDKManager.SendAnalytics_I_Scene_Fail(false);
+        }
 
         CurrentPlayState.Finished.State result = CurrentPlayState.Finished.State.OVER;
 
@@ -592,7 +625,7 @@ partial class PlayScene
                 ContinueButtonParameter: new UITextButtonParameter {
                     OnClick = () => {
                         Continue(SkillItemType.Undo, () => {
-                            ShowBlockerFailPopup(blockerType);
+                            ShowBlockerFailPopup(blockerType, false);
                         });
                     },
                     ButtonText = Text.Button.TRY_AGAIN,
