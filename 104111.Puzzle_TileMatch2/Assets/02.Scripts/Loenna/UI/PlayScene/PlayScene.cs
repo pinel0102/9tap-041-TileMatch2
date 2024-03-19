@@ -257,22 +257,7 @@ public partial class PlayScene : UIScene
                         else
                         {
                             SDKManager.SendAnalytics_C_Scene(Text.Button.REPLAY);
-                            ShowRetryPopup();
-
-                            /*ShowGiveUpPopup(
-                                new UITextButtonParameter
-                                {
-                                    ButtonText = Text.Button.PLAY_ON
-                                },
-                                new ExitBaseParameter(
-                                    includeBackground: false,
-                                    onExit: () =>
-                                    {
-                                        m_userManager.TryUpdate(requireLife: true);
-                                        ShowReadyPopup(m_gameManager.CurrentLevel);
-                                    }
-                                )
-                            );*/
+                            ShowRetryPopup(Text.Button.PLAY_ON);
                         }
 					}
 				},
@@ -301,7 +286,8 @@ public partial class PlayScene : UIScene
                                         m_userManager.TryUpdate(requireLife: true);
                                         OnExit(false);
                                     }
-                                )
+                                ),
+                                Text.Popup.Title.ARE_YOU_SURE
                             );
                         }
 					}
@@ -310,25 +296,26 @@ public partial class PlayScene : UIScene
 		);
 	}
 
-    private void ShowRetryPopup()
+    private void ShowRetryPopup(string buttonText)
     {
         ShowGiveUpPopup(
             new UITextButtonParameter
             {
-                ButtonText = Text.Button.PLAY_ON
+                ButtonText = buttonText
             },
             new ExitBaseParameter(
                 includeBackground: false,
                 onExit: () =>
                 {
                     m_userManager.TryUpdate(requireLife: true);
-                    ShowReadyPopup(m_gameManager.CurrentLevel);
+                    ShowReadyPopup(m_gameManager.CurrentLevel, buttonText);
                 }
-            )
+            ),
+            Text.Popup.Title.ARE_YOU_SURE
         );
     }
 
-	private void ShowGiveUpPopup(UITextButtonParameter buttonParameter, ExitBaseParameter exitBaseParameter)
+	private void ShowGiveUpPopup(UITextButtonParameter buttonParameter, ExitBaseParameter exitBaseParameter, string titleText = Text.Popup.Title.LEVEL_FAILED)
 	{
         //[PlayScene:Pause] PausePopup > Replay : 하트 소모 알림. (x 누를시 Replay & 광고)
         //[PlayScene:Pause] PausePopup > Home : 하트 소모 알림. (x 누를시 Home & 광고)
@@ -336,7 +323,7 @@ public partial class PlayScene : UIScene
         //[PlayScene:Fail] BlockerFailedPopup -> GiveUp : 하트 소모 알림. (x 누를시 Home & 광고)
 		UIManager.ShowPopupUI<GiveupPopup>(
 			new GiveupPopupParameter(
-				Title: Text.Popup.Title.GIVE_UP,
+				Title: titleText,
 				Message: Text.Popup.Message.GIVE_UP,
                 ignoreBackKey: true,
 				ExitParameter: exitBaseParameter,
@@ -346,7 +333,7 @@ public partial class PlayScene : UIScene
 	}
 
     // 하트 0인 상태에서 플레이 시도시 상점 열기.
-	private void ShowReadyPopup(int level)
+	private void ShowReadyPopup(int level, string buttonText)
 	{
         var (_, valid, _) = m_userManager.Current.Valid();
 
@@ -359,7 +346,7 @@ public partial class PlayScene : UIScene
 
             GlobalData.Instance.ShowStorePopup(() => {
                 GlobalDefine.RequestAD_ShowBanner();
-                ShowRetryPopup();
+                ShowRetryPopup(buttonText);
             });
             
             return;

@@ -30,8 +30,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3584139805481943864}
   - {fileID: 4213299872091733303}
+  - {fileID: 3584139805481943864}
   m_Father: {fileID: 6134436571685758700}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -84,7 +84,7 @@ MonoBehaviour:
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 1
   m_ChildScaleHeight: 1
-  m_ReverseArrangement: 1
+  m_ReverseArrangement: 0
 --- !u!1 &181648598194271423
 GameObject:
   m_ObjectHideFlags: 0
@@ -1750,11 +1750,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4090779678457007051, guid: 6b5e8c4fdd46ac54d83154ab14743fd4, type: 3}
       propertyPath: m_Name
-      value: Button_Top
+      value: Button_Replay
       objectReference: {fileID: 0}
     - target: {fileID: 4203576509219162343, guid: 6b5e8c4fdd46ac54d83154ab14743fd4, type: 3}
       propertyPath: m_MinWidth
       value: 320
+      objectReference: {fileID: 0}
+    - target: {fileID: 4203576509219162343, guid: 6b5e8c4fdd46ac54d83154ab14743fd4, type: 3}
+      propertyPath: m_MinHeight
+      value: 110
       objectReference: {fileID: 0}
     - target: {fileID: 4203576509219162343, guid: 6b5e8c4fdd46ac54d83154ab14743fd4, type: 3}
       propertyPath: m_FlexibleWidth
@@ -1763,6 +1767,10 @@ PrefabInstance:
     - target: {fileID: 4203576509219162343, guid: 6b5e8c4fdd46ac54d83154ab14743fd4, type: 3}
       propertyPath: m_PreferredWidth
       value: 320
+      objectReference: {fileID: 0}
+    - target: {fileID: 4203576509219162343, guid: 6b5e8c4fdd46ac54d83154ab14743fd4, type: 3}
+      propertyPath: m_PreferredHeight
+      value: 110
       objectReference: {fileID: 0}
     - target: {fileID: 5647477555598494552, guid: 6b5e8c4fdd46ac54d83154ab14743fd4, type: 3}
       propertyPath: m_text
@@ -2090,15 +2098,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4090779678457007051, guid: 6b5e8c4fdd46ac54d83154ab14743fd4, type: 3}
       propertyPath: m_Name
-      value: Button_Bottom
+      value: Button_Home
       objectReference: {fileID: 0}
     - target: {fileID: 4203576509219162343, guid: 6b5e8c4fdd46ac54d83154ab14743fd4, type: 3}
       propertyPath: m_MinWidth
       value: 320
       objectReference: {fileID: 0}
     - target: {fileID: 4203576509219162343, guid: 6b5e8c4fdd46ac54d83154ab14743fd4, type: 3}
+      propertyPath: m_MinHeight
+      value: 110
+      objectReference: {fileID: 0}
+    - target: {fileID: 4203576509219162343, guid: 6b5e8c4fdd46ac54d83154ab14743fd4, type: 3}
       propertyPath: m_PreferredWidth
       value: 320
+      objectReference: {fileID: 0}
+    - target: {fileID: 4203576509219162343, guid: 6b5e8c4fdd46ac54d83154ab14743fd4, type: 3}
+      propertyPath: m_PreferredHeight
+      value: 110
+      objectReference: {fileID: 0}
+    - target: {fileID: 5647477555598494552, guid: 6b5e8c4fdd46ac54d83154ab14743fd4, type: 3}
+      propertyPath: m_text
+      value: Home
       objectReference: {fileID: 0}
     - target: {fileID: 5647477555598494552, guid: 6b5e8c4fdd46ac54d83154ab14743fd4, type: 3}
       propertyPath: m_fontSize
@@ -2112,10 +2132,6 @@ PrefabInstance:
       propertyPath: m_Type
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 7052306489720287772, guid: 6b5e8c4fdd46ac54d83154ab14743fd4, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 346342919176aa64a820bb7a84839297, type: 3}
     - target: {fileID: 8173772533009515488, guid: 6b5e8c4fdd46ac54d83154ab14743fd4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

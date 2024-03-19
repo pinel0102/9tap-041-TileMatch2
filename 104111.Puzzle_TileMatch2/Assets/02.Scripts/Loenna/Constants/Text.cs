@@ -6,7 +6,8 @@ namespace NineTap.Constant
 		{
 			public const string PLAY = "Play";
 			public const string PLAY_ON = "Play On";
-			public const string GIVE_UP = "Give up";
+            public const string TRY_AGAIN = "Try Again";
+			public const string GIVE_UP = "Give Up";
 			public const string CONTINUE = "Continue";
 			public const string HOME = "Home";
 			public const string CLAIM = "Claim";
@@ -27,7 +28,8 @@ namespace NineTap.Constant
 			public static class Title
 			{
 				public const string QUIT = "Quit Game?";
-				public const string GIVE_UP = "Are you sure?";
+                public const string ARE_YOU_SURE = "Are you sure?";
+				public const string LEVEL_FAILED = "Level Failed";
                 public const string REVIEW = "Having Fun?";
                 public const string GET_STARS = "Get Stars";
 			}

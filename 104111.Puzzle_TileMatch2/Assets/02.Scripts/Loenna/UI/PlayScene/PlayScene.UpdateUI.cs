@@ -509,7 +509,7 @@ partial class PlayScene
                 State: result,
                 ContinueButtonParameter: new UITextButtonParameter {
                     OnClick = () => Continue(coinAmount, itemTypes),
-                    ButtonText = Text.Button.PLAY_ON,
+                    ButtonText = Text.Button.TRY_AGAIN,
                     SubWidgetBuilder = () => {
                         var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
                         widget.OnSetup("UI_Icon_Coin", $"{coinAmount}");
@@ -554,7 +554,7 @@ partial class PlayScene
     {
         ShowGiveUpPopup(
             new UITextButtonParameter {
-                ButtonText = Text.Button.PLAY_ON,
+                ButtonText = Text.Button.TRY_AGAIN,
                 OnClick = () => OnContinue(coinAmount, itemTypes, () => { 
                     GlobalDefine.RequestAD_ShowBanner();
                     ShowAreYouSure(coinAmount, itemTypes); 
@@ -595,7 +595,7 @@ partial class PlayScene
                             ShowBlockerFailPopup(blockerType);
                         });
                     },
-                    ButtonText = Text.Button.UNDO,
+                    ButtonText = Text.Button.TRY_AGAIN,
                     SubWidgetBuilder = () => {
                         var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
                         widget.OnSetup("UI_Shop_Icon_Undo", 60);
@@ -613,7 +613,7 @@ partial class PlayScene
         {
             ShowGiveUpPopup(
                 new UITextButtonParameter {
-                    ButtonText = Text.Button.PLAY_ON,
+                    ButtonText = Text.Button.TRY_AGAIN,
                     OnClick = () => {
                         Continue(SkillItemType.Undo, () => {
                             ShowAreYouSure_Blocker();
