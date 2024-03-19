@@ -102,8 +102,6 @@ public static partial class GlobalDefine
 
         StopActivityIndicator();
 
-        // [TODO] IAP Result
-
         //product.Coin
         //product.Contents.GetValueOrDefault(key, 0)
         // [1] : Return

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 
 public partial class GlobalData : SingletonMono<GlobalData>
 {
@@ -39,6 +40,10 @@ public partial class GlobalData : SingletonMono<GlobalData>
     public float shuffleRadiusMax = 350;
     public float shuffleSpeed = 15;
     public float shuffleTime = 1;
+
+    [Header("★ [Settings] Glue")]
+    public Ease glueEase = Ease.InOutExpo;
+    public bool glueArray;
     
     private WaitForSecondsRealtime wTimeDelay = new WaitForSecondsRealtime(1.0f);
 

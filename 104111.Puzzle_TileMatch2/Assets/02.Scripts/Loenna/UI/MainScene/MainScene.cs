@@ -315,14 +315,12 @@ public class MainScene : UIScene
         // [Level >= 2] && [Weekend]
         if (GlobalDefine.IsEnable_Weekend1Bundle())
         {
-            // [TODO] ShowPopup_Weekend1
             await globalData.ShowPopup_Weekend1(() => globalData.fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); }));
         }
 
         // [Level >= 2] && [Weekend]
         if (GlobalDefine.IsEnable_Weekend2Bundle())
         {
-            // [TODO] ShowPopup_Weekend2
             await globalData.ShowPopup_Weekend2(() => globalData.fragmentHome?.SideContainers.ForEach(item => { item.RefreshIcons(); }));
         }
 
