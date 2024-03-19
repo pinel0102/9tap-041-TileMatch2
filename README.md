@@ -9,7 +9,7 @@ Puzzle - TileMatch2 클라이언트 프로젝트
 
 # SDK Versions
 <details>
-<summary markdown="span"><em>Unity Engine : 2022.3.20f1</em></summary>
+<summary markdown="span"><em>Unity Engine : 2022.3.21f1</em></summary>
 <br>
 
 ---
@@ -28,8 +28,14 @@ Puzzle - TileMatch2 클라이언트 프로젝트
 # ChangeLog
 
 <details>
-<summary markdown="span"><em>last update : 1.0.2</em></summary>
+<summary markdown="span"><em>last update : 1.0.3</em></summary>
 <br>
+
+---
++ 1.0.3
+   - 레벨 추가 (500)
+   - Blocker 추가 (Glue, Bush)
+   - Particle FX 최적화
 
 ---
 + 1.0.2
@@ -37,9 +43,8 @@ Puzzle - TileMatch2 클라이언트 프로젝트
 
 ---
 + 1.0.1
+   - 레벨 추가 (400)
    - 번들 팝업 추가
-   - 레벨 추가
-   - 퍼즐 추가
 
 ---
 + 1.0.0
