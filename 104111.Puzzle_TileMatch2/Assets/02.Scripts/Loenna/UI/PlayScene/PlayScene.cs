@@ -30,6 +30,7 @@ public partial class PlayScene : UIScene
     [SerializeField]	private GameObject bg_default;
     [SerializeField]	private GameObject bg_puzzle;
     [SerializeField]    private Image backgroundImage;
+    [SerializeField]	private GameObject bg_ads;
 
     private GameManager m_gameManager;
 	private UserManager m_userManager;
@@ -193,6 +194,7 @@ public partial class PlayScene : UIScene
                         {
                             GlobalDefine.RequestAD_HideBanner();
                             GlobalData.Instance.ShowStorePopup(() => {
+                                bg_ads.SetActive(!GlobalData.Instance.userManager.Current.NoAD);
                                 GlobalDefine.RequestAD_ShowBanner();
                                 GlobalData.Instance.HUD_Hide();
                                 onStoreClosed?.Invoke();
@@ -342,6 +344,7 @@ public partial class PlayScene : UIScene
             GlobalDefine.RequestAD_HideBanner();
 
             GlobalData.Instance.ShowStorePopup(() => {
+                bg_ads.SetActive(!GlobalData.Instance.userManager.Current.NoAD);
                 GlobalDefine.RequestAD_ShowBanner();
                 ShowRetryPopup(buttonText);
             });
@@ -357,6 +360,8 @@ public partial class PlayScene : UIScene
 
         UIManager.ClosePopupUI_ForceAll();
         SDKManager.SendAnalytics_I_Scene();
+
+        bg_ads.SetActive(!GlobalData.Instance.userManager.Current.NoAD);
         GlobalDefine.RequestAD_ShowBanner();
     }
 

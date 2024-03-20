@@ -14,7 +14,7 @@ using Firebase.Crashlytics;
 public partial class SDKManager
 {
     /// <Summary>Need Manual Update</Summary>
-    public const string sdkVersion_Firebase = "11.7.0";
+    public const string sdkVersion_Firebase = "11.8.0";
 
     private static bool isInitialized_Firebase = false;
 

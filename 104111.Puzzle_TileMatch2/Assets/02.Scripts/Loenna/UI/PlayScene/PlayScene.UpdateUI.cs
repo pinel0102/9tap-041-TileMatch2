@@ -559,6 +559,7 @@ partial class PlayScene
         void Continue(int _coinAmount, List<SkillItemType> _itemTypes)
         {
             OnContinue(_coinAmount, _itemTypes, () => { 
+                        bg_ads.SetActive(!GlobalData.Instance.userManager.Current.NoAD);
                         GlobalDefine.RequestAD_ShowBanner();
                         LevelFail(false); 
             });
@@ -571,7 +572,8 @@ partial class PlayScene
             new UITextButtonParameter {
                 ButtonText = m_isFirstFail ? Text.Button.TRY_FREE : Text.Button.TRY_AGAIN,
                 OnClick = () => {
-                    OnContinue(coinAmount, itemTypes, () => { 
+                    OnContinue(coinAmount, itemTypes, () => {
+                        bg_ads.SetActive(!GlobalData.Instance.userManager.Current.NoAD);
                         GlobalDefine.RequestAD_ShowBanner();
                         ShowAreYouSure(coinAmount, itemTypes); 
                     });

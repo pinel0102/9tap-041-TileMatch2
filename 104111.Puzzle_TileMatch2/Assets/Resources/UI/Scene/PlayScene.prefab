@@ -1854,10 +1854,12 @@ MonoBehaviour:
   bg_default: {fileID: 1823485953690590674}
   bg_puzzle: {fileID: 1369887498947715021}
   backgroundImage: {fileID: 4989529076365348367}
+  bg_ads: {fileID: 7834347701652601725}
   FXLayer: {fileID: 7866405246309467076}
   m_blockerList: []
   m_blockerShownList: 
   blockerFailed: 0
+  m_isFirstFail: 0
 --- !u!1 &2983495527515778513
 GameObject:
   m_ObjectHideFlags: 0
@@ -4013,7 +4015,7 @@ GameObject:
   - component: {fileID: 6100817792640516193}
   - component: {fileID: 5917298859426506352}
   m_Layer: 5
-  m_Name: Background
+  m_Name: Background_Ads
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
