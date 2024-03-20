@@ -122,9 +122,9 @@ public class UserManager : IDisposable
 				ClearedPuzzleCollection: new(),
 				PlayingPuzzleCollection: new(),
 				OwnSkillItems: new Dictionary<SkillItemType, int>{
-					{SkillItemType.Stash, 100},
-					{SkillItemType.Undo, 100},
-					{SkillItemType.Shuffle, 100}
+					{SkillItemType.Stash, 99},
+					{SkillItemType.Undo, 99},
+					{SkillItemType.Shuffle, 99}
 				},
 				Settings: new Dictionary<SettingsType, bool>{
 					{SettingsType.Fx, true},
@@ -183,11 +183,11 @@ public class UserManager : IDisposable
                 Event_SweetHolic_StartDate: GlobalDefine.dateDefault_HHmmss,
                 Event_SweetHolic_EndDate: GlobalDefine.dateDefault_HHmmss,
                 ExpiredSweetHolicBoosterTime: 0L,
-                Showed_BlockerTutorial_Glue: false,
-                Showed_BlockerTutorial_Bush: false,
-                Showed_BlockerTutorial_Suitcase: false,
-                Showed_BlockerTutorial_Jelly: false,
-                Showed_BlockerTutorial_Chain: false
+                Showed_BlockerTutorial_Glue: true,
+                Showed_BlockerTutorial_Bush: true,
+                Showed_BlockerTutorial_Suitcase: true,
+                Showed_BlockerTutorial_Jelly: true,
+                Showed_BlockerTutorial_Chain: true
 			);
 		}
 	}
