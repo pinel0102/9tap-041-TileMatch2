@@ -316,10 +316,8 @@ public partial class PlayScene : UIScene
 
 	private void ShowGiveUpPopup(UITextButtonParameter buttonParameter, ExitBaseParameter exitBaseParameter, string titleText = Text.Popup.Title.LEVEL_FAILED)
 	{
-        //[PlayScene:Pause] PausePopup > Replay : 하트 소모 알림. (x 누를시 Replay & 광고)
-        //[PlayScene:Pause] PausePopup > Home : 하트 소모 알림. (x 누를시 Home & 광고)
-        //[PlayScene:Fail] PlayEndPopup -> GiveUp/Home : 하트 소모 알림. (x 누를시 Home & 광고)
-        //[PlayScene:Fail] BlockerFailedPopup -> GiveUp : 하트 소모 알림. (x 누를시 Home & 광고)
+        //[PlayScene:Pause] PausePopup -> Replay & Home : 하트 소모 예정 알림. (x 누를시 실행 전 광고)
+        //[PlayScene:Fail] PlayEndPopup & BlockerFailedPopup -> GiveUp : 선 하트 소모. (x 누를시 실행 전 광고)
 		UIManager.ShowPopupUI<GiveupPopup>(
 			new GiveupPopupParameter(
 				Title: titleText,

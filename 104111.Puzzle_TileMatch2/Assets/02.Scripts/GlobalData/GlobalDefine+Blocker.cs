@@ -283,8 +283,8 @@ public static partial class GlobalDefine
 #region Blocker Glue FX
 
     public const int GlueFX_Count = 8;
-    public const float GlueFX_Duration = 1.0f;
-    public const float GlueFX_Delay = 0.125f; // GlueFX_Duration/GlueFX_Count
+    public const float GlueFX_Count_Inverse = 0.125f; // 1/GlueFX_Count
+    public const float GlueFX_Duration = 0.5f;
 
     public static (Vector3, Vector3) GluePathLast(Vector3 originLeft, Vector3 originRight)
     {

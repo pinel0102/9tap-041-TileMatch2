@@ -7,7 +7,7 @@ using Cysharp.Threading.Tasks;
 
 public partial class GlobalData
 {
-    private async UniTask ShowProductPopup(ProductData productData, string backgroundImage, string ribbonImage, string coinImage, Action onPurchased = null, Action onClosed = null)
+    private async UniTask ShowProductPopup(ProductData productData, string backgroundImage, string ribbonImage, string coinImage, bool ignoreBackKey = false, Action onPurchased = null, Action onClosed = null)
     {
         bool popupClosed = false;
 
@@ -15,6 +15,7 @@ public partial class GlobalData
         new ProductPopupParameter(
             Title: productData.FullName,
             Message: productData.Description,
+            IgnoreBackKey: ignoreBackKey,
             ExitParameter: new ExitBaseParameter(CloseCallback, false),
             ProductData: productData,
             BackgroundImage: backgroundImage,
@@ -49,7 +50,7 @@ public partial class GlobalData
                 LastPopupDateBeginner: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss)
             );
 
-            await ShowProductPopup(productData, "Beginner", "Beginnertitle", "01", OnPurchased);
+            await ShowProductPopup(productData, "Beginner", "Beginnertitle", "01", onPurchased:OnPurchased);
         }
 
         void OnPurchased()
@@ -78,7 +79,7 @@ public partial class GlobalData
                 LastPopupDateWeekend1: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss)
             );
 
-            await ShowProductPopup(productData, "Weekend", "Weekendtitle", "03", OnPurchased);
+            await ShowProductPopup(productData, "Weekend", "Weekendtitle", "03", onPurchased:OnPurchased);
         }
 
         void OnPurchased()
@@ -107,7 +108,7 @@ public partial class GlobalData
                 LastPopupDateWeekend2: DateTime.Now.ToString(GlobalDefine.dateFormat_HHmmss)
             );
 
-            await ShowProductPopup(productData, "Weekend", "Weekendtitle", "04", OnPurchased);
+            await ShowProductPopup(productData, "Weekend", "Weekendtitle", "04", onPurchased:OnPurchased);
         }
 
         void OnPurchased()
@@ -137,7 +138,7 @@ public partial class GlobalData
                 NextPopupDateHard: DateTime.Now.Add(GlobalDefine.bundleDelay_Hard_Default).ToString(GlobalDefine.dateFormat_HHmmss)
             );
 
-            await ShowProductPopup(productData, "Hard", string.Empty, "02", OnPurchased);
+            await ShowProductPopup(productData, "Hard", string.Empty, "02", onPurchased:OnPurchased);
 
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] Next Popup : {1}</color>", userManager.Current.PurchasedHard, userManager.Current.NextPopupDateHard));
         }
@@ -171,7 +172,7 @@ public partial class GlobalData
                 NextPopupDateCheerup: DateTime.Now.Add(GlobalDefine.bundleDelay_Cheerup_Default).ToString(GlobalDefine.dateFormat_HHmmss)
             );
 
-            await ShowProductPopup(productData, "Cheerup_01", string.Empty, "02", OnPurchased, OnClosed);
+            await ShowProductPopup(productData, "Cheerup_01", string.Empty, "02", ignoreBackKey:true, onPurchased:OnPurchased, onClosed:OnClosed);
 
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] Next Popup : {1}</color>", userManager.Current.PurchasedCheerup1, userManager.Current.NextPopupDateCheerup));
         }
@@ -211,7 +212,7 @@ public partial class GlobalData
                 NextPopupDateCheerup: DateTime.Now.Add(GlobalDefine.bundleDelay_Cheerup_Default).ToString(GlobalDefine.dateFormat_HHmmss)
             );
 
-            await ShowProductPopup(productData, "Cheerup_02", string.Empty, "03", OnPurchased, OnClosed);
+            await ShowProductPopup(productData, "Cheerup_02", string.Empty, "03", ignoreBackKey:true, onPurchased:OnPurchased, onClosed:OnClosed);
 
             Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[{0}] Next Popup : {1}</color>", userManager.Current.PurchasedCheerup2, userManager.Current.NextPopupDateCheerup));
         }

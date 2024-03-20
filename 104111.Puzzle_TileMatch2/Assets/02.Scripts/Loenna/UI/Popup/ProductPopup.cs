@@ -8,6 +8,7 @@ public record ProductPopupParameter
 (
 	string Title,
 	string Message,
+    bool IgnoreBackKey,
 	ExitBaseParameter ExitParameter,
 	ProductData ProductData,
     string BackgroundImage,
@@ -49,6 +50,7 @@ public class ProductPopup : PopupBase
 			}
 
             productData = parameter.ProductData;
+            ignoreBackKey = parameter.IgnoreBackKey;
             m_purchasedCallback = parameter.PurchasedCallback;
             m_popupCloseCallback = parameter.PopupCloseCallback;
 

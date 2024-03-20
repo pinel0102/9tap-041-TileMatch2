@@ -119,7 +119,7 @@ public record User
         AgreeATT: false,
         AgreeCMPState: false,
         AgreeATTState: false,
-		Coin: 0,
+		Coin: 100,
 		Life: Constant.User.MAX_LIFE_COUNT,
 		Puzzle: 0,
         GoldPiece: 0,

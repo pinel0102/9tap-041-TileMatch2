@@ -424,7 +424,7 @@ public class TileItem : CachedBehaviour
             var (leftPath, rightPath) = GlobalDefine.GluePathArray(left.transform.localPosition, right.transform.localPosition);
             var (leftRotation, rightRotation) = GlobalDefine.GlueRotationArray();
 
-            float eDuration = duration * GlobalDefine.GlueFX_Delay;
+            float eDuration = duration * GlobalDefine.GlueFX_Count_Inverse;
 
             for(int i = 0; i < GlobalDefine.GlueFX_Count; i++)
             {

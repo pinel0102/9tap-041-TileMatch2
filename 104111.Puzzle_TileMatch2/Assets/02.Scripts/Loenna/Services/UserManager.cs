@@ -315,9 +315,9 @@ public class UserManager : IDisposable
 		);
 
         if (requireLife)
-            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Life] {0} - {1} = {2} / Full : {3}</color=yellow>", oldLife, onBooster ? 0 : 1, Current.Life, Current.EndChargeLifeAt.LocalDateTime));
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Life] {0} - {1} = {2} / Full : {3}</color>", oldLife, onBooster ? 0 : 1, Current.Life, Current.EndChargeLifeAt.LocalDateTime));
         if (requireCoin.HasValue)
-            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Coin] {0} - {1} = {2}</color=yellow>", oldCoin, requireCoin.Value, Current.Coin));
+            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>[Coin] {0} - {1} = {2}</color>", oldCoin, requireCoin.Value, Current.Coin));
 
 		DateTimeOffset CalcualteChargeLifeAt(long _oldEndChargeLifeTime, int _newLife, bool _requireLife)
 		{

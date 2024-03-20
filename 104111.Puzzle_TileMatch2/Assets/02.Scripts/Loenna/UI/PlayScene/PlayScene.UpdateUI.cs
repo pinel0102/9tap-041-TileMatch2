@@ -169,6 +169,8 @@ partial class PlayScene
 	{
         ++m_progressId;
 
+        //Debug.Log(CodeManager.GetMethodName() + string.Format("currentPlayState : {0}", currentPlayState));
+
 		switch (currentPlayState)
 		{
 			case CurrentPlayState.Initialized
@@ -367,10 +369,11 @@ partial class PlayScene
                 {
                     LevelClear();
                 }
-
+                m_block.SetActive(false);
 				--m_progressId;
 				break;
 			default:
+                Debug.Log(CodeManager.GetMethodName() + string.Format("<color=white>currentPlayState : {0}</color>", currentPlayState));
 				--m_progressId;
 				break;
 		}
@@ -522,7 +525,7 @@ partial class PlayScene
                     OnClick = () => {
                         Continue(coinAmount, itemTypes);
                     },
-                    ButtonText = m_isFirstFail ? Text.Button.TRY_FREE : Text.Button.TRY_AGAIN,
+                    ButtonText = m_isFirstFail ? Text.Button.TRY_FREE : Text.Button.CONTINUE,
                     SubWidgetBuilder = () => {
                         if (m_isFirstFail) return null;
                         
@@ -531,25 +534,19 @@ partial class PlayScene
                         return widget.CachedGameObject;
                     }
                 },
-                OnQuit: () => ShowAreYouSure(coinAmount, itemTypes),
+                OnQuit: () => ReallyFailed(),
                 OnOpened: async () => {
                     if (isStartPopup && GlobalDefine.IsEnable_CheerUp())
                     {
-                        m_block.SetActive(true);
-
                         await UniTask.WaitForSeconds(0.2f);
 
                         if (GlobalData.Instance.userManager.Current.PurchasedCheerup1)
                         {
-                            await GlobalData.Instance.ShowPopup_Cheerup2(onClosed: () => {
-                                m_block.SetActive(false);
-                            });
+                            await GlobalData.Instance.ShowPopup_Cheerup2();
                         }
                         else
                         {
-                            await GlobalData.Instance.ShowPopup_Cheerup1(onClosed: () => {
-                                m_block.SetActive(false);
-                            });
+                            await GlobalData.Instance.ShowPopup_Cheerup1();
                         }
                     }
                 }
@@ -564,36 +561,6 @@ partial class PlayScene
                         LevelFail(false); 
             });
         }
-    }
-
-    private void ShowAreYouSure(int coinAmount, List<SkillItemType> itemTypes)
-    {
-        ShowGiveUpPopup(
-            new UITextButtonParameter {
-                ButtonText = m_isFirstFail ? Text.Button.TRY_FREE : Text.Button.TRY_AGAIN,
-                OnClick = () => {
-                    OnContinue(coinAmount, itemTypes, () => {
-                        bg_ads.SetActive(!GlobalData.Instance.userManager.Current.NoAD);
-                        GlobalDefine.RequestAD_ShowBanner();
-                        ShowAreYouSure(coinAmount, itemTypes); 
-                    });
-                },
-                SubWidgetBuilder = () => {
-                    if (m_isFirstFail) return null;
-
-                    var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
-                    widget.OnSetup("UI_Icon_Coin", $"{coinAmount}");
-                    return widget.CachedGameObject;
-                }
-            },
-            new ExitBaseParameter (
-                includeBackground: false,
-                onExit: () => {
-                    m_userManager.TryUpdate(requireLife: true);
-                    OnExit(false);
-                }
-            )
-        );
     }
 
 #endregion LevelFail Popup
@@ -621,45 +588,17 @@ partial class PlayScene
                             ShowBlockerFailPopup(blockerType, false);
                         });
                     },
-                    ButtonText = Text.Button.TRY_AGAIN,
+                    ButtonText = Text.Button.UNDO,
                     SubWidgetBuilder = () => {
                         var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
                         widget.OnSetup("UI_Shop_Icon_Undo", 60);
                         return widget.CachedGameObject;
                     }
                 },
-                OnQuit: () => {
-                    ShowAreYouSure_Blocker();
-                },
+                OnQuit: () => ReallyFailed(),
                 BlockerType: blockerType
             )
         );
-
-        void ShowAreYouSure_Blocker()
-        {
-            ShowGiveUpPopup(
-                new UITextButtonParameter {
-                    ButtonText = Text.Button.TRY_AGAIN,
-                    OnClick = () => {
-                        Continue(SkillItemType.Undo, () => {
-                            ShowAreYouSure_Blocker();
-                        });
-                    },
-                    SubWidgetBuilder = () => {
-                        var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
-                        widget.OnSetup("UI_Shop_Icon_Undo", 60);
-                        return widget.CachedGameObject;
-                    }
-                },
-                new ExitBaseParameter (
-                    includeBackground: false,
-                    onExit: () => {
-                        m_userManager.TryUpdate(requireLife: true);
-                        OnExit(false);
-                    }
-                )
-            );
-        }
 
         void Continue(SkillItemType skillItemType, Action onBuyPopupClosed)
         {
@@ -710,5 +649,59 @@ partial class PlayScene
     }
 
 #endregion BlockerFailPopup
+
+
+#region ReallyFailed
+
+    private void ReallyFailed(bool requiredLife = true)
+    {
+        if (requiredLife)
+            m_userManager.TryUpdate(requireLife: true);
+        
+        ShowGiveUpPopup(
+            new UITextButtonParameter {
+                ButtonText = Text.Button.REPLAY,
+                OnClick = () =>
+                {
+                    if (GlobalDefine.IsLevelEditor())
+                    {
+                        m_gameManager.LoadLevel(m_gameManager.CurrentLevel, m_mainView.CachedRectTransform);
+                    }
+                    else
+                    {
+                        SDKManager.SendAnalytics_C_Scene(Text.Button.REPLAY);
+
+                        var (_, valid, _) = m_userManager.Current.Valid();
+
+                        if (!valid)
+                        {
+                            //[PlayScene:Replay] 하트 부족시 상점 열기.
+                            SDKManager.SendAnalytics_C_Scene(Text.Button.STORE);
+
+                            GlobalDefine.RequestAD_HideBanner();
+
+                            GlobalData.Instance.ShowStorePopup(() => {
+                                bg_ads.SetActive(!GlobalData.Instance.userManager.Current.NoAD);
+                                GlobalDefine.RequestAD_ShowBanner();
+                                ReallyFailed(false);
+                            });
+                            
+                            return;
+                        }
+                        
+                        m_gameManager.LoadLevel(m_gameManager.CurrentLevel, m_mainView.CachedRectTransform);
+                    }
+                }
+            },
+            new ExitBaseParameter (
+                includeBackground: false,
+                onExit: () => {
+                    OnExit(false);
+                }
+            )
+        );
+    }
+
+#endregion ReallyFailed
 
 }
