@@ -212,18 +212,21 @@ public class TileItem : CachedBehaviour
 	{
         //Debug.Log(CodeManager.GetMethodName() + gameObject.name);
 
+        m_scaleTween?.OnChangeValue(Vector3.one, 0f).Forget();
+		m_iconAlphaTween?.OnChangeValue(Color.white, -1f).Forget();
+        m_dimTween?.OnChangeValue(0, 0f).Forget();
+		
         currentLocation = LocationType.POOL;
         blockerICD = 0;
         isScaling = false;
         isMoving = false;
-        m_scaleTween?.OnChangeValue(Vector3.one, 0f).Forget();
-		m_iconAlphaTween?.OnChangeValue(Color.white, -1f).Forget();
-        m_dimTween?.OnChangeValue(0, 0f).Forget();
-		CachedGameObject.SetActive(false);
 		m_interactable = false;
+        m_movable = false;
 		m_icon.color = Color.white;
 		m_dim.alpha	= 0f;
 		m_current = null;
+
+        CachedGameObject.SetActive(false);
 	}
 
 	public void SetActive(bool enabled)
