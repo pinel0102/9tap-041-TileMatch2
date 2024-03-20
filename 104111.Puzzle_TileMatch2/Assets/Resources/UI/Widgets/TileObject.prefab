@@ -599,6 +599,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7249a57f317b4604386eef01ff58694b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentLocation: 0
+  m_interactable: 0
+  m_movable: 0
+  isMoving: 0
+  isScaling: 0
+  _parentLayer: {fileID: 0}
   layerIndex: 0
   siblingIndex: 0
   basketIndex: 0
@@ -608,19 +614,12 @@ MonoBehaviour:
   blockerType: 0
   blockerICD: 0
   oldICD: 0
-  _parentLayer: {fileID: 0}
-  m_interactable: 0
-  m_movable: 1
-  isMoving: 0
-  isScaling: 0
-  currentLocation: 0
   m_view: {fileID: 2028442048756215844}
   m_icon: {fileID: 41686297475200788}
   m_trigger: {fileID: 4971165853482574008}
   m_triggerArea: {fileID: 4553884640220343564}
   m_dim: {fileID: 2737600573391555333}
   m_tmpText: {fileID: 8823091228739321712}
-  m_disappearEffect: {fileID: 0}
   m_blockerRect: {fileID: 6877551379240770570}
   m_blockerImage: {fileID: 1765129310861063386}
   m_blockerImageSub: {fileID: 4103986099101961415}

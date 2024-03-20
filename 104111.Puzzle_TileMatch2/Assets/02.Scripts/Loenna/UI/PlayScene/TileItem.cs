@@ -99,7 +99,18 @@ public class TileItem : CachedBehaviour
 		}
 	}
 
+    [Header("★ [Live] Status")]
+    public LocationType currentLocation;
+    [SerializeField]	private bool m_interactable = false;
+    [SerializeField]	private bool m_movable = false;
+    [SerializeField]	private bool isMoving;
+    [SerializeField]	private bool isScaling;
+    public bool IsInteractable => m_interactable;
+    public bool IsMovable => m_movable;
+    public bool IsMoving => isMoving;
+
     [Header("★ [Live] Tile Info")]
+    [SerializeField]    private Transform _parentLayer;
     public int layerIndex;
     public int siblingIndex;
     public int basketIndex;
@@ -109,17 +120,6 @@ public class TileItem : CachedBehaviour
     public BlockerType blockerType;
     public int blockerICD;
     public int oldICD;
-
-    [Header("★ [Live] Status")]
-    [SerializeField]    private Transform _parentLayer;
-    [SerializeField]	private bool m_interactable = false;
-    [SerializeField]	private bool m_movable = true;
-    [SerializeField]	private bool isMoving;
-    [SerializeField]	private bool isScaling;
-    public LocationType currentLocation;
-    public bool IsInteractable => m_interactable;
-    public bool IsMovable => m_movable;
-    public bool IsMoving => isMoving;
     
     [Header("★ [Reference] Tile")]
 	[SerializeField]	private RectTransform m_view;
@@ -244,7 +244,7 @@ public class TileItem : CachedBehaviour
 			tweener: ObjectUtility.GetRawObject(CachedTransform)?
                 .DOMove(Vector2.zero, Constant.Game.TWEENTIME_TILE_DEFAULT)
                 .OnComplete(() => {
-                    isMoving = false;
+                    SetMoving(false);
                 })
                 .Pause()
 				.SetAutoKill(false)
@@ -270,7 +270,6 @@ public class TileItem : CachedBehaviour
 
 		List<EventTrigger.Entry> entries = new List<EventTrigger.Entry> {
 			new EventTrigger.Entry { eventID = EventTriggerType.PointerDown }
-			//new EventTrigger.Entry { eventID = EventTriggerType.PointerUp }
 		};
 
 		foreach (var entry in entries)
@@ -304,7 +303,7 @@ public class TileItem : CachedBehaviour
                 {   
                     soundManager?.PlayFx(Constant.Sound.SFX_TILE_SELECT);
 
-                    isMoving = true;
+                    SetMoving(true);
                     SetDim(0);
 
                     if (IsNeedEffectBeforeMove(blockerType))
@@ -371,7 +370,10 @@ public class TileItem : CachedBehaviour
             pairTile.SetBasketParent();
 
             SetDim(0);
-            pairTile?.SetDim(0);
+            pairTile.SetDim(0);
+
+            SetMoving(true);
+            pairTile.SetMoving(true);
 
             switch(blockerType)
             {
@@ -666,18 +668,13 @@ public class TileItem : CachedBehaviour
 			return UniTask.CompletedTask;
 		}
 
-        //duration = 1f; // Test
-        
-        //float currentDelay = jumpDelay;
-        //jumpDelay = 0;
-
         currentLocation = location;
         Vector2 direction = moveAt ?? Current.Position;
 
-        if (location == LocationType.POOL)
+        if (location == LocationType.POOL || Current == null)
         {
             isScaling = false;
-            isMoving = false;
+            SetMoving(false);
         }
 
         return (location, Current != null) switch {
@@ -690,6 +687,7 @@ public class TileItem : CachedBehaviour
                 }) ?? UniTask.CompletedTask,
 			(LocationType.BOARD, true) => 
                 m_positionTween?.OnChangeValue(m_originWorldPosition, duration, () => {
+                    SetMoving(false);
                     globalData.playScene?.mainView?.CurrentBoard?.SortLayerTiles();
                 }) 
                 ?? UniTask.CompletedTask,
@@ -709,9 +707,10 @@ public class TileItem : CachedBehaviour
                     globalData.playScene.LoadFX(GlobalDefine.FX_Prefab_Sparkle, CachedTransform.position);
 
                     m_view.SetLocalScale(0);
-                    
+                    SetMoving(false);
+
                 }) ?? UniTask.CompletedTask,
-			_ => UniTask.CompletedTask
+			_ => DoNothing(location, Current != null)
 		};
 	}
 
@@ -723,11 +722,21 @@ public class TileItem : CachedBehaviour
         return ObjectUtility.GetRawObject(CachedTransform)?
             .DOJump(value, 0.5f, 1, duration)
             .OnComplete(() => {
-                isMoving = false;
+                SetMoving(false);
                 onComplete?.Invoke();
             })
             .AsyncWaitForCompletion()
             .AsUniTask();
+    }
+
+    private UniTask DoNothing(LocationType location, bool existModel)
+    {
+        Debug.LogWarning(CodeManager.GetMethodName() + string.Format("<color=white>location: {0} / existModel: {1}</color>", location, existModel));
+
+        isScaling = false;
+        SetMoving(false);
+
+        return UniTask.CompletedTask;
     }
 
 	private async UniTask SetInteractable(LocationType location, bool overlapped, bool invisibleIcon = false, bool ignoreInvisible = false)
@@ -822,6 +831,11 @@ public class TileItem : CachedBehaviour
     public void SetDim(float value)
     {
         m_dimTween?.OnChangeValue(value, 0f);
+    }
+
+    public void SetMoving(bool value)
+    {
+        isMoving = value;
     }
 
     /// <summary>
