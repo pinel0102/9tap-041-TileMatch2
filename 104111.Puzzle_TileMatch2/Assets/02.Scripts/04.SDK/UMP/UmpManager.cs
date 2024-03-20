@@ -1,21 +1,29 @@
+//#define GOOGLE_MOBILE_ADS
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+
+#if GOOGLE_MOBILE_ADS
 using GoogleMobileAds.Ump;
 using GoogleMobileAds.Ump.Api;
 using GoogleMobileAds.Api;
-using System;
+#endif
 
 public static class UmpManager
 {
     public static bool useCMPCheck = false;
-
     private static bool isPassed = false;
+
+#if GOOGLE_MOBILE_ADS
     private static ConsentForm _consentForm;
+#endif
 
     // Start is called before the first frame update
     public static void Init()
     {
+#if GOOGLE_MOBILE_ADS
         if (useCMPCheck)
         {
             Debug.Log("Ump.Init");
@@ -24,8 +32,10 @@ public static class UmpManager
                 SetupUMP();
             });
         }
+#endif
     }
 
+#if GOOGLE_MOBILE_ADS
     static void SetupUMP()
     {
         Debug.Log("Ump.Setup");
@@ -66,10 +76,13 @@ public static class UmpManager
         {
             LoadConsentForm();
         }
-     }
+    }
+#endif
 
     public static void Show_Ump()
     {
+#if GOOGLE_MOBILE_ADS
+
         isPassed = true;
 
 #if UNITY_EDITOR
@@ -88,7 +101,11 @@ public static class UmpManager
             NextStep();
         });
 #endif
+
+#endif
     }
+
+#if GOOGLE_MOBILE_ADS
 
     private static void NextStep()
     {
@@ -171,4 +188,6 @@ public static class UmpManager
 
         return false;
     }
+
+#endif
 }
