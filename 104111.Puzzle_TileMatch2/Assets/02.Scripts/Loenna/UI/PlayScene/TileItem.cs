@@ -120,7 +120,7 @@ public class TileItem : CachedBehaviour
     public bool IsInteractable => m_interactable;
     public bool IsMovable => m_movable;
     public bool IsMoving => isMoving;
-
+    
     [Header("★ [Reference] Tile")]
 	[SerializeField]	private RectTransform m_view;
 	[SerializeField]	private Image m_icon;
@@ -237,7 +237,7 @@ public class TileItem : CachedBehaviour
         blockerICD = 0;
         isScaling = false;
         isMoving = false;
-		m_tileDataTable = Game.Inst.Get<TableManager>().TileDataTable;
+        m_tileDataTable = Game.Inst.Get<TableManager>().TileDataTable;
 		SoundManager soundManager = Game.Inst.Get<SoundManager>();
 
         m_positionTween = new TweenContext(
@@ -304,7 +304,6 @@ public class TileItem : CachedBehaviour
                 {   
                     soundManager?.PlayFx(Constant.Sound.SFX_TILE_SELECT);
 
-                    //m_interactable = false;
                     isMoving = true;
                     SetDim(0);
 

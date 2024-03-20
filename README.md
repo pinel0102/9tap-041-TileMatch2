@@ -35,7 +35,7 @@ Puzzle - TileMatch2 클라이언트 프로젝트
 + 1.0.3
    - 레벨 추가 (500)
    - Blocker 추가 (Glue, Bush)
-   - Particle FX 최적화
+   - Particle System 최적화
 
 ---
 + 1.0.2

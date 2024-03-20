@@ -268,11 +268,7 @@ public class TutorialBlockerPopup : UIPopup
             async () =>
             {
                 await UniTask.WaitUntil(
-                    () => target.Any(tile => tile.Current.Location != LocationType.BOARD)
-                );
-
-                await UniTask.WaitUntil(
-                    () => target.All(tile => !tile.IsMoving)
+                    () => target.Any(tile => tile.IsMoving)
                 );
 
                 await UniTask.Yield(PlayerLoopTiming.LastPostLateUpdate);

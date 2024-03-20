@@ -505,8 +505,14 @@ partial class PlayScene
         }
 
         CurrentPlayState.Finished.State result = CurrentPlayState.Finished.State.OVER;
+
+        List<SkillItemType> itemTypes = new();
+
+        if (m_isFirstFail)
+            itemTypes.Add(SkillItemType.Stash);
         
-        int coinAmount = m_gameManager.GetSkillPackageCoin(isStartPopup && !m_isFirstFail, out var itemTypes);
+        int coinAmount = m_isFirstFail ? 0 : m_gameManager.GetSkillPackageCoin(isStartPopup, out itemTypes);
+        
         Debug.Log(CodeManager.GetMethodName() + string.Format("Required Coin : {0}", coinAmount));
 
         UIManager.ShowPopupUI<PlayEndPopup>(
@@ -514,15 +520,11 @@ partial class PlayScene
                 State: result,
                 ContinueButtonParameter: new UITextButtonParameter {
                     OnClick = () => {
-                        if (m_isFirstFail)
-                            Continue(0, itemTypes);
-                        else
-                            Continue(coinAmount, itemTypes);
+                        Continue(coinAmount, itemTypes);
                     },
                     ButtonText = m_isFirstFail ? Text.Button.TRY_FREE : Text.Button.TRY_AGAIN,
                     SubWidgetBuilder = () => {
-                        if (m_isFirstFail)
-                            return null;
+                        if (m_isFirstFail) return null;
                         
                         var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
                         widget.OnSetup("UI_Icon_Coin", $"{coinAmount}");
@@ -569,24 +571,13 @@ partial class PlayScene
             new UITextButtonParameter {
                 ButtonText = m_isFirstFail ? Text.Button.TRY_FREE : Text.Button.TRY_AGAIN,
                 OnClick = () => {
-                    if (m_isFirstFail)
-                    {
-                        OnContinue(0, itemTypes, () => { 
-                            GlobalDefine.RequestAD_ShowBanner();
-                            ShowAreYouSure(coinAmount, itemTypes); 
-                        });
-                    }
-                    else
-                    {
-                        OnContinue(coinAmount, itemTypes, () => { 
-                            GlobalDefine.RequestAD_ShowBanner();
-                            ShowAreYouSure(coinAmount, itemTypes); 
-                        });
-                    }
+                    OnContinue(coinAmount, itemTypes, () => { 
+                        GlobalDefine.RequestAD_ShowBanner();
+                        ShowAreYouSure(coinAmount, itemTypes); 
+                    });
                 },
                 SubWidgetBuilder = () => {
-                    if (m_isFirstFail)
-                        return null;
+                    if (m_isFirstFail) return null;
 
                     var widget = Instantiate(ResourcePathAttribute.GetResource<IconWidget>());
                     widget.OnSetup("UI_Icon_Coin", $"{coinAmount}");
