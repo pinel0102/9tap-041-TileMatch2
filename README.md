@@ -9,7 +9,7 @@ Puzzle - TileMatch2 클라이언트 프로젝트
 
 # SDK Versions
 <details>
-<summary markdown="span"><em>Unity Engine : 2022.3.21f1</em></summary>
+<summary markdown="span"><em>Unity Engine : 2022.3.22f1</em></summary>
 <br>
 
 ---
@@ -19,7 +19,7 @@ Puzzle - TileMatch2 클라이언트 프로젝트
    - Firebase : 11.8.0
    - Facebook : 16.0.2
    - IronSource : 7.9.0
-   - In App Purchasing : 4.10.0
+   - In App Purchasing : 4.11.0
 
 </details>
 
