@@ -217,17 +217,20 @@ public class TileItem : CachedBehaviour
         
         Reset();
 
-        m_scaleTween?.OnChangeValue(Vector3.one, 0).Forget();
-		m_iconAlphaTween?.OnChangeValue(Color.white, 0).Forget();
-        m_dimTween?.OnChangeValue(0, 0).Forget();
+        m_scaleTween?.OnChangeValue(Vector3.one, -1f).Forget();
+		m_iconAlphaTween?.OnChangeValue(Color.white, -1f).Forget();
+        m_dimTween?.OnChangeValue(0, -1f).Forget();
+
+        m_view.SetLocalScale(Vector2.one);
+        m_icon.color = Color.white;
+        m_dim.alpha	= 0f;
 
         currentLocation = LocationType.POOL;
         blockerICD = 0;
         m_interactable = false;
         m_movable = false;
-        m_icon.color = Color.white;
-        m_dim.alpha	= 0f;
         m_current = null;
+        
         CachedGameObject.SetActive(false);
 	}
 
