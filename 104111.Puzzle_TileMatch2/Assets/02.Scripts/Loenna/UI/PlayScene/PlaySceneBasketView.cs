@@ -162,9 +162,7 @@ public class PlaySceneBasketView : CachedBehaviour
             {
                 Debug.Log(CodeManager.GetMethodName() + string.Format("m_tileItems.Count : {0}", m_tileItems.Count));
 
-                GlobalData.Instance.ShowTutorial_Play(level, () => {
-                    //popupClosed = true;
-                });
+                GlobalData.Instance.ShowTutorial_Play(level);
 
                 isTutorialShowed = true;
             }

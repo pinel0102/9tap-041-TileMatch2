@@ -232,23 +232,25 @@ partial class PlayScene
 
                 m_blockerShownList.Clear();
 
+                if (GlobalDefine.IsEnablePuzzleOpenPopup())
+                {
+                    await GlobalData.Instance.ShowPuzzleOpenPopup();
+                    
+                    m_block.SetActive(true);
+                    await UniTask.Delay(TimeSpan.FromSeconds(0.2f));
+                }
+
                 if (m_bottomView.BasketView.isTutorialLevel)
                 {
                     m_bottomView.BasketView.tutorialCheckCount = GlobalDefine.GetTutorialCheckCount(level);
                     m_bottomView.BasketView.CheckTutorialBasket();
                 }
-                else if (GlobalDefine.IsEnablePuzzleOpenPopup())
+                else 
                 {
-                    await GlobalData.Instance.ShowPuzzleOpenPopup();
-
                     if (m_blockerList.Count > 0)
                     {
                         CheckTutorialBlocker(m_blockerList);
                     }
-                }
-                else if (m_blockerList.Count > 0)
-                {
-                    CheckTutorialBlocker(m_blockerList);
                 }
 
                 m_block.SetActive(false);
@@ -303,13 +305,19 @@ partial class PlayScene
                         }
 
                         await UniTask.Defer(() => m_bottomView.BasketView.OnRemoveItemUI(board.Tiles, basket));
-                        
-                        m_bottomView.BasketView.CheckTutorialBasket();
-                        
+
                         m_blockerList = gameManager.CurrentBlockerList();
-                        if (m_blockerList.Count > 0)
+                        
+                        if (m_bottomView.BasketView.isTutorialLevel)
                         {
-                            CheckTutorialBlocker(m_blockerList);
+                            m_bottomView.BasketView.CheckTutorialBasket();
+                        }
+                        else
+                        {
+                            if (m_blockerList.Count > 0)
+                            {
+                                CheckTutorialBlocker(m_blockerList);
+                            }
                         }
 
                         if(!blockerFailed)
