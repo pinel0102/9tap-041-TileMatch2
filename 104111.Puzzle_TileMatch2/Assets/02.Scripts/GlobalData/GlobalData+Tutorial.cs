@@ -24,11 +24,11 @@ public partial class GlobalData
         }
     }
 
-    public void ShowTutorial_Play(int level)
+    public void ShowTutorial_Play(int level, Action onClosed = null)
     {
         Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Show Tutorial : Level {0}</color>", level));
 
-        ShowTutorialPlayPopup(level);
+        ShowTutorialPlayPopup(level, onClosed);
     }
 
     public void ShowTutorial_Blocker(BlockerType blockerType, TileItem tileItem)
@@ -45,13 +45,14 @@ public partial class GlobalData
         await ShowTutorialPuzzlePopup();
     }
 
-    public void ShowTutorialPlayPopup(int level, Action onComplete = null)
+    public void ShowTutorialPlayPopup(int level, Action onClosed = null)
     {
         UIManager.ShowPopupUI<TutorialPlayPopup>(
         new TutorialPlayPopupParameter(
             Level: level,
             GlobalDefine.GetTutorialIndex(level),
-            GlobalDefine.GetTutorialItemIndex(level)
+            GlobalDefine.GetTutorialItemIndex(level),
+            OnClosed: onClosed
         ));
     }
 

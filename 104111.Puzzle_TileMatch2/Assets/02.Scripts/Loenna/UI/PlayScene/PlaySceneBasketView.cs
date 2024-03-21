@@ -133,6 +133,27 @@ public class PlaySceneBasketView : CachedBehaviour
 		return task;	
 	}
 
+    public async UniTask CheckTutorialBasketUniTask()
+    {
+        if(isTutorialLevel && !isTutorialShowed)
+        {
+            if(m_tileItems.Count >= tutorialCheckCount)
+            {
+                bool popupClosed = false;
+
+                Debug.Log(CodeManager.GetMethodName() + string.Format("m_tileItems.Count : {0}", m_tileItems.Count));
+
+                GlobalData.Instance.ShowTutorial_Play(level, () => {
+                    popupClosed = true;
+                });
+
+                isTutorialShowed = true;
+
+                await UniTask.WaitUntil(() => popupClosed);
+            }
+        }
+    }
+
     public void CheckTutorialBasket()
     {
         if(isTutorialLevel && !isTutorialShowed)
@@ -140,7 +161,11 @@ public class PlaySceneBasketView : CachedBehaviour
             if(m_tileItems.Count >= tutorialCheckCount)
             {
                 Debug.Log(CodeManager.GetMethodName() + string.Format("m_tileItems.Count : {0}", m_tileItems.Count));
-                GlobalData.Instance.ShowTutorial_Play(level);
+
+                GlobalData.Instance.ShowTutorial_Play(level, () => {
+                    //popupClosed = true;
+                });
+
                 isTutorialShowed = true;
             }
         }

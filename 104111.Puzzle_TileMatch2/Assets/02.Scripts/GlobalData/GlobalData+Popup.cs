@@ -120,13 +120,18 @@ public partial class GlobalData
         );
     }
 
-    public void ShowPuzzleOpenPopup()
+    public async UniTask ShowPuzzleOpenPopup()
     {
+        bool popupClosed = false;
+
         UIManager.ShowPopupUI<PuzzleOpenPopup>(
             new PuzzleOpenPopupParameter(
-                OpenPuzzleIndex: userManager.Current.PuzzleOpenPopupIndex
+                OpenPuzzleIndex: userManager.Current.PuzzleOpenPopupIndex,
+                OnClosed: () => { popupClosed = true; }
             )
         );
+
+        await UniTask.WaitUntil(() => popupClosed);
     }
 
     public void ShowPresentPopup(ProductData product, Action onComplete = null)

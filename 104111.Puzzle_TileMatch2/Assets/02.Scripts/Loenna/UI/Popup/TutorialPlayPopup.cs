@@ -16,7 +16,8 @@ using System.Linq;
 public record TutorialPlayPopupParameter(
     int Level,
     int TutorialIndex,
-    int ItemIndex
+    int ItemIndex,
+    Action OnClosed
 ): DefaultParameterWithoutHUD;
 
 [ResourcePath("UI/Popup/TutorialPlayPopup")]
@@ -53,6 +54,7 @@ public class TutorialPlayPopup : UIPopup
     public bool itemExists;
     private bool isButtonInteractable;
     private int firstTargetIndex = 3;
+    private Action m_popupCloseCallback = default!;
 
     public override void OnSetup(UIParameter uiParameter)
     {
@@ -67,6 +69,7 @@ public class TutorialPlayPopup : UIPopup
         Level = parameter.Level;
         TutorialIndex = parameter.TutorialIndex;
         ItemIndex = parameter.ItemIndex;
+        m_popupCloseCallback = parameter.OnClosed;
 
         SetButtonInteractable(false);
         
@@ -369,4 +372,11 @@ public class TutorialPlayPopup : UIPopup
         m_touchLock.SetActive(!isButtonInteractable);
         //Debug.Log(CodeManager.GetMethodName() + isButtonInteractable);
     }
+
+    public override void OnHide()
+	{
+        base.OnHide();
+
+        m_popupCloseCallback?.Invoke();
+	}
 }

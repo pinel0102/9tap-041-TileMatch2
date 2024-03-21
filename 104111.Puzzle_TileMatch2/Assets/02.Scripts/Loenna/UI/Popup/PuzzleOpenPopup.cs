@@ -10,7 +10,7 @@ using Cysharp.Threading.Tasks.Linq;
 using NineTap.Common;
 using TMPro;
 
-public record PuzzleOpenPopupParameter(int OpenPuzzleIndex): DefaultParameterWithoutHUD;
+public record PuzzleOpenPopupParameter(int OpenPuzzleIndex, Action OnClosed): DefaultParameterWithoutHUD;
 
 [ResourcePath("UI/Popup/PuzzleOpenPopup")]
 public class PuzzleOpenPopup : UIPopup
@@ -25,6 +25,7 @@ public class PuzzleOpenPopup : UIPopup
     
 	public bool isInteractable;
     public int openPuzzleIndex;
+    private Action m_popupCloseCallback = default!;
 
     private const string format_openPuzzle = "You have unlocked\n{0}!";
     
@@ -40,6 +41,7 @@ public class PuzzleOpenPopup : UIPopup
 
         GlobalData.Instance.userManager.UpdatePuzzleOpenIndex(puzzleOpenPopupIndex: -1);
         openPuzzleIndex = parameter.OpenPuzzleIndex;
+        m_popupCloseCallback = parameter.OnClosed;
 
 		SetInteractable(false);
         m_openPuzzleContinue.SetActive(false);
@@ -129,6 +131,13 @@ public class PuzzleOpenPopup : UIPopup
             OnClickClose();
         }
     }
+
+    public override void OnHide()
+	{
+        base.OnHide();
+
+        m_popupCloseCallback?.Invoke();
+	}
 
     private void SetInteractable(bool interactable)
     {

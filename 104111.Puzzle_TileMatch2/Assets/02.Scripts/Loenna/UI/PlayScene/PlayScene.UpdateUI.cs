@@ -232,14 +232,19 @@ partial class PlayScene
 
                 m_blockerShownList.Clear();
 
-                if (GlobalDefine.IsEnablePuzzleOpenPopup())
-                {
-                    GlobalData.Instance.ShowPuzzleOpenPopup();
-                }
-                else if (m_bottomView.BasketView.isTutorialLevel)
+                if (m_bottomView.BasketView.isTutorialLevel)
                 {
                     m_bottomView.BasketView.tutorialCheckCount = GlobalDefine.GetTutorialCheckCount(level);
                     m_bottomView.BasketView.CheckTutorialBasket();
+                }
+                else if (GlobalDefine.IsEnablePuzzleOpenPopup())
+                {
+                    await GlobalData.Instance.ShowPuzzleOpenPopup();
+
+                    if (m_blockerList.Count > 0)
+                    {
+                        CheckTutorialBlocker(m_blockerList);
+                    }
                 }
                 else if (m_blockerList.Count > 0)
                 {
@@ -300,7 +305,7 @@ partial class PlayScene
                         await UniTask.Defer(() => m_bottomView.BasketView.OnRemoveItemUI(board.Tiles, basket));
                         
                         m_bottomView.BasketView.CheckTutorialBasket();
-
+                        
                         m_blockerList = gameManager.CurrentBlockerList();
                         if (m_blockerList.Count > 0)
                         {
