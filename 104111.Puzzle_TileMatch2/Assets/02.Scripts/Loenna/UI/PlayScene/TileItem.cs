@@ -104,7 +104,7 @@ public class TileItem : CachedBehaviour
     [SerializeField]	private bool m_interactable = false;
     [SerializeField]	private bool m_movable = false;
     [SerializeField]	private bool isMoving;
-    [SerializeField]	private bool isScaling;
+    //[SerializeField]	private bool isScaling;
     public bool IsInteractable => m_interactable;
     public bool IsMovable => m_movable;
     public bool IsMoving => isMoving;
@@ -236,7 +236,7 @@ public class TileItem : CachedBehaviour
     /// </summary>
     public void Reset()
     {
-        isScaling = false;
+        //isScaling = false;
         isMoving = false;
     }
 
@@ -249,7 +249,7 @@ public class TileItem : CachedBehaviour
 	public void OnSetup(TileItemParameter parameter)
 	{
         blockerICD = 0;
-        isScaling = false;
+        //isScaling = false;
         isMoving = false;
         m_tileDataTable = Game.Inst.Get<TableManager>().TileDataTable;
 		SoundManager soundManager = Game.Inst.Get<SoundManager>();
@@ -337,14 +337,14 @@ public class TileItem : CachedBehaviour
                                     parameter.OnClick?.Invoke(this);
                                 });
                             default:
-                                SetScaleTween();
+                                //SetScaleTween();
                                 parameter.OnClick?.Invoke(this);
                                 break;
                         }
                     }
                     else
                     {
-                        SetScaleTween();
+                        //SetScaleTween();
                         parameter.OnClick?.Invoke(this);
                     }
                 }
@@ -468,29 +468,14 @@ public class TileItem : CachedBehaviour
 
 #endregion Glue FX
 
-    public void SetScaleTween(bool fromTrigger = true)
+    /*public void SetScaleTween(bool fromTrigger = true)
     {
         isScaling = true;
         m_scaleTween?.OnChangeValue(Vector3.one * 1.3f, Constant.Game.TWEENTIME_TILE_SCALE, () => {
             if (isScaling)
                 m_scaleTween?.OnChangeValue(Vector3.one, Constant.Game.TWEENTIME_TILE_SCALE, () => isScaling = false);
         });
-
-        /*if(fromTrigger)
-        {
-            switch (blockerType)
-            {
-                case BlockerType.Glue_Left:
-                    var (_, rightTile) = this.FindRightTile();
-                    rightTile?.SetScaleTween(false);
-                    break;
-                case BlockerType.Glue_Right:
-                    var (_, leftTile) = this.FindLeftTile();
-                    leftTile?.SetScaleTween(false);
-                    break;
-            }
-        }*/
-    }
+    }*/
 
 	public bool OnUpdateUI(TileItemModel item, bool ignoreInvisible, out LocationType changeLocation)
 	{
@@ -687,7 +672,7 @@ public class TileItem : CachedBehaviour
 
         if (location == LocationType.POOL || Current == null)
         {
-            isScaling = false;
+            //isScaling = false;
             SetMoving(false);
         }
 
@@ -747,7 +732,7 @@ public class TileItem : CachedBehaviour
     {
         Debug.LogWarning(CodeManager.GetMethodName() + string.Format("<color=white>location: {0} / existModel: {1}</color>", location, existModel));
 
-        isScaling = false;
+        //isScaling = false;
         SetMoving(false);
 
         return UniTask.CompletedTask;
