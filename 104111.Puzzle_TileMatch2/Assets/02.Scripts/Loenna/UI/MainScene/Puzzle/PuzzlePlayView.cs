@@ -14,6 +14,7 @@ public class PuzzlePieceItemData
 	public Sprite Sprite;
     public Sprite SpriteAttached;
 	public float Size;
+    public IReadOnlyList<PuzzleCurveType> PuzzleCurveTypes;
 	public Action<JigsawPuzzlePiece, Action> OnTryUnlock;
 }
 
@@ -130,6 +131,7 @@ public class PuzzlePlayView : CachedBehaviour
 				Sprite = pieceSources[index].Sprite,
                 SpriteAttached = pieceSources[index].SpriteAttached,
 				Size = JigsawPuzzleSetting.Instance.PieceSizeWithPadding * ratio,
+                PuzzleCurveTypes = pieceSources[index].PuzzleCurveTypes,
 				OnTryUnlock = OnTryUnlock
 			};
 

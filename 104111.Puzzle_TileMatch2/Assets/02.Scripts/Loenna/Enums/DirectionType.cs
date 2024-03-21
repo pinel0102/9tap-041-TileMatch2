@@ -8,6 +8,12 @@ public enum DirectionType
 	RIGHT
 }
 
+/// <summary>
+/// <para>Up, Left, Down, Right</para>
+/// <para>NONE : Default</para>
+/// <para>POSITIVE : In</para>
+/// <para>NEGATIVE : Out</para>
+/// </summary>
 public enum PuzzleCurveType : uint
 {
 	NONE = 0,

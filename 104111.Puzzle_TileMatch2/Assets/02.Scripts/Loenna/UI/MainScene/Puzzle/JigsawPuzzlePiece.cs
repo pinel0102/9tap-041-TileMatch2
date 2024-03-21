@@ -2,10 +2,12 @@
 
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 using System;
 using NineTap.Common;
 using Coffee.UIEffects;
 using DG.Tweening;
+using System.Linq;
 
 [ResourcePath("UI/Widgets/JigsawPuzzlePiece")]
 public class JigsawPuzzlePiece : CachedBehaviour
@@ -22,8 +24,8 @@ public class JigsawPuzzlePiece : CachedBehaviour
 	private Image m_attachedSsuImage = null!;
     [SerializeField]
     private UIShiny shiny = null!;
-    //[SerializeField]
-	//private GameObject m_placeEffect = null!;
+    [SerializeField]
+    private List<PuzzleCurveType> m_puzzleCurveTypes = new List<PuzzleCurveType>();
     private Action<JigsawPuzzlePiece, Action> OnTryUnlock = null!;
 
     public int Index;
@@ -34,6 +36,7 @@ public class JigsawPuzzlePiece : CachedBehaviour
         Index = _itemData.Index;
         Placed = _placed;
 
+        m_puzzleCurveTypes = _itemData.PuzzleCurveTypes.ToList();
         OnTryUnlock = _itemData.OnTryUnlock;
 
 		m_image.sprite = _itemData.Sprite;
@@ -45,8 +48,7 @@ public class JigsawPuzzlePiece : CachedBehaviour
         m_attachedImage.rectTransform.SetSize(_itemData.Size);
 
         shiny.Stop();
-        //m_placeEffect.SetActive(false);
-
+        
         RefreshState();
 	}
 
@@ -65,8 +67,6 @@ public class JigsawPuzzlePiece : CachedBehaviour
 
     public void PlaceEffect(Action onComplete)
     {
-        //m_placeEffect.SetActive(true);
-
         m_attachedImage.transform.SetLocalScale(0.5f);
         m_attachedImage.gameObject.SetActive(true);
         m_attachedImage.transform.DOScale(1f, 0.3f)

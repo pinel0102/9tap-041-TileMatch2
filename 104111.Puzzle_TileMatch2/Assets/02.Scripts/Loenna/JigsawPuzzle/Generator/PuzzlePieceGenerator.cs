@@ -6,19 +6,13 @@ using System.Collections.Generic;
 using System;
 using Newtonsoft.Json;
 
-public class PuzzlePieceGenerator : MonoBehaviour
+public partial class PuzzlePieceGenerator : MonoBehaviour
 {
-	[SerializeField]
-	private RectTransform m_parent;
-
-	[SerializeField]
-	private Button m_generateButton;
-
-	[SerializeField]
-	private Button m_saveButton;
-
-    [SerializeField]
-	private RawImage m_background;
+    [Header("★ [Reference] Reference")]
+	[SerializeField]	private RectTransform m_parent;
+	[SerializeField]	private Button m_generateButton;
+	[SerializeField]	private Button m_saveButton;
+    [SerializeField]	private RawImage m_background;
 	private List<PieceData> m_pieces = new();
     private List<Sprite> m_sprites = new();
 
@@ -38,10 +32,14 @@ public class PuzzlePieceGenerator : MonoBehaviour
 	[SerializeField]
 	private int m_puzzleIndex;
 
-	private void Start()
+    private void Start()
 	{
 		m_generateButton.onClick.AddListener(CreatePuzzle);
 		m_saveButton.onClick.AddListener(SaveData);
+
+        m_generateTemplateButton.onClick.AddListener(CreateTemplate);
+        m_saveTemplateButton.onClick.AddListener(SaveTemplateData);
+        m_loopTemplateButton.onClick.AddListener(LoopTemplate);
 	}
 
     private void SaveData()
@@ -111,6 +109,7 @@ public class PuzzlePieceGenerator : MonoBehaviour
 		);
 	}
 
+    
 	private void Test_1()
 	{
 		PuzzlePiece puzzle = new PuzzlePiece(m_texture);
@@ -135,7 +134,7 @@ public class PuzzlePieceGenerator : MonoBehaviour
 		//m_image.sprite = puzzle.GetSprite(1, 1);
 	}
 
-
+    
 
 
     private IEnumerator SaveImage(Texture2D tex, string fileName)
@@ -180,7 +179,7 @@ public class PuzzlePieceGenerator : MonoBehaviour
     {
         switch(_encodeFormat)
         {
-             case EncodeFormat.PNG:
+            case EncodeFormat.PNG:
                 ext = "png";
                 break;
             case EncodeFormat.JPG:
