@@ -209,7 +209,7 @@ public class TileItem : CachedBehaviour
 	}
 
     /// <summary>
-    /// 완전히 삭제될 때.
+    /// 완전히 삭제.
     /// </summary>
 	public void Release()
 	{
@@ -226,7 +226,7 @@ public class TileItem : CachedBehaviour
 	}
 
     /// <summary>
-    /// 단순 리셋.
+    /// 상태 리셋.
     /// </summary>
     public void Reset()
     {
