@@ -111,7 +111,7 @@ public static class Constant
 		public const string CLIENT_PATH_KEY = "client_path";
 		public const string DATA_PATH_KEY = "data_path";
 		public const string LATEST_LEVEL_KEY = "latest_level";
-		public const string DEVELOP_MODE_SCENE_KEY = "develop_mode_scene";
+        public const string DEVELOP_MODE_SCENE_KEY = "develop_mode_scene";
 		public const string DEVELOP_MODE_SWITCH_KEY = "develop_mode_switch";
 	}
 

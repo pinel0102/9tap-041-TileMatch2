@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using TMPro;
 using static TMPro.TMP_Dropdown;
+using UnityEditor;
 
 public class MenuBlockerContainerParameter
 {
@@ -47,6 +48,7 @@ public class MenuBlockerContainer : MonoBehaviour
     [SerializeField]	private TMP_InputField m_CountText;
     [SerializeField]	private Button m_buttonCountMinus;
 	[SerializeField]	private Button m_buttonCountPlus;
+    [SerializeField]	private Toggle m_toggleTutorial;
 
     [Header("★ [Reference] Blocker ICD")]
     [SerializeField]	private GameObject m_ICDContainer;
@@ -68,6 +70,7 @@ public class MenuBlockerContainer : MonoBehaviour
         SetupBlockerICD(parameter);
         SetupBlockerDropdown(parameter);
         SetupBlockerLayerDropdown(parameter);
+        SetupBlockerTutorial(LevelEditorPrefs.UI_ShowBlockerTutorial);
     }
 
     private void SetupDefaultButton(MenuBlockerContainerParameter parameter)
@@ -137,6 +140,15 @@ public class MenuBlockerContainer : MonoBehaviour
 		);
 
         RefreshBlockerLayerDropdown(0, LevelEditorPrefs.UI_BlockerLayerIndex + 1, true);
+    }
+
+    private void SetupBlockerTutorial(bool showTutorial)
+    {
+        m_toggleTutorial.isOn = showTutorial;;
+        m_toggleTutorial.onValueChanged.RemoveAllListeners();
+        m_toggleTutorial.onValueChanged.AddListener((isOn) => {
+            LevelEditorPrefs.UI_ShowBlockerTutorial = isOn;
+        });
     }
 
     private void SetDropdownBlocker(int index)

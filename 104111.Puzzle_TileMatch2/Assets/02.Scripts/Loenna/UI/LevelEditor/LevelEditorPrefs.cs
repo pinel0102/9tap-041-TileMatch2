@@ -17,6 +17,8 @@ public static class LevelEditorPrefs
     public static int UI_BlockerVariableICD;
     /// <summary>에디터에서 Blocker를 수정할 레이어 인덱스. (-1 : All)</summary>
     public static int UI_BlockerLayerIndex;
+    /// <summary>에디터에서 Blocker Tutorial 사용 여부.</summary>
+    public static bool UI_ShowBlockerTutorial;
 
 #endregion Parameters
 
@@ -32,6 +34,7 @@ public static class LevelEditorPrefs
         UI_BlockerCount.LoadData(nameof(UI_BlockerCount), 1);
         UI_BlockerVariableICD.LoadData(nameof(UI_BlockerVariableICD), 4);
         UI_BlockerLayerIndex.LoadData(nameof(UI_BlockerLayerIndex), -1);
+        UI_ShowBlockerTutorial.LoadData(nameof(UI_ShowBlockerTutorial), false);
     }
 
     public static void SaveEditorData()
@@ -43,6 +46,7 @@ public static class LevelEditorPrefs
         UI_BlockerCount.SaveData(nameof(UI_BlockerCount));
         UI_BlockerVariableICD.SaveData(nameof(UI_BlockerVariableICD));
         UI_BlockerLayerIndex.SaveData(nameof(UI_BlockerLayerIndex));
+        UI_ShowBlockerTutorial.SaveData(nameof(UI_ShowBlockerTutorial));
     }
 
 

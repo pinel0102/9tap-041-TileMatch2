@@ -43,7 +43,7 @@ public class UserManager : IDisposable
         if (editorMode)
 		{
 			int level = PlayerPrefs.GetInt(Constant.Editor.LATEST_LEVEL_KEY, 1);
-			CreateDummy(level);
+            CreateDummy(level, LevelEditorPrefs.UI_ShowBlockerTutorial);
 			return true;
 		}
 
@@ -99,7 +99,7 @@ public class UserManager : IDisposable
 
         return true;
 
-		void CreateDummy(int level)
+		void CreateDummy(int level, bool blockerTutorial = false)
 		{
 			m_user.Value = new User(
                 AgreePrivacy: true,
@@ -183,11 +183,11 @@ public class UserManager : IDisposable
                 Event_SweetHolic_StartDate: GlobalDefine.dateDefault_HHmmss,
                 Event_SweetHolic_EndDate: GlobalDefine.dateDefault_HHmmss,
                 ExpiredSweetHolicBoosterTime: 0L,
-                Showed_BlockerTutorial_Glue: true,
-                Showed_BlockerTutorial_Bush: true,
-                Showed_BlockerTutorial_Suitcase: true,
-                Showed_BlockerTutorial_Jelly: true,
-                Showed_BlockerTutorial_Chain: true
+                Showed_BlockerTutorial_Glue: !blockerTutorial,
+                Showed_BlockerTutorial_Bush: !blockerTutorial,
+                Showed_BlockerTutorial_Suitcase: !blockerTutorial,
+                Showed_BlockerTutorial_Jelly: !blockerTutorial,
+                Showed_BlockerTutorial_Chain: !blockerTutorial
 			);
 		}
 	}
