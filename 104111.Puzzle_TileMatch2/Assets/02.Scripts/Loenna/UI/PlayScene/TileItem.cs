@@ -208,26 +208,37 @@ public class TileItem : CachedBehaviour
 		m_dimTween?.Dispose();
 	}
 
+    /// <summary>
+    /// 완전히 삭제될 때.
+    /// </summary>
 	public void Release()
 	{
         //Debug.Log(CodeManager.GetMethodName() + gameObject.name);
+        
+        Reset();
 
-        m_scaleTween?.OnChangeValue(Vector3.one, 0f).Forget();
-		m_iconAlphaTween?.OnChangeValue(Color.white, -1f).Forget();
-        m_dimTween?.OnChangeValue(0, 0f).Forget();
-		
         currentLocation = LocationType.POOL;
         blockerICD = 0;
-        isScaling = false;
-        isMoving = false;
-		m_interactable = false;
+        m_interactable = false;
         m_movable = false;
-		m_icon.color = Color.white;
-		m_dim.alpha	= 0f;
-		m_current = null;
-
+        m_current = null;
         CachedGameObject.SetActive(false);
 	}
+
+    /// <summary>
+    /// 단순 리셋.
+    /// </summary>
+    public void Reset()
+    {
+        m_scaleTween?.OnChangeValue(Vector3.one, 0).Forget();
+		m_iconAlphaTween?.OnChangeValue(Color.white, 0).Forget();
+        m_dimTween?.OnChangeValue(0, 0).Forget();
+        
+        isScaling = false;
+        isMoving = false;
+		m_icon.color = Color.white;
+		m_dim.alpha	= 0f;
+    }
 
 	public void SetActive(bool enabled)
 	{

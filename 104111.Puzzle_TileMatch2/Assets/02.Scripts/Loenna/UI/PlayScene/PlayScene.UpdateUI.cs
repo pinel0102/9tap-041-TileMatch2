@@ -214,6 +214,7 @@ partial class PlayScene
 						}
 					).ToList();
 				m_tileItems.AddRange(tileItems);
+                ResetAllTiles();
 				m_bottomView.BasketView.Clear();
 				m_bottomView.StashView.Clear();
 				m_topView.BoardCountView.OnSetup(index, count);
@@ -482,6 +483,15 @@ partial class PlayScene
         }
     }
 
+    public void ResetAllTiles()
+    {
+        Debug.Log(CodeManager.GetMethodName());
+
+        m_tileItems.ForEach(tile => {
+            tile.Reset();
+        });
+    }
+
 #region LevelClear Popup
 
     public void LevelClear()
@@ -495,6 +505,8 @@ partial class PlayScene
         
         GlobalDefine.RequestAD_HideBanner();
         SDKManager.SendAnalytics_I_Scene_Clear();
+
+        ResetAllTiles();
 
         UIManager.ShowPopupUI<GameClearPopup>(
             new GameClearPopupParameter(
@@ -518,6 +530,8 @@ partial class PlayScene
             m_isFirstFail = m_userManager.Current.FailedCountTotal == 0;
 
             SDKManager.SendAnalytics_I_Scene_Fail();
+
+            ResetAllTiles();
         }
 
         CurrentPlayState.Finished.State result = CurrentPlayState.Finished.State.OVER;
@@ -588,6 +602,8 @@ partial class PlayScene
             Debug.Log(CodeManager.GetMethodName() + string.Format("Level {0} : {1}", m_gameManager.CurrentLevel, blockerType));
             
             SDKManager.SendAnalytics_I_Scene_Fail(false);
+
+            ResetAllTiles();
         }
 
         CurrentPlayState.Finished.State result = CurrentPlayState.Finished.State.OVER;
