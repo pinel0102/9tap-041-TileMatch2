@@ -112,7 +112,8 @@ public class TileItem : CachedBehaviour
 	}
 
     [Header("★ [Live] Status")]
-    public LocationType currentLocation;
+    [SerializeField]	private LocationType currentLocation;
+    [SerializeField]	private LocationType oldLocation;
     [SerializeField]	private bool m_interactable = false;
     [SerializeField]	private bool m_movable = false;
     [SerializeField]	private bool isMoving;
@@ -535,9 +536,10 @@ public class TileItem : CachedBehaviour
 
         layerIndex = item.LayerIndex;
         siblingIndex = item.SiblingIndex;
+        oldLocation = currentLocation;
         currentLocation = changeLocation;
         blockerType = item.BlockerType;
-        blockerICD = item.BlockerICD;//blockerICD > 0 ? blockerICD : item.BlockerICD;
+        blockerICD = item.BlockerICD;
         iconList = item.IconList;
         
         RefreshIcon(blockerType, blockerICD);
@@ -704,25 +706,25 @@ public class TileItem : CachedBehaviour
             Reset();
         }
 
+        //Debug.Log(CodeManager.GetMethodName() + string.Format("{0} -> {1}", oldLocation, location));
+
         return (location, Current != null) switch {
-			(LocationType.STASH or LocationType.BASKET, _) => 
-                TileJump(location, direction, duration) 
-                ?? UniTask.CompletedTask,
+			(LocationType.BASKET, _) => 
+                oldLocation == LocationType.BASKET 
+                ? m_positionTween?.OnChangeValue(direction, duration) ?? UniTask.CompletedTask // Basket -> Basket (After Matching Move)
+                : TileJump(location, direction, duration) ?? UniTask.CompletedTask, // Board or Stash -> Basket
+            (LocationType.STASH, _) => 
+                TileJump(location, direction, duration) ?? UniTask.CompletedTask, // Basket -> Stash (Item: Return)
 			(LocationType.BOARD, true) => 
-                m_positionTween?.OnChangeValue(m_originWorldPosition, duration) 
-                ?? UniTask.CompletedTask,
+                m_positionTween?.OnChangeValue(m_originWorldPosition, duration) ?? UniTask.CompletedTask, // Basket -> Board (Item: Undo)
 			(LocationType.POOL, _) => 
-                m_scaleTween?.OnChangeValue(Vector3.zero, duration, duration)
-                ?? UniTask.CompletedTask,
+                m_scaleTween?.OnChangeValue(Vector3.zero, duration, duration) ?? UniTask.CompletedTask, // Mathing Disappear
 			_ => DoNothing(location, Current != null)
 		};
 	}
 
     private UniTask? TileJump(LocationType location, Vector3 value, float duration)
     {
-        //Debug.Log(CodeManager.GetMethodName() + string.Format("m_movable: {0}", m_movable));
-        //Debug.Log(location);
-
         return ObjectUtility.GetRawObject(CachedTransform)?
             .DOJump(value, 0.5f, 1, duration)
             .OnPlay(() => {
