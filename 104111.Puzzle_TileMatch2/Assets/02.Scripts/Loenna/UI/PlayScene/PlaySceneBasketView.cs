@@ -26,7 +26,7 @@ public class PlaySceneBasketView : CachedBehaviour
 		m_tileItems.Clear();
 	}
 
-	public UniTask OnAddItemUI(TileItem tileItem)
+    public UniTask OnAddItemUI(TileItem tileItem)
 	{
 		if (tileItem?.Current?.Location is not LocationType.BASKET and not LocationType.POOL)
 		{
@@ -34,16 +34,13 @@ public class PlaySceneBasketView : CachedBehaviour
 			return UniTask.CompletedTask;
 		}
 
-        if(m_tileItems.Contains(tileItem))
-        {
-            return UniTask.CompletedTask;
-        }
-
-		tileItem?.CachedRectTransform?.SetParent(m_parent.transform, true);
+        tileItem?.CachedRectTransform?.SetParent(m_parent.transform, true);
 		int index = m_tileItems.FindLastIndex(item => item.Current?.Icon == tileItem.Current?.Icon);
 
 		var insertIndex = index < 0? m_tileItems.Count : index + 1;
-		m_tileItems.Insert(insertIndex, tileItem);
+
+        if(!m_tileItems.Contains(tileItem))
+		    m_tileItems.Insert(insertIndex, tileItem);
 
         SortBasket();
 
@@ -51,17 +48,20 @@ public class PlaySceneBasketView : CachedBehaviour
 
 		return UniTask.Create(
 			async () => {
-				var tasks = m_tileItems
-					.Select(
-						(item, itemIndex) => {
-							return item.OnChangeLocation(
-								LocationType.BASKET, 
-								m_parent.transform.position + Vector3.right * itemIndex * Constant.Game.TILE_WIDTH * UIManager.SceneCanvas!.scaleFactor,
-								itemIndex == insertIndex? Constant.Game.TWEENTIME_TILE_DEFAULT : Constant.Game.TWEENTIME_TILE_DEFAULT
-							);
-						}
-					);
-				await UniTask.WhenAll(tasks);
+				var tasks = UniTask.Defer(() => UniTask.WhenAll(
+                        m_tileItems.Select(
+                            (item, itemIndex) => {
+                                //Debug.Log(CodeManager.GetMethodName() + itemIndex);
+                                return item.OnChangeLocation(
+                                    LocationType.BASKET, 
+                                    m_parent.transform.position + Vector3.right * itemIndex * Constant.Game.TILE_WIDTH * UIManager.SceneCanvas!.scaleFactor,
+                                    Constant.Game.TWEENTIME_TILE_DEFAULT
+                                );
+                            }
+                        )
+                    )
+                );
+				await UniTask.Defer(() => UniTask.WhenAll(tasks));
 			}
 		);
 	}
@@ -108,11 +108,11 @@ public class PlaySceneBasketView : CachedBehaviour
                 
                 if (m_tileItems.Count > 0)
 				{
-					var task2 = UniTask.Defer(
-						() => UniTask.WhenAll(
+					var task2 = UniTask.Defer(() => UniTask.WhenAll(
 							m_tileItems
 							.Select(
 								(item, itemIndex) => {
+                                    //Debug.Log(CodeManager.GetMethodName() + itemIndex);
 									return item.OnChangeLocation(
 										item.Current.Location, 
 										m_parent.transform.position + Vector3.right * itemIndex * Constant.Game.TILE_WIDTH * UIManager.SceneCanvas!.scaleFactor,
@@ -179,6 +179,11 @@ public class PlaySceneBasketView : CachedBehaviour
         //Debug.Log(CodeManager.GetMethodName() + result);
 
         return result;
+    }
+
+    public bool IsBasketEnable()
+    {
+        return m_tileItems.Count < Constant.Game.MAX_BASKET_AMOUNT;
     }
 
     private void SortBasket()

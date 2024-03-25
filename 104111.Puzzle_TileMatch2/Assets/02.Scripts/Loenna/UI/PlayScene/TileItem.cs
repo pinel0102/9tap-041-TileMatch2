@@ -159,6 +159,7 @@ public class TileItem : CachedBehaviour
 	private TweenContext? m_scaleTween;
 	private TweenContext? m_dimTween;
 	private TweenContext? m_iconAlphaTween;
+    private Sequence m_jumpSequence;
 	private Vector3 m_originWorldPosition;
 
     private bool ShuffleMove;
@@ -218,6 +219,7 @@ public class TileItem : CachedBehaviour
 		m_scaleTween?.Dispose();
 		m_iconAlphaTween?.Dispose();
 		m_dimTween?.Dispose();
+        m_jumpSequence?.Kill();
 	}
 
     /// <summary>
@@ -232,6 +234,7 @@ public class TileItem : CachedBehaviour
         m_scaleTween?.OnChangeValue(Vector3.one, -1f).Forget();
 		m_iconAlphaTween?.OnChangeValue(Color.white, -1f).Forget();
         m_dimTween?.OnChangeValue(0, -1f).Forget();
+        m_jumpSequence?.Kill();
 
         m_view.SetLocalScale(Vector2.one);
         m_icon.color = Color.white;
@@ -320,6 +323,8 @@ public class TileItem : CachedBehaviour
 				.SetAutoKill(false)
 		);
 
+        m_jumpSequence = null;
+
 		List<EventTrigger.Entry> entries = new List<EventTrigger.Entry> {
 			new EventTrigger.Entry { eventID = EventTriggerType.PointerDown }
 		};
@@ -365,15 +370,31 @@ public class TileItem : CachedBehaviour
                         switch(blockerType)
                         {
                             case BlockerType.Glue_Left:
-                                var(existRight, rightTile) = this.FindRightTile();
-                                return WaitGlueAnimation(existRight, rightTile, () => {
-                                    parameter.OnClick?.Invoke(this);
-                                });
+                                if (globalData.playScene.bottomView.BasketView.IsBasketEnable())
+                                {
+                                    var(existRight, rightTile) = this.FindRightTile();
+                                    return WaitGlueAnimation(existRight, rightTile, () => {
+                                        parameter.OnClick?.Invoke(this);
+                                    });
+                                }
+                                else
+                                {
+                                    globalData.SetTouchLock_PlayScene(false);
+                                }
+                                break;
                             case BlockerType.Glue_Right:
-                                var(existLeft, leftTile) = this.FindLeftTile();
-                                return WaitGlueAnimation(existLeft, leftTile, () => {
-                                    parameter.OnClick?.Invoke(this);
-                                });
+                                if(globalData.playScene.bottomView.BasketView.IsBasketEnable())
+                                {
+                                    var(existLeft, leftTile) = this.FindLeftTile();
+                                    return WaitGlueAnimation(existLeft, leftTile, () => {
+                                        parameter.OnClick?.Invoke(this);
+                                    });
+                                }
+                                else
+                                {
+                                    globalData.SetTouchLock_PlayScene(false);
+                                }
+                                break;
                             default:
                                 //SetScaleTween();
                                 parameter.OnClick?.Invoke(this);
@@ -698,6 +719,8 @@ public class TileItem : CachedBehaviour
 			return UniTask.CompletedTask;
 		}
 
+        //duration = 0.5f;
+
         currentLocation = location;
         Vector2 direction = moveAt ?? Current.Position;
 
@@ -707,13 +730,14 @@ public class TileItem : CachedBehaviour
         }
 
         //Debug.Log(CodeManager.GetMethodName() + string.Format("{0} -> {1}", oldLocation, location));
+        //Debug.Log(CodeManager.GetMethodName() + string.Format("direction : {0}", direction));
 
         return (location, Current != null) switch {
 			(LocationType.BASKET, _) => 
-                oldLocation == LocationType.BASKET 
-                ? m_positionTween?.OnChangeValue(direction, duration) ?? UniTask.CompletedTask // Basket -> Basket (After Matching Move)
-                : TileJump(location, direction, duration) ?? UniTask.CompletedTask, // Board or Stash -> Basket
+                //m_positionTween?.OnChangeValue(direction, duration) ?? UniTask.CompletedTask,
+                TileJump(location, direction, duration) ?? UniTask.CompletedTask, // Board or Stash -> Basket || // Basket -> Basket (After Matching Move)
             (LocationType.STASH, _) => 
+                //m_positionTween?.OnChangeValue(direction, duration) ?? UniTask.CompletedTask, 
                 TileJump(location, direction, duration) ?? UniTask.CompletedTask, // Basket -> Stash (Item: Return)
 			(LocationType.BOARD, true) => 
                 m_positionTween?.OnChangeValue(m_originWorldPosition, duration) ?? UniTask.CompletedTask, // Basket -> Board (Item: Undo)
@@ -723,18 +747,38 @@ public class TileItem : CachedBehaviour
 		};
 	}
 
+    private void StopJump()
+    {
+        if (m_jumpSequence?.IsActive() ?? false)
+        {
+            //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=white>[{0}] Stop : {1}</color>", gameObject.name, blockerType));
+            m_jumpSequence?.Kill();
+        }
+    }
+
     private UniTask? TileJump(LocationType location, Vector3 value, float duration)
     {
-        return ObjectUtility.GetRawObject(CachedTransform)?
+        StopJump();
+
+        m_jumpSequence = DOTween.Sequence();
+        m_jumpSequence.Append(ObjectUtility.GetRawObject(CachedTransform)?
             .DOJump(value, 0.5f, 1, duration)
             .OnPlay(() => {
+                //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=white>[{0}] Play : {1}</color>", gameObject.name, blockerType));
                 SetMoving(true);
             })
             .OnComplete(() => {
+                //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=white>[{0}] Complete : {1}</color>", gameObject.name, blockerType));
                 SetMoving(false);
                 if (location == LocationType.BASKET)
                     globalData.playScene?.mainView?.CurrentBoard?.SortLayerTiles();
             })
+            .OnKill(() => m_jumpSequence = null)
+            .SetAutoKill()
+        );
+
+        return m_jumpSequence
+            .Play()
             .AsyncWaitForCompletion()
             .AsUniTask();
     }

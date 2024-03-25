@@ -50,6 +50,7 @@ partial class GameManager
                             AddCommandList(icdListBoard, Type.CHANGE_BLOCKER_ICD, LocationType.BOARD);
                             AddCommandTile(tileItemModel, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
                             AddCommandTile(rightTile, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET, true);
+
                             basketAddCount = 1;
                         }
                         break;
@@ -64,6 +65,7 @@ partial class GameManager
                             AddCommandList(icdListBoard, Type.CHANGE_BLOCKER_ICD, LocationType.BOARD);
                             AddCommandTile(leftTile, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
                             AddCommandTile(tileItemModel, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET, true);
+
                             basketAddCount = 1;
                         }
                         break;
@@ -273,6 +275,11 @@ partial class GameManager
 		);
 	}
 
+    public void AdjustBasketAddCount(int addCount)
+    {
+        basketAddCount = Mathf.Max(0, basketAddCount + addCount);
+    }
+
 	public void AddToBasket(TileItemModel tileItemModel, List<TileItemModel> tiles, bool forceMove)
 	{
         var modifiedTiles = tiles
@@ -308,7 +315,7 @@ partial class GameManager
 		currentStash.RemoveAll(guid => guid == tileItemModel.Guid);
 
         if (forceMove)
-            basketAddCount = Mathf.Max(0, basketAddCount - 1);
+            AdjustBasketAddCount(-1);
 
         if(!blockerFailed)
             blockerFailed = NotValidBlockerAfterMove(tileItemModel);

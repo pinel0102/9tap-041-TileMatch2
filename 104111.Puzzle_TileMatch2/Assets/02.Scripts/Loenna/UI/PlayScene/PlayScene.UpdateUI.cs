@@ -57,7 +57,7 @@ partial class PlayScene
 					new TileItemParameter
 					{
 						OnClick = item => {
-                            if (!blockerFailed)
+                            if (!blockerFailed && m_bottomView.BasketView.IsBasketEnable())
                             {
                                 m_block.SetActive(true);
                                 m_gameManager.OnProcess(item?.Current);
@@ -262,7 +262,7 @@ partial class PlayScene
 					async token => {
                         //Debug.Log(CodeManager.GetMethodName() + "CurrentUpdated");
 
-                        m_block.SetActive(true);
+                        m_block.SetActive(false);
 
                         bool start = m_queue.Count <= 0;
                         m_tileItems.ForEach(
@@ -287,7 +287,7 @@ partial class PlayScene
                         if (selectedTiles?.Count() > 0)
                         {
                             var enumerable = selectedTiles.ToUniTaskAsyncEnumerable();
-                            await UniTask.Defer(
+                            var tasks = UniTask.Defer(
                                 () => enumerable.ForEachAwaitAsync(
                                     async itemModel => {
                                         var selectedItem = m_tileItems.FirstOrDefault(item => item.Current?.Guid == itemModel.Guid);
@@ -303,12 +303,14 @@ partial class PlayScene
                                     }
                                 )
                             );
+                            
+                            await UniTask.Defer(() => UniTask.WhenAll(tasks));
                         }
 
                         m_block.SetActive(false);
 
                         await UniTask.Defer(() => m_bottomView.BasketView.OnRemoveItemUI(board.Tiles, basket));
-                        
+
                         m_blockerList = gameManager.CurrentBlockerList();
                         
                         if (m_bottomView.BasketView.isTutorialLevel)
