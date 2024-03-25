@@ -100,7 +100,7 @@ public class HUD_Field : CachedBehaviour
         m_textIncrease.SetText(_text);
     }
 
-    public void IncreaseText(long from, int count, float duration = 0.5f, bool autoTurnOff_IncreaseMode = true, Action<long> onUpdate = null)
+    public void IncreaseText(long from, int count, float duration = 0.3f, bool autoTurnOff_IncreaseMode = true, Action<long> onUpdate = null)
     {
         SetIncreaseText(from);
         onUpdate?.Invoke(from);

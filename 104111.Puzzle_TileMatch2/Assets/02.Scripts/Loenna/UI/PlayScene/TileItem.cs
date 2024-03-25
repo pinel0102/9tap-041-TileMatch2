@@ -67,11 +67,23 @@ public class TileItem : CachedBehaviour
 			.AttachExternalCancellation(m_tokenSource.Token);
 		}
 
-		public UniTask OnChangeValue(Vector3 value, float duration, TweenCallback onComplete)
+        public UniTask OnChangeValue(Vector3 value, float delay, float duration)
 		{
 			m_tweener
                 .ChangeEndValue(value, duration, true)
-				.Restart();
+                .Restart(true, delay);
+
+			return m_tweener
+			.AsyncWaitForCompletion()
+			.AsUniTask()
+			.AttachExternalCancellation(m_tokenSource.Token);
+		}
+
+		/*public UniTask OnChangeValue(Vector3 value, float duration, TweenCallback onComplete)
+		{
+			m_tweener
+                .ChangeEndValue(value, duration, true)
+                .Restart();
 
 			return m_tweener
 			.AsyncWaitForCompletion()
@@ -91,7 +103,7 @@ public class TileItem : CachedBehaviour
 			.AsUniTask()
 			.ContinueWith(() => onComplete?.Invoke())
 			.AttachExternalCancellation(m_tokenSource.Token);
-		}
+		}*/
 
 		public void Dispose()
 		{
@@ -104,7 +116,6 @@ public class TileItem : CachedBehaviour
     [SerializeField]	private bool m_interactable = false;
     [SerializeField]	private bool m_movable = false;
     [SerializeField]	private bool isMoving;
-    //[SerializeField]	private bool isScaling;
     public bool IsInteractable => m_interactable;
     public bool IsMovable => m_movable;
     public bool IsMoving => isMoving;
@@ -239,8 +250,7 @@ public class TileItem : CachedBehaviour
     /// </summary>
     public void Reset()
     {
-        //isScaling = false;
-        isMoving = false;
+        SetMoving(false);
     }
 
 	public void SetActive(bool enabled)
@@ -252,7 +262,6 @@ public class TileItem : CachedBehaviour
 	public void OnSetup(TileItemParameter parameter)
 	{
         blockerICD = 0;
-        //isScaling = false;
         isMoving = false;
         m_tileDataTable = Game.Inst.Get<TableManager>().TileDataTable;
 		SoundManager soundManager = Game.Inst.Get<SoundManager>();
@@ -260,8 +269,13 @@ public class TileItem : CachedBehaviour
         m_positionTween = new TweenContext(
 			tweener: ObjectUtility.GetRawObject(CachedTransform)?
                 .DOMove(Vector2.zero, Constant.Game.TWEENTIME_TILE_DEFAULT)
+                .OnPlay(() => {
+                    SetMoving(true);
+                })
                 .OnComplete(() => {
                     SetMoving(false);
+                    if (Current.Location == LocationType.BOARD)
+                        globalData.playScene?.mainView?.CurrentBoard?.SortLayerTiles();
                 })
                 .Pause()
 				.SetAutoKill(false)
@@ -270,6 +284,26 @@ public class TileItem : CachedBehaviour
 		m_scaleTween = new TweenContext(
 			tweener: ObjectUtility.GetRawObject(m_view)?
 				.DOScale(Vector3.one, Constant.Game.TWEENTIME_TILE_DEFAULT)
+                .OnComplete(() => {
+                    if(Current.Location == LocationType.POOL)
+                    {
+                        // [Event] Sweet Holic
+                        if (GlobalDefine.IsOpen_Event_SweetHolic())
+                        {
+                            // 매칭된 타일이 수집 이벤트 대상이면.
+                            if(Current.Icon.Equals(globalData.eventSweetHolic_TargetIndex))
+                            {
+                                Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Matching [{0}] {1}</color>", Current.Icon, tileName));
+                                globalData.playScene.gameManager.EventCollect_SweetHolic(transform);
+                            }
+                        }
+
+                        globalData.playScene.LoadFX(GlobalDefine.FX_Prefab_Sparkle, CachedTransform.position);
+
+                        m_view.SetLocalScale(0);
+                        Reset();
+                    }
+                })
                 .SetAutoKill(false)
 		);
 
@@ -320,7 +354,7 @@ public class TileItem : CachedBehaviour
                 {   
                     soundManager?.PlayFx(Constant.Sound.SFX_TILE_SELECT);
 
-                    SetMoving(true);
+                    //SetMoving(true);
                     SetDim(0);
 
                     if (IsNeedEffectBeforeMove(blockerType))
@@ -471,16 +505,7 @@ public class TileItem : CachedBehaviour
 
 #endregion Glue FX
 
-    /*public void SetScaleTween(bool fromTrigger = true)
-    {
-        isScaling = true;
-        m_scaleTween?.OnChangeValue(Vector3.one * 1.3f, Constant.Game.TWEENTIME_TILE_SCALE, () => {
-            if (isScaling)
-                m_scaleTween?.OnChangeValue(Vector3.one, Constant.Game.TWEENTIME_TILE_SCALE, () => isScaling = false);
-        });
-    }*/
-
-	public bool OnUpdateUI(TileItemModel item, bool ignoreInvisible, out LocationType changeLocation)
+    public bool OnUpdateUI(TileItemModel item, bool ignoreInvisible, out LocationType changeLocation)
 	{
 		changeLocation = item?.Location ?? LocationType.POOL;
 
@@ -667,6 +692,7 @@ public class TileItem : CachedBehaviour
 	{
 		if (!moveAt.HasValue && Current == null)
 		{
+            Reset();
 			return UniTask.CompletedTask;
 		}
 
@@ -675,57 +701,37 @@ public class TileItem : CachedBehaviour
 
         if (location == LocationType.POOL || Current == null)
         {
-            //isScaling = false;
-            SetMoving(false);
+            Reset();
         }
 
         return (location, Current != null) switch {
 			(LocationType.STASH or LocationType.BASKET, _) => 
-                TileJump(location, direction, duration, () => {
-                    if (location == LocationType.BASKET)
-                    {
-                        globalData.playScene?.mainView?.CurrentBoard?.SortLayerTiles();
-                    }
-                }) ?? UniTask.CompletedTask,
-			(LocationType.BOARD, true) => 
-                m_positionTween?.OnChangeValue(m_originWorldPosition, duration, () => {
-                    SetMoving(false);
-                    globalData.playScene?.mainView?.CurrentBoard?.SortLayerTiles();
-                }) 
+                TileJump(location, direction, duration) 
                 ?? UniTask.CompletedTask,
-			(LocationType.POOL, _) => m_scaleTween?.OnChangeValue(Vector3.zero, duration, duration, () => {
-                    
-                    // [Event] Sweet Holic
-                    if (GlobalDefine.IsOpen_Event_SweetHolic())
-                    {
-                        // 매칭된 타일이 수집 이벤트 대상이면.
-                        if(Current.Icon.Equals(globalData.eventSweetHolic_TargetIndex))
-                        {
-                            Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>Matching [{0}] {1}</color>", Current.Icon, tileName));
-                            globalData.playScene.gameManager.EventCollect_SweetHolic(transform);
-                        }
-                    }
-
-                    globalData.playScene.LoadFX(GlobalDefine.FX_Prefab_Sparkle, CachedTransform.position);
-
-                    m_view.SetLocalScale(0);
-                    SetMoving(false);
-
-                }) ?? UniTask.CompletedTask,
+			(LocationType.BOARD, true) => 
+                m_positionTween?.OnChangeValue(m_originWorldPosition, duration) 
+                ?? UniTask.CompletedTask,
+			(LocationType.POOL, _) => 
+                m_scaleTween?.OnChangeValue(Vector3.zero, duration, duration)
+                ?? UniTask.CompletedTask,
 			_ => DoNothing(location, Current != null)
 		};
 	}
 
-    private UniTask? TileJump(LocationType location, Vector3 value, float duration, Action onComplete = null)
+    private UniTask? TileJump(LocationType location, Vector3 value, float duration)
     {
         //Debug.Log(CodeManager.GetMethodName() + string.Format("m_movable: {0}", m_movable));
         //Debug.Log(location);
 
         return ObjectUtility.GetRawObject(CachedTransform)?
             .DOJump(value, 0.5f, 1, duration)
+            .OnPlay(() => {
+                SetMoving(true);
+            })
             .OnComplete(() => {
                 SetMoving(false);
-                onComplete?.Invoke();
+                if (location == LocationType.BASKET)
+                    globalData.playScene?.mainView?.CurrentBoard?.SortLayerTiles();
             })
             .AsyncWaitForCompletion()
             .AsUniTask();
@@ -735,8 +741,7 @@ public class TileItem : CachedBehaviour
     {
         Debug.LogWarning(CodeManager.GetMethodName() + string.Format("<color=white>location: {0} / existModel: {1}</color>", location, existModel));
 
-        //isScaling = false;
-        SetMoving(false);
+        Reset();
 
         return UniTask.CompletedTask;
     }
@@ -800,16 +805,6 @@ public class TileItem : CachedBehaviour
         if (m_interactable)
         {
             m_movable = BlockerMoveCheck(blockerICD);
-
-            // 가려진 Blocker에 상관 없이 인접 타일 이동 가능하게 변경.
-            /*if (GetHiddenAroundBlockers().Count > 0)
-            {
-                m_movable = false;
-            }
-            else
-            {
-                m_movable = BlockerMoveCheck(blockerICD);
-            }*/
         }
         else
         {
@@ -822,7 +817,6 @@ public class TileItem : CachedBehaviour
             
             if (currentLocation == LocationType.BOARD)
             {
-                //if (blockerType == BlockerType.None)
                 m_dimTween?.OnChangeValue(IsReallyMovable(m_movable) ? 0 : 1f, 0f);
             }
             
@@ -847,23 +841,6 @@ public class TileItem : CachedBehaviour
     {
         switch(blockerType)
         {
-            // 가려진 Blocker에 상관 없이 인접 타일 이동 가능하게 변경.
-            /*case BlockerType.Bush:
-                if(m_interactable)
-                {
-                    this.FindAroundTiles().ForEach(tile => {
-                        tile.MovableCheck();
-                    });
-                }
-                break;
-            case BlockerType.Chain:
-                if(m_interactable)
-                {
-                    this.FindLeftRightTiles().ForEach(tile => {
-                        tile.MovableCheck();
-                    });
-                }
-                break;*/
             case BlockerType.Glue_Left:
                 var (_, rightTile) = this.FindRightTile();
                 rightTile?.SetDim(IsReallyMovable(m_movable) ? 0 : 1f);

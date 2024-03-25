@@ -95,7 +95,7 @@ public class EventSlider : MonoBehaviour
         RefreshExpText(oldExp, oldReqExp);
     }
 
-    public async UniTask<bool> IncreaseText(int fromTotalExp, int addExp, float duration = 0.5f, Action<int> onLevelUp = null, Action onComplete = null)
+    public async UniTask<bool> IncreaseText(int fromTotalExp, int addExp, float duration = 0.3f, Action<int> onLevelUp = null, Action onComplete = null)
     {
         SetResume(false);
 

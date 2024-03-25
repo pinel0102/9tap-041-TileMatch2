@@ -34,6 +34,11 @@ public class PlaySceneBasketView : CachedBehaviour
 			return UniTask.CompletedTask;
 		}
 
+        if(m_tileItems.Contains(tileItem))
+        {
+            return UniTask.CompletedTask;
+        }
+
 		tileItem?.CachedRectTransform?.SetParent(m_parent.transform, true);
 		int index = m_tileItems.FindLastIndex(item => item.Current?.Icon == tileItem.Current?.Icon);
 
@@ -84,10 +89,11 @@ public class PlaySceneBasketView : CachedBehaviour
 		m_tileItems.RemoveAll(item => basket.All(b => b.Guid != item.Current.Guid));
 
         SortBasket();
-		
-		var tasks = removedTiles.Select(
+
+        var tasks = removedTiles.Select(
 			tile => {
-				LocationType locationType = tiles.FirstOrDefault(x => x.Guid == tile.Current?.Guid)?.Location ?? LocationType.POOL;
+				tile.Reset();
+                LocationType locationType = tiles.FirstOrDefault(x => x.Guid == tile.Current?.Guid)?.Location ?? LocationType.POOL;
 				if (locationType is not LocationType.STASH)
 				{
 					return UniTask.Defer(() => tile.OnChangeLocation(locationType));
@@ -100,13 +106,7 @@ public class PlaySceneBasketView : CachedBehaviour
 			async () => {
 				await UniTask.Defer(() => UniTask.WhenAll(tasks));
                 
-                /*Debug.Log(CodeManager.GetMethodName() + string.Format("m_tileItems.Count : {0}", m_tileItems.Count));
-                foreach(var item in m_tileItems)
-                {
-                    Debug.Log(CodeManager.GetMethodName() + string.Format("m_tileItems.name : {0}", item.gameObject.name));
-                }*/
-
-				if (m_tileItems.Count > 0)
+                if (m_tileItems.Count > 0)
 				{
 					var task2 = UniTask.Defer(
 						() => UniTask.WhenAll(
@@ -130,7 +130,7 @@ public class PlaySceneBasketView : CachedBehaviour
 
         //Debug.Log(CodeManager.GetMethodName() + string.Format("m_tileItems.Count : {0}", m_tileItems.Count));
 
-		return task;	
+		return task;
 	}
 
     public async UniTask CheckTutorialBasketUniTask()

@@ -305,18 +305,22 @@ partial class PlayScene
                             );
                         }
 
-                        await UniTask.Defer(() => m_bottomView.BasketView.OnRemoveItemUI(board.Tiles, basket));
+                        m_block.SetActive(false);
 
+                        await UniTask.Defer(() => m_bottomView.BasketView.OnRemoveItemUI(board.Tiles, basket));
+                        
                         m_blockerList = gameManager.CurrentBlockerList();
                         
                         if (m_bottomView.BasketView.isTutorialLevel)
                         {
+                            m_block.SetActive(true);
                             m_bottomView.BasketView.CheckTutorialBasket();
                         }
                         else
                         {
                             if (m_blockerList.Count > 0)
                             {
+                                m_block.SetActive(true);
                                 CheckTutorialBlocker(m_blockerList);
                             }
                         }
@@ -326,6 +330,7 @@ partial class PlayScene
                             var notValidBlocker = gameManager.NotValidBlockerList();
                             if(notValidBlocker.Count > 0)
                             {
+                                m_block.SetActive(true);
                                 SetBlockerFailed(true);
                                 ShowBlockerFailPopup(notValidBlocker[0].BlockerType);
                             }
