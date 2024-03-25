@@ -6,18 +6,6 @@ using System;
 using Gpm.Ui;
 using TMPro;
 
-/*public class PuzzlePieceItemData : InfiniteScrollData
-{
-	public int Index;
-    public int Cost;
-	public Sprite Sprite;
-    public Sprite SpriteAttached;
-	public float Size;
-	public bool IsLocked;
-    public Action<JigsawPuzzlePiece, Action> OnTryUnlock;
-    public Action<JigsawPuzzlePiece, Action> MovePiece;
-}*/
-
 public class PuzzlePieceScrollItem : InfiniteScrollItem
 {
 	private const float RESIZE_RATIO = 0.8f;

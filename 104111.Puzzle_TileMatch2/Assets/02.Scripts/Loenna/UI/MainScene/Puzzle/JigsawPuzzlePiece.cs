@@ -12,20 +12,14 @@ using System.Linq;
 [ResourcePath("UI/Widgets/JigsawPuzzlePiece")]
 public class JigsawPuzzlePiece : CachedBehaviour
 {
-    [SerializeField]
-	private Button m_attachButton = null!;
-	[SerializeField]
-	private Image m_image = null!;
-    [SerializeField]
-	private Image m_ssuImage = null!;
-    [SerializeField]
-	private Image m_attachedImage = null!;
-    [SerializeField]
-	private Image m_attachedSsuImage = null!;
-    [SerializeField]
-    private UIShiny shiny = null!;
-    [SerializeField]
-    private List<PuzzleCurveType> m_puzzleCurveTypes = new List<PuzzleCurveType>();
+    [SerializeField]	private Button m_attachButton = null!;
+	[SerializeField]	private Image m_image = null!;
+    [SerializeField]	private Image m_ssuImage = null!;
+    [SerializeField]	private Image m_filter = null!;
+    [SerializeField]	private GameObject m_blur = null!;
+    [SerializeField]    private Outline m_outline = null!;
+    [SerializeField]    private UIShiny m_shiny = null!;
+    [SerializeField]    private List<PuzzleCurveType> m_puzzleCurveTypes = new List<PuzzleCurveType>();
     private Action<JigsawPuzzlePiece, Action> OnTryUnlock = null!;
 
     public int Index;
@@ -35,19 +29,12 @@ public class JigsawPuzzlePiece : CachedBehaviour
 	{
         Index = _itemData.Index;
         Placed = _placed;
-
         m_puzzleCurveTypes = _itemData.PuzzleCurveTypes.ToList();
         OnTryUnlock = _itemData.OnTryUnlock;
-
-		m_image.sprite = _itemData.Sprite;
-		m_ssuImage.sprite = _itemData.Sprite;
-        m_attachedImage.sprite = _itemData.SpriteAttached;
-        m_attachedSsuImage.sprite = _itemData.SpriteAttached;
-
+		m_image.sprite = m_ssuImage.sprite = _itemData.Sprite;
+        m_filter.sprite = _itemData.Filter;
         m_image.rectTransform.SetSize(_itemData.Size);
-        m_attachedImage.rectTransform.SetSize(_itemData.Size);
-
-        shiny.Stop();
+        m_shiny.Stop();
         
         RefreshState();
 	}
@@ -55,21 +42,26 @@ public class JigsawPuzzlePiece : CachedBehaviour
     public void RefreshState()
     {
         //Debug.Log(CodeManager.GetMethodName() + string.Format("{0:00} : {1}", Index, Placed));
-        m_attachedImage.transform.SetLocalScale(1f);
-        m_attachedImage.gameObject.SetActive(Placed);
+        m_image.transform.SetLocalScale(1f);
+        m_outline.enabled = Placed;
+        m_filter.gameObject.SetActive(Placed);
+        m_blur.SetActive(!Placed);
     }
 
     public void Attached()
 	{
         //Debug.Log(CodeManager.GetMethodName() + Index);
         Placed = true;
+        m_outline.enabled = Placed;
+        m_filter.gameObject.SetActive(Placed);
+        m_blur.SetActive(!Placed);
 	}
 
     public void PlaceEffect(Action onComplete)
     {
-        m_attachedImage.transform.SetLocalScale(0.5f);
-        m_attachedImage.gameObject.SetActive(true);
-        m_attachedImage.transform.DOScale(1f, 0.3f)
+        m_image.transform.SetLocalScale(0.5f);
+        m_image.gameObject.SetActive(true);
+        m_image.transform.DOScale(1f, 0.3f)
             .SetEase(Ease.OutBack)
             .OnComplete(() => {
                 onComplete?.Invoke();
@@ -78,7 +70,7 @@ public class JigsawPuzzlePiece : CachedBehaviour
 
     public void ShinyEffect()
     {
-        shiny.Play();
+        m_shiny.Play();
     }
 
     public void OnClick_Unlock()

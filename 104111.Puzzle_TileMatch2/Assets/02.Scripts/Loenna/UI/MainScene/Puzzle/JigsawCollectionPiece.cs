@@ -8,15 +8,17 @@ using NineTap.Common;
 public class JigsawCollectionPiece : CachedBehaviour
 {
     [SerializeField] private Image pieceImage;
+    [SerializeField] private Image filterImage;
 
     private bool m_isAttached;
     public bool IsAttached => m_isAttached;
 
-    public void OnSetup(int index, Sprite spriteAttached, bool _isAttached, Vector2 position)
+    public void OnSetup(int index, Sprite sprite, Sprite filter, bool _isAttached, Vector2 position)
     {
         CachedGameObject.name = $"piece[{index}]";
         CachedRectTransform.anchoredPosition = position;
-        pieceImage.sprite = spriteAttached;
+        pieceImage.sprite = sprite;
+        filterImage.sprite = filter;
         pieceImage.SetNativeSize();
         RefreshAttached(_isAttached);
     }

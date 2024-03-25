@@ -21,7 +21,7 @@ public partial class PuzzlePieceGenerator : MonoBehaviour
     public EncodeFormat _encodeFormat = EncodeFormat.PNG;
     [Range(0, 100)]
     public int _jpgQuality = 100;
-    public string outputFolder = "Resources/Images/Puzzle/PieceDefault/";
+    public string outputFolder = "Resources/Images/Puzzle/Piece/";
     private string fullPathFolder;
     private string ext;
 
@@ -94,7 +94,7 @@ public partial class PuzzlePieceGenerator : MonoBehaviour
 		Array.ForEach(
 			puzzlePieces, 
 			puzzlePiece => {
-				var (row, column, position, sprite, spriteAttached, curveTypes, _) = puzzlePiece;
+				var (row, column, position, sprite, filter, curveTypes, _) = puzzlePiece;
 
 				GameObject go = new GameObject($"piece[{row}, {column}]");
 				Image image = go.AddComponent<Image>();

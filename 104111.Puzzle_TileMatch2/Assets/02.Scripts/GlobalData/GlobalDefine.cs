@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using NineTap.Common;
 using UnityEngine;
 
@@ -179,5 +180,24 @@ public static partial class GlobalDefine
         {
             UnityEngine.Object.Destroy(_transform?.GetChild(i).gameObject);
         }
+    }
+
+    public const string ResPiecePath = "Images/Puzzle/Piece/";
+    private const string FilterAtlas = "PieceFilter";
+    private const string FilterPositive = "P";
+    private const string FilterNegative = "N";
+    private const string FilterDefault = "D";
+    public static Sprite GetPieceFilter(IReadOnlyList<PuzzleCurveType> m_puzzleCurveTypes)
+    {
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i < m_puzzleCurveTypes.Count; i++)
+        {
+            sb.Append(m_puzzleCurveTypes[i] switch {
+                PuzzleCurveType.POSITIVE => FilterPositive,
+                PuzzleCurveType.NEGATIVE => FilterNegative,
+                _ => FilterDefault
+            });
+        }
+        return SpriteManager.GetSprite(FilterAtlas, sb.ToString());
     }
 }

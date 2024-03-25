@@ -150,9 +150,9 @@ public class PuzzleContentItem : UIButton
         Array.ForEach(
 			puzzlePieces, 
 			puzzlePiece => {
-				var (index, position, sprite, spriteAttached, _, attached) = puzzlePiece;
+				var (index, position, sprite, filter, _, attached) = puzzlePiece;
                 var piece = Instantiate(piecePrefab, m_pieceParent);
-                piece.OnSetup(index, spriteAttached, attached, position);
+                piece.OnSetup(index, sprite, filter, attached, position);
                 pieceList.Add(piece);
 			}
 		);

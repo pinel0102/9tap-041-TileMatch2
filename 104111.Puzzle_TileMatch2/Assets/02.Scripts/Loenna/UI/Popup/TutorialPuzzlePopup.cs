@@ -37,7 +37,7 @@ public class TutorialPuzzlePopup : UIPopup
     private bool isButtonInteractable;
     private Action? m_popupCloseCallback;
     private int[] pieceIndex = new int[3]{12, 7, 17};
-    private const string resPath = "Images/Puzzle/PieceDefault/1001/{0:00}";
+    private const string resPath = "{0}1001/{1:00}";
     
     public override void OnSetup(UIParameter uiParameter)
     {
@@ -94,7 +94,8 @@ public class TutorialPuzzlePopup : UIPopup
                 m_puzzleCount.SetText(GlobalData.Instance.userManager.Current.Puzzle.ToString());
                 m_tutorialPanel[1].position = GlobalData.Instance.HUD.behaviour.Fields[0].transform.position;
                 m_tutorialPanel[2].position = GlobalData.Instance.fragmentPuzzle.GetSlotTransform(pieceIndex[currentIndex-1]).position;
-                m_pieceImage.sprite = m_pieceImageSSU.sprite = Resources.Load<Sprite>(string.Format(resPath, pieceIndex[currentIndex-1]));
+                m_pieceImage.sprite = m_pieceImageSSU.sprite = Resources.Load<Sprite>(string.Format(resPath, GlobalDefine.ResPiecePath, pieceIndex[currentIndex-1]));
+                m_pieceImageBlur.gameObject.SetActive(true);
                 m_tutorialObject[1].SetActive(true);
 
                 if (currentIndex == 1)

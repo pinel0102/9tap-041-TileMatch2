@@ -12,7 +12,7 @@ public class PuzzlePieceItemData
 	public int Index;
     public int Cost;
 	public Sprite Sprite;
-    public Sprite SpriteAttached;
+    public Sprite Filter;
 	public float Size;
     public IReadOnlyList<PuzzleCurveType> PuzzleCurveTypes;
 	public Action<JigsawPuzzlePiece, Action> OnTryUnlock;
@@ -129,7 +129,7 @@ public class PuzzlePlayView : CachedBehaviour
 				Index = realIndex,
                 Cost = pieceCost,
 				Sprite = pieceSources[index].Sprite,
-                SpriteAttached = pieceSources[index].SpriteAttached,
+                Filter = pieceSources[index].Filter,
 				Size = JigsawPuzzleSetting.Instance.PieceSizeWithPadding * ratio,
                 PuzzleCurveTypes = pieceSources[index].PuzzleCurveTypes,
 				OnTryUnlock = OnTryUnlock

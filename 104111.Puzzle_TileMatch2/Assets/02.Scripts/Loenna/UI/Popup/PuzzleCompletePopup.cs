@@ -128,7 +128,7 @@ public class PuzzleCompletePopup : UIPopup
 				Index = realIndex,
                 Cost = pieceCost,
 				Sprite = pieceSources[index].Sprite,
-                SpriteAttached = pieceSources[index].SpriteAttached,
+                Filter = pieceSources[index].Filter,
 				Size = JigsawPuzzleSetting.Instance.PieceSizeWithPadding * ratio,
                 PuzzleCurveTypes = pieceSources[index].PuzzleCurveTypes,
 				OnTryUnlock = null
