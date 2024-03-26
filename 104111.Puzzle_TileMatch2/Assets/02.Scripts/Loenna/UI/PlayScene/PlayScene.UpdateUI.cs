@@ -264,7 +264,8 @@ partial class PlayScene
 
                         m_block.SetActive(false);
 
-                        bool start = m_queue.Count <= 0;
+                        //bool start = m_queue.Count <= 0;
+
                         m_tileItems.ForEach(
                             item => {
                                 TileItemModel model = board.Tiles.FirstOrDefault(tile => item.Current?.Guid == tile.Guid);
@@ -284,6 +285,18 @@ partial class PlayScene
                         
                         await m_bottomView.StashView.OnUpdateUI(stashItems);
 
+                        stashItems.ToList().ForEach(
+                            item => {
+                                TileItemModel model = board.Tiles.FirstOrDefault(tile => item.Current?.Guid == tile.Guid);
+                                if (model == null)
+                                {
+                                    return;
+                                }
+
+                                item.OnUpdateUI(model, false, out var current);
+                            }
+                        );
+
                         if (selectedTiles?.Count() > 0)
                         {
                             var enumerable = selectedTiles.ToUniTaskAsyncEnumerable();
@@ -293,10 +306,10 @@ partial class PlayScene
                                         var selectedItem = m_tileItems.FirstOrDefault(item => item.Current?.Guid == itemModel.Guid);
                                         switch (selectedItem.Current?.Location)
                                         {
-                                            case LocationType.BOARD:
+                                            case LocationType.BOARD: // Undo
                                                 m_mainView.CurrentBoard.UpdateLayer(itemModel.LayerIndex, selectedItem);
                                                 break;
-                                            case LocationType.POOL or LocationType.BASKET:
+                                            case LocationType.POOL or LocationType.BASKET: // Basket
                                                 await m_bottomView.BasketView.OnAddItemUI(selectedItem);
                                                 break;
                                         }

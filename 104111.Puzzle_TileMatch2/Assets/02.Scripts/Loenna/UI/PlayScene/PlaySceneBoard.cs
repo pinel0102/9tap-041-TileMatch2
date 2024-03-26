@@ -98,12 +98,26 @@ public class PlaySceneBoard : CachedBehaviour
 		eachLayer.name = $"Layer_{layerIndex}";
         eachLayer.layerIndex = layerIndex;
 
-		//eachLayer.CachedGameObject.SetActive(true);
-		tileItem.CachedTransform.SetParent(eachLayer.CachedTransform);
+		//tileItem.CachedTransform.SetParent(eachLayer.CachedTransform);
 
         if (init)
+        {
+            SetParentLayer(tileItem, eachLayer);
             tileItem.InitParentLayer();
+        }
 	}
+
+    public void SetParentLayer(TileItem tileItem, int layerIndex)
+    {
+        var layer = m_cachedLayers.HasIndex(layerIndex)? m_cachedLayers[layerIndex] : m_cachedLayers[0];
+        SetParentLayer(tileItem, layer);
+    }
+
+    public void SetParentLayer(TileItem tileItem, PlaySceneLayer layer)
+    {
+        tileItem.CachedTransform.SetParent(layer.CachedTransform, true);
+        layer.SortChild();
+    }
 
     public void SortLayerTiles()
     {
