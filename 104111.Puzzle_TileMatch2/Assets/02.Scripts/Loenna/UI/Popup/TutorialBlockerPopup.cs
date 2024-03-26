@@ -34,6 +34,7 @@ public class TutorialBlockerPopup : UIPopup
     [SerializeField]	private CanvasGroup m_clearStarCanvasGroup = default!;
     [SerializeField]	private CanvasGroup m_clearStarHalo = default!;
     [SerializeField]    private GameObject m_touchLock = default!;
+    [SerializeField]	private GameObject m_closeText = default!;
 
     [Header("★ [Reference] Tutorial")]
     [SerializeField]    private GameObject m_unlockedObject = default!;
@@ -91,6 +92,7 @@ public class TutorialBlockerPopup : UIPopup
         m_confirmButton.Alpha = 0f;
 		m_headLineImage.transform.localScale = Vector3.zero;
         m_unlockedObject.SetActive(true);
+        m_closeText.SetActive(false);
 
         m_unmaskObject.ForEach(unmask => unmask.SetActive(false));
         m_unmaskTile.ForEach(unmask => unmask.gameObject.SetActive(false));
@@ -233,10 +235,11 @@ public class TutorialBlockerPopup : UIPopup
                 m_tutorialPanel[index].position = targetPosition;
                 m_unmaskTile[index].position = targetPosition;
                 m_unmaskTile[index].gameObject.SetActive(true);
-
+                
                 UniTask.Void(async() => {
                     await UniTask.WaitForSeconds(2f);
                     m_jellyCloseButton.interactable = true;
+                    m_closeText.SetActive(true);
                 });
                 
                 break;

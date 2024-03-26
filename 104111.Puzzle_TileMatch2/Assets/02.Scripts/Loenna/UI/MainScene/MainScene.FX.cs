@@ -40,12 +40,20 @@ public partial class MainScene
         FXLayer.RefreshParticles();
     }
 
+    public void LoadFX(string prefabPath, Vector3 worldPosition, Vector2 childLocalPosition)
+    {
+        GameObject ga = Instantiate(Resources.Load<GameObject>(prefabPath), FXLayer.transform);
+        ga.transform.position = worldPosition;
+        ga.GetComponent<ParticleCallbackManager>().InitCallback(childLocalPosition * UIManager.SceneCanvas!.scaleFactor);
+        FXLayer.RefreshParticles();
+    }
+
     public void LoadFX(BlockerType blockerType, int blockerICD, Vector3 worldPosition)
     {
-        var(prefabExist, prefabPath) = GlobalDefine.GetBlockerFXPrefabPath(blockerType, blockerICD);
+        var(prefabExist, prefabPath, childLocalPosition) = GlobalDefine.GetBlockerFXPrefabPath(blockerType, blockerICD);
         if (prefabExist)
         {
-            LoadFX(prefabPath, worldPosition);
+            LoadFX(prefabPath, worldPosition, childLocalPosition);
         }
     }
 
@@ -79,12 +87,20 @@ public partial class MainScene
         FXLayer.RefreshParticles();
     }
 
+    public void LoadFXLocal(string prefabPath, Vector3 localPosition, Vector2 childLocalPosition)
+    {
+        GameObject ga = Instantiate(Resources.Load<GameObject>(prefabPath), FXLayer.transform);
+        ga.transform.localPosition = localPosition;
+        ga.GetComponent<ParticleCallbackManager>().InitCallback(childLocalPosition * UIManager.SceneCanvas!.scaleFactor);
+        FXLayer.RefreshParticles();
+    }
+
     public void LoadFXLocal(BlockerType blockerType, int blockerICD, Vector3 localPosition)
     {
-        var(prefabExist, prefabPath) = GlobalDefine.GetBlockerFXPrefabPath(blockerType, blockerICD);
+        var(prefabExist, prefabPath, childLocalPosition) = GlobalDefine.GetBlockerFXPrefabPath(blockerType, blockerICD);
         if (prefabExist)
         {
-            LoadFXLocal(prefabPath, localPosition);
+            LoadFXLocal(prefabPath, localPosition, childLocalPosition);
         }
     }
 

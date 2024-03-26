@@ -5,6 +5,7 @@ using System;
 
 public class ParticleCallbackManager : MonoBehaviour
 {
+    [SerializeField] private Transform m_effectTransform;
     [SerializeField] private ParticleCallback m_particleCallback;
     [SerializeField] private CallbackType m_callbackType;
     [SerializeField] private bool showLog;
@@ -14,6 +15,17 @@ public class ParticleCallbackManager : MonoBehaviour
 
     public void InitCallback()
     {
+        m_onFinished = null;
+
+        if(!m_particleCallback)
+            m_particleCallback = GetSubComponent();
+        
+        m_particleCallback?.InitCallback(ParticleFinished);
+    }
+
+    public void InitCallback(Vector2 childLocalPosition)
+    {
+        m_effectTransform?.SetLocalPosition(childLocalPosition);
         m_onFinished = null;
 
         if(!m_particleCallback)

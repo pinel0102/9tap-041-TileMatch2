@@ -110,29 +110,29 @@ public static partial class GlobalDefine
     /// </summary>
     /// <param name="blockerType"></param>
     /// <param name="blockerICD"></param>
-    /// <returns>Exist, if Exist => Path</returns>
-    public static (bool, string) GetBlockerFXPrefabPath(BlockerType blockerType, int blockerICD)
+    /// <returns>Exist, if Exist => Path, childLocalPosition (720p)</returns>
+    public static (bool, string, Vector2) GetBlockerFXPrefabPath(BlockerType blockerType, int blockerICD)
     {
-        string prefabName = blockerType switch
+        (string prefabName, Vector2 childPosition) = blockerType switch
         {
-            BlockerType.Glue_Right => "FX_Glue",
-            BlockerType.Chain => "FX_Chain",
-            BlockerType.Bush => "FX_Bush",
+            BlockerType.Glue_Right => ("FX_Glue", new(0, -19)),
+            BlockerType.Chain => ("FX_Chain", new(0, -20)),
+            BlockerType.Bush => ("FX_Bush", new(0, 13)),
             BlockerType.Jelly => blockerICD switch
             {
-                >= 3 => "FX_Jelly_01",
-                2 => "FX_Jelly_02",
-                1 => "FX_Jelly_03",
-                _ => string.Empty
+                >= 2 => ("FX_Jelly_01", Vector2.zero),
+                1 => ("FX_Jelly_02", Vector2.zero),
+                0 => ("FX_Jelly_03", Vector2.zero),
+                _ => (string.Empty, Vector2.zero)
             },
-            BlockerType.Suitcase => string.Empty,
-            _ => string.Empty
+            BlockerType.Suitcase => (string.Empty, Vector2.zero),
+            _ => (string.Empty, Vector2.zero)
         };
 
         bool exist = !string.IsNullOrEmpty(prefabName);
         string resultPath = exist ? string.Format(Format_FX_Prefab_Blocker, prefabName) : null;
 
-        return (exist, resultPath);
+        return (exist, resultPath, childPosition);
     }
 
     public static string GetBlockerFXSoundPath(BlockerType blockerType, int blockerICD)
@@ -143,15 +143,15 @@ public static partial class GlobalDefine
             BlockerType.Chain => string.Empty,
             BlockerType.Bush => blockerICD switch
             {
-                >= 2 => string.Empty,
-                1 => string.Empty,
+                >= 1 => string.Empty,
+                0 => string.Empty,
                 _ => string.Empty
             },
             BlockerType.Jelly => blockerICD switch
             {
-                >= 3 => string.Empty,
-                2 => string.Empty,
+                >= 2 => string.Empty,
                 1 => string.Empty,
+                0 => string.Empty,
                 _ => string.Empty
             },
             BlockerType.Suitcase => string.Empty,

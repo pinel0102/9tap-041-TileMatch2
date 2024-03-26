@@ -49,6 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f920f2f5cdf8f4f589e5684a6b508725, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_effectTransform: {fileID: 1148499048278078922}
   m_particleCallback: {fileID: 461131687932562409}
   m_callbackType: 0
   showLog: 0
@@ -70,7 +71,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1946501963167953072, guid: 399eccea54986408f9edbf4db424aa0c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -40
+      value: -20
       objectReference: {fileID: 0}
     - target: {fileID: 1946501963167953072, guid: 399eccea54986408f9edbf4db424aa0c, type: 3}
       propertyPath: m_LocalPosition.z
