@@ -170,7 +170,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2, y: 6.999939}
+  m_AnchoredPosition: {x: -2, y: 7}
   m_SizeDelta: {x: 98, y: 102}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7971799176627649679
@@ -316,6 +316,41 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 1
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &5191923453794761741
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7621110597059519472}
+  m_Layer: 5
+  m_Name: SubParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &7621110597059519472
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5191923453794761741}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8985048750674885447}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -2, y: 7}
+  m_SizeDelta: {x: 88, y: 92}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5195717847086013250
 GameObject:
   m_ObjectHideFlags: 0
@@ -599,11 +634,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7249a57f317b4604386eef01ff58694b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_blockerRect: {fileID: 6877551379240770570}
+  m_blockerImage: {fileID: 1765129310861063386}
+  m_blockerImageSub: {fileID: 4103986099101961415}
+  m_blockerText: {fileID: 54893832121119038}
+  m_subTileParent: {fileID: 7621110597059519472}
+  m_subTileItem: []
   currentLocation: 0
   m_interactable: 0
   m_movable: 0
   isMoving: 0
-  isScaling: 0
   _parentLayer: {fileID: 0}
   layerIndex: 0
   siblingIndex: 0
@@ -620,10 +660,6 @@ MonoBehaviour:
   m_triggerArea: {fileID: 4553884640220343564}
   m_dim: {fileID: 2737600573391555333}
   m_tmpText: {fileID: 8823091228739321712}
-  m_blockerRect: {fileID: 6877551379240770570}
-  m_blockerImage: {fileID: 1765129310861063386}
-  m_blockerImageSub: {fileID: 4103986099101961415}
-  m_blockerText: {fileID: 54893832121119038}
 --- !u!114 &6119512379275580263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -792,7 +828,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 7621110597059519472}
   m_Father: {fileID: 6877551379240770570}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}

@@ -122,6 +122,8 @@ public partial class TileItem : CachedBehaviour
 
         m_jumpSequence = null;
 
+        ClearSubTiles();
+
 		List<EventTrigger.Entry> entries = new List<EventTrigger.Entry> {
 			new EventTrigger.Entry { eventID = EventTriggerType.PointerDown }
 		};
@@ -193,15 +195,32 @@ public partial class TileItem : CachedBehaviour
                                 }
                                 break;
                             default:
-                                //SetScaleTween();
                                 parameter.OnClick?.Invoke(this);
                                 break;
                         }
                     }
                     else
                     {
-                        //SetScaleTween();
-                        parameter.OnClick?.Invoke(this);
+                        switch(blockerType)
+                        {
+                            case BlockerType.Suitcase:
+                                if (blockerICD > 1)
+                                {
+                                    /*var(existRight, rightTile) = this.FindRightTile();
+                                    return WaitGlueAnimation(existRight, rightTile, () => {
+                                        parameter.OnClick?.Invoke(this);
+                                    });*/
+                                    parameter.OnClick?.Invoke(this);
+                                }
+                                else
+                                {
+                                    parameter.OnClick?.Invoke(this);
+                                }
+                                break;
+                            default:
+                                parameter.OnClick?.Invoke(this);
+                                break;
+                        }
                     }
                 }
             }
@@ -233,11 +252,19 @@ public partial class TileItem : CachedBehaviour
 
 		LocationType currentType = m_current?.Location ?? LocationType.POOL;
         
-		if ((changeLocation, currentType) is (LocationType.BOARD, LocationType.BOARD))
+        if ((changeLocation, currentType) is (LocationType.BOARD, LocationType.BOARD))
 		{
-			m_originWorldPosition = CachedTransform.parent.TransformPoint(item.Position);
-			CachedRectTransform.SetLocalPosition(item.Position);
-		}
+            if (blockerType is BlockerType.Suitcase_Tile)
+            {
+                m_originWorldPosition = CachedTransform.parent.TransformPoint(item.Position);
+                CachedRectTransform.SetLocalPosition(item.Position);
+            }
+            else
+            {
+                m_originWorldPosition = CachedTransform.parent.TransformPoint(item.Position);
+                CachedRectTransform.SetLocalPosition(item.Position);
+            }
+		}        
 
         m_current = item;
 
@@ -505,6 +532,8 @@ public partial class TileItem : CachedBehaviour
         m_interactable = false;
         m_movable = false;
         m_current = null;
+
+        ClearSubTiles();
         
         CachedGameObject.SetActive(false);
 	}

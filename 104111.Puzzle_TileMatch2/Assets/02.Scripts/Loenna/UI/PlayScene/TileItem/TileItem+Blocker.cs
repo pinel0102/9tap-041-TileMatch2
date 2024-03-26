@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine.UI;
 using TMPro;
+using System.Linq;
 
 public partial class TileItem
 {
@@ -14,6 +15,10 @@ public partial class TileItem
     [SerializeField]	private Image m_blockerImage;
     [SerializeField]	private Image m_blockerImageSub;
     [SerializeField]	private TMP_Text m_blockerText;
+
+    [Header("★ [Reference] Suitcase")]
+    [SerializeField]	private RectTransform m_subTileParent;
+    [SerializeField]	private TileItem m_subTileItem;
     
 #region Blocker State
 
@@ -35,6 +40,7 @@ public partial class TileItem
                 break;
             case BlockerType.Suitcase:
                 SetBlockerObject(GetBlockerRectPosition(type), GlobalDefine.GetBlockerSprite(type, currentICD), GlobalDefine.GetBlockerSubSprite(type, currentICD), currentICD.ToString(), true, true, true);
+                RefreshSubTiles();
                 break;
             case BlockerType.Jelly:
                 SetBlockerObject(GetBlockerRectPosition(type), GlobalDefine.GetBlockerSprite(type, currentICD), activeMain:currentICD > 0);
@@ -80,9 +86,11 @@ public partial class TileItem
             case BlockerType.Chain:
                 PlayBlockerEffect(type, newICD, m_blockerRect.position);
                 break;
+            case BlockerType.Suitcase:
+                //PlayBlockerEffect(type, newICD, m_blockerRect.position);
+                break;
             case BlockerType.Glue_Left:
             case BlockerType.Glue_Right:
-            case BlockerType.Suitcase:
             case BlockerType.None:
             default:
                 break;
@@ -185,8 +193,9 @@ public partial class TileItem
             case BlockerType.Bush:
             case BlockerType.Chain:
             case BlockerType.Jelly:
-            case BlockerType.Suitcase:
                 return currentICD <= 0;
+            case BlockerType.Suitcase:
+                return currentICD <= 1;
         }
         return true;
     }
@@ -312,4 +321,67 @@ public partial class TileItem
     }
 
 #endregion Glue FX
+
+
+#region Suitcase FX
+
+    private void RefreshSubTiles()
+    {
+        Debug.Log(CodeManager.GetMethodName());
+
+        ClearSubTiles();
+        
+        m_subTileItem = globalData.playScene.TileItemPool.Get();
+        m_subTileItem.transform.SetParentReset(m_subTileParent);
+        m_subTileItem.OnUpdateUI(CreateSubTileItemModel(), true, out _);
+    }
+
+    private void ClearSubTiles()
+    {
+        Debug.Log(CodeManager.GetMethodName());
+
+        GlobalDefine.ClearChild(m_subTileParent);
+        m_subTileItem = null;
+    }
+
+    private TileItemModel CreateSubTileItemModel()
+    {
+        Debug.Log(CodeManager.GetMethodName() + tileName);
+
+        Vector2 checkPosition = (Current.Position / Constant.Game.RESIZE_TILE_RATIOS) - new Vector2(0, Constant.Game.TILE_SIZE_EDITOR);
+        Vector2 subTilePosition = new Vector2(0, checkPosition.y);
+        
+        var overlaps = globalData.playScene.TileItems
+            .Where(
+                item =>
+                {
+                    var resizePosition = checkPosition * Constant.Game.RESIZE_TILE_RATIOS;
+                    return item.Current.LayerIndex > layerIndex && Vector2.SqrMagnitude(resizePosition - item.Current.Position) < 7700f;
+                }
+            ).Select(item => {
+                    var resizePosition = checkPosition * Constant.Game.RESIZE_TILE_RATIOS;
+                    return (item.Current.Guid, true, Vector2.SqrMagnitude(resizePosition - item.Current.Position));
+                }
+            )
+            .ToList();
+
+        int icon = iconList[Mathf.Max(0, blockerICD - 1)];
+
+        return new TileItemModel(
+            layerIndex,
+            siblingIndex,
+            LocationType.BOARD,
+            Guid.NewGuid(),
+            icon,
+            iconList,
+            subTilePosition * Constant.Game.RESIZE_TILE_RATIOS,
+            BlockerType.Suitcase_Tile,
+            0,
+            -1,
+            overlaps
+        );
+    }
+
+#endregion Suitcase FX
+
 }

@@ -16,6 +16,7 @@ using NineTap.Common;
 partial class PlayScene
 {
 	private IObjectPool<TileItem> m_tileItemPool;
+    public IObjectPool<TileItem> TileItemPool => m_tileItemPool;
 	private IObjectPool<MissionCollectedFx> m_particlePool;
 	private List<TileItem> m_tileItems;
     public List<TileItem> TileItems => m_tileItems;
@@ -304,7 +305,7 @@ partial class PlayScene
                                 () => enumerable.ForEachAwaitAsync(
                                     async itemModel => {
                                         var selectedItem = m_tileItems.FirstOrDefault(item => item.Current?.Guid == itemModel.Guid);
-                                        switch (selectedItem.Current?.Location)
+                                        switch (selectedItem?.Current?.Location)
                                         {
                                             case LocationType.BOARD: // Undo
                                                 m_mainView.CurrentBoard.UpdateLayer(itemModel.LayerIndex, selectedItem);

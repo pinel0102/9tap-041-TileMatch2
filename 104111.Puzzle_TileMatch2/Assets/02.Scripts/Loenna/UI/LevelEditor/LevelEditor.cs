@@ -13,7 +13,7 @@ public partial class LevelEditor : MonoBehaviour
     [Header("★ [Reference] Editor")]
 	[SerializeField]	private GameObject m_loading;
 	[SerializeField]	private CanvasGroup m_prevDim;
-	[SerializeField]	private int m_cellSize = 160;
+	private int m_cellSize => Constant.Game.TILE_SIZE_EDITOR;
 	[SerializeField]	private int m_cellCount = 7;
 	[SerializeField]	private BoardView m_boardView;
 	[SerializeField]	private MenuView m_menuView;
