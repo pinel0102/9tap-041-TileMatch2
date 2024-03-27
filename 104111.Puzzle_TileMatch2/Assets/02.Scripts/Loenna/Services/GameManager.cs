@@ -534,6 +534,7 @@ public partial class GameManager : IDisposable
 								tile.Position * Constant.Game.RESIZE_TILE_RATIOS,
                                 tile.BlockerType,
                                 tile.BlockerICD,
+                                tile.BlockerICD,
 								mission,
 								overlaps
 							);

@@ -55,6 +55,7 @@ public partial class TileItem : CachedBehaviour
 	private TileItemModel m_current;
 	public TileItemModel Current => m_current;
     private TileDataTable m_tileDataTable;	
+    /// <summary>Undo를 위해 저장된 시작 위치.</summary>
 	private Vector3 m_originWorldPosition;
     private GlobalData globalData { get { return GlobalData.Instance; } }
 
@@ -240,7 +241,10 @@ public partial class TileItem : CachedBehaviour
 
         if (m_current == null)
 		{
-			CachedRectTransform.SetLocalPosition(item.Position);
+            InitPosition(item, blockerType);
+            
+            //CachedRectTransform.SetLocalPosition(item.Position);
+
 			if (item?.Location == LocationType.POOL)
 			{
                 CachedRectTransform.SetParentReset(UIManager.SceneCanvas.transform);
@@ -252,24 +256,33 @@ public partial class TileItem : CachedBehaviour
 
 		LocationType currentType = m_current?.Location ?? LocationType.POOL;
         
-        if ((changeLocation, currentType) is (LocationType.BOARD, LocationType.BOARD))
+        /*if ((changeLocation, currentType) is (LocationType.BOARD, LocationType.BOARD))
 		{
-            if (blockerType is BlockerType.Suitcase_Tile)
+            switch(blockerType)
             {
-                m_originWorldPosition = CachedTransform.parent.TransformPoint(item.Position);
-                CachedRectTransform.SetLocalPosition(item.Position);
+                case BlockerType.Suitcase:
+                    //RefreshSubTiles((tile) => tile.blockerType is BlockerType.Suitcase_Tile && tile.currentLocation is LocationType.BOARD);
+                    m_originWorldPosition = CachedTransform.parent.TransformPoint(item.Position);
+                    CachedRectTransform.SetLocalPosition(item.Position);
+                    break;
+                case BlockerType.Suitcase_Tile:
+                    Vector2 childTilePosition = item.GetSuitcaseTilePosition();
+                    m_originWorldPosition = CachedTransform.parent.TransformPoint(childTilePosition);
+                    CachedRectTransform.SetLocalPosition(childTilePosition);
+                    break;
+                default:
+                    //ClearSubTiles();
+                    m_originWorldPosition = CachedTransform.parent.TransformPoint(item.Position);
+                    CachedRectTransform.SetLocalPosition(item.Position);
+                    break;
             }
-            else
-            {
-                m_originWorldPosition = CachedTransform.parent.TransformPoint(item.Position);
-                CachedRectTransform.SetLocalPosition(item.Position);
-            }
-		}        
+		}*/
+
+        RefreshPosition(item, changeLocation, currentType);
 
         m_current = item;
 
         oldICD = blockerICD;
-
         layerIndex = item.LayerIndex;
         siblingIndex = item.SiblingIndex;
         currentLocation = changeLocation;
@@ -297,6 +310,46 @@ public partial class TileItem : CachedBehaviour
 
 		return currentType != item.Location;
 	}
+
+    private void InitPosition(TileItemModel item, BlockerType _blockerType)
+    {
+        switch(_blockerType)
+        {
+            case BlockerType.Suitcase_Tile:
+                Vector2 childTilePosition = item.GetSuitcaseTilePosition();
+                CachedRectTransform.SetLocalPosition(childTilePosition);
+                break;
+            default:
+                CachedRectTransform.SetLocalPosition(item.Position);
+                break;
+        }
+    }
+
+    private void RefreshPosition(TileItemModel item, LocationType changeLocation, LocationType currentType)
+    {
+        if ((changeLocation, currentType) is (LocationType.BOARD, LocationType.BOARD))
+		{
+            switch(blockerType)
+            {
+                case BlockerType.Suitcase:
+                    RefreshSubTiles((tile) => tile.blockerType is BlockerType.Suitcase_Tile && tile.currentLocation is LocationType.BOARD);
+                    m_originWorldPosition = _parentLayer.TransformPoint(item.Position);
+                    //CachedRectTransform.SetLocalPosition(item.Position);
+                    break;
+                case BlockerType.Suitcase_Tile:
+                    //Vector2 childTilePosition = item.GetSuitcaseTilePosition();
+                    //m_originWorldPosition = _parentLayer.TransformPoint(item.Position);
+                    //CachedRectTransform.SetLocalPosition(item.Position);
+                    RefreshSuitcaseState();
+                    break;
+                default:
+                    ClearSubTiles();
+                    m_originWorldPosition = _parentLayer.TransformPoint(item.Position);
+                    //CachedRectTransform.SetLocalPosition(item.Position);
+                    break;
+            }
+		}
+    }
 
     private void RefreshIcon(BlockerType _blockerType, int _currentICD)
     {
@@ -388,7 +441,7 @@ public partial class TileItem : CachedBehaviour
 			return UniTask.CompletedTask;
 		}
 
-        //duration = 0.5f;
+        duration = 0.5f;
 
         currentLocation = location;
         Vector2 direction = moveAt ?? Current.Position;
@@ -436,6 +489,7 @@ public partial class TileItem : CachedBehaviour
             .DOJump(value, jumpPower, 1, duration)
             .OnPlay(() => {
                 //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=white>[{0}] Play : {1}</color>", gameObject.name, blockerType));
+                Debug.Log(CodeManager.GetMethodName() + string.Format("<color=white>{0} -> {1}</color>", CachedTransform.position, value));
                 SetMoving(true);
             })
             .OnComplete(() => {

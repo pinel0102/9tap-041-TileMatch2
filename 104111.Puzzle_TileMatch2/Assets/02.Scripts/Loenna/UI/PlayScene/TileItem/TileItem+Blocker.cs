@@ -18,6 +18,7 @@ public partial class TileItem
 
     [Header("★ [Reference] Suitcase")]
     [SerializeField]	private RectTransform m_subTileParent;
+    public bool isActivatedSuitcaseTile;
     public TileItem m_parentTile = null;
     public List<TileItem> m_childTiles = new List<TileItem>();
     
@@ -41,7 +42,12 @@ public partial class TileItem
                 break;
             case BlockerType.Suitcase:
                 SetBlockerObject(GetBlockerRectPosition(type), GlobalDefine.GetBlockerSprite(type, currentICD), GlobalDefine.GetBlockerSubSprite(type, currentICD), currentICD.ToString(), true, true, true);
-                RefreshSubTiles();
+                //RefreshSubTiles();
+                break;
+            case BlockerType.Suitcase_Tile:
+                //SetBlockerObject(GetBlockerRectPosition(type), GlobalDefine.GetBlockerSprite(type, currentICD), GlobalDefine.GetBlockerSubSprite(type, currentICD), currentICD.ToString(), true, true, true);
+                SetBlockerObject(GetBlockerRectPosition(type), null, activeMain:false);
+                //RefreshParentTile();
                 break;
             case BlockerType.Jelly:
                 SetBlockerObject(GetBlockerRectPosition(type), GlobalDefine.GetBlockerSprite(type, currentICD), activeMain:currentICD > 0);
@@ -326,23 +332,70 @@ public partial class TileItem
 
 #region Suitcase FX
 
-    private void RefreshSubTiles()
+    private void SetParentTile(TileItem parentTile)
     {
-        Debug.Log(CodeManager.GetMethodName());
+        //Debug.Log(CodeManager.GetMethodName());
+
+        m_parentTile = parentTile;
+    }
+
+    private void RefreshSubTiles(Func<TileItem, bool> searchPattern)
+    {
+        //Debug.Log(CodeManager.GetMethodName());
 
         ClearSubTiles();
-        
-        //m_subTileItem = globalData.playScene.TileItemPool.Get();
-        //m_subTileItem.transform.SetParentReset(m_subTileParent);
+
+        var(existChild, childTiles) = this.FindBottomTileList();
+        if(existChild)
+        {
+            m_childTiles.AddRange(
+                childTiles.Where(searchPattern)
+                        .Select(tile => {
+                            tile.ClearSubTiles();
+                            tile.SetParentTile(this);
+                            return tile;
+                        })
+                        .OrderBy(item => item.blockerICD)
+            );
+        }
     }
 
     private void ClearSubTiles()
     {
-        Debug.Log(CodeManager.GetMethodName());
-
-        GlobalDefine.ClearChild(m_subTileParent);
+        //GlobalDefine.ClearChild(m_subTileParent);
         m_parentTile = null;
         m_childTiles.Clear();
+    }
+
+    private void RefreshSuitcaseState()
+    {
+        if(Current.Location == LocationType.BOARD)
+        {
+            if(blockerICD < m_parentTile.blockerICD)
+            {
+                HideSuitcaseTile();
+            }
+            else
+            {
+                ShowSuitcaseTile();
+            }
+        }
+    }
+
+    private void HideSuitcaseTile()
+    {
+        Debug.Log(CodeManager.GetMethodName() + tileName);
+
+        Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_HIDE_POSITION;
+        m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
+    }
+
+    private void ShowSuitcaseTile()
+    {
+        Debug.Log(CodeManager.GetMethodName() + tileName);
+
+        Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_SHOW_POSITION;
+        m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
     }
 
 #endregion Suitcase FX

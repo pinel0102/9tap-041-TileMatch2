@@ -58,6 +58,7 @@ public static partial class GlobalDefine
                     path = "Blocker_Bush_02";
                 break;
             case BlockerType.Suitcase:
+            case BlockerType.Suitcase_Tile:
                 path = "Blocker_Suitcase_02";
                 break;
             case BlockerType.Jelly:
@@ -87,6 +88,7 @@ public static partial class GlobalDefine
         switch(blockerType)
         {
             case BlockerType.Suitcase:
+            case BlockerType.Suitcase_Tile:
                 path = "Blocker_Suitcase_01";
                 break;
             default:
@@ -117,6 +119,7 @@ public static partial class GlobalDefine
                 _ => (string.Empty, Vector2.zero)
             },
             BlockerType.Suitcase => (string.Empty, Vector2.zero),
+            BlockerType.Suitcase_Tile => (string.Empty, Vector2.zero),
             _ => (string.Empty, Vector2.zero)
         };
 
@@ -146,6 +149,7 @@ public static partial class GlobalDefine
                 _ => string.Empty
             },
             BlockerType.Suitcase => string.Empty,
+            BlockerType.Suitcase_Tile => string.Empty,
             _ => string.Empty
         };
     }

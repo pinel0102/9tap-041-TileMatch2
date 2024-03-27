@@ -83,6 +83,22 @@ public static partial class TileSearch
     }
 
     /// <summary>
+    /// Bottom
+    /// </summary>
+    /// <param name="tile"></param>
+    /// <returns>(Exist ? Tile : null)</returns>
+    public static List<TileItemModel> FindBottomTiles(this TileItemModel tile)
+    {
+        List<TileItemModel> result = new List<TileItemModel>();
+
+        (bool existBottom,  List<TileItemModel> bottomTiles)    = tile.FindBottomTileList();
+
+        if (existBottom) result.AddRange(bottomTiles);
+
+        return result;
+    }
+
+    /// <summary>
     /// Left
     /// </summary>
     /// <param name="tile"></param>
@@ -162,6 +178,19 @@ public static partial class TileSearch
     public static bool ContainsTileCount(this TileItemModel tile)
     {
         return tile.BlockerType != BlockerType.Suitcase;
+    }
+
+    public static Vector2 GetSuitcaseTilePosition(this TileItemModel tileItem, int offsetICD = 0)
+    {
+        var(existTop, topTile) = tileItem.FindTopTile();
+        if (existTop)
+        {
+            return tileItem.BlockerICD + offsetICD >= topTile.BlockerICD ?
+                tileItem.Position + Constant.Game.SUITCASE_TILE_SHOW_POSITION:
+                tileItem.Position + Constant.Game.SUITCASE_TILE_HIDE_POSITION;
+        }
+
+        return tileItem.Position;
     }
 
 #endregion [Game] TileItemModel

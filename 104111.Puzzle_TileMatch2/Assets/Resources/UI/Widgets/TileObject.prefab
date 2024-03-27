@@ -611,7 +611,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -265, y: 271}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 88, y: 92}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1284225588596672268
@@ -639,7 +639,8 @@ MonoBehaviour:
   m_blockerImageSub: {fileID: 4103986099101961415}
   m_blockerText: {fileID: 54893832121119038}
   m_subTileParent: {fileID: 7621110597059519472}
-  m_subTileItem: []
+  m_parentTile: {fileID: 0}
+  m_childTiles: []
   currentLocation: 0
   m_interactable: 0
   m_movable: 0

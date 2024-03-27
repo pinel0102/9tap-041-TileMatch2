@@ -69,6 +69,18 @@ partial class GameManager
                             basketAddCount = 1;
                         }
                         break;
+                    case BlockerType.Suitcase_Tile:
+                        var(existTop, topTile) = tileItemModel.FindTopTile();
+                        if (existTop)
+                        {
+                            if(topTile.BlockerType == BlockerType.Suitcase)
+                                icdListBoard.Add(topTile);
+                            
+                            AddCommandList(icdListBoard, Type.CHANGE_BLOCKER_ICD, LocationType.BOARD);
+                            //AddCommandTile(topTile, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
+                            AddCommandTile(tileItemModel, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
+                        }
+                        break;
 
                     default:
                         AddCommandList(icdListBoard, Type.CHANGE_BLOCKER_ICD, LocationType.BOARD);
@@ -137,7 +149,7 @@ partial class GameManager
                                     newICD = Mathf.Min(GlobalDefine.GetBlockerICD(tile.BlockerType, oldICD), oldICD + changeCount);
                                     break;
                                 case BlockerType.Suitcase:
-                                    newICD = Mathf.Min(tile.IconList.Count, oldICD + changeCount);
+                                    newICD = Mathf.Min(tile.BlockerICD_Init, oldICD + changeCount);
                                     break;
                                 default:
                                     newICD = oldICD;

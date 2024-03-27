@@ -27,7 +27,8 @@ public record TileItemModel(
 	Vector2 Position,
     BlockerType BlockerType,
     int BlockerICD,
-	int GoldPuzzleCount, //없으면 -1
+    int BlockerICD_Init,
+    int GoldPuzzleCount, //없으면 -1
 	List<(Guid guid, bool exist, float distance)> Overlaps
 )
 {
@@ -44,6 +45,7 @@ public record TileItemModel(
 		Vector2 position,
         BlockerType blockerType,
         int blockerICD,
+        int blockerICD_Init,
 		int goldPuzzleCount
 	) : this(
 		layerIndex,
@@ -55,10 +57,11 @@ public record TileItemModel(
 		position,
         blockerType,
         blockerICD,
+        blockerICD_Init,
 		goldPuzzleCount,
 		new()
 	)
 	{
-
+        
 	}
 }

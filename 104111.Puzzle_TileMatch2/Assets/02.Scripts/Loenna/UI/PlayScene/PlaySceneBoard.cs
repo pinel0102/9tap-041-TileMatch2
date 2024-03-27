@@ -50,7 +50,7 @@ public class PlaySceneBoard : CachedBehaviour
 				item => {
 					UpdateLayer(index, item, init);
 					item.CachedRectTransform.Reset();
-					item.CachedRectTransform.SetLocalPosition(item.Current.Position);
+                    item.CachedRectTransform.SetLocalPosition(GetTilePosition(item.Current));
 				}
 			);
 		}
@@ -75,6 +75,17 @@ public class PlaySceneBoard : CachedBehaviour
 
 		return UniTask.CompletedTask;
 	}
+
+    private Vector2 GetTilePosition(TileItemModel tileItem)
+    {
+        switch(tileItem.BlockerType)
+        {
+            case BlockerType.Suitcase_Tile:
+                return tileItem.GetSuitcaseTilePosition();
+            default:
+                return tileItem.Position;
+        };
+    }
 
 	public void UpdateLayer(int layerIndex, TileItem tileItem, bool init = false)
 	{

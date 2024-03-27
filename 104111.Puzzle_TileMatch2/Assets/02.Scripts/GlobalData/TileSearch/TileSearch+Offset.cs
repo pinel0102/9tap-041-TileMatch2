@@ -180,47 +180,47 @@ public static partial class TileSearch
 
     private static List<Vector2> Offset(this TileItem tile)
     {
-        return tile.Current.Offset();
+        return tile.Current?.Offset() ?? offset_Game;
     }
 
     private static Vector2 OffsetLeft(this TileItem tile)
     {
-        return tile.Current.OffsetLeft();
+        return tile.Current?.OffsetLeft() ?? tile.Offset()[0];
     }
 
     private static Vector2 OffsetRight(this TileItem tile)
     {
-        return tile.Current.OffsetRight();
+        return tile.Current?.OffsetRight() ?? tile.Offset()[1];
     }
 
     private static Vector2 OffsetTop(this TileItem tile)
     {
-        return tile.Current.OffsetTop();
+        return tile.Current?.OffsetTop() ?? tile.Offset()[2];
     }
 
     private static Vector2 OffsetBottom(this TileItem tile)
     {
-        return tile.Current.OffsetBottom();
+        return tile.Current?.OffsetBottom() ?? tile.Offset()[3];
     }
 
     private static Vector2 PositionLeft(this TileItem tile)
     {
-        return tile.Current.PositionLeft();
+        return tile.Current?.PositionLeft() ?? Vector2.zero;
     }
 
     private static Vector2 PositionRight(this TileItem tile)
     {
-        return tile.Current.PositionRight();
+        return tile.Current?.PositionRight() ?? Vector2.zero;
     }
 
     private static Vector2 PositionTop(this TileItem tile)
     {
-        return tile.Current.PositionTop();
+        return tile.Current?.PositionTop() ?? Vector2.zero;
     }
 
     private static Vector2 PositionBottom(this TileItem tile)
     {
-        return tile.Current.PositionBottom();
+        return tile.Current?.PositionBottom() ?? Vector2.zero;
     }
 
 #endregion [Game] TileItem
