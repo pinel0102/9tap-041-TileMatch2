@@ -64,6 +64,7 @@ public partial class TileItem : CachedBehaviour
 	public void OnSetup(TileItemParameter parameter)
 	{
         blockerICD = 0;
+        isActivatedSuitcaseTile = false;
         isMoving = false;
         m_tileDataTable = Game.Inst.Get<TableManager>().TileDataTable;
 		SoundManager soundManager = Game.Inst.Get<SoundManager>();
@@ -337,10 +338,9 @@ public partial class TileItem : CachedBehaviour
                     //CachedRectTransform.SetLocalPosition(item.Position);
                     break;
                 case BlockerType.Suitcase_Tile:
-                    //Vector2 childTilePosition = item.GetSuitcaseTilePosition();
+                    RefreshSuitcaseState();
                     //m_originWorldPosition = _parentLayer.TransformPoint(item.Position);
                     //CachedRectTransform.SetLocalPosition(item.Position);
-                    RefreshSuitcaseState();
                     break;
                 default:
                     ClearSubTiles();
@@ -441,7 +441,7 @@ public partial class TileItem : CachedBehaviour
 			return UniTask.CompletedTask;
 		}
 
-        duration = 0.5f;
+        //duration = 0.5f;
 
         currentLocation = location;
         Vector2 direction = moveAt ?? Current.Position;
@@ -575,6 +575,7 @@ public partial class TileItem : CachedBehaviour
         m_dim.alpha	= 0f;
 
         currentLocation = LocationType.POOL;
+        isActivatedSuitcaseTile = false;
         blockerICD = 0;
         m_interactable = false;
         m_movable = false;

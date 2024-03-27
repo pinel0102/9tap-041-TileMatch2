@@ -77,8 +77,9 @@ partial class GameManager
                                 icdListBoard.Add(topTile);
                             
                             AddCommandList(icdListBoard, Type.CHANGE_BLOCKER_ICD, LocationType.BOARD);
-                            //AddCommandTile(topTile, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
                             AddCommandTile(tileItemModel, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
+                            //if(topTile.BlockerICD <= 1)
+                            //AddCommandTile(topTile, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
                         }
                         break;
 

@@ -380,22 +380,57 @@ public partial class TileItem
                 ShowSuitcaseTile();
             }
         }
+        else
+        {
+            isActivatedSuitcaseTile = false;
+        }
     }
 
     private void HideSuitcaseTile()
     {
-        Debug.Log(CodeManager.GetMethodName() + tileName);
+        //Debug.Log(CodeManager.GetMethodName() + tileName);
 
         Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_HIDE_POSITION;
         m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
+
+        if(isActivatedSuitcaseTile)
+        {
+            isActivatedSuitcaseTile = false;
+            PlaySuitcaseHideAnimation();
+        }
     }
 
     private void ShowSuitcaseTile()
     {
-        Debug.Log(CodeManager.GetMethodName() + tileName);
+        //Debug.Log(CodeManager.GetMethodName() + tileName);
 
         Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_SHOW_POSITION;
         m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
+
+        if(!isActivatedSuitcaseTile)
+        {
+            isActivatedSuitcaseTile = true;
+            PlaySuitcaseShowAnimation();
+        }
+    }
+
+    private void PlaySuitcaseHideAnimation()
+    {
+        Debug.Log(CodeManager.GetMethodName() + tileName);
+        
+        Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_HIDE_POSITION;
+        m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
+        CachedRectTransform.SetLocalPosition(childTilePosition);
+    }
+
+    private void PlaySuitcaseShowAnimation()
+    {
+        Debug.Log(CodeManager.GetMethodName() + tileName);
+        //
+
+        Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_SHOW_POSITION;
+        m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
+        CachedRectTransform.SetLocalPosition(childTilePosition);
     }
 
 #endregion Suitcase FX
