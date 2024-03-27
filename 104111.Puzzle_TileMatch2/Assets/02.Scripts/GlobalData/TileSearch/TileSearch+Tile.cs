@@ -129,6 +129,21 @@ public static partial class TileSearch
         return tile.FindTile(layer, tile.PositionBottom()).ListCheck();
     }
 
+    public static bool IsMostTopTile(this Tile tile)
+    {
+        return tile.Position.y == Constant.Game.TILE_POSITION_MAX_EDITOR;
+    }
+
+    public static bool IsMostBottomTile(this Tile tile)
+    {
+        return tile.Position.y == -Constant.Game.TILE_POSITION_MAX_EDITOR;
+    }
+
+    public static bool ContainsTileCount(this Tile tile)
+    {
+        return tile.BlockerType != BlockerType.Suitcase;
+    }
+
 #endregion [Editor] Tile
 
 

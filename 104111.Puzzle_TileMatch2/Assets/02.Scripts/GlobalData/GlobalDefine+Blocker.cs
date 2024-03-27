@@ -24,6 +24,7 @@ public static partial class GlobalDefine
         [BlockerType.Glue_Right] = BlockerTypeEditor.Glue,
         [BlockerType.Bush] = BlockerTypeEditor.Bush,
         [BlockerType.Suitcase] = BlockerTypeEditor.Suitcase,
+        [BlockerType.Suitcase_Tile] = BlockerTypeEditor.Suitcase,
         [BlockerType.Jelly] = BlockerTypeEditor.Jelly,
         [BlockerType.Chain] = BlockerTypeEditor.Chain,
     };
@@ -37,15 +38,6 @@ public static partial class GlobalDefine
             BlockerType.Jelly => "Jelly",
             BlockerType.Chain => "Chain",
             _ => ""
-        };
-    }
-
-    public static int RequiredBasketSpace(BlockerType blockerType)
-    {
-        return blockerType switch 
-        {
-            BlockerType.Glue_Left or BlockerType.Glue_Right => 2,
-            _ => 1
         };
     }
 
@@ -215,20 +207,6 @@ public static partial class GlobalDefine
             default:
                 return false;
         }
-    }
-
-    /// <summary>
-    /// [Suitcase] 추가 타일 카운트.
-    /// </summary>
-    /// <param name="layers"></param>
-    /// <returns></returns>
-    public static int GetAdditionalTileCount(List<Layer> layers)
-    {
-        return layers.Sum(layer => {
-            return layer?.Tiles?
-                .Where(tile => tile.BlockerType == BlockerType.Suitcase)
-                .Sum(tile => { return Mathf.Max(0, tile.BlockerICD - 1); }) ?? 0;
-        });
     }
 
 #endregion Blocker ICD

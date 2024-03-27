@@ -41,7 +41,7 @@ public record LevelData(
 	public Board? this[int index] => Boards.ElementAtOrDefault(index);
 	
 	[JsonIgnore]
-	public int TileCountAll => Boards?.Sum(board => board?.Layers?.Sum(Layer => Layer.Tiles?.Count() ?? 0)) ?? 0;
+	public int TileCountAll => Boards?.Sum(board => board?.Layers?.Sum(Layer => Layer.Tiles?.Where(tile => tile.BlockerType != BlockerType.Suitcase).Count() ?? 0)) ?? 0;
 
 	[JsonIgnore]
 	public int MissionCountAll => Boards?.Sum(board => board?.Layers?.Sum(Layer => Layer.Tiles?.Where(tile => tile.IncludeMission).Count() ?? 0)) ?? 0;

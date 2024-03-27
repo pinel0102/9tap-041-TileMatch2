@@ -138,6 +138,11 @@ public static partial class TileSearch
                 });
     }
 
+    public static bool ContainsTileCount(this TileItem tile)
+    {
+        return tile.blockerType != BlockerType.Suitcase;
+    }
+
 #endregion [Game] TileItem
 
 

@@ -18,7 +18,8 @@ public partial class TileItem
 
     [Header("★ [Reference] Suitcase")]
     [SerializeField]	private RectTransform m_subTileParent;
-    [SerializeField]	private TileItem m_subTileItem;
+    public TileItem m_parentTile = null;
+    public List<TileItem> m_childTiles = new List<TileItem>();
     
 #region Blocker State
 
@@ -331,9 +332,8 @@ public partial class TileItem
 
         ClearSubTiles();
         
-        m_subTileItem = globalData.playScene.TileItemPool.Get();
-        m_subTileItem.transform.SetParentReset(m_subTileParent);
-        m_subTileItem.OnUpdateUI(CreateSubTileItemModel(), true, out _);
+        //m_subTileItem = globalData.playScene.TileItemPool.Get();
+        //m_subTileItem.transform.SetParentReset(m_subTileParent);
     }
 
     private void ClearSubTiles()
@@ -341,45 +341,8 @@ public partial class TileItem
         Debug.Log(CodeManager.GetMethodName());
 
         GlobalDefine.ClearChild(m_subTileParent);
-        m_subTileItem = null;
-    }
-
-    private TileItemModel CreateSubTileItemModel()
-    {
-        Debug.Log(CodeManager.GetMethodName() + tileName);
-
-        Vector2 checkPosition = (Current.Position / Constant.Game.RESIZE_TILE_RATIOS) - new Vector2(0, Constant.Game.TILE_SIZE_EDITOR);
-        Vector2 subTilePosition = new Vector2(0, checkPosition.y);
-        
-        var overlaps = globalData.playScene.TileItems
-            .Where(
-                item =>
-                {
-                    var resizePosition = checkPosition * Constant.Game.RESIZE_TILE_RATIOS;
-                    return item.Current.LayerIndex > layerIndex && Vector2.SqrMagnitude(resizePosition - item.Current.Position) < 7700f;
-                }
-            ).Select(item => {
-                    var resizePosition = checkPosition * Constant.Game.RESIZE_TILE_RATIOS;
-                    return (item.Current.Guid, true, Vector2.SqrMagnitude(resizePosition - item.Current.Position));
-                }
-            )
-            .ToList();
-
-        int icon = iconList[Mathf.Max(0, blockerICD - 1)];
-
-        return new TileItemModel(
-            layerIndex,
-            siblingIndex,
-            LocationType.BOARD,
-            Guid.NewGuid(),
-            icon,
-            iconList,
-            subTilePosition * Constant.Game.RESIZE_TILE_RATIOS,
-            BlockerType.Suitcase_Tile,
-            0,
-            -1,
-            overlaps
-        );
+        m_parentTile = null;
+        m_childTiles.Clear();
     }
 
 #endregion Suitcase FX

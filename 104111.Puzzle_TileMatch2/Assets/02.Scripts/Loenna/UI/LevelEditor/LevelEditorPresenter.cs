@@ -85,12 +85,13 @@ public class LevelEditorPresenter : IDisposable
             bool existNonValidBlocker = false;
 
 			m_savable.Value = state.Boards.All(
-				board => 
-                    board.Layers.All(layer => layer.TileCount > 0 && layer.Tiles.All(tile => tile.IsValidBlocker(layer, tile.BlockerType, () => {
+				board => {
+                    return board.Layers.All(layer => layer.TileCount > 0 && layer.Tiles.All(tile => tile.IsValidBlocker(layer, tile.BlockerType, () => {
                         m_levelEditor.SetBlockerWarning(string.Format("NonValid : {0}\nLayer [{1}] {2}", tile.BlockerType, layer.LayerIndex, tile.Position), showLog:false);
                         existNonValidBlocker = true;
                     }))) && 
-                    (board.TileCountAll + m_levelEditor.GetAdditionalTileCount(board)) % requiredMultiples == 0
+                    board.TileCountAll % requiredMultiples == 0;
+                }
 			);
 
             if (!existNonValidBlocker)
@@ -546,6 +547,8 @@ public class LevelEditorPresenter : IDisposable
             m_internalState.Update(info => 
                 info with { 
                     UpdateType = UpdateType.BOARD,
+                    TileCountInBoard = boardInfos[State.BoardIndex].TileCountAll,
+                    TileCountAll = boardInfos.Sum(board => board.TileCountAll),
                     Boards = boardInfos
                 } 
             );
@@ -592,6 +595,8 @@ public class LevelEditorPresenter : IDisposable
             m_internalState.Update(info => 
                 info with { 
                     UpdateType = UpdateType.BOARD,
+                    TileCountInBoard = boardInfos[State.BoardIndex].TileCountAll,
+                    TileCountAll = boardInfos.Sum(board => board.TileCountAll),
                     Boards = boardInfos
                 } 
             );

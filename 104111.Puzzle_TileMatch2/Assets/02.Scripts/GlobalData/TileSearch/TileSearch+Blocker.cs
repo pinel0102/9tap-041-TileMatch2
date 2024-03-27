@@ -74,11 +74,15 @@ public static partial class TileSearch
                 break;
 
             case BlockerType.Suitcase: // 아래에 타일이 없을 때 설치 가능.
+                if (tile.IsMostBottomTile())
+                    return false;
+                
                 var (existSuitcaseBottom, _) = tile.FindBottomTile(layer);
                 if (!existSuitcaseBottom)
                     return true;
                 break;
 
+            case BlockerType.Suitcase_Tile: // 항상 설치 가능. (일반 타일과 동일 취급.)
             case BlockerType.Jelly: // 항상 설치 가능. (일반 타일과 동일 취급.)
                 return true;
 
@@ -131,12 +135,16 @@ public static partial class TileSearch
                     //isValid = tileChainTargetList.Where(item => item.BlockerType is BlockerType.None or BlockerType.Jelly).Count() >= needTargetCount_Chain;
                 break;
 
-            case BlockerType.Suitcase: // 아래에 타일이 없을 때 클리어 가능.
-                var (existSuitcaseBottom, _) = tile.FindBottomTile(layer);
-                if (!existSuitcaseBottom)
-                    isValid = true;
+            case BlockerType.Suitcase: // 아래에 Suitcase_Tile이 있을 때 클리어 가능.
+                var (existSuitcaseBottom, bottomTile) = tile.FindBottomTile(layer);
+                if (existSuitcaseBottom)
+                {
+                    if (bottomTile.BlockerType == BlockerType.Suitcase_Tile)
+                        isValid = true;
+                }
                 break;
 
+            case BlockerType.Suitcase_Tile:
             case BlockerType.Jelly: // 항상 클리어 가능. (일반 타일과 동일 취급.)
                 isValid = true;
                 break;

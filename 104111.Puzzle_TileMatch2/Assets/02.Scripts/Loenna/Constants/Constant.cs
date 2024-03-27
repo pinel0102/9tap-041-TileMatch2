@@ -52,6 +52,8 @@ public static class Constant
 	{
         public const int LEVEL_PUZZLE_START = 4; // 오픈시 해금.
         public const int TILE_SIZE_EDITOR = 160;
+        public const int TILE_POSITION_MAX_EDITOR = 480;
+        public const int TILE_SUITCASE_SUB_POSITION_Y = -100;
 		public const float TILE_WIDTH = 88f;
 		public const float TILE_HEIGHT = 92f;
         public const float TILE_WIDTH_HALF = 44f;

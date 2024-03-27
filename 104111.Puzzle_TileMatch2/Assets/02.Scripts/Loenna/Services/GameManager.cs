@@ -378,10 +378,10 @@ public partial class GameManager : IDisposable
             #endregion Sweet Holic Tile
 
             // [Suitcase] Additional Count
-            int additionalCount = GlobalDefine.GetAdditionalTileCount(board.Layers);
-            int tileCount = board.Layers.Sum(Layer => Layer?.Tiles?.Count ?? 0) + additionalCount;
+            //int additionalCount = GlobalDefine.GetAdditionalTileCount(board.Layers);
+            int tileCount = board.Layers.Sum(Layer => Layer?.Tiles?.Where(tile => tile.ContainsTileCount())?.Count() ?? 0);
 
-            Debug.Log(CodeManager.GetMethodName() + string.Format("{0} + {1} = {2}", tileCount - additionalCount, additionalCount, tileCount));
+            Debug.Log(CodeManager.GetMethodName() + string.Format("tileCount : {0}", tileCount));
 
             int requiredTypeCount = tileCount / Constant.Game.REQUIRED_MATCH_COUNT;
 			int randomCount = Mathf.Clamp(board.NumberOfTileTypes - specialTileTypes, 1, requiredTypeCount);
@@ -500,7 +500,7 @@ public partial class GameManager : IDisposable
 								)
 								.ToList();
 
-							int icon = queue.Dequeue();
+							int icon = tile.ContainsTileCount() ? queue.Dequeue() : -1;
 							int mission = -1;
 
                             #if USE_GOLD_TILE_MISSION
@@ -511,7 +511,10 @@ public partial class GameManager : IDisposable
 							}
                             #endif
 
-                            List<int> iconList = new List<int>();
+                            List<int> iconList = new List<int>{ icon };
+
+                            /*List<int> iconList = new List<int>();
+
                             if (tile.BlockerType == BlockerType.Suitcase)
                             {
                                 for(int i=0; i < Mathf.Max(0, tile.BlockerICD - 1); i++)
@@ -519,14 +522,14 @@ public partial class GameManager : IDisposable
                                     iconList.Add(queue.Dequeue());
                                 }
                             }
-                            iconList.Add(icon);
+                            iconList.Add(icon);*/
 
 							return new TileItemModel(
 								layerIndex,
                                 siblingIndex++,
 								LocationType.BOARD,
 								tile.Guid,
-                                iconList.Last(),
+                                icon,
 								iconList,
 								tile.Position * Constant.Game.RESIZE_TILE_RATIOS,
                                 tile.BlockerType,

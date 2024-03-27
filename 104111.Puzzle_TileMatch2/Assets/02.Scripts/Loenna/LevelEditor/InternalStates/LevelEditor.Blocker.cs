@@ -34,11 +34,11 @@ public partial class LevelEditor
     public static Dictionary<BlockerType, int> CurrentBlockerDic = new Dictionary<BlockerType, int>();
 
     /// <summary>
-    /// [Suitcase] 추가 타일 카운트.
+    /// [Deprecated] 추가 타일 카운트.
     /// </summary>
     /// <param name="board"></param>
     /// <returns></returns>
-    public int GetAdditionalTileCount(BoardInfo board)
+    /*public int GetAdditionalTileCount(BoardInfo board)
     {
         int additionalCount = board.Layers.Sum(layer => {
             return layer.Tiles
@@ -46,11 +46,10 @@ public partial class LevelEditor
                 .Sum(tile => {  return Mathf.Max(0, tile.blockerICD - 1); });
         });
 
-        //if (additionalCount > 0)
-        //    Debug.Log(CodeManager.GetMethodName() + string.Format("<color=yellow>{0}</color>", additionalCount));
-
         return additionalCount;
-    }
+
+        return 0;
+    }*/
 
 #region Presenter Function
 

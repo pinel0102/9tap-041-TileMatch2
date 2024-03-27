@@ -149,6 +149,11 @@ public static partial class TileSearch
         return GlobalData.Instance.playScene.TileItems.Find(tileItem => tileItem.Current == tile);
     }
 
+    public static bool ContainsTileCount(this TileItemModel tile)
+    {
+        return tile.BlockerType != BlockerType.Suitcase;
+    }
+
 #endregion [Game] TileItemModel
 
 

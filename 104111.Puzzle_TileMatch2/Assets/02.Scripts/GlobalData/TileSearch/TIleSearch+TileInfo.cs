@@ -130,6 +130,11 @@ public static partial class TileSearch
         return tile.FindTile(layer, tile.PositionBottom()).ListCheck();
     }
 
+    public static bool ContainsTileCount(this TileInfo tile)
+    {
+        return tile.BlockerType != BlockerType.Suitcase;
+    }
+
 #endregion [Editor] Tile
 
 
@@ -150,7 +155,8 @@ public static partial class TileSearch
         if (list.Count > 1)
         {
             list.ForEach(tile => {
-                Debug.LogWarning(CodeManager.GetMethodName() + string.Format("[{0}] {1}", tile.Guid, tile.Position));
+                if (tile.BlockerType != BlockerType.Suitcase_Tile)
+                    Debug.LogWarning(CodeManager.GetMethodName() + string.Format("[{0}] {1}", tile.Guid, tile.Position));
             });
         }
 

@@ -78,7 +78,7 @@ partial class LevelEditor
 
 		}
 
-        public int TileCount => Tiles.Count();
+        public int TileCount => Tiles.Where(tile => tile.BlockerType != BlockerType.Suitcase).Count();
 	}
 	
 	public record TileInfo(Guid Guid, Vector2 Position, float Size, BlockerType BlockerType, int blockerICD);
