@@ -128,6 +128,16 @@ public static partial class TileSearch
     {
         return tile.FindTile(layer, tile.PositionBottom()).ListCheck();
     }
+    
+    /// <summary>
+    /// Bottom
+    /// </summary>
+    /// <param name="tile"></param>
+    /// <returns>(Exist ? Tile : null)</returns>
+    public static (bool, List<Tile>) FindBottomTileList(this Tile tile, Layer layer)
+    {
+        return tile.FindTile(layer, tile.PositionBottom()).AsList();
+    }
 
     public static bool IsMostTopTile(this Tile tile)
     {
@@ -164,11 +174,25 @@ public static partial class TileSearch
         if (list.Count > 1)
         {
             list.ForEach(tile => {
-                Debug.LogWarning(CodeManager.GetMethodName() + string.Format("[{0}] {1}", tile.Guid, tile.Position));
+                if (tile.BlockerType != BlockerType.Suitcase_Tile)
+                    Debug.LogWarning(CodeManager.GetMethodName() + string.Format("[{0}] {1}", tile.Guid, tile.Position));
             });
         }
 
         return (list.Count > 0, list.Count > 0 ? list[0] : null);
+    }
+
+    private static (bool, List<Tile>) AsList(this List<Tile> list)
+    {
+        if (list.Count > 1)
+        {
+            list.ForEach(tile => {
+                if (tile.BlockerType != BlockerType.Suitcase_Tile)
+                    Debug.LogWarning(CodeManager.GetMethodName() + string.Format("[{0}] {1}", tile.Guid, tile.Position));
+            });
+        }
+
+        return (list.Count > 0, list.Count > 0 ? list : null);
     }
 
 #endregion Internal Find

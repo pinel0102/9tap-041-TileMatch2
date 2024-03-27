@@ -223,6 +223,10 @@ public class TutorialBlockerPopup : UIPopup
                 WaitForMoveTile(targetTiles, OnClickClose);
                 break;
             case 2: // Suitcase
+                var(existChild, childTile) = m_tileItem.FindBottomTileList();
+                if (existChild)
+                    targetTiles.AddRange(childTile);
+
                 m_tutorialPanel[index].position = targetPosition;
                 m_unmaskTile[index].position = targetPosition;
                 m_unmaskTile[index].gameObject.SetActive(true);

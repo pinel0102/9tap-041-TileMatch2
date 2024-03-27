@@ -130,6 +130,16 @@ public static partial class TileSearch
         return tile.FindTile(layer, tile.PositionBottom()).ListCheck();
     }
 
+    /// <summary>
+    /// Bottom
+    /// </summary>
+    /// <param name="tile"></param>
+    /// <returns>(Exist ? Tile : null)</returns>
+    public static (bool, List<TileInfo>) FindBottomTileList(this TileInfo tile, LayerInfo layer)
+    {
+        return tile.FindTile(layer, tile.PositionBottom()).AsList();
+    }
+
     public static bool ContainsTileCount(this TileInfo tile)
     {
         return tile.BlockerType != BlockerType.Suitcase;
@@ -161,6 +171,19 @@ public static partial class TileSearch
         }
 
         return (list.Count > 0, list.Count > 0 ? list[0] : null);
+    }
+
+    private static (bool, List<TileInfo>) AsList(this List<TileInfo> list)
+    {
+        if (list.Count > 1)
+        {
+            list.ForEach(tile => {
+                if (tile.BlockerType != BlockerType.Suitcase_Tile)
+                    Debug.LogWarning(CodeManager.GetMethodName() + string.Format("[{0}] {1}", tile.Guid, tile.Position));
+            });
+        }
+
+        return (list.Count > 0, list.Count > 0 ? list : null);
     }
 
 #endregion Internal Find

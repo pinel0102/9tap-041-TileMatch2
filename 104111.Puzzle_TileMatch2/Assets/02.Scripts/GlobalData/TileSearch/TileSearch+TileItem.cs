@@ -122,6 +122,16 @@ public static partial class TileSearch
     }
 
     /// <summary>
+    /// Bottom
+    /// </summary>
+    /// <param name="tile"></param>
+    /// <returns>(Exist ? Tile : null)</returns>
+    public static (bool, List<TileItem>) FindBottomTileList(this TileItem tile)
+    {
+        return tile.FindTile(tile.PositionBottom()).AsList();
+    }
+
+    /// <summary>
     /// ICD를 변경시켜야 할 타일을 검색. (본인 제외)
     /// </summary>
     /// <param name="tile"></param>
@@ -163,11 +173,25 @@ public static partial class TileSearch
         if (list.Count > 1)
         {
             list.ForEach(tile => {
-                Debug.LogWarning(CodeManager.GetMethodName() + string.Format("[{0}] {1}", tile.Current.Guid, tile.Current.Position));
+                if (tile.blockerType != BlockerType.Suitcase_Tile)
+                    Debug.LogWarning(CodeManager.GetMethodName() + string.Format("[{0}] {1}", tile.Current.Guid, tile.Current.Position));
             });
         }
 
         return (list.Count > 0, list.Count > 0 ? list[0] : null);
+    }
+
+    private static (bool, List<TileItem>) AsList(this List<TileItem> list)
+    {
+        if (list.Count > 1)
+        {
+            list.ForEach(tile => {
+                if (tile.blockerType != BlockerType.Suitcase_Tile)
+                    Debug.LogWarning(CodeManager.GetMethodName() + string.Format("[{0}] {1}", tile.Current.Guid, tile.Current.Position));
+            });
+        }
+
+        return (list.Count > 0, list.Count > 0 ? list : null);
     }
 
     private static List<TileItem> GetLayerTiles(this TileItem tile)

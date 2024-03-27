@@ -136,11 +136,10 @@ public static partial class TileSearch
                 break;
 
             case BlockerType.Suitcase: // 아래에 Suitcase_Tile이 있을 때 클리어 가능.
-                var (existSuitcaseBottom, bottomTile) = tile.FindBottomTile(layer);
+                var (existSuitcaseBottom, bottomTiles) = tile.FindBottomTileList(layer);
                 if (existSuitcaseBottom)
                 {
-                    if (bottomTile.BlockerType == BlockerType.Suitcase_Tile)
-                        isValid = true;
+                    isValid = (bottomTiles.Count == tile.blockerICD) && bottomTiles.All(tile => tile.BlockerType == BlockerType.Suitcase_Tile);
                 }
                 break;
 

@@ -298,29 +298,22 @@ public partial class TileItem : CachedBehaviour
 		return currentType != item.Location;
 	}
 
-    private void RefreshIcon(BlockerType type, int currentICD)
+    private void RefreshIcon(BlockerType _blockerType, int _currentICD)
     {
-        int index;
-        switch(type)
+        tileIcon = iconList.Last();
+
+        string path = m_tileDataTable.TryGetValue(tileIcon, out var rowData)? rowData.Path : string.Empty;
+        Sprite sprite = SpriteManager.GetSprite(path);
+        m_icon.sprite = sprite;
+
+        switch(_blockerType)
         {
             case BlockerType.Suitcase:
-                index = Mathf.Max(0, currentICD - 1);
+                tileName = GlobalDefine.GetBlockerName(_blockerType);
                 break;
-            
             default:
-                index = Mathf.Max(0, iconList.Count - 1);
+                tileName = path.Replace("UI_Img_", string.Empty);
                 break;
-        }
-
-        if(iconList.Count > index)
-        {
-            tileIcon = iconList[index];
-
-            string path = m_tileDataTable.TryGetValue(tileIcon, out var rowData)? rowData.Path : string.Empty;
-            Sprite sprite = SpriteManager.GetSprite(path);
-            m_icon.sprite = sprite;
-
-            tileName = path.Replace("UI_Img_", string.Empty);
         }
     }
 

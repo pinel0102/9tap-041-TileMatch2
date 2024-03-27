@@ -24,7 +24,6 @@ public static partial class GlobalDefine
         [BlockerType.Glue_Right] = BlockerTypeEditor.Glue,
         [BlockerType.Bush] = BlockerTypeEditor.Bush,
         [BlockerType.Suitcase] = BlockerTypeEditor.Suitcase,
-        [BlockerType.Suitcase_Tile] = BlockerTypeEditor.Suitcase,
         [BlockerType.Jelly] = BlockerTypeEditor.Jelly,
         [BlockerType.Chain] = BlockerTypeEditor.Chain,
     };
