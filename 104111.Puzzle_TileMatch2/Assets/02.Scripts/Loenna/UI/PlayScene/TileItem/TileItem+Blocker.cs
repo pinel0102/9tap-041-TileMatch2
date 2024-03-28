@@ -83,12 +83,6 @@ public partial class TileItem
             case BlockerType.Chain:
                 PlayBlockerEffect(type, newICD, m_blockerRect.position);
                 break;
-            case BlockerType.Suitcase:
-                //PlayBlockerEffect(type, newICD, m_blockerRect.position);
-                break;
-            case BlockerType.Glue_Left:
-            case BlockerType.Glue_Right:
-            case BlockerType.None:
             default:
                 break;
         }

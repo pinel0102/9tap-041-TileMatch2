@@ -2,7 +2,7 @@
   "Guid": "cd477fb4-d6f0-4322-b7ad-501f2b93841c",
   "Boards": [
     {
-      "NumberOfTileTypes": 8,
+      "NumberOfTileTypes": 6,
       "Layers": [
         {
           "Tiles": [
@@ -35,8 +35,8 @@
                 "x": -160.0,
                 "y": 0.0
               },
-              "BlockerType": "None",
-              "BlockerICD": 0,
+              "BlockerType": "Bush",
+              "BlockerICD": 2,
               "IncludeMission": false
             },
             {
@@ -149,8 +149,8 @@
                 "x": -160.0,
                 "y": -80.0
               },
-              "BlockerType": "Bush",
-              "BlockerICD": 2,
+              "BlockerType": "None",
+              "BlockerICD": 0,
               "IncludeMission": false
             },
             {
@@ -182,8 +182,8 @@
                 "x": 80.0,
                 "y": 320.0
               },
-              "BlockerType": "Bush",
-              "BlockerICD": 2,
+              "BlockerType": "None",
+              "BlockerICD": 0,
               "IncludeMission": false
             },
             {
@@ -329,8 +329,8 @@
                 "x": -80.0,
                 "y": -160.0
               },
-              "BlockerType": "None",
-              "BlockerICD": 0,
+              "BlockerType": "Bush",
+              "BlockerICD": 2,
               "IncludeMission": false
             },
             {

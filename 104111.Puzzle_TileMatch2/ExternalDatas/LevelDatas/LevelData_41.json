@@ -2,7 +2,7 @@
   "Guid": "00b8e8f0-d7e7-4ef0-9063-8ce838d66da6",
   "Boards": [
     {
-      "NumberOfTileTypes": 7,
+      "NumberOfTileTypes": 5,
       "Layers": [
         {
           "Tiles": [
@@ -24,8 +24,8 @@
                 "x": 0.0,
                 "y": 320.0
               },
-              "BlockerType": "Bush",
-              "BlockerICD": 2,
+              "BlockerType": "None",
+              "BlockerICD": 0,
               "IncludeMission": false
             },
             {
@@ -105,8 +105,8 @@
                 "x": 0.0,
                 "y": 240.0
               },
-              "BlockerType": "Bush",
-              "BlockerICD": 2,
+              "BlockerType": "None",
+              "BlockerICD": 0,
               "IncludeMission": false
             },
             {
@@ -351,43 +351,6 @@
               "Position": {
                 "x": 0.0,
                 "y": -260.0
-              },
-              "BlockerType": "None",
-              "BlockerICD": 0,
-              "IncludeMission": false
-            }
-          ]
-        },
-        {
-          "Tiles": [
-            {
-              "Guid": "0e53a2cd-00b7-4736-bf84-2d6410d25fa9",
-              "Type": 0,
-              "Position": {
-                "x": 200.0,
-                "y": -200.0
-              },
-              "BlockerType": "None",
-              "BlockerICD": 0,
-              "IncludeMission": false
-            },
-            {
-              "Guid": "938e5e4c-3b44-43e1-8419-3719449039b7",
-              "Type": 0,
-              "Position": {
-                "x": -200.0,
-                "y": -200.0
-              },
-              "BlockerType": "None",
-              "BlockerICD": 0,
-              "IncludeMission": false
-            },
-            {
-              "Guid": "a39c0c67-20ae-41ee-85db-6857b085bd49",
-              "Type": 0,
-              "Position": {
-                "x": 0.0,
-                "y": -280.0
               },
               "BlockerType": "None",
               "BlockerICD": 0,

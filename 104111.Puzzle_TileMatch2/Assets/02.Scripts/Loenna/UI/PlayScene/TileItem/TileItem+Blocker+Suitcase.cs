@@ -9,7 +9,6 @@ using System.Linq;
 public partial class TileItem
 {
     [Header("★ [Reference] Suitcase")]
-    [SerializeField]	private RectTransform m_subTileParent;
     public bool isActivatedSuitcaseTile;
     public TileItem m_parentTile = null;
     public List<TileItem> m_childTiles = new List<TileItem>();
@@ -129,7 +128,7 @@ public partial class TileItem
         else
         {
             CachedRectTransform.SetLocalPosition(Current.Position + Constant.Game.SUITCASE_TILE_HIDE_POSITION);
-            
+
             m_SuitcaseTween?.OnChangeValue(childTilePosition, GlobalDefine.SuitcaseFX_Duration);
             PlayBlockerEffect(blockerType, blockerICD, CachedRectTransform.position);
         }

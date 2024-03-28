@@ -28,8 +28,14 @@ Puzzle - TileMatch2 클라이언트 프로젝트
 # ChangeLog
 
 <details>
-<summary markdown="span"><em>last update : 1.0.3</em></summary>
+<summary markdown="span"><em>last update : 1.0.4</em></summary>
 <br>
+
+---
++ 1.0.4
+   - Blocker 추가 (Chain, Jelly, Suitcase)
+   - Tile Tween 최적화
+   - Jigsaw Piece 최적화
 
 ---
 + 1.0.3
