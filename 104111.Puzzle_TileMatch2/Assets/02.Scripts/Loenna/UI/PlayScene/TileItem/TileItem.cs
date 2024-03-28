@@ -461,7 +461,7 @@ public partial class TileItem : CachedBehaviour
                 }) ?? UniTask.CompletedTask,
             (LocationType.STASH, _) => // Basket -> Stash (Item: Return)
                 TileJump(location, direction, duration, onComplete: onComplete) ?? UniTask.CompletedTask, 
-			(LocationType.BOARD, true) => // Basket -> Board (Item: Undo)
+			(LocationType.BOARD, true) => // Basket -> Board || Basket -> Stash(Board) (Item: Undo)
                 TileJump(location, m_originWorldPosition, duration, onComplete: () => {
                     globalData.playScene?.mainView?.CurrentBoard?.SetParentLayer(this, layerIndex);
                 }) ?? UniTask.CompletedTask,
