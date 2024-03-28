@@ -23,7 +23,7 @@ public class IronSourceInitilizer
                 else
                 {
                     IronSource.Agent.init(appKey);
-                    IronSource.UNITY_PLUGIN_VERSION = "7.9.0-ri";
+                    IronSource.UNITY_PLUGIN_VERSION = "7.9.1-ri";
                 }
 
             }
