@@ -78,8 +78,12 @@ partial class GameManager
                             
                             AddCommandList(icdListBoard, Type.CHANGE_BLOCKER_ICD, LocationType.BOARD);
                             AddCommandTile(tileItemModel, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
-                            //if(topTile.BlockerICD <= 1)
-                            //AddCommandTile(topTile, Type.MOVE_TILE_IN_BOARD_TO_BASKET, LocationType.BASKET);
+                            
+                            if(topTile.BlockerICD <= 1)
+                            {
+                                Debug.Log(CodeManager.GetMethodName() + string.Format("Last Tile Moved : ({0})", topTile.BlockerICD));
+                                AddCommandTile(topTile, Type.DO_NOT_MOVE_DISAPPEAR, LocationType.POOL, true);
+                            }
                         }
                         break;
 
@@ -197,6 +201,35 @@ partial class GameManager
 		);
 	}
 
+    public void DoNotMove(TileItemModel tileItemModel, List<TileItemModel> tiles, Type commandType)
+    {
+        Debug.Log(CodeManager.GetMethodName() + string.Format("[{0}] {1}", tileItemModel.BlockerType, commandType));
+
+        switch(commandType)
+        {
+            case Type.DO_NOT_MOVE_DISAPPEAR:
+                BoardInfo.CurrentBoard.Tiles = GetOverlapChangedTiles(tileItemModel, tiles, false);
+
+                m_boardInfo.Update(
+                    info => info with { 
+                        StateType = InternalState.Type.CurrentUpdated,
+                        SelectedTiles = new TileItemModel[] { tileItemModel }
+                    }
+                );
+                break;
+            case Type.DO_NOT_MOVE_APPEAR:
+                BoardInfo.CurrentBoard.Tiles = GetOverlapChangedTiles(tileItemModel, tiles, true);
+
+                m_boardInfo.Update(
+                    info => info with { 
+                        StateType = InternalState.Type.CurrentUpdated,
+                        SelectedTiles = new TileItemModel[] { tileItemModel }
+                    }
+                );
+                break;
+        }
+    }
+
 	// 해당 타일 이동
 	public List<TileItemModel> MoveTo(TileItemModel tileItemModel, LocationType location)
 	{
@@ -253,28 +286,7 @@ partial class GameManager
 
 	public void AddToBoard(TileItemModel tileItemModel, List<TileItemModel> tiles)
 	{
-        var modifiedTiles = tiles
-			.Select(
-				tile => {
-                    var overlapped = tile.
-						Overlaps
-						.Select(
-							x => {
-								if (x.guid == tileItemModel.Guid)
-								{
-                                    return (x.guid, true, x.distance);
-								}
-								return x;
-							}
-						).ToList();
-					
-					return tile with {
-						Overlaps = overlapped
-					};
-				}
-			).ToList();
-		
-		BoardInfo.CurrentBoard.Tiles = modifiedTiles;
+        BoardInfo.CurrentBoard.Tiles = GetOverlapChangedTiles(tileItemModel, tiles, true);
 
 		var currentBasket = BoardInfo.Basket;
 		currentBasket.RemoveAll(b => tiles.Any(tile => tile.Location is LocationType.BOARD && tile.Guid == b.Guid));
@@ -295,28 +307,7 @@ partial class GameManager
 
 	public void AddToBasket(TileItemModel tileItemModel, List<TileItemModel> tiles, bool forceMove)
 	{
-        var modifiedTiles = tiles
-			.Select(
-				tile => {
-					var overlapped = tile.
-						Overlaps
-						.Select(
-							x => {
-								if (x.guid == tileItemModel.Guid)
-								{
-									return (x.guid, false, x.distance);
-								}
-								return x;
-							}
-						).ToList();
-					
-					return tile with {
-						Overlaps = overlapped
-					};
-				}
-			).ToList();
-
-		BoardInfo.CurrentBoard.Tiles = modifiedTiles;
+        BoardInfo.CurrentBoard.Tiles = GetOverlapChangedTiles(tileItemModel, tiles, false);
 
 		var currentBasket = BoardInfo.Basket;
 		int index = currentBasket.FindLastIndex(tuple => tuple.Icon == tileItemModel.Icon);
@@ -581,5 +572,29 @@ partial class GameManager
 
         m_sweetHolicCollectedFx.Update(_ => from);
         m_collectedSweetHolicCount.Update(count => count + addCount);
+    }
+
+    private List<TileItemModel> GetOverlapChangedTiles(TileItemModel tileItemModel, List<TileItemModel> tiles, bool overlap)
+    {
+        return tiles
+        .Select(
+            tile => {
+                var overlapped = tile.
+                    Overlaps
+                    .Select(
+                        x => {
+                            if (x.guid == tileItemModel.Guid)
+                            {
+                                return (x.guid, overlap, x.distance);
+                            }
+                            return x;
+                        }
+                    ).ToList();
+                
+                return tile with {
+                    Overlaps = overlapped
+                };
+            }
+        ).ToList();
     }
 }

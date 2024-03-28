@@ -106,7 +106,8 @@ public partial class TileItem : CachedBehaviour
                             }
                         }
 
-                        globalData.playScene.LoadFX(GlobalDefine.FX_Prefab_Sparkle, CachedTransform.position);
+                        if (IsPlayDisappearEffect(blockerType))
+                            globalData.playScene.LoadFX(GlobalDefine.FX_Prefab_Sparkle, CachedTransform.position);
 
                         m_view.SetLocalScale(0);
                         Reset();
@@ -469,6 +470,16 @@ public partial class TileItem : CachedBehaviour
 		};
 	}
 
+    private bool IsPlayDisappearEffect(BlockerType blockerType)
+    {
+        switch(blockerType)
+        {
+            case BlockerType.Suitcase:
+                return false;
+        }
+        return true;
+    }
+
     private void StopJump()
     {
         if (m_jumpSequence?.IsActive() ?? false)
@@ -511,7 +522,7 @@ public partial class TileItem : CachedBehaviour
 
     private UniTask DoNothing(LocationType location, bool existModel)
     {
-        Debug.LogWarning(CodeManager.GetMethodName() + string.Format("<color=white>location: {0} / existModel: {1}</color>", location, existModel));
+        //Debug.LogWarning(CodeManager.GetMethodName() + string.Format("<color=white>location: {0} / existModel: {1}</color>", location, existModel));
 
         Reset();
 

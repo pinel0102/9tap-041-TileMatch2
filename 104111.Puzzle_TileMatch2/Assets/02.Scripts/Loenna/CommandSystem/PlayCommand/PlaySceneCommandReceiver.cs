@@ -18,7 +18,9 @@ public class PlaySceneCommandReceiver : Command.Receiver<CommandResource.PlaySce
         if (m_gameManager.IsBasketEnable() || type is 
             CommandType.PlayScene.ROLLBACK_TILE_TO_BOARD or 
             CommandType.PlayScene.ROLLBACK_TILE_TO_STASH or 
-            CommandType.PlayScene.ROLLBACK_CHANGE_BLOCKER_ICD)
+            CommandType.PlayScene.ROLLBACK_CHANGE_BLOCKER_ICD or
+            CommandType.PlayScene.DO_NOT_MOVE_DISAPPEAR or
+            CommandType.PlayScene.DO_NOT_MOVE_APPEAR)
         {
             //UnityEngine.Debug.Log(CodeManager.GetMethodName() + string.Format("[{0}] {1} / {2}", type, tileItem.BlockerType, tileItem.Position));
 
@@ -42,6 +44,10 @@ public class PlaySceneCommandReceiver : Command.Receiver<CommandResource.PlaySce
                     break;
                 case CommandType.PlayScene.ROLLBACK_CHANGE_BLOCKER_ICD:
                     m_gameManager.ChangeICD(result, list, 1);
+                    break;
+                case CommandType.PlayScene.DO_NOT_MOVE_DISAPPEAR:
+                case CommandType.PlayScene.DO_NOT_MOVE_APPEAR:
+                    m_gameManager.DoNotMove(result, list, type);
                     break;
             }
         }

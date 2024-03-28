@@ -64,10 +64,10 @@ public partial class TileItem
 		}
 
         public UniTask OnChangeValue(Vector3 value, float delay, float duration)
-		{
-			m_tweener
-                .ChangeEndValue(value, duration, true)
-                .Restart(true, delay);
+		{   
+            m_tweener
+            .ChangeEndValue(value, duration, true)
+            .Restart(true, delay);
 
 			return m_tweener
 			.AsyncWaitForCompletion()
