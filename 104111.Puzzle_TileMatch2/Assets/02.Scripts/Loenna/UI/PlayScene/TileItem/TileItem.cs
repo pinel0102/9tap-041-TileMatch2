@@ -21,12 +21,16 @@ public partial class TileItem : CachedBehaviour
 {
     [Header("★ [Live] Status")]
     [SerializeField]	private LocationType currentLocation;
+    [SerializeField]	private bool m_isInitialized;
     [SerializeField]	private bool m_interactable = false;
     [SerializeField]	private bool m_movable = false;
     [SerializeField]	private bool isMoving;
+    [SerializeField]    private bool isUndoMoving;
     public bool IsInteractable => m_interactable;
     public bool IsMovable => m_movable;
     public bool IsMoving => isMoving;
+    public bool IsUndoMoving => isUndoMoving;
+    public bool IsInitialized => m_isInitialized;
 
     [Header("★ [Live] Tile Info")]
     [SerializeField]    private Transform _parentLayer;
@@ -63,6 +67,7 @@ public partial class TileItem : CachedBehaviour
 
 	public void OnSetup(TileItemParameter parameter)
 	{
+        m_isInitialized = false;
         blockerICD = 0;
         isActivatedSuitcaseTile = false;
         isMoving = false;
@@ -196,6 +201,9 @@ public partial class TileItem : CachedBehaviour
                                     globalData.SetTouchLock_PlayScene(false);
                                 }
                                 break;
+                            case BlockerType.Suitcase:
+                                //Do not Interact
+                                break;
                             default:
                                 parameter.OnClick?.Invoke(this);
                                 break;
@@ -206,18 +214,7 @@ public partial class TileItem : CachedBehaviour
                         switch(blockerType)
                         {
                             case BlockerType.Suitcase:
-                                if (blockerICD > 1)
-                                {
-                                    /*var(existRight, rightTile) = this.FindRightTile();
-                                    return WaitGlueAnimation(existRight, rightTile, () => {
-                                        parameter.OnClick?.Invoke(this);
-                                    });*/
-                                    parameter.OnClick?.Invoke(this);
-                                }
-                                else
-                                {
-                                    parameter.OnClick?.Invoke(this);
-                                }
+                                //Do not Interact
                                 break;
                             default:
                                 parameter.OnClick?.Invoke(this);
@@ -230,6 +227,11 @@ public partial class TileItem : CachedBehaviour
             return UniTask.CompletedTask;
 		}
 	}
+
+    public void SetInitialize(bool value)
+    {
+        m_isInitialized = value;
+    }
 
 #endregion Initialize
 
@@ -244,9 +246,7 @@ public partial class TileItem : CachedBehaviour
 		{
             InitPosition(item, blockerType);
             
-            //CachedRectTransform.SetLocalPosition(item.Position);
-
-			if (item?.Location == LocationType.POOL)
+            if (item?.Location == LocationType.POOL)
 			{
                 CachedRectTransform.SetParentReset(UIManager.SceneCanvas.transform);
 				SetActive(false);
@@ -256,30 +256,6 @@ public partial class TileItem : CachedBehaviour
 		}
 
 		LocationType currentType = m_current?.Location ?? LocationType.POOL;
-        
-        /*if ((changeLocation, currentType) is (LocationType.BOARD, LocationType.BOARD))
-		{
-            switch(blockerType)
-            {
-                case BlockerType.Suitcase:
-                    //RefreshSubTiles((tile) => tile.blockerType is BlockerType.Suitcase_Tile && tile.currentLocation is LocationType.BOARD);
-                    m_originWorldPosition = CachedTransform.parent.TransformPoint(item.Position);
-                    CachedRectTransform.SetLocalPosition(item.Position);
-                    break;
-                case BlockerType.Suitcase_Tile:
-                    Vector2 childTilePosition = item.GetSuitcaseTilePosition();
-                    m_originWorldPosition = CachedTransform.parent.TransformPoint(childTilePosition);
-                    CachedRectTransform.SetLocalPosition(childTilePosition);
-                    break;
-                default:
-                    //ClearSubTiles();
-                    m_originWorldPosition = CachedTransform.parent.TransformPoint(item.Position);
-                    CachedRectTransform.SetLocalPosition(item.Position);
-                    break;
-            }
-		}*/
-
-        RefreshPosition(item, changeLocation, currentType);
 
         m_current = item;
 
@@ -293,6 +269,7 @@ public partial class TileItem : CachedBehaviour
         
         RefreshIcon(blockerType, blockerICD);
         RefreshBlockerState(blockerType, blockerICD);
+        RefreshPosition(item, changeLocation, currentType);
         SetInteractable(item.Location, item.Overlapped, item.InvisibleIcon, ignoreInvisible).Forget();
 
         (m_tmpText.text, m_icon.enabled) = m_icon.sprite switch {
@@ -370,12 +347,15 @@ public partial class TileItem : CachedBehaviour
         }
     }
 
-    private async UniTask SetInteractable(LocationType location, bool overlapped, bool invisibleIcon = false, bool ignoreInvisible = false)
+    public async UniTask SetInteractable(LocationType location, bool overlapped, bool invisibleIcon = false, bool ignoreInvisible = false)
 	{
 		switch (location)
 		{
 			case LocationType.BOARD:
-				m_interactable = !overlapped;
+				if (blockerType == BlockerType.Suitcase_Tile && !isActivatedSuitcaseTile)
+                    m_interactable = false;
+                else
+                    m_interactable = !overlapped;
 
 #if USE_GOLD_TILE_MISSION
 				ObjectUtility.GetRawObject(m_missionTile)?.SetVisible(!invisibleIcon);
@@ -428,6 +408,11 @@ public partial class TileItem : CachedBehaviour
 		}
 	}
 
+    public void SetInteractable(bool value)
+    {
+        m_interactable = value;
+    }
+
 #endregion OnUpdateUI
 
 
@@ -456,13 +441,19 @@ public partial class TileItem : CachedBehaviour
 
         return (location, Current != null) switch {
 			(LocationType.BASKET, _) => // Board or Stash -> Basket || // Basket -> Basket (After Matching Move)
-                TileJump(location, direction, duration, onComplete: () => {
+                TileJump(location, direction, duration, 
+                onComplete: () => {
                     globalData.playScene?.mainView?.CurrentBoard?.SortLayerTiles();
                 }) ?? UniTask.CompletedTask,
             (LocationType.STASH, _) => // Basket -> Stash (Item: Return)
-                TileJump(location, direction, duration, onComplete: onComplete) ?? UniTask.CompletedTask, 
+                TileJump(location, direction, duration, 
+                onComplete: onComplete) ?? UniTask.CompletedTask, 
 			(LocationType.BOARD, true) => // Basket -> Board || Basket -> Stash(Board) (Item: Undo)
-                TileJump(location, m_originWorldPosition, duration, onComplete: () => {
+                TileJump(location, m_originWorldPosition, duration, 
+                onPlay: () => {
+                    SetUndoMoving(true);
+                },
+                onComplete: () => {
                     globalData.playScene?.mainView?.CurrentBoard?.SetParentLayer(this, layerIndex);
                 }) ?? UniTask.CompletedTask,
 			(LocationType.POOL, _) => // Mathing Disappear
@@ -480,7 +471,7 @@ public partial class TileItem : CachedBehaviour
         }
     }
 
-    private UniTask? TileJump(LocationType location, Vector3 value, float duration, float jumpPower = 0.5f, Action onComplete = null)
+    private UniTask? TileJump(LocationType location, Vector3 value, float duration, float jumpPower = 0.5f, Action onPlay = null, Action onComplete = null)
     {
         StopJump();
 
@@ -489,13 +480,17 @@ public partial class TileItem : CachedBehaviour
             .DOJump(value, jumpPower, 1, duration)
             .OnPlay(() => {
                 //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=white>[{0}] Play : {1}</color>", gameObject.name, blockerType));
-                Debug.Log(CodeManager.GetMethodName() + string.Format("<color=white>{0} -> {1}</color>", CachedTransform.position, value));
+                //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=white>{0} -> {1}</color>", CachedTransform.position, value));
                 SetMoving(true);
+                onPlay?.Invoke();
+                RefreshBlockerState(blockerType, blockerICD);
             })
             .OnComplete(() => {
                 //Debug.Log(CodeManager.GetMethodName() + string.Format("<color=white>[{0}] Complete : {1}</color>", gameObject.name, blockerType));
                 SetMoving(false);
+                SetUndoMoving(false);
                 onComplete?.Invoke();
+                RefreshBlockerState(blockerType, blockerICD);
             })
             .OnKill(() => m_jumpSequence = null)
             .SetAutoKill()
@@ -552,10 +547,16 @@ public partial class TileItem : CachedBehaviour
         isMoving = value;
     }
 
+    public void SetUndoMoving(bool value)
+    {
+        isUndoMoving = value;
+    }
+
     /// <summary>상태 리셋.</summary>
     public void Reset()
     {
         SetMoving(false);
+        SetUndoMoving(false);
     }
 
     /// <summary>완전히 삭제.</summary>
@@ -580,6 +581,7 @@ public partial class TileItem : CachedBehaviour
         m_interactable = false;
         m_movable = false;
         m_current = null;
+        m_isInitialized = false;
 
         ClearSubTiles();
         

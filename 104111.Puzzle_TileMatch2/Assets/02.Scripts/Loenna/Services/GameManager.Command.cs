@@ -253,16 +253,16 @@ partial class GameManager
 
 	public void AddToBoard(TileItemModel tileItemModel, List<TileItemModel> tiles)
 	{
-		var modifiedTiles = tiles
+        var modifiedTiles = tiles
 			.Select(
 				tile => {
-					var overlapped = tile.
+                    var overlapped = tile.
 						Overlaps
 						.Select(
 							x => {
 								if (x.guid == tileItemModel.Guid)
 								{
-									return (x.guid, true, x.distance);
+                                    return (x.guid, true, x.distance);
 								}
 								return x;
 							}

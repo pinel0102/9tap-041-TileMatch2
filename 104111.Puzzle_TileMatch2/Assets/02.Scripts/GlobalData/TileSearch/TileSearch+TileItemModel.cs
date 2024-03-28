@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
-
+using Cysharp.Threading.Tasks;
+using Cysharp.Threading.Tasks.Linq;
 public static partial class TileSearch
 {
 #region [Game] TileItemModel (88x92)
@@ -180,12 +180,23 @@ public static partial class TileSearch
         return tile.BlockerType != BlockerType.Suitcase;
     }
 
-    public static Vector2 GetSuitcaseTilePosition(this TileItemModel tileItem, int offsetICD = 0)
+    public static Vector2 GetSuitcaseTilePosition(this TileItemModel tileItem, int offsetICD = 0, bool isInit = false)
     {
         var(existTop, topTile) = tileItem.FindTopTile();
         if (existTop)
         {
-            return tileItem.BlockerICD + offsetICD >= topTile.BlockerICD ?
+            bool isActivatedTile = tileItem.BlockerICD + offsetICD >= topTile.BlockerICD;
+
+            if (isInit)
+            {
+                //Debug.Log(CodeManager.GetMethodName() + isActivatedTile);
+                TileItem tile = tileItem.FindTileItem();
+                tile.isActivatedSuitcaseTile = isActivatedTile;
+                tile.RefreshBlockerState(tileItem.BlockerType, tileItem.BlockerICD);
+                tile.SetInteractable(tileItem.Location, tileItem.Overlapped, tileItem.InvisibleIcon, false).Forget();
+            }
+            
+            return isActivatedTile ?
                 tileItem.Position + Constant.Game.SUITCASE_TILE_SHOW_POSITION:
                 tileItem.Position + Constant.Game.SUITCASE_TILE_HIDE_POSITION;
         }

@@ -39,7 +39,9 @@ public class PlaySceneBoard : CachedBehaviour
 			return UniTask.CompletedTask;
 		}
 
-		for (int index = 0; index < layerCount; index++)
+        //Debug.Log(CodeManager.GetMethodName());
+
+        for (int index = 0; index < layerCount; index++)
 		{
 			var items = tileItems
 				.Where(item => item.Current?.LayerIndex == index)?
@@ -66,7 +68,7 @@ public class PlaySceneBoard : CachedBehaviour
 					layer.CachedTransform.SetLocalPositionY(630f * UIManager.SceneCanvas.scaleFactor);
 					await UniTask.Delay(100 * (index + 1));
 					layer.CanvasGroup.alpha = 1f;
-					await layer.CachedTransform.DOLocalMoveY(0f, 0.5f).SetEase(Ease.OutBack).ToUniTask();
+					await layer.CachedTransform.DOLocalMoveY(0f, 0.5f).SetEase(Ease.OutBack).OnComplete(() => layer.TileList.ForEach(tile => tile.SetInitialize(true))).ToUniTask();
 				}
 			);
 
@@ -76,14 +78,14 @@ public class PlaySceneBoard : CachedBehaviour
 		return UniTask.CompletedTask;
 	}
 
-    private Vector2 GetTilePosition(TileItemModel tileItem)
+    private Vector2 GetTilePosition(TileItemModel model)
     {
-        switch(tileItem.BlockerType)
+        switch(model.BlockerType)
         {
             case BlockerType.Suitcase_Tile:
-                return tileItem.GetSuitcaseTilePosition();
+                return model.GetSuitcaseTilePosition(isInit:true);
             default:
-                return tileItem.Position;
+                return model.Position;
         };
     }
 

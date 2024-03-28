@@ -8,7 +8,8 @@ using System.Linq;
 public class PlaySceneLayer : CachedBehaviour
 {
     public int layerIndex;
-    [SerializeField] private List<TileItem> tileList = new List<TileItem>();
+    [SerializeField] private List<TileItem> m_tileList = new List<TileItem>();
+    public List<TileItem> TileList => m_tileList;
 
 	private CanvasGroup m_canvasGroup;
 	public CanvasGroup CanvasGroup
@@ -25,17 +26,17 @@ public class PlaySceneLayer : CachedBehaviour
 
     public void SortChild()
     {
-        tileList.Clear();
+        m_tileList.Clear();
 
         foreach(Transform child in transform)
         {
             TileItem tile = child.GetComponent<TileItem>();
             if (tile != null)
-                tileList.Add(tile);
+                m_tileList.Add(tile);
         }
 
-        tileList = tileList.OrderBy(tile => tile.siblingIndex).ToList();
-        tileList.ForEach(tile => {
+        m_tileList = m_tileList.OrderBy(tile => tile.siblingIndex).ToList();
+        m_tileList.ForEach(tile => {
             tile.transform.SetAsLastSibling();
         });
     }

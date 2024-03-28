@@ -205,7 +205,7 @@ partial class PlayScene
 				m_tileItems.ForEach(item => m_tileItemPool.Release(item));
 				m_tileItems.Clear();
 				m_canvasGroup.alpha = 1f;
-				var tileItems = current
+                var tileItems = current
 					.Tiles
 					.Select(
 						tile => {
@@ -222,7 +222,7 @@ partial class PlayScene
 				m_topView.OnUpdateUI(level, hardMode, includedMission > 0);
 				m_topView.UpdateMissionCount(0, includedMission);
 				await m_mainView.OnUpdateAll(current.LayerCount, m_tileItems);
-				tileItems.ForEach(tileItem => tileItem.OnUpdateUI(tileItem.Current, false, out _));
+                tileItems.ForEach(tileItem => tileItem.OnUpdateUI(tileItem.Current, false, out _));
                 
                 m_bottomView.BasketView.level = level;
                 m_bottomView.BasketView.isTutorialLevel = GlobalDefine.IsTutorialLevel(level);

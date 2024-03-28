@@ -52,8 +52,6 @@ public static class Constant
 	{
         public const int LEVEL_PUZZLE_START = 4; // 오픈시 해금.
         public const int TILE_SIZE_EDITOR = 160;
-        /// <summary>[Editor] ParentTile 위치에서 내려오는 거리.</summary>
-        public const int SUITCASE_TILE_POSITION_OFFSET_EDITOR = -100;
         public const int TILE_POSITION_MAX_EDITOR = 480;
         public const float TILE_WIDTH = 88f;
 		public const float TILE_HEIGHT = 92f;
@@ -67,11 +65,13 @@ public static class Constant
         public const float TWEENTIME_TILE_SCALE = 0.05f;
         public const float TWEENTIME_JIGSAW_MOVE = 0.5f;
         public const float EFFECTTIME_TILE_MATCH = 0.3f;
+        public const float TILE_SUITCASE_HEIGHT = 60f;
 
-        public static readonly Vector3 TILE_WIDTH_HALF_POSITION = new Vector3(TILE_WIDTH_HALF, 0, 0);
+        public static readonly Vector3 TILE_WIDTH_HALF_POSITION = new Vector3(-TILE_WIDTH_HALF, 0, 0);
 		public static readonly Vector2 RESIZE_TILE_RATIOS = new Vector2(0.55f, 0.575f);
         public static readonly Vector2 SUITCASE_TILE_HIDE_POSITION = new Vector2(0f, TILE_HEIGHT);
-        public static readonly Vector2 SUITCASE_TILE_SHOW_POSITION = new Vector2(0f, TILE_HEIGHT - 60f);
+        public static readonly Vector2 SUITCASE_TILE_SHOW_POSITION = new Vector2(0f, TILE_HEIGHT - TILE_SUITCASE_HEIGHT);
+        public static readonly Vector2 SUITCASE_HEIGHT_POSITION = new Vector2(0f, TILE_SUITCASE_HEIGHT);
 
         public const float AROUND_TILE_OFFSET_LEFT = -15;
         public const float AROUND_TILE_OFFSET_RIGHT = 15;

@@ -76,6 +76,7 @@ public partial class TileItem
 
         Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_HIDE_POSITION;
         m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
+        m_blockerRect.localPosition = Vector2.zero;
 
         if(isActivatedSuitcaseTile)
         {
@@ -90,6 +91,7 @@ public partial class TileItem
 
         Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_SHOW_POSITION;
         m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
+        m_blockerRect.localPosition = Constant.Game.SUITCASE_HEIGHT_POSITION;
 
         if(!isActivatedSuitcaseTile)
         {
@@ -115,6 +117,11 @@ public partial class TileItem
         Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_SHOW_POSITION;
         m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
         CachedRectTransform.SetLocalPosition(childTilePosition);
+    }
+
+    private bool CanShowSuitcase()
+    {
+        return !isMoving && !IsUndoMoving;
     }
 
 #endregion Suitcase FX

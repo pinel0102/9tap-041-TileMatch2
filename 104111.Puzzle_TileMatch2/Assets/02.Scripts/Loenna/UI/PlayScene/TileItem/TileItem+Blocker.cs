@@ -14,7 +14,7 @@ public partial class TileItem
     
 #region Blocker State
 
-    private void RefreshBlockerState(BlockerType type, int currentICD)
+    public void RefreshBlockerState(BlockerType type, int currentICD)
     {
         if (currentLocation != LocationType.BOARD)
         {
@@ -32,12 +32,9 @@ public partial class TileItem
                 break;
             case BlockerType.Suitcase:
                 SetBlockerObject(GetBlockerRectPosition(type), GlobalDefine.GetBlockerSprite(type, currentICD), GlobalDefine.GetBlockerSubSprite(type, currentICD), currentICD.ToString(), true, true, true);
-                //RefreshSubTiles();
                 break;
             case BlockerType.Suitcase_Tile:
-                //SetBlockerObject(GetBlockerRectPosition(type), GlobalDefine.GetBlockerSprite(type, currentICD), GlobalDefine.GetBlockerSubSprite(type, currentICD), currentICD.ToString(), true, true, true);
-                SetBlockerObject(GetBlockerRectPosition(type), null, activeMain:false);
-                //RefreshParentTile();
+                SetBlockerObject(GetBlockerRectPosition(type), GlobalDefine.GetBlockerSprite(type, currentICD), GlobalDefine.GetBlockerSubSprite(type, currentICD), currentICD.ToString(), CanShowSuitcase(), CanShowSuitcase() && !isActivatedSuitcaseTile, CanShowSuitcase());
                 break;
             case BlockerType.Jelly:
                 SetBlockerObject(GetBlockerRectPosition(type), GlobalDefine.GetBlockerSprite(type, currentICD), activeMain:currentICD > 0);
@@ -60,7 +57,9 @@ public partial class TileItem
         switch(type)
         {
             case BlockerType.Glue_Right:
-                return -Constant.Game.TILE_WIDTH_HALF_POSITION;
+                return Constant.Game.TILE_WIDTH_HALF_POSITION;
+            case BlockerType.Suitcase_Tile:
+                return isActivatedSuitcaseTile ? Constant.Game.SUITCASE_HEIGHT_POSITION : Vector3.zero;
         }
 
         return Vector3.zero;
