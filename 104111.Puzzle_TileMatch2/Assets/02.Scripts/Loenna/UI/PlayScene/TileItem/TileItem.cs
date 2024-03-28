@@ -315,7 +315,7 @@ public partial class TileItem : CachedBehaviour
                     //CachedRectTransform.SetLocalPosition(item.Position);
                     break;
                 case BlockerType.Suitcase_Tile:
-                    RefreshSuitcaseState();
+                    RefreshSuitcaseState(m_parentTile.blockerICD, Current.Overlapped);
                     //m_originWorldPosition = _parentLayer.TransformPoint(item.Position);
                     //CachedRectTransform.SetLocalPosition(item.Position);
                     break;
@@ -352,8 +352,15 @@ public partial class TileItem : CachedBehaviour
 		switch (location)
 		{
 			case LocationType.BOARD:
-				if (blockerType == BlockerType.Suitcase_Tile && !isActivatedSuitcaseTile)
-                    m_interactable = false;
+				if (blockerType == BlockerType.Suitcase_Tile)
+                {
+                    if(isActivatedSuitcaseTile)
+                    {
+                        m_interactable = !overlapped && CanOpenSuitcase();
+                    }
+                    else
+                        m_interactable = false;
+                }
                 else
                     m_interactable = !overlapped;
 

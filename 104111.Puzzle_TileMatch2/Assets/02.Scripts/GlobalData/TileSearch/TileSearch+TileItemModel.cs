@@ -185,18 +185,20 @@ public static partial class TileSearch
         var(existTop, topTile) = tileItem.FindTopTile();
         if (existTop)
         {
-            bool isActivatedTile = tileItem.BlockerICD + offsetICD >= topTile.BlockerICD;
+            bool isActivatedTile = tileItem.BlockerICD + offsetICD >= topTile.BlockerICD && !tileItem.Overlapped;
 
+            TileItem tile = tileItem.FindTileItem();            
             if (isInit)
             {
-                //Debug.Log(CodeManager.GetMethodName() + isActivatedTile);
-                TileItem tile = tileItem.FindTileItem();
+                //Debug.Log(CodeManager.GetMethodName() + string.Format("isActivatedTile : {0} / Overlapped : {1}", isActivatedTile, tileItem.Overlapped));
+                
                 tile.isActivatedSuitcaseTile = isActivatedTile;
                 tile.RefreshBlockerState(tileItem.BlockerType, tileItem.BlockerICD);
+                tile.RefreshSuitcaseState(topTile.BlockerICD, tileItem.Overlapped, true);
                 tile.SetInteractable(tileItem.Location, tileItem.Overlapped, tileItem.InvisibleIcon, false).Forget();
             }
             
-            return isActivatedTile ?
+            return isActivatedTile && tile.CanOpenSuitcase() ?
                 tileItem.Position + Constant.Game.SUITCASE_TILE_SHOW_POSITION:
                 tileItem.Position + Constant.Game.SUITCASE_TILE_HIDE_POSITION;
         }

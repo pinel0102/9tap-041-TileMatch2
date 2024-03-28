@@ -51,17 +51,17 @@ public partial class TileItem
         m_childTiles.Clear();
     }
 
-    private void RefreshSuitcaseState()
+    public void RefreshSuitcaseState(int parentICD, bool overlapped, bool skipAnimation = false)
     {
         if(Current.Location == LocationType.BOARD)
         {
-            if(blockerICD < m_parentTile.blockerICD)
+            if(blockerICD >= parentICD && !overlapped && CanOpenSuitcase())
             {
-                HideSuitcaseTile();
+                ShowSuitcaseTile(skipAnimation);
             }
             else
             {
-                ShowSuitcaseTile();
+                HideSuitcaseTile(skipAnimation);
             }
         }
         else
@@ -70,7 +70,7 @@ public partial class TileItem
         }
     }
 
-    private void HideSuitcaseTile()
+    private void HideSuitcaseTile(bool skipAnimation = false)
     {
         //Debug.Log(CodeManager.GetMethodName() + tileName);
 
@@ -81,11 +81,11 @@ public partial class TileItem
         if(isActivatedSuitcaseTile)
         {
             isActivatedSuitcaseTile = false;
-            PlaySuitcaseHideAnimation();
+            PlaySuitcaseHideAnimation(skipAnimation);
         }
     }
 
-    private void ShowSuitcaseTile()
+    private void ShowSuitcaseTile(bool skipAnimation = false)
     {
         //Debug.Log(CodeManager.GetMethodName() + tileName);
 
@@ -96,32 +96,59 @@ public partial class TileItem
         if(!isActivatedSuitcaseTile)
         {
             isActivatedSuitcaseTile = true;
-            PlaySuitcaseShowAnimation();
+            PlaySuitcaseskipAnimation(skipAnimation);
         }
     }
 
-    private void PlaySuitcaseHideAnimation()
+    private void PlaySuitcaseHideAnimation(bool skipAnimation = false)
+    {
+        Debug.Log(CodeManager.GetMethodName() + tileName);
+
+        if(skipAnimation)
+        {
+            Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_HIDE_POSITION;
+            m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
+            CachedRectTransform.SetLocalPosition(childTilePosition);
+        }
+        else
+        {
+            Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_HIDE_POSITION;
+            m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
+            CachedRectTransform.SetLocalPosition(childTilePosition);
+        }
+    }
+
+    private void PlaySuitcaseskipAnimation(bool skipAnimation = false)
     {
         Debug.Log(CodeManager.GetMethodName() + tileName);
         
-        Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_HIDE_POSITION;
-        m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
-        CachedRectTransform.SetLocalPosition(childTilePosition);
-    }
-
-    private void PlaySuitcaseShowAnimation()
-    {
-        Debug.Log(CodeManager.GetMethodName() + tileName);
-        //
-
-        Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_SHOW_POSITION;
-        m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
-        CachedRectTransform.SetLocalPosition(childTilePosition);
+        if(skipAnimation)
+        {
+            Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_SHOW_POSITION;
+            m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
+            CachedRectTransform.SetLocalPosition(childTilePosition);
+        }
+        else
+        {
+            Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_SHOW_POSITION;
+            m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
+            CachedRectTransform.SetLocalPosition(childTilePosition);
+        }
     }
 
     private bool CanShowSuitcase()
     {
         return !isMoving && !IsUndoMoving;
+    }
+
+    public bool CanOpenSuitcase()
+    {
+        var(existTopTile, topTile) = this.FindTopTile();
+        if(existTopTile)
+        {
+            return !topTile.Current?.Overlapped ?? false;
+        }
+        return !m_parentTile?.Current?.Overlapped ?? false;
     }
 
 #endregion Suitcase FX
