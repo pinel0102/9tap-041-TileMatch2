@@ -104,14 +104,9 @@ public partial class TileItem
         Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_HIDE_POSITION;
         m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
 
-        if(skipAnimation)
-        {
-            CachedRectTransform.SetLocalPosition(childTilePosition);
-        }
-        else
-        {
-            CachedRectTransform.SetLocalPosition(childTilePosition);
-        }
+        CachedRectTransform.SetLocalPosition(childTilePosition);
+
+        m_blockerImageSub.gameObject.SetActive(true);
     }
 
     private void PlaySuitcaseShowAnimation(bool skipAnimation = false)
@@ -144,9 +139,9 @@ public partial class TileItem
         var(existTopTile, topTile) = this.FindTopTile();
         if(existTopTile)
         {
-            return !topTile.Current?.Overlapped ?? false;
+            return (!Current?.Overlapped ?? false) && (!topTile.Current?.Overlapped ?? false);
         }
-        return !m_parentTile?.Current?.Overlapped ?? false;
+        return (!Current?.Overlapped ?? false) && (!m_parentTile?.Current?.Overlapped ?? false);
     }
 
 #endregion Suitcase FX
