@@ -12,6 +12,7 @@ public partial class TileItem
 	private TweenContext? m_scaleTween;
 	private TweenContext? m_dimTween;
 	private TweenContext? m_iconAlphaTween;
+    private TweenContext? m_SuitcaseTween;
     private Sequence m_jumpSequence;
     
 #region Tween Context

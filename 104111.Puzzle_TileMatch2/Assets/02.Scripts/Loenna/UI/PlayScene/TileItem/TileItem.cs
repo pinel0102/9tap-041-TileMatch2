@@ -89,9 +89,38 @@ public partial class TileItem : CachedBehaviour
 				.SetAutoKill(false)
 		);
 
+        m_SuitcaseTween = new TweenContext(
+			tweener: ObjectUtility.GetRawObject(CachedTransform)?
+                .DOLocalMove(Vector2.zero, GlobalDefine.SuitcaseFX_Duration)
+                .OnPlay(() => {
+                    SetMoving(true);
+                    m_blockerImage.gameObject.SetActive(false);
+                    m_blockerImageSub.gameObject.SetActive(false);
+                    m_blockerText.gameObject.SetActive(false);
+                })
+                .OnComplete(() => {
+                    SetMoving(false);
+                    m_blockerImage.gameObject.SetActive(true);
+                    m_blockerImageSub.gameObject.SetActive(false);
+                    m_blockerText.gameObject.SetActive(true);
+                })
+                .Pause()
+				.SetAutoKill(false)
+		);
+
 		m_scaleTween = new TweenContext(
 			tweener: ObjectUtility.GetRawObject(m_view)?
 				.DOScale(Vector3.one, Constant.Game.TWEENTIME_TILE_DEFAULT)
+                .OnPlay(() => {
+                    if(Current.Location == LocationType.POOL)
+                    {
+                        if(blockerType == BlockerType.Suitcase)
+                        {
+                            globalData.playScene.LoadFX(GlobalDefine.FX_Prefab_Sparkle, m_originWorldPosition);
+                            m_view.SetLocalScale(0);
+                        }
+                    }
+                })
                 .OnComplete(() => {
                     if(Current.Location == LocationType.POOL)
                     {
@@ -108,7 +137,7 @@ public partial class TileItem : CachedBehaviour
 
                         if (IsPlayDisappearEffect(blockerType))
                             globalData.playScene.LoadFX(GlobalDefine.FX_Prefab_Sparkle, CachedTransform.position);
-
+                        
                         m_view.SetLocalScale(0);
                         Reset();
                     }
@@ -465,7 +494,7 @@ public partial class TileItem : CachedBehaviour
                     globalData.playScene?.mainView?.CurrentBoard?.SetParentLayer(this, layerIndex);
                 }) ?? UniTask.CompletedTask,
 			(LocationType.POOL, _) => // Mathing Disappear
-                m_scaleTween?.OnChangeValue(Vector3.zero, duration, duration) ?? UniTask.CompletedTask,
+                m_scaleTween?.OnChangeValue(Vector3.zero, IsPlayDisappearEffect(blockerType) ? duration : 0, IsPlayDisappearEffect(blockerType) ? duration : 0) ?? UniTask.CompletedTask,
 			_ => DoNothing(location, Current != null)
 		};
 	}
@@ -614,6 +643,7 @@ public partial class TileItem : CachedBehaviour
 	private void OnDestroy()
 	{
 		m_positionTween?.Dispose();
+        m_SuitcaseTween?.Dispose();
 		m_scaleTween?.Dispose();
 		m_iconAlphaTween?.Dispose();
 		m_dimTween?.Dispose();

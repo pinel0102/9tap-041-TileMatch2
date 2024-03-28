@@ -81,7 +81,7 @@ partial class GameManager
                             
                             if(topTile.BlockerICD <= 1)
                             {
-                                Debug.Log(CodeManager.GetMethodName() + string.Format("Last Tile Moved : ({0})", topTile.BlockerICD));
+                                //Debug.Log(CodeManager.GetMethodName() + string.Format("Last Tile Moved : ({0})", topTile.BlockerICD));
                                 AddCommandTile(topTile, Type.DO_NOT_MOVE_DISAPPEAR, LocationType.POOL, true);
                             }
                         }
@@ -203,7 +203,7 @@ partial class GameManager
 
     public void DoNotMove(TileItemModel tileItemModel, List<TileItemModel> tiles, Type commandType)
     {
-        Debug.Log(CodeManager.GetMethodName() + string.Format("[{0}] {1}", tileItemModel.BlockerType, commandType));
+        //Debug.Log(CodeManager.GetMethodName() + string.Format("[{0}] {1}", tileItemModel.BlockerType, commandType));
 
         switch(commandType)
         {

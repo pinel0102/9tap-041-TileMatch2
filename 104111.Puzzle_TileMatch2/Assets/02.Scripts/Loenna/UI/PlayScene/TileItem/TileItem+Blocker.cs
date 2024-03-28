@@ -35,7 +35,7 @@ public partial class TileItem
                 m_view.SetLocalScale(0);
                 break;
             case BlockerType.Suitcase_Tile:
-                SetBlockerObject(GetBlockerRectPosition(type), GlobalDefine.GetBlockerSprite(type, currentICD), GlobalDefine.GetBlockerSubSprite(type, currentICD), currentICD.ToString(), CanShowSuitcase(), CanShowSuitcase() && !CanOpenSuitcase() && !isActivatedSuitcaseTile, CanShowSuitcase());
+                SetBlockerObject(GetBlockerRectPosition(type), GlobalDefine.GetBlockerSprite(type, currentICD), GlobalDefine.GetBlockerSubSprite(type, currentICD), currentICD.ToString(), CanShowSuitcase() && isActivatedSuitcaseTile, CanShowSuitcase() && !CanOpenSuitcase() && !isActivatedSuitcaseTile, CanShowSuitcase() && isActivatedSuitcaseTile);
                 break;
             case BlockerType.Jelly:
                 SetBlockerObject(GetBlockerRectPosition(type), GlobalDefine.GetBlockerSprite(type, currentICD), activeMain:currentICD > 0);

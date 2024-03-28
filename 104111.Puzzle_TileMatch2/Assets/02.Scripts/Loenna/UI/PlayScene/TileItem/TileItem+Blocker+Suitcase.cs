@@ -19,7 +19,6 @@ public partial class TileItem
     private void SetParentTile(TileItem parentTile)
     {
         //Debug.Log(CodeManager.GetMethodName());
-
         m_parentTile = parentTile;
     }
 
@@ -46,7 +45,6 @@ public partial class TileItem
 
     private void ClearSubTiles()
     {
-        //GlobalDefine.ClearChild(m_subTileParent);
         m_parentTile = null;
         m_childTiles.Clear();
     }
@@ -96,43 +94,44 @@ public partial class TileItem
         if(!isActivatedSuitcaseTile)
         {
             isActivatedSuitcaseTile = true;
-            PlaySuitcaseskipAnimation(skipAnimation);
+            PlaySuitcaseShowAnimation(skipAnimation);
         }
     }
 
     private void PlaySuitcaseHideAnimation(bool skipAnimation = false)
     {
-        Debug.Log(CodeManager.GetMethodName() + tileName);
+        //Debug.Log(CodeManager.GetMethodName() + tileName);
+
+        Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_HIDE_POSITION;
+        m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
 
         if(skipAnimation)
         {
-            Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_HIDE_POSITION;
-            m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
             CachedRectTransform.SetLocalPosition(childTilePosition);
         }
         else
         {
-            Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_HIDE_POSITION;
-            m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
             CachedRectTransform.SetLocalPosition(childTilePosition);
         }
     }
 
-    private void PlaySuitcaseskipAnimation(bool skipAnimation = false)
+    private void PlaySuitcaseShowAnimation(bool skipAnimation = false)
     {
-        Debug.Log(CodeManager.GetMethodName() + tileName);
+        //Debug.Log(CodeManager.GetMethodName() + tileName);
+
+        Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_SHOW_POSITION;
+        m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
         
         if(skipAnimation)
         {
-            Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_SHOW_POSITION;
-            m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
             CachedRectTransform.SetLocalPosition(childTilePosition);
         }
         else
         {
-            Vector2 childTilePosition = Current.Position + Constant.Game.SUITCASE_TILE_SHOW_POSITION;
-            m_originWorldPosition = _parentLayer.TransformPoint(childTilePosition);
-            CachedRectTransform.SetLocalPosition(childTilePosition);
+            CachedRectTransform.SetLocalPosition(Current.Position + Constant.Game.SUITCASE_TILE_HIDE_POSITION);
+            
+            m_SuitcaseTween?.OnChangeValue(childTilePosition, GlobalDefine.SuitcaseFX_Duration);
+            PlayBlockerEffect(blockerType, blockerICD, CachedRectTransform.position);
         }
     }
 

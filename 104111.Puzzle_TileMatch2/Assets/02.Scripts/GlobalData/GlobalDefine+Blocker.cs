@@ -119,7 +119,7 @@ public static partial class GlobalDefine
                 _ => (string.Empty, Vector2.zero)
             },
             BlockerType.Suitcase => (string.Empty, Vector2.zero),
-            BlockerType.Suitcase_Tile => (string.Empty, Vector2.zero),
+            BlockerType.Suitcase_Tile => ("FX_Suitcase", new(0, -26)),
             _ => (string.Empty, Vector2.zero)
         };
 
@@ -360,4 +360,11 @@ public static partial class GlobalDefine
     };
 
 #endregion Blocker Glue FX
+
+
+#region Blocker Suitcase FX
+
+    public const float SuitcaseFX_Duration = 0.5f;
+
+#endregion Blocker Suitcase FX
 }
